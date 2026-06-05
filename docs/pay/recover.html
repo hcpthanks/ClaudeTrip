@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="输入激活码恢复已购买的 Claude Code 学习站课程。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>恢复购买 — Claude Code 学习站</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<style>
+  .recover-page { min-height: calc(100vh - 56px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .recover-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); padding: 48px; text-align: center;
+    max-width: 480px; width: 100%;
+  }
+  .recover-card h1 { font-size: 1.6em; margin-bottom: 8px; }
+  .recover-card .sub { color: var(--text-muted); margin-bottom: 28px; font-size: 0.92em; line-height: 1.6; }
+  .code-input {
+    width: 100%; padding: 14px 18px; border-radius: var(--radius);
+    border: 2px solid var(--border); background: var(--bg); color: var(--text);
+    font-size: 1.15em; font-family: var(--font-mono); text-align: center;
+    letter-spacing: 0.08em; transition: border-color var(--duration-fast);
+    text-transform: uppercase;
+  }
+  .code-input:focus { outline: none; border-color: var(--accent); }
+  .code-input::placeholder { color: var(--text-faint); font-size: 0.8em; letter-spacing: 0; }
+  .code-hint { color: var(--text-muted); font-size: 0.78em; margin-top: 8px; }
+  .msg { margin-top: 20px; font-weight: 600; display: none; }
+  .msg.success { color: var(--green); display: block; }
+  .msg.error { color: var(--red); display: block; }
+  .btn-row { margin-top: 20px; }
+  @media (max-width: 768px) {
+    .recover-card { padding: 32px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">Claude Code <span>学习站</span></a>
+    <div class="nav-links" role="navigation" aria-label="页面导航">
+      <a href="../index.html">首页</a>
+    </div>
+  </div>
+</nav>
+
+<main class="recover-page" role="main">
+  <div class="recover-card">
+    <h1>🔑 恢复购买</h1>
+    <p class="sub">输入支付成功后获得的激活码，<br>即可在新浏览器或新电脑上恢复课程。</p>
+
+    <input
+      type="text"
+      class="code-input"
+      id="code-input"
+      placeholder="CC-XXXX-XXXX"
+      maxlength="13"
+      autocomplete="off"
+    >
+    <p class="code-hint">格式：CC-XXXX-XXXX，仅 10 个字符（支付成功时显示）</p>
+
+    <div class="msg" id="msg"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="verify-btn" style="font-size:1em;padding:12px 40px;">
+        验证激活 →
+      </button>
+    </div>
+
+    <p style="margin-top:24px;font-size:0.82em;color:var(--text-faint);">
+      找不到激活码？<br>联系微信客服，提供支付截图可重新获取。
+    </p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">← 返回首页</a></p>
+</footer>
+
+<script src="../assets/js/nav.js"></script>
+<script src="../assets/js/recovery.js"></script>
+<script>
+(function () {
+  var input = document.getElementById('code-input');
+  var btn = document.getElementById('verify-btn');
+  var msg = document.getElementById('msg');
+
+  // Auto-format input: CC-XXXX-XXXX
+  input.addEventListener('input', function () {
+    var val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (val.length > 2) val = val.substring(0,2) + '-' + val.substring(2);
+    if (val.length > 7) val = val.substring(0,7) + '-' + val.substring(7);
+    input.value = val.substring(0, 13);
+  });
+
+  function verify() {
+    var code = input.value.trim();
+    msg.className = 'msg';
+    msg.textContent = '';
+
+    if (!code || code.length < 13) {
+      msg.textContent = '请输入完整的激活码（CC-XXXX-XXXX 格式）';
+      msg.className = 'msg error';
+      return;
+    }
+
+    var result = verifyActivationCode(code);
+    if (!result) {
+      msg.textContent = '激活码无效，请检查是否输入正确';
+      msg.className = 'msg error';
+      return;
+    }
+
+    applyActivationCode(result);
+    msg.textContent = result.type === 'all'
+      ? '✅ 全站永久解锁成功！即将跳转首页...'
+      : '✅ 单页解锁成功！即将跳转课程页...';
+    msg.className = 'msg success';
+
+    setTimeout(function () {
+      if (result.type === 'all') {
+        window.location.href = '../index.html';
+      } else {
+        var p = (window.TOPIC_PAGES || {intro:'claude-intro'})[result.topicId] || 'claude-intro.html';
+        window.location.href = '../beginner/' + p;
+      }
+    }, 1500);
+  }
+
+  btn.addEventListener('click', verify);
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') verify();
+  });
+})();
+</script>
+</body>
+</html>

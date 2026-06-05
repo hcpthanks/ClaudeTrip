@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code 学习站进阶+专家课程：7个模块、实战项目源码、微信答疑群。一次购买永久有效。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>购买课程 — Claude Code 学习站</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<style>
+  .pay-page { min-height: calc(100vh - 56px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .pay-container { max-width: 780px; width: 100%; }
+
+  .pay-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); padding: 48px; text-align: center;
+  }
+  .pay-card h1 { font-size: 2em; margin-bottom: 8px; }
+  .pay-card .sub { color: var(--text-muted); margin-bottom: 32px; }
+
+  /* course summary */
+  .course-summary {
+    text-align: left; margin-bottom: 36px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+  }
+  .course-summary h3 { margin-bottom: 12px; }
+  .course-summary ul { list-style: none; padding: 0; }
+  .course-summary li { padding: 6px 0; font-size: 0.92em; display: flex; align-items: center; gap: 8px; }
+  .course-summary li::before { content: '✓'; color: var(--green); font-weight: 700; }
+
+  /* price */
+  .price-block { margin: 28px 0 32px; }
+  .price-block .amount { font-size: 3.2em; font-weight: 800; color: var(--text-high); }
+  .price-block .amount .yen { font-size: 0.45em; color: var(--text-muted); }
+  .price-block .note { color: var(--text-muted); font-size: 0.85em; margin-top: 4px; }
+
+  /* QR placeholder */
+  .qr-placeholder {
+    display: inline-flex; flex-direction: column; align-items: center;
+    padding: 28px 40px; margin: 20px 0 28px;
+    background: #fff; border-radius: var(--radius-lg);
+    border: 2px solid var(--border);
+  }
+  .qr-placeholder .qr-icon { font-size: 4em; margin-bottom: 12px; }
+  .qr-placeholder .qr-text { color: #333; font-size: 0.9em; font-weight: 600; }
+  .qr-placeholder .qr-hint { color: #999; font-size: 0.78em; margin-top: 6px; }
+
+  .pay-footer-note { color: var(--text-faint); font-size: 0.8em; margin-top: 24px; line-height: 1.5; }
+
+  @media (max-width: 768px) {
+    .pay-card { padding: 28px 20px; }
+    .price-block .amount { font-size: 2.4em; }
+    .qr-placeholder { padding: 20px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">Claude Code <span>学习站</span></a>
+    <div class="nav-links" role="navigation" aria-label="页面导航">
+      <a href="../index.html">首页</a>
+      <a href="../index.html#beginner">入门</a>
+    </div>
+  </div>
+</nav>
+
+<main class="pay-page" role="main">
+  <div class="pay-container">
+
+    <div class="pay-card" id="pay-card">
+      <!-- filled by JS -->
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">← 返回首页</a></p>
+</footer>
+
+<script src="../assets/js/nav.js"></script>
+<script>
+// ── Resolve payment plan from URL params ──
+const params = new URLSearchParams(window.location.search);
+const plan = params.get('plan') || 'all';      // 'single' or 'all'
+const from  = params.get('topic') || params.get('from') || '';
+
+const TOPIC_LABELS = window.TOPIC_NAMES;
+
+const isForce   = plan === 'force';
+const isSingle  = plan === 'single';
+const price     = isForce ? 1 : (isSingle ? 5 : 99);
+const title     = isForce ? '⚡ 强制解锁下一课' : (isSingle ? '📄 解锁单页内容' : '⭐ 永久解锁全站');
+const subtitle  = isForce
+  ? '跳过冷却等待，立即解锁「' + (TOPIC_LABELS[from] || '本课') + '」的下一主题'
+  : (isSingle
+    ? '解锁「' + (TOPIC_LABELS[from] || '本页') + '」的全部内容'
+    : '一次购买，永久有效 · 内容持续更新');
+const items = isForce
+  ? ['跳过考核冷却期（1天/3天等待）','立即解锁下一主题课程','手写 2 遍也能免费解锁——但花钱省时间']
+  : (isSingle
+    ? ['本页 ⑥ 练习 · ⑦ 快速掌握 · ⑧ 速查卡 · ⑨ 总结','永久可看，不受后续更新影响']
+    : ['入门全部 6 个主题完整内容','进阶 4 模块：多代理 · 钩子 · 自定义技能 · 记忆系统','专家 3 模块：MCP 服务器 · 工作流引擎 · 自定义代理','实战项目源码 + 深度视频讲解','微信答疑群（一对一指导）','永久更新，不再付费']);
+
+document.getElementById('pay-card').innerHTML =
+  '<h1>' + title + '</h1>' +
+  '<p class="sub">' + subtitle + '</p>' +
+  '<div class="course-summary">' +
+    '<h3>包含内容</h3>' +
+    '<ul>' + items.map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul>' +
+  '</div>' +
+  '<div class="price-block">' +
+    '<div class="amount"><span class="yen">¥</span>' + price + '</div>' +
+    '<div class="note">' +
+      (isForce
+        ? '也可通过手写 2 遍或等待 1-3 天免费解锁'
+        : (isSingle
+          ? '每个主题 ①-⑤ 模块永久免费'
+          : '入门 6 个主题 ①-⑤ 模块永久免费')) +
+    '</div>' +
+  '</div>' +
+  '<div class="qr-placeholder">' +
+    '<div class="qr-icon">📱</div>' +
+    '<div class="qr-text">微信扫码支付</div>' +
+    '<div class="qr-hint">（商户号申请中，暂用下方按钮模拟）</div>' +
+  '</div>' +
+  '<button class="btn btn-success" style="font-size:1em;padding:14px 40px;margin-top:12px;" id="sim-pay">' +
+     '模拟支付 ¥' + price + ' →' +
+  '</button>' +
+  '<p class="pay-footer-note">' +
+    '支付成功后自动解锁。如有问题，请微信联系我们。' +
+  '</p>';
+
+document.getElementById('sim-pay').addEventListener('click', function() {
+  // ── Payment log (real data, since day one) ──
+  var payLog = JSON.parse(localStorage.getItem('cc-payment-log') || '[]');
+  payLog.push({ plan: plan, topic: from, price: price, date: new Date().toISOString() });
+  localStorage.setItem('cc-payment-log', JSON.stringify(payLog));
+
+  if (plan === 'all') {
+    localStorage.setItem('cc-learn-all-access', 'true');
+    window.location.href = 'success.html?plan=all';
+  } else if (plan === 'force') {
+    var quizState = JSON.parse(localStorage.getItem('cc-learn-quiz') || '{}');
+    quizState[from] = { score: 0, total: 5, passed: true, date: new Date().toISOString(), forceUnlocked: true };
+    localStorage.setItem('cc-learn-quiz', JSON.stringify(quizState));
+    window.location.href = 'success.html?plan=force&topic=' + encodeURIComponent(from);
+  } else {
+    window.location.href = 'success.html?plan=single&topic=' + encodeURIComponent(from);
+  }
+});
+</script>
+<script src="../assets/js/common.js"></script>
+</body>
+</html>

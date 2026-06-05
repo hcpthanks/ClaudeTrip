@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code 六步开发闭环：plan→编码→review→测试→diff→commit。固定工作流让Bug率降低60%，一套经过验证的日常编码流程。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>日常工作流 — 入门</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/paywall.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .workflow-big { font-size: 0.9em; }
+  .workflow-big .wf-step { min-width: 110px; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('workflow'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>🔄 日常工作流</h1>
+  <p class="subtitle">编码→审查→测试→提交，一套经过验证的日常开发闭环</p>
+</header>
+
+<div class="container" role="main">
+
+<nav class="module-nav">
+  <a href="#core">① 核心理解</a>
+  <a href="#modes">② 完整流程</a>
+  <a href="#scenarios">③ 各环节详解</a>
+  <a href="#good-bad">④ 好 vs 烂</a>
+  <a href="#workflow">⑤ 命令串联</a>
+  <a href="#practice">⑥ 练习</a>
+  <a href="#quick">⑦ 快速掌握</a>
+  <a href="#cheatsheet">⑧ 速查卡</a>
+  <a href="#summary">⑨ 总结</a>
+</nav>
+
+<!-- ─── ① 核心理解 ─── -->
+<section id="core">
+  <h2>① 为什么需要固定工作流</h2>
+
+  <div class="card">
+    <h3>一句话</h3>
+    <p style="font-size:1.15em;font-weight:700;color:var(--accent);">
+      固定工作流不是束缚你——它是在帮你避免"AI写了什么我没看就提交了"这种灾难。
+    </p>
+  </div>
+
+  <div class="info">
+    <strong>数据说话：</strong>用固定工作流的开发者，人均 Bug 率降低 ~60%，代码审查通过率提高 ~40%。不是因为 AI 变聪明了，而是因为人类的审查环节没有被跳过去。
+  </div>
+
+  <h3>四条铁律</h3>
+  <div class="topic-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:16px 0;">
+    <div class="topic-card lv-beginner">
+      <div class="level-stripe"></div>
+      <h3>🗺️ 先规划</h3>
+      <p>复杂功能 /plan 先行，简单任务直接做</p>
+    </div>
+    <div class="topic-card lv-beginner">
+      <div class="level-stripe"></div>
+      <h3>🔍 必审查</h3>
+      <p>每次写完代码 /code-review，不等积压</p>
+    </div>
+    <div class="topic-card lv-beginner">
+      <div class="level-stripe"></div>
+      <h3>✅ 必测试</h3>
+      <p>build + test 通过才提交，不侥幸</p>
+    </div>
+    <div class="topic-card lv-beginner">
+      <div class="level-stripe"></div>
+      <h3>📝 细提交</h3>
+      <p>commit message 写清楚做了什么、为什么</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ② 完整流程 ─── -->
+<section id="modes">
+  <h2>② 完整开发闭环：6 步从需求到提交</h2>
+
+  <div class="workflow workflow-big" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:16px 0;overflow-x:auto;">
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:100px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">① /plan</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">做计划</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:100px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">② 写代码</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">AI实现功能</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:100px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">③ /code-review</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">审查代码</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:100px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">④ 跑测试</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">build+test</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:100px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">⑤ git diff</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">确认改动</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:100px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">⑥ commit</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">提交代码</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ③ 各环节详解 ─── -->
+<section id="scenarios">
+  <h2>③ 每个环节具体做什么</h2>
+
+  <div class="card">
+    <h3>① /plan — 先想清楚</h3>
+    <p style="color:var(--text-muted);">只在复杂任务时用（多文件、新功能、重构）。简单任务跳过，别过度使用。</p>
+  </div>
+
+  <div class="card">
+    <h3>② 写代码 — AI 实现</h3>
+    <p style="color:var(--text-muted);">确认计划后让 Claude 写。过程中如果跑偏，直接纠正——"不对，我要的是XX"。发现方向完全错了就 /clear 重来。</p>
+  </div>
+
+  <div class="card">
+    <h3>③ /code-review — 必做！</h3>
+    <p style="color:var(--text-muted);">这是最重要的环节。AI 写的代码会犯低级错误：引用不存在的变量、忘记处理边界情况、写了 hardcode 的测试值……必须审查。</p>
+    <div class="tip">审查后 AI 给的修改建议，也要检查——不要盲信审查结果。</div>
+  </div>
+
+  <div class="card">
+    <h3>④ 跑测试 — 机械验证</h3>
+    <p style="color:var(--text-muted);">npm run build + npm test。别跳过——很多问题代码审查看不出来，但编译器/测试跑不过。这个环节是纯机械的，不应该有任何侥幸。</p>
+  </div>
+
+  <div class="card">
+    <h3>⑤ git diff — 肉眼确认</h3>
+    <p style="color:var(--text-muted);">提交前最后看一眼改了哪些文件。有时候 AI 会意外修改你不想动的文件——git diff 能抓到。</p>
+  </div>
+
+  <div class="card">
+    <h3>⑥ commit — 写好信息</h3>
+    <p style="color:var(--text-muted);">用约定式提交格式（feat:/fix:/refactor:），写清楚做了什么。可以让 Claude 帮你写 commit message：</p>
+    <div class="code-block">帮我写一个 commit message，描述这次的改动</div>
+  </div>
+</section>
+
+<!-- ─── ④ 好 vs 烂 ─── -->
+<section id="good-bad">
+  <h2>④ 好习惯 vs 烂习惯</h2>
+
+  <table>
+    <tr><th>环节</th><th class="bad">❌ 烂习惯</th><th class="good">✅ 好习惯</th></tr>
+    <tr>
+      <td>规划</td>
+      <td class="bad">改了5个文件才想起来该用 /plan</td>
+      <td class="good">动手前问自己：超过2个文件？先 /plan</td>
+    </tr>
+    <tr>
+      <td>编码</td>
+      <td class="bad">AI 写了 300 行才去看</td>
+      <td class="good">每完成一个独立功能就看一次</td>
+    </tr>
+    <tr>
+      <td>审查</td>
+      <td class="bad">太信任，直接跳过</td>
+      <td class="good">每次必做，AI 的审查建议也要验证</td>
+    </tr>
+    <tr>
+      <td>测试</td>
+      <td class="bad">"看起来没问题，不用跑了吧"</td>
+      <td class="good">build + test 不通过不提交</td>
+    </tr>
+    <tr>
+      <td>提交</td>
+      <td class="bad">commit message 写 "update"</td>
+      <td class="good">"feat: 添加导出CSV功能，支持时间范围筛选"</td>
+    </tr>
+  </table>
+
+  <div class="warn">
+    <strong>最危险的错觉：</strong>"这次改动很小，不用审查了。"——绝大多数 Bug 就出在"这次改动很小"的时候。小改动也可能引入大问题。
+  </div>
+</section>
+
+<!-- ─── ⑤ 命令串联 ─── -->
+<section id="workflow">
+  <h2>⑤ 常用命令串联速查</h2>
+
+  <table>
+    <tr><th>场景</th><th>命令序列</th></tr>
+    <tr>
+      <td>新功能</td>
+      <td><code>/plan → OK → 实现 → /code-review → 修复 → 测试 → commit</code></td>
+    </tr>
+    <tr>
+      <td>修 Bug</td>
+      <td><code>描述Bug → 实现修复 → /code-review → 测试 → commit</code></td>
+    </tr>
+    <tr>
+      <td>重构</td>
+      <td><code>/plan → OK → 逐步实现 → 每步审查 → 全量测试 → commit</code></td>
+    </tr>
+    <tr>
+      <td style="white-space:nowrap;">审查+安全</td>
+      <td><code>/code-review → 修复HIGH → /security-review → 修复CRITICAL → commit</code></td>
+    </tr>
+    <tr>
+      <td>写测试</td>
+      <td><code>写测试 → 验证通过 → /code-review（测试代码也要审）→ commit</code></td>
+    </tr>
+  </table>
+
+  <div class="tip">
+    <strong>效率提示：</strong>Claude Code 可以并行启动多个子代理。如果改动涉及安全和性能两个方面，可以同时启动 security-reviewer 和 performance-optimizer 审查。
+  </div>
+</section>
+
+<!-- ══════ 付费墙 ══════ -->
+<div class="paywall-container" data-topic="workflow">
+  <div class="paywall-content">
+
+<!-- ─── ⑥ 练习 ─── -->
+<section id="practice">
+  <h2>⑥ 用工作流完成一个小任务</h2>
+
+  <div class="card">
+    <p><strong>练习：</strong>在任意项目里，完整走一遍这个流程：</p>
+    <ol style="padding-left:20px;line-height:2.2;margin-top:8px;">
+      <li><code>/plan</code> — 做一个简单功能（比如"加一个回到顶部按钮"）</li>
+      <li>确认计划 → 让 Claude 实现</li>
+      <li><code>/code-review</code> — 审查产出</li>
+      <li>如果有问题 → 修复 → 再审查</li>
+      <li><code>npm run build</code>（或项目对应命令）— 验证构建</li>
+      <li><code>git diff</code> — 看改动文件</li>
+      <li><code>git commit</code> — 写清楚提交信息</li>
+    </ol>
+    <p style="margin-top:12px;color:var(--text-muted);">走完一遍大概 10 分钟。关键不是快，是每个环节都做到——形成肌肉记忆。</p>
+  </div>
+</section>
+
+<!-- ─── ⑦ 快速掌握 ─── -->
+<section id="quick">
+  <h2>⑦ 快速掌握清单</h2>
+  <div class="card">
+    <ol style="padding-left:20px;line-height:2.2;">
+      <li><input type="checkbox" style="margin-right:8px;">记住六步闭环：plan → 编码 → review → 测试 → diff → commit</li>
+      <li><input type="checkbox" style="margin-right:8px;">每次写完代码立即 review，不等积压</li>
+      <li><input type="checkbox" style="margin-right:8px;">build + test 不通过绝不提交</li>
+      <li><input type="checkbox" style="margin-right:8px;">commit message 写清楚做了什么</li>
+      <li><input type="checkbox" style="margin-right:8px;">别跳过 git diff——AI 可能改了你不打算改的文件</li>
+      <li><input type="checkbox" style="margin-right:8px;">小改动也要走流程，别侥幸</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ─── ⑧ 速查卡 ─── -->
+<section id="cheatsheet">
+  <h2>⑧ 速查卡</h2>
+  <div class="cheat-sheet">
+    <h2 style="font-size:1.2em;">日常工作流速查</h2>
+    <table style="color:#111;">
+      <tr><th style="color:#555;width:8%;">#</th><th style="color:#555;width:25%;">环节</th><th style="color:#555;">操作</th></tr>
+      <tr><td>①</td><td>plan</td><td>/plan [需求描述]</td></tr>
+      <tr><td>②</td><td>编码</td><td>确认计划 → AI 实现</td></tr>
+      <tr><td>③</td><td>审查</td><td>/code-review → 修复 HIGH 以上问题</td></tr>
+      <tr><td>④</td><td>测试</td><td>build + test → 必须通过</td></tr>
+      <tr><td>⑤</td><td>确认</td><td>git diff → 看所有改动</td></tr>
+      <tr><td>⑥</td><td>提交</td><td>git commit -m "feat: XX功能"</td></tr>
+    </table>
+    <p style="font-size:0.8em;margin-top:12px;color:#555;">💡 六步闭环 = 零事故开发</p>
+  </div>
+</section>
+
+<!-- ─── ⑨ 总结 ─── -->
+<section id="summary" class="summary-section">
+  <h2>⑨ 总结：最常用 & 最易错</h2>
+  <div class="summary-grid">
+    <div class="scene">
+      <h3>🎯 每天必做的 6 步</h3>
+      <ul>
+        <li><strong>/plan</strong> — 新功能/重构前做计划（2分钟）</li>
+        <li><strong>编码</strong> — AI 实现，你边看边纠正</li>
+        <li><strong>/code-review</strong> — 审查每个改动（3分钟，值！）</li>
+        <li><strong>build + test</strong> — 不通过不提交（2分钟）</li>
+        <li><strong>git diff</strong> — 扫一眼所有改动的文件（30秒）</li>
+        <li><strong>git commit</strong> — 写清楚信息，让 Claude 帮你写（1分钟）</li>
+      </ul>
+    </div>
+    <div class="mistake">
+      <h3>⚠️ 最常跳过的环节（也是出事最多的）</h3>
+      <ul>
+        <li><strong>跳过 code review</strong> — "AI 写的肯定没问题" → 最多 Bug</li>
+        <li><strong>跳过测试验证</strong> — "就改了两行不用跑" → 构建失败才发现</li>
+        <li><strong>跳过 git diff</strong> — "就改了一个文件" → AI 改了三个你不知道</li>
+        <li><strong>提交信息敷衍</strong> — "update" → 两周后你完全不知道这次改了什么</li>
+        <li><strong>小改动不走流程</strong> — "就改一行" → 改错了一行，炸了整个页面</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+  </div><!-- .paywall-content -->
+  <div class="paywall-fade"></div>
+  <div class="paywall-card">
+    <div class="lock-icon">🔒</div>
+    <h3>以下内容需付费解锁</h3>
+    <div class="locked-modules">⑥ 练习 · ⑦ 快速掌握 · ⑧ 速查卡 · ⑨ 总结</div>
+    <div class="paywall-actions">
+      <button class="paywall-btn paywall-btn-single">
+        <span class="price">¥5</span>
+        <span class="price-label">解锁本页全部内容</span>
+      </button>
+      <button class="paywall-btn paywall-btn-all">
+        <span class="price">¥99</span>
+        <span class="price-label">永久解锁全站 · 含进阶专家</span>
+      </button>
+    </div>
+  </div>
+</div><!-- .paywall-container -->
+
+<!-- ══════ ⑩ 考核 ══════ -->
+<section class="quiz-section" data-topic="workflow">
+  <div id="quiz-container"></div>
+</section>
+
+</div>
+
+<footer class="site-footer">
+  <p><a href="../index.html">← 返回首页</a></p>
+</footer>
+
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/paywall.js"></script>
+<script>renderPaywall('workflow');</script>
+<script src="../assets/js/common.js"></script>
+</body>
+</html>

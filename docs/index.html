@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code 学习站 — 从入门到精通的互动学习平台。79+命令、14个主题、3级学习路线，每条命令都有实战练习。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>Claude Code 学习站 — 从入门到精通</title>
+<link rel="stylesheet" href="assets/css/common.css">
+<link rel="stylesheet" href="assets/css/quiz.css">
+<style>
+  /* ── Hero ── */
+  .hero { padding: 80px 24px 64px; }
+  .hero h1 { max-width: 800px; margin: 0 auto 16px; }
+  .hero h1 .brand { color: var(--accent); }
+  .hero .subtitle { max-width: 580px; }
+  .hero .stats {
+    display: flex; justify-content: center; gap: 40px; margin-top: 32px;
+  }
+  .hero .stat { text-align: center; }
+  .hero .stat-num { font-size: 2em; font-weight: 800; color: var(--text-high); font-family: var(--font-mono); }
+  .hero .stat-label { font-size: 0.82em; color: var(--text-muted); margin-top: 4px; }
+
+  /* ── Level Section ── */
+  .level-section { margin: 80px 0; }
+  .level-header { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+  .level-icon {
+    width: 42px; height: 42px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2em; flex-shrink: 0;
+  }
+  .lv-beginner-header .level-icon { background: var(--lv-beginner-bg); color: var(--lv-beginner); }
+  .lv-intermediate-header .level-icon { background: var(--lv-intermediate-bg); color: var(--lv-intermediate); }
+  .lv-expert-header .level-icon { background: var(--lv-expert-bg); color: var(--lv-expert); }
+  .level-header h2 { border: none; padding: 0; margin: 0; }
+  .level-desc { color: var(--text-muted); font-size: 0.9em; margin-top: 4px; }
+
+  /* ── Topic Grid ── */
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+
+  /* ── Progress Bar ── */
+  .progress-bar-wrap {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 20px;
+    margin-bottom: 20px; display: flex; align-items: center; gap: 16px;
+  }
+  .progress-bar-wrap .pb-label {
+    font-size: 0.85em; font-weight: 700; white-space: nowrap;
+    color: var(--text-muted);
+  }
+  .progress-bar-wrap .pb-track {
+    flex: 1; height: 8px; background: var(--bg);
+    border-radius: 4px; overflow: hidden;
+  }
+  .progress-bar-wrap .pb-fill {
+    height: 100%; background: var(--lv-beginner);
+    border-radius: 4px; transition: width 0.5s var(--ease-out-expo);
+  }
+  .progress-bar-wrap .pb-count {
+    font-size: 0.85em; font-weight: 700; color: var(--text);
+    white-space: nowrap; font-family: var(--font-mono);
+  }
+  @media (max-width: 600px) {
+    .progress-bar-wrap { flex-wrap: wrap; gap: 8px; }
+  }
+
+  /* ── Payment Teaser ── */
+  .premium-teaser {
+    margin: 100px 0 60px;
+    text-align: center;
+    padding: 56px 24px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #161b22 50%, #1a1625 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    position: relative;
+    overflow: hidden;
+  }
+  .premium-teaser::before {
+    content: '';
+    position: absolute; top: -120px; right: -120px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(163, 113, 247, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .premium-teaser .premium-badge {
+    display: inline-block; padding: 4px 14px; border-radius: 20px;
+    font-size: 0.78em; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 20px;
+    background: var(--purple-dim); color: var(--purple);
+    border: 1px solid rgba(163, 113, 247, 0.3);
+  }
+  .premium-teaser h2 { border: none; font-size: 2em; position: relative; }
+  .premium-teaser .teaser-desc { color: var(--text-muted); max-width: 480px; margin: 12px auto 28px; }
+  .premium-teaser .feature-list {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 24px;
+    margin-bottom: 32px; position: relative;
+  }
+  .premium-teaser .feature-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.92em; color: var(--text);
+  }
+  .premium-teaser .feature-item .check { color: var(--purple); font-weight: 700; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .hero .stats { gap: 24px; }
+    .hero .stat-num { font-size: 1.4em; }
+    .topic-grid { grid-template-columns: 1fr; }
+    .premium-teaser { padding: 40px 20px; }
+    .premium-teaser h2 { font-size: 1.5em; }
+    .premium-teaser .feature-list { flex-direction: column; align-items: center; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════ NAV ══════════ -->
+<nav class="site-nav" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Claude Code <span>学习站</span></a>
+    <div class="nav-links" role="navigation" aria-label="页面导航">
+      <a href="index.html" class="active">首页</a>
+      <a href="#beginner">入门</a>
+      <a href="#intermediate">进阶</a>
+      <a href="#expert">专家</a>
+      <a href="#premium">付费课程</a>
+    </div>
+    <a href="pay/pay.html" class="nav-cta">升级</a>
+  </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<header class="hero">
+  <h1>掌握 <span class="brand">Claude Code</span><br>从第一次对话到生产力飞跃</h1>
+  <p class="subtitle">
+    分三级路线 · 8模块教学模板 · 每条命令都有实战练习。<br>
+    不用啃文档，直接上手。
+  </p>
+  <div class="badge-row">
+    <span class="badge lv-beginner">🌱 入门 — 15分钟上手</span>
+    <span class="badge lv-intermediate">⚡ 进阶 — 效率翻倍</span>
+    <span class="badge lv-expert">🚀 专家 — 自定义一切</span>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-num">79+</div><div class="stat-label">命令覆盖</div></div>
+    <div class="stat"><div class="stat-num">14</div><div class="stat-label">学习主题</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">能力等级</div></div>
+  </div>
+</header>
+
+<main class="container" role="main">
+
+<!-- ══════════ BEGINNER ══════════ -->
+<section class="level-section" id="beginner">
+  <div class="level-header lv-beginner-header">
+    <div class="level-icon">🌱</div>
+    <div>
+      <h2>入门 · 基础操作</h2>
+      <p class="level-desc">从安装到日常使用，15分钟上手 Claude Code</p>
+    </div>
+  </div>
+  <div class="progress-bar-wrap" id="beginner-progress">
+    <span class="pb-label">📊 学习进度</span>
+    <div class="pb-track"><div class="pb-fill" id="pb-fill" style="width:0%"></div></div>
+    <span class="pb-count" id="pb-count">0/6</span>
+  </div>
+  <div class="topic-grid">
+
+    <a href="beginner/claude-intro.html" class="topic-card lv-beginner card-link" data-topic="intro">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">📖</div>
+      <div class="level-tag">入门</div>
+      <h3>Claude Code 简介</h3>
+      <p>Claude Code 是什么、能做哪些事、和网页版 Claude 有什么区别</p>
+    </a>
+
+    <a href="beginner/plan-guide.html" class="topic-card lv-beginner card-link" data-topic="plan">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🗺️</div>
+      <div class="level-tag">入门</div>
+      <h3>/plan 命令完全指南</h3>
+      <p>从"知道这个命令"到"每次编码前自动使用"，深度掌握计划能力</p>
+    </a>
+
+    <a href="beginner/shortcuts.html" class="topic-card lv-beginner card-link" data-topic="shortcuts">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">⌨️</div>
+      <div class="level-tag">入门</div>
+      <h3>快捷键大全</h3>
+      <p>最常用的键盘快捷键，告别鼠标，操作快 3 倍</p>
+    </a>
+
+    <a href="beginner/conversation-skills.html" class="topic-card lv-beginner card-link" data-topic="convo">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">💬</div>
+      <div class="level-tag">入门</div>
+      <h3>对话技巧入门</h3>
+      <p>掌握"背景+目标+约束"万能公式，让 AI 一次就懂你的需求</p>
+    </a>
+
+    <a href="beginner/project-init.html" class="topic-card lv-beginner card-link" data-topic="init">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🏗️</div>
+      <div class="level-tag">入门</div>
+      <h3>项目初始化</h3>
+      <p>10分钟搭好新项目骨架，自动生成 CLAUDE.md 和完整配置</p>
+    </a>
+
+    <a href="beginner/daily-workflow.html" class="topic-card lv-beginner card-link" data-topic="workflow">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🔄</div>
+      <div class="level-tag">入门</div>
+      <h3>日常工作流</h3>
+      <p>plan → 编码 → review → 测试 → diff → commit，零事故开发闭环</p>
+    </a>
+
+  </div>
+</section>
+
+<!-- ══════════ INTERMEDIATE ══════════ -->
+<section class="level-section" id="intermediate">
+  <div class="level-header lv-intermediate-header">
+    <div class="level-icon">⚡</div>
+    <div>
+      <h2>进阶 · 效率翻倍</h2>
+      <p class="level-desc">掌握多代理、钩子、自定义技能，生产力再上一个台阶</p>
+    </div>
+  </div>
+  <div class="topic-grid">
+
+    <div class="topic-card lv-intermediate" style="opacity:0.45; pointer-events:none;">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🤖</div>
+      <div class="level-tag">进阶 · 即将上线</div>
+      <h3>多代理编排</h3>
+      <p>让多个 AI 代理并行工作：审查、测试、安全检查一步到位</p>
+    </div>
+
+    <div class="topic-card lv-intermediate" style="opacity:0.45; pointer-events:none;">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🪝</div>
+      <div class="level-tag">进阶 · 即将上线</div>
+      <h3>钩子系统</h3>
+      <p>用 hooks 自动执行格式化、类型检查、安全扫描</p>
+    </div>
+
+    <div class="topic-card lv-intermediate" style="opacity:0.45; pointer-events:none;">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🛠️</div>
+      <div class="level-tag">进阶 · 即将上线</div>
+      <h3>自定义技能</h3>
+      <p>创建自己的 skill，把重复工作变成一条命令</p>
+    </div>
+
+    <div class="topic-card lv-intermediate" style="opacity:0.45; pointer-events:none;">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🧠</div>
+      <div class="level-tag">进阶 · 即将上线</div>
+      <h3>记忆系统</h3>
+      <p>让 Claude Code 跨会话记住你的偏好和项目上下文</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ EXPERT ══════════ -->
+<section class="level-section" id="expert">
+  <div class="level-header lv-expert-header">
+    <div class="level-icon">🚀</div>
+    <div>
+      <h2>专家 · 自定义一切</h2>
+      <p class="level-desc">扩展 Claude Code 的边界，构建你自己的工具和系统</p>
+    </div>
+  </div>
+  <div class="topic-grid">
+
+    <div class="topic-card lv-expert" style="opacity:0.45; pointer-events:none;">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🔌</div>
+      <div class="level-tag">专家 · 即将上线</div>
+      <h3>MCP 服务器开发</h3>
+      <p>用 Model Context Protocol 接入外部 API 和数据库</p>
+    </div>
+
+    <div class="topic-card lv-expert" style="opacity:0.45; pointer-events:none;">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">⚙️</div>
+      <div class="level-tag">专家 · 即将上线</div>
+      <h3>工作流引擎</h3>
+      <p>编排复杂的多步骤自动化流程，用 workflow 驱动大项目</p>
+    </div>
+
+    <div class="topic-card lv-expert" style="opacity:0.45; pointer-events:none;">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🎭</div>
+      <div class="level-tag">专家 · 即将上线</div>
+      <h3>自定义代理</h3>
+      <p>创建专属 agent，为特定领域定制行为和安全策略</p>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════ PREMIUM TEASER ══════════ -->
+<section class="container" id="premium">
+  <div class="premium-teaser">
+    <div class="premium-badge">💰 付费方案</div>
+    <h2>入门免费看一半，解锁只需一杯咖啡钱</h2>
+    <p class="teaser-desc">
+      每个主题前 5 个模块免费阅读。⑥ 练习 · ⑦ 快速掌握 · ⑧ 速查卡 · ⑨ 总结 需付费解锁。
+    </p>
+    <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:24px 0;position:relative;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 28px;text-align:center;min-width:180px;">
+        <div style="font-size:1.8em;font-weight:800;color:var(--accent);">¥5</div>
+        <div style="font-size:0.85em;color:var(--text-muted);">单页解锁</div>
+      </div>
+      <div style="background:var(--purple-dim);border:2px solid var(--purple);border-radius:12px;padding:20px 28px;text-align:center;min-width:180px;position:relative;">
+        <div style="position:absolute;top:-12px;right:12px;background:var(--purple);color:#fff;padding:2px 10px;border-radius:10px;font-size:0.7em;font-weight:700;">推荐</div>
+        <div style="font-size:1.8em;font-weight:800;color:var(--purple);">¥99</div>
+        <div style="font-size:0.85em;color:var(--text-muted);">永久解锁全站</div>
+      </div>
+    </div>
+    <div class="feature-list">
+      <div class="feature-item"><span class="check">✓</span> 入门 6 主题完整内容</div>
+      <div class="feature-item"><span class="check">✓</span> 进阶 4 模块 + 专家 3 模块</div>
+      <div class="feature-item"><span class="check">✓</span> 实战项目源码 + 微信答疑群</div>
+    </div>
+    <a href="pay/pay.html?plan=all" class="btn btn-primary" style="font-size:1em; padding:14px 40px; background:var(--purple); border-color:var(--purple);">
+      ¥99 永久解锁 →
+    </a>
+    <p style="color:var(--text-faint); font-size:0.78em; margin-top:16px;">
+      每个主题前 5 个模块永久免费 · 无需注册
+    </p>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="site-footer">
+  <p>Claude Code 学习站 · 用实战的方式掌握 AI 编程</p>
+  <p style="margin-top:6px; font-size:0.9em;">内容持续更新中 · 有问题？在 GitHub 提 Issue</p>
+</footer>
+
+<script src="assets/js/quiz.js"></script>
+<script>
+// ── Apply lock/progress to homepage topic cards ──
+(function () {
+  var cards = document.querySelectorAll('.topic-card[data-topic]');
+  var passedCount = 0;
+  var totalCount = cards.length;
+
+  cards.forEach(function (card) {
+    var topicId = card.dataset.topic;
+    if (isTopicUnlockedByProgress(topicId)) {
+      // Check if passed
+      var quizState = getQuizState();
+      if (quizState[topicId] && quizState[topicId].passed) {
+        card.classList.add('has-passed');
+        var badge = document.createElement('span');
+        badge.className = 'passed-badge';
+        badge.textContent = '✅';
+        card.appendChild(badge);
+      }
+    } else {
+      card.classList.add('locked');
+      card.addEventListener('click', function (e) {
+        e.preventDefault();
+        var reason = getLockReason(topicId);
+        alert(reason || '请按顺序完成前面的课程考核');
+      });
+      // Cooldown badge
+      var cooldown = getCooldown();
+      var prevIdx = TOPIC_ORDER.indexOf(topicId) - 1;
+      if (prevIdx >= 0) {
+        var prevTopic = TOPIC_ORDER[prevIdx];
+        if (cooldown[prevTopic]) {
+          var remaining = new Date(cooldown[prevTopic]).getTime() - Date.now();
+          if (remaining > 0) {
+            var hours = Math.ceil(remaining / 3600000);
+            var badge = document.createElement('span');
+            badge.className = 'cooldown-badge';
+            badge.textContent = '⏳ ' + hours + 'h';
+            card.appendChild(badge);
+          }
+        }
+      }
+    }
+    // Count passed
+    if (quizState[topicId] && quizState[topicId].passed) passedCount++;
+  });
+
+  // Update progress bar
+  var pct = Math.round((passedCount / totalCount) * 100);
+  document.getElementById('pb-fill').style.width = pct + '%';
+  document.getElementById('pb-count').textContent = passedCount + '/' + totalCount;
+})();
+</script>
+<script src="assets/js/common.js"></script>
+</body>
+</html>

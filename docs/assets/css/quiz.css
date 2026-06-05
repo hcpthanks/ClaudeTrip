@@ -1,0 +1,306 @@
+/* ═══════════════════════════════════════════════════════
+   ⑩ 学习考核 — 题目 + 结果 + 冷却 + 手写模式
+   ═══════════════════════════════════════════════════════ */
+
+.quiz-section {
+  border-top: 2px solid var(--accent);
+  padding-top: var(--space-xl);
+  margin-top: var(--space-2xl);
+}
+
+/* ── Question Card ── */
+.quiz-q {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-md);
+}
+
+.quiz-q .q-num {
+  display: inline-block;
+  width: 26px; height: 26px; line-height: 26px;
+  border-radius: 50%; text-align: center;
+  background: var(--accent-dim); color: var(--accent);
+  font-weight: 700; font-size: 0.82em; margin-right: 8px;
+}
+
+.quiz-q .q-text {
+  font-weight: 600; font-size: 1em;
+  margin: var(--space-sm) 0 var(--space-md);
+}
+
+.quiz-options {
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.quiz-opt {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer; transition: all var(--duration-fast);
+  background: var(--bg); color: var(--text);
+  font-size: 0.92em; text-align: left;
+}
+
+.quiz-opt:hover {
+  border-color: var(--text-faint);
+}
+
+.quiz-opt.selected {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* Submitted states */
+.quiz-q.submitted .quiz-opt { cursor: default; pointer-events: none; }
+.quiz-opt.correct {
+  border-color: var(--green) !important;
+  background: var(--green-dim) !important;
+}
+
+.quiz-opt.wrong {
+  border-color: var(--red) !important;
+  background: var(--red-dim) !important;
+}
+
+/* ── Submit Button ── */
+.quiz-submit-wrap {
+  text-align: center; margin: var(--space-lg) 0;
+}
+
+.quiz-submit {
+  padding: 14px 48px; font-size: 1.05em;
+  font-weight: 700; border-radius: var(--radius-lg);
+  cursor: pointer; border: none;
+  background: var(--accent); color: #000;
+  transition: background var(--duration-fast);
+}
+
+.quiz-submit:hover { background: #79b8ff; }
+.quiz-submit:disabled {
+  opacity: 0.4; cursor: not-allowed;
+}
+
+/* ── Retry Link ── */
+.quiz-retry {
+  text-align: center; margin-top: var(--space-sm);
+}
+
+.quiz-retry a {
+  color: var(--text-muted); font-size: 0.85em;
+  text-decoration: underline;
+}
+
+.quiz-retry a:hover { color: var(--accent); }
+
+/* ── Results Panel ── */
+.quiz-result {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl); text-align: center;
+  margin: var(--space-lg) 0;
+  display: none;
+}
+
+.quiz-result.show { display: block; }
+
+.quiz-result.passed {
+  border-color: var(--green);
+}
+
+.quiz-result.failed {
+  border-color: var(--orange);
+}
+
+.quiz-result .result-icon { font-size: 2.5em; margin-bottom: 8px; }
+.quiz-result .result-title { font-size: 1.3em; font-weight: 700; margin-bottom: 4px; }
+.quiz-result .result-score { color: var(--text-muted); font-size: 0.95em; margin-bottom: 20px; }
+
+.quiz-result .result-next {
+  display: inline-block; padding: 12px 32px;
+  background: var(--green); color: #000;
+  border-radius: var(--radius); font-weight: 700;
+  text-decoration: none; font-size: 0.95em;
+  transition: background var(--duration-fast);
+}
+
+.quiz-result .result-next:hover { background: #4cc960; }
+
+/* ── Cooldown Options ── */
+.cooldown-options {
+  margin-top: var(--space-lg);
+  text-align: left;
+}
+
+.cooldown-options h3 {
+  text-align: center; margin-bottom: var(--space-md);
+  font-size: 1em; color: var(--text-muted);
+}
+
+.cooldown-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+@media (max-width: 600px) {
+  .cooldown-grid { grid-template-columns: 1fr; }
+}
+
+.cooldown-opt {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  cursor: pointer;
+  transition: all var(--duration-fast);
+  text-align: center;
+}
+
+.cooldown-opt:hover {
+  border-color: var(--text-faint);
+}
+
+.cooldown-opt.selected {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.cooldown-opt .co-icon { font-size: 1.4em; margin-bottom: 4px; }
+.cooldown-opt .co-label { font-weight: 700; font-size: 0.95em; }
+.cooldown-opt .co-desc { color: var(--text-muted); font-size: 0.8em; margin-top: 2px; }
+
+.cooldown-opt.recommend {
+  position: relative;
+}
+
+.cooldown-opt.recommend::after {
+  content: '推荐';
+  position: absolute; top: -10px; right: 12px;
+  background: var(--green); color: #000;
+  padding: 2px 10px; border-radius: 10px;
+  font-size: 0.7em; font-weight: 700;
+}
+
+/* ── Handwriting Mode ── */
+.handwrite-area {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-top: var(--space-md);
+  display: none;
+}
+
+.handwrite-area.show { display: block; }
+
+.handwrite-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  line-height: 2;
+}
+
+.handwrite-content h4 {
+  color: var(--accent); margin-bottom: 6px;
+  font-size: 0.95em;
+}
+
+.handwrite-content ol {
+  padding-left: 20px; font-size: 0.92em;
+}
+
+.photo-upload {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg); text-align: center;
+  margin-bottom: var(--space-md);
+  cursor: pointer;
+  transition: border-color var(--duration-fast);
+}
+
+.photo-upload:hover { border-color: var(--accent); }
+
+.photo-upload .pu-icon { font-size: 2em; margin-bottom: 4px; }
+.photo-upload .pu-text { color: var(--text-muted); font-size: 0.88em; }
+.photo-upload .pu-hint { color: var(--text-faint); font-size: 0.75em; margin-top: 4px; }
+
+.photo-upload.done {
+  border-color: var(--green);
+  border-style: solid;
+}
+
+.photo-preview {
+  max-width: 200px; max-height: 150px;
+  border-radius: var(--radius-sm); margin-top: 8px;
+  display: none;
+}
+
+.photo-preview.show { display: inline-block; }
+
+.handwrite-submit {
+  width: 100%; padding: 12px;
+  background: var(--green); color: #000;
+  border: none; border-radius: var(--radius);
+  font-weight: 700; font-size: 0.95em; cursor: pointer;
+  transition: background var(--duration-fast);
+}
+
+.handwrite-submit:hover { background: #4cc960; }
+.handwrite-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Pay link in cooldown ── */
+.cooldown-pay {
+  display: block; text-align: center; padding: 12px;
+  border: 2px solid var(--purple); border-radius: var(--radius);
+  color: var(--purple); font-weight: 700; text-decoration: none;
+  transition: all var(--duration-fast);
+}
+
+.cooldown-pay:hover {
+  background: var(--purple-dim);
+  color: #b380f8;
+}
+
+/* ── Lock icon on homepage cards ── */
+.topic-card.locked {
+  position: relative;
+}
+
+.topic-card.locked::before {
+  content: '🔒';
+  position: absolute; top: 14px; right: 14px;
+  font-size: 1.2em; z-index: 2;
+}
+
+.topic-card.locked .topic-icon,
+.topic-card.locked h3,
+.topic-card.locked p {
+  opacity: 0.5;
+}
+
+.topic-card.locked:hover {
+  border-color: var(--orange);
+}
+
+.topic-card .cooldown-badge {
+  display: none; position: absolute; bottom: 12px; right: 12px;
+  background: var(--orange-dim); color: var(--orange);
+  padding: 2px 10px; border-radius: 10px; font-size: 0.7em;
+  font-weight: 700; z-index: 2;
+}
+
+.topic-card.locked .cooldown-badge { display: block; }
+
+.topic-card .passed-badge {
+  display: none; position: absolute; top: 14px; right: 14px;
+  color: var(--green); font-size: 1.2em; z-index: 2;
+}
+
+.topic-card.has-passed .passed-badge { display: block; }

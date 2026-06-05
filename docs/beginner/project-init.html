@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="用 Claude Code 10分钟搭好新项目：三种创建方式、CLAUDE.md 自动生成、完整配置一键生成。从零到可运行项目的标准流程。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>项目初始化 — 入门</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/paywall.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('init'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>🏗️ 项目初始化</h1>
+  <p class="subtitle">用 Claude Code 10分钟搭好一个新项目的完整骨架</p>
+</header>
+
+<div class="container" role="main">
+
+<nav class="module-nav">
+  <a href="#core">① 核心理解</a>
+  <a href="#modes">② 三种方式</a>
+  <a href="#scenarios">③ 实战场景</a>
+  <a href="#good-bad">④ 好 vs 烂</a>
+  <a href="#workflow">⑤ 标准流程</a>
+  <a href="#practice">⑥ 练习</a>
+  <a href="#quick">⑦ 快速掌握</a>
+  <a href="#cheatsheet">⑧ 速查卡</a>
+  <a href="#summary">⑨ 总结</a>
+</nav>
+
+<!-- ─── ① 核心理解 ─── -->
+<section id="core">
+  <h2>① Claude Code 怎么帮你初始化项目</h2>
+
+  <div class="card">
+    <h3>一句话</h3>
+    <p style="font-size:1.15em;font-weight:700;color:var(--accent);">
+      Claude Code 可以帮你一次生成完整的项目结构——不仅仅是文件，还包括配置文件、依赖、README、测试框架。
+    </p>
+  </div>
+
+  <div class="info">
+    <strong>关键认知：</strong>手工搭项目要 1-2 小时：创建目录、写 package.json、配 ESLint、装依赖、建文件夹结构……Claude Code 一句命令全搞定。但它生成的配置你需要检查——不是因为它会出错，而是有些选择要你自己确认。
+  </div>
+
+  <h3>Claude Code 能初始化什么</h3>
+  <div class="topic-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:16px 0;">
+    <div class="topic-card lv-beginner">
+      <div class="level-stripe"></div>
+      <h3>📦 项目脚手架</h3>
+      <p>React / Vue / Next.js / FastAPI / Express……任何框架的项目骨架</p>
+    </div>
+    <div class="topic-card lv-beginner">
+      <div class="level-stripe"></div>
+      <h3>⚙️ 配置文件</h3>
+      <p>ESLint、Prettier、tsconfig、.gitignore、CLAUDE.md 一次生成</p>
+    </div>
+    <div class="topic-card lv-beginner">
+      <div class="level-stripe"></div>
+      <h3>📁 目录结构</h3>
+      <p>按最佳实践组织文件夹，src/、tests/、docs/ 层次清晰</p>
+    </div>
+    <div class="topic-card lv-beginner">
+      <div class="level-stripe"></div>
+      <h3>🧪 测试框架</h3>
+      <p>Jest / Vitest / pytest 配置 + 第一个示例测试</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ② 三种方式 ─── -->
+<section id="modes">
+  <h2>② 启动新项目的三种方式</h2>
+
+  <div class="card">
+    <h3>方式一：从零生成（最灵活）</h3>
+    <div class="code-block">帮我创建一个 React + TypeScript + Vite 项目。
+要求：ESLint用airbnb风格，测试用Vitest，
+目录结构：src/components/ src/hooks/ src/lib/ tests/</div>
+    <p>Claude 会逐文件创建：package.json、vite.config.ts、tsconfig.json、src/ 目录树、一个示例组件 + 测试。</p>
+  </div>
+
+  <div class="card">
+    <h3>方式二：克隆模板后定制（最快）</h3>
+    <div class="code-block"><span style="color:var(--text-muted);"># 先用 create-vite 生成骨架</span>
+npm create vite@latest my-app -- --template react-ts
+<span style="color:var(--text-muted);"># 再让 Claude 按你的需求定制</span>
+claude
+&gt; 我刚用 create-vite 建了项目，帮我加 Tailwind、Vitest 和 CLAUDE.md</div>
+  </div>
+
+  <div class="card">
+    <h3>方式三：从已有项目复制结构（最省心）</h3>
+    <div class="code-block">&gt; 参考 everything-claude-code 的项目结构，帮我创建一个新项目。
+技术栈换成 FastAPI + SQLAlchemy，目录结构类似。</div>
+    <p>给一个参考项目路径，Claude 会学习它的结构并适配到新技术栈。</p>
+  </div>
+</section>
+
+<!-- ─── ③ 实战场景 ─── -->
+<section id="scenarios">
+  <h2>③ 初始化项目时别漏了 CLAUDE.md</h2>
+
+  <div class="card">
+    <h3>CLAUDE.md 是 Claude Code 的"项目说明书"</h3>
+    <p>放在项目根目录，Claude 每次启动会自动读取。它告诉 Claude：</p>
+    <ul style="padding-left:20px;line-height:2;margin-top:8px;">
+      <li>项目的技术栈和框架版本</li>
+      <li>目录结构说明（哪个目录放什么）</li>
+      <li>编码规范（命名、格式化、测试要求）</li>
+      <li>常用命令（build、test、lint）</li>
+    </ul>
+  </div>
+
+  <div class="code-block"><span style="color:var(--text-muted);"># CLAUDE.md 示例片段</span>
+## Tech Stack
+- Next.js 14 (App Router) + TypeScript
+- Prisma ORM + PostgreSQL
+- Tailwind CSS + shadcn/ui
+
+## Commands
+- Build: `pnpm build`
+- Test: `pnpm test -- --coverage`
+- Lint: `pnpm lint`
+
+## Conventions
+- 组件用 PascalCase，文件同名
+- 每个组件要有 loading/error 状态
+- API 返回统一用 { success, data, error } 格式</div>
+
+  <div class="tip">创建 CLAUDE.md 最简单的方法：项目搭好后说 <strong>"帮我写一份 CLAUDE.md"</strong>，Claude 会扫描项目结构自动生成。</div>
+</section>
+
+<!-- ─── ④ 好 vs 烂 ─── -->
+<section id="good-bad">
+  <h2>④ 好 vs 烂：初始化项目的常见坑</h2>
+
+  <table>
+    <tr><th></th><th class="bad">❌ 烂</th><th class="good">✅ 好</th></tr>
+    <tr>
+      <td>需求描述</td>
+      <td class="bad">"帮我搭个项目"</td>
+      <td class="good">"React+TS+Vite，ESLint airbnb，Vitest"</td>
+    </tr>
+    <tr>
+      <td>配置文件</td>
+      <td class="bad">全部接受默认值</td>
+      <td class="good">逐一检查 tsconfig、ESLint 规则是否符合团队规范</td>
+    </tr>
+    <tr>
+      <td>CLAUDE.md</td>
+      <td class="bad">跳过不写</td>
+      <td class="good">搭完就让 Claude 生成，是第一优先级</td>
+    </tr>
+    <tr>
+      <td>目录结构</td>
+      <td class="bad">让 Claude 自由发挥</td>
+      <td class="good">先说你想要的目录结构，参考已有项目</td>
+    </tr>
+    <tr>
+      <td>验证</td>
+      <td class="bad">创建完就不管了</td>
+      <td class="good">立刻 npm install + npm run build 验证能跑</td>
+    </tr>
+  </table>
+
+  <div class="warn">
+    <strong>最常见的翻车：</strong>Claude 创建了一堆文件，你没立刻验证，过了两天才发现项目跑不起来——那时候上下文早丢了，排查成本翻倍。创建完第一件事：<strong>跑一遍 build 和 test</strong>。
+  </div>
+</section>
+
+<!-- ─── ⑤ 标准流程 ─── -->
+<section id="workflow">
+  <h2>⑤ 标准初始化流程</h2>
+
+  <div class="workflow" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:16px 0;overflow-x:auto;">
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">描述需求</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">技术栈+规范</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">生成骨架</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">Claude写文件</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">验证构建</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">build+test</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">生成CLAUDE.md</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">项目说明书</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">git init</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">初始化仓库</div>
+    </div>
+  </div>
+
+  <div class="tip">项目初始化完成后别忘了 <strong>git init + 首次 commit</strong>。Claude 可以帮你写 .gitignore 和首次 commit message。</div>
+</section>
+
+<!-- ══════ 付费墙 ══════ -->
+<div class="paywall-container" data-topic="init">
+  <div class="paywall-content">
+
+<!-- ─── ⑥ 练习 ─── -->
+<section id="practice">
+  <h2>⑥ 动手练习</h2>
+
+  <div class="card">
+    <p><strong>练习 1：</strong>用 Claude Code 创建一个最简单的项目：</p>
+    <div class="code-block" style="cursor:pointer;">帮我创建一个纯 HTML+CSS+JS 的待办事项应用（Todo App）。
+目录：todo-app/
+要求：index.html + style.css + app.js，能添加、勾选、删除任务
+数据存 localStorage，不用任何框架</div>
+    <p style="margin-top:8px;">观察 Claude 创建了几个文件、文件内容的结构是否合理。</p>
+  </div>
+
+  <div class="card">
+    <p><strong>练习 2：</strong>给上面的项目加上 CLAUDE.md：</p>
+    <div class="code-block" style="cursor:pointer;">帮我给 todo-app 生成一份 CLAUDE.md</div>
+    <p style="margin-top:8px;">看看 Claude 写了什么——是不是准确反映了项目结构？</p>
+  </div>
+</section>
+
+<!-- ─── ⑦ 快速掌握 ─── -->
+<section id="quick">
+  <h2>⑦ 快速掌握清单</h2>
+  <div class="card">
+    <ol style="padding-left:20px;line-height:2.2;">
+      <li><input type="checkbox" style="margin-right:8px;">描述项目时至少说：框架 + 语言 + 构建工具 + 测试框架</li>
+      <li><input type="checkbox" style="margin-right:8px;">创建完立刻 npm install + build，验证能跑</li>
+      <li><input type="checkbox" style="margin-right:8px;">第一时间生成 CLAUDE.md</li>
+      <li><input type="checkbox" style="margin-right:8px;">检查生成的配置文件是否符合你的习惯</li>
+      <li><input type="checkbox" style="margin-right:8px;">git init + 首次提交，别等写了功能代码再提交</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ─── ⑧ 速查卡 ─── -->
+<section id="cheatsheet">
+  <h2>⑧ 速查卡</h2>
+  <div class="cheat-sheet">
+    <h2 style="font-size:1.2em;">项目初始化速查</h2>
+    <table style="color:#111;">
+      <tr><th style="color:#555;width:30%;">步骤</th><th style="color:#555;">操作</th></tr>
+      <tr><td>1. 描述需求</td><td>"帮我创建XX项目，技术栈：YY"</td></tr>
+      <tr><td>2. 验证构建</td><td>npm install && npm run build</td></tr>
+      <tr><td>3. 检查配置</td><td>逐一检查 tsconfig、ESLint、prettier</td></tr>
+      <tr><td>4. 生成说明</td><td>"帮我写一份 CLAUDE.md"</td></tr>
+      <tr><td>5. 初始化 Git</td><td>git init && git add -A && git commit</td></tr>
+    </table>
+    <p style="font-size:0.8em;margin-top:12px;color:#555;">💡 项目创建完第一件事永远是验证它能跑</p>
+  </div>
+</section>
+
+<!-- ─── ⑨ 总结 ─── -->
+<section id="summary" class="summary-section">
+  <h2>⑨ 总结：最常用 & 最易错</h2>
+  <div class="summary-grid">
+    <div class="scene">
+      <h3>🎯 最常用命令</h3>
+      <ul>
+        <li><strong>从零创建</strong> — "帮我创建一个 [框架]+[语言] 项目，用 [规范]"</li>
+        <li><strong>加配置文件</strong> — "帮我加 ESLint、Prettier 和 tsconfig"</li>
+        <li><strong>生成 CLAUDE.md</strong> — "帮我写一份 CLAUDE.md"</li>
+        <li><strong>参考已有项目</strong> — "参考 XX 项目的结构，创建新技术栈的新项目"</li>
+        <li><strong>补全缺失</strong> — "帮我检查项目还缺什么配置文件"</li>
+      </ul>
+    </div>
+    <div class="mistake">
+      <h3>⚠️ 最常犯错误</h3>
+      <ul>
+        <li><strong>描述太模糊</strong> — "搭个项目" → Claude 不知道你要什么框架</li>
+        <li><strong>建完不验证</strong> — 没跑 build，过两天发现项目根本跑不起来</li>
+        <li><strong>不写 CLAUDE.md</strong> — 浪费了 Claude Code 最核心的上下文能力</li>
+        <li><strong>不检查生成配置</strong> — ESLint 规则可能跟你团队规范有冲突</li>
+        <li><strong>不初始化 git</strong> — 写了半天功能代码才发现还没 init</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+  </div><!-- .paywall-content -->
+  <div class="paywall-fade"></div>
+  <div class="paywall-card">
+    <div class="lock-icon">🔒</div>
+    <h3>以下内容需付费解锁</h3>
+    <div class="locked-modules">⑥ 练习 · ⑦ 快速掌握 · ⑧ 速查卡 · ⑨ 总结</div>
+    <div class="paywall-actions">
+      <button class="paywall-btn paywall-btn-single">
+        <span class="price">¥5</span>
+        <span class="price-label">解锁本页全部内容</span>
+      </button>
+      <button class="paywall-btn paywall-btn-all">
+        <span class="price">¥99</span>
+        <span class="price-label">永久解锁全站 · 含进阶专家</span>
+      </button>
+    </div>
+  </div>
+</div><!-- .paywall-container -->
+
+<!-- ══════ ⑩ 考核 ══════ -->
+<section class="quiz-section" data-topic="init">
+  <div id="quiz-container"></div>
+</section>
+
+</div>
+
+<footer class="site-footer">
+  <p><a href="../index.html">← 返回首页</a></p>
+</footer>
+
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/paywall.js"></script>
+<script>renderPaywall('init');</script>
+<script src="../assets/js/common.js"></script>
+</body>
+</html>
