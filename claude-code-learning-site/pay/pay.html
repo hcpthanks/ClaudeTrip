@@ -41,10 +41,13 @@
     padding: 28px 40px; margin: 20px 0 28px;
     background: #fff; border-radius: var(--radius-lg);
     border: 2px solid var(--border);
+    min-width: 280px; min-height: 260px; justify-content: center;
   }
+  .qr-placeholder img { display: block; border-radius: 4px; }
   .qr-placeholder .qr-icon { font-size: 4em; margin-bottom: 12px; }
   .qr-placeholder .qr-text { color: #333; font-size: 0.9em; font-weight: 600; }
   .qr-placeholder .qr-hint { color: #999; font-size: 0.78em; margin-top: 6px; }
+  .qr-error { color: var(--orange); text-align: center; padding: 20px; }
 
   .pay-footer-note { color: var(--text-faint); font-size: 0.8em; margin-top: 24px; line-height: 1.5; }
 
@@ -83,62 +86,90 @@
 
 <script src="../assets/js/nav.js"></script>
 <script>
+// ═══════════════════════════════════════════════
+// 支付配置 — 商户号下来后把 mode 改成 'real'
+// ═══════════════════════════════════════════════
+var PAYMENT_CONFIG = {
+  mode: 'sim',                              // 'sim' | 'real'
+  apiBase: 'https://你的域名.vercel.app',    // Vercel 部署后换成真实域名
+  pollInterval: 2000,                       // 轮询间隔（毫秒）
+  pollTimeout: 300000,                      // 轮询超时（5 分钟）
+};
+
 // ── Resolve payment plan from URL params ──
-const params = new URLSearchParams(window.location.search);
-const plan = params.get('plan') || 'all';      // 'single' or 'all'
-const from  = params.get('topic') || params.get('from') || '';
+var params = new URLSearchParams(window.location.search);
+var plan = params.get('plan') || 'all';
+var from  = params.get('topic') || params.get('from') || '';
 
-const TOPIC_LABELS = window.TOPIC_NAMES;
+var TOPIC_LABELS = window.TOPIC_NAMES || {};
 
-const isForce   = plan === 'force';
-const isSingle  = plan === 'single';
-const price     = isForce ? 1 : (isSingle ? 5 : 99);
-const title     = isForce ? '⚡ 强制解锁下一课' : (isSingle ? '📄 解锁单页内容' : '⭐ 永久解锁全站');
-const subtitle  = isForce
+var isForce  = plan === 'force';
+var isSingle = plan === 'single';
+var price    = isForce ? 1 : (isSingle ? 5 : 99);
+var title    = isForce ? '⚡ 强制解锁下一课' : (isSingle ? '📄 解锁单页内容' : '⭐ 永久解锁全站');
+var subtitle = isForce
   ? '跳过冷却等待，立即解锁「' + (TOPIC_LABELS[from] || '本课') + '」的下一主题'
   : (isSingle
     ? '解锁「' + (TOPIC_LABELS[from] || '本页') + '」的全部内容'
     : '一次购买，永久有效 · 内容持续更新');
-const items = isForce
+var items = isForce
   ? ['跳过考核冷却期（1天/3天等待）','立即解锁下一主题课程','手写 2 遍也能免费解锁——但花钱省时间']
   : (isSingle
     ? ['本页 ⑥ 练习 · ⑦ 快速掌握 · ⑧ 速查卡 · ⑨ 总结','永久可看，不受后续更新影响']
     : ['入门全部 6 个主题完整内容','进阶 4 模块：多代理 · 钩子 · 自定义技能 · 记忆系统','专家 3 模块：MCP 服务器 · 工作流引擎 · 自定义代理','实战项目源码 + 深度视频讲解','微信答疑群（一对一指导）','永久更新，不再付费']);
 
-document.getElementById('pay-card').innerHTML =
-  '<h1>' + title + '</h1>' +
-  '<p class="sub">' + subtitle + '</p>' +
-  '<div class="course-summary">' +
-    '<h3>包含内容</h3>' +
-    '<ul>' + items.map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul>' +
-  '</div>' +
-  '<div class="price-block">' +
-    '<div class="amount"><span class="yen">¥</span>' + price + '</div>' +
-    '<div class="note">' +
-      (isForce
-        ? '也可通过手写 2 遍或等待 1-3 天免费解锁'
-        : (isSingle
-          ? '每个主题 ①-⑤ 模块永久免费'
-          : '入门 6 个主题 ①-⑤ 模块永久免费')) +
-    '</div>' +
-  '</div>' +
-  '<div class="qr-placeholder">' +
+// ── QR 区域（根据模式动态渲染） ──
+function renderQR(mode, qrUrl) {
+  if (mode === 'real' && qrUrl) {
+    return '<div class="qr-placeholder" style="background:#fff;">' +
+      '<img src="' + qrUrl + '" alt="微信扫码支付" style="width:240px;height:240px;display:block;">' +
+      '<div class="qr-text" style="margin-top:12px;">微信扫码支付 ¥' + price + '</div>' +
+      '<div class="qr-hint" id="qr-status">等待支付…</div>' +
+      '</div>';
+  }
+  // Sim 模式 — 占位 UI
+  return '<div class="qr-placeholder">' +
     '<div class="qr-icon">📱</div>' +
     '<div class="qr-text">微信扫码支付</div>' +
     '<div class="qr-hint">（商户号申请中，暂用下方按钮模拟）</div>' +
-  '</div>' +
-  '<button class="btn btn-success" style="font-size:1em;padding:14px 40px;margin-top:12px;" id="sim-pay">' +
-     '模拟支付 ¥' + price + ' →' +
-  '</button>' +
-  '<p class="pay-footer-note">' +
-    '支付成功后自动解锁。如有问题，请微信联系我们。' +
-  '</p>';
+    '</div>';
+}
 
-document.getElementById('sim-pay').addEventListener('click', function() {
-  // ── Payment log (real data, since day one) ──
+// ── 按钮区域 ──
+function renderButton(mode, polling) {
+  if (mode === 'real' && polling) {
+    return '<p style="color:var(--text-muted);margin-top:16px;">⏳ 等待支付确认中…</p>' +
+      '<button class="btn" style="font-size:0.9em;padding:10px 28px;margin-top:8px;opacity:0.7;" id="sim-pay">' +
+        '改用模拟支付 ¥' + price + ' →' +
+      '</button>';
+  }
+  if (mode === 'real') {
+    return '<button class="btn btn-success" style="font-size:1em;padding:14px 40px;margin-top:12px;" id="retry-pay">' +
+      '🔄 重新生成二维码' +
+      '</button>' +
+      '<p class="pay-footer-note" style="margin-top:12px;">' +
+        '扫码后等待几秒自动跳转。如遇问题请联系我们。' +
+      '</p>';
+  }
+  // Sim 模式
+  return '<button class="btn btn-success" style="font-size:1em;padding:14px 40px;margin-top:12px;" id="sim-pay">' +
+     '模拟支付 ¥' + price + ' →' +
+   '</button>' +
+   '<p class="pay-footer-note">' +
+     '支付成功后自动解锁。如有问题，请微信联系我们。' +
+   '</p>';
+}
+
+// ── 保存支付日志 ──
+function logPayment() {
   var payLog = JSON.parse(localStorage.getItem('cc-payment-log') || '[]');
   payLog.push({ plan: plan, topic: from, price: price, date: new Date().toISOString() });
   localStorage.setItem('cc-payment-log', JSON.stringify(payLog));
+}
+
+// ── 模拟支付（Sim 模式） ──
+function simPay() {
+  logPayment();
 
   if (plan === 'all') {
     localStorage.setItem('cc-learn-all-access', 'true');
@@ -151,7 +182,197 @@ document.getElementById('sim-pay').addEventListener('click', function() {
   } else {
     window.location.href = 'success.html?plan=single&topic=' + encodeURIComponent(from);
   }
-});
+}
+
+// ── XSS 防护：HTML 转义 ──
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
+
+// ── 安全设置 QR 占位区内容（避免 innerHTML XSS） ──
+function setQRContent(el, html) {
+  el.innerHTML = html; // 仅用于静态内容（无用户输入）
+}
+function setQRError(el, message) {
+  el.innerHTML = ''; // 清空
+  var errDiv = document.createElement('div');
+  errDiv.style.cssText = 'padding:40px;color:var(--orange);';
+  errDiv.textContent = '❌ 下单失败: ' + message;
+  el.appendChild(errDiv);
+}
+function setQRImage(el, qrUrl) {
+  el.innerHTML = ''; // 清空，避免残留
+  var img = document.createElement('img');
+  img.src = qrUrl;
+  img.alt = '微信扫码支付';
+  img.style.cssText = 'width:240px;height:240px;display:block;margin:0 auto;';
+  el.appendChild(img);
+
+  var textDiv = document.createElement('div');
+  textDiv.className = 'qr-text';
+  textDiv.style.marginTop = '12px';
+  textDiv.textContent = '微信扫码支付 ¥' + price;
+  el.appendChild(textDiv);
+
+  var hintDiv = document.createElement('div');
+  hintDiv.className = 'qr-hint';
+  hintDiv.id = 'qr-status';
+  hintDiv.textContent = '等待支付…';
+  el.appendChild(hintDiv);
+}
+
+// ── 真实支付流程 ──
+var currentOrderNo = null;
+var pollTimer = null;
+var pollStart = 0;
+
+function startRealPayment() {
+  var payCard = document.getElementById('pay-card');
+  setQRContent(payCard.querySelector('.qr-placeholder'),
+    '<div style="padding:40px;color:var(--text-muted);">⏳ 正在生成支付二维码…</div>');
+
+  fetch(PAYMENT_CONFIG.apiBase + '/api/create-order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ plan: plan, topicId: from || null, price: price * 100 }),
+  })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!data.success || !data.orderNo || !data.qrCode) {
+        setQRError(payCard.querySelector('.qr-placeholder'), data.error || '服务器返回异常');
+        return;
+      }
+
+      currentOrderNo = data.orderNo;
+
+      // 安全设置 QR 图片（用 img.src 而非 innerHTML 拼接）
+      setQRImage(payCard.querySelector('.qr-placeholder'), data.qrCode);
+
+      // 更新按钮区
+      var btnArea = payCard.querySelector('#btn-area');
+      btnArea.innerHTML = renderButton('real', true);
+
+      // 绑定"改用模拟"按钮
+      var simBtn = document.getElementById('sim-pay');
+      if (simBtn) {
+        simBtn.addEventListener('click', function() {
+          stopPolling();
+          simPay();
+        });
+      }
+
+      // 开始轮询
+      pollStart = Date.now();
+      startPolling();
+    })
+    .catch(function(err) {
+      setQRError(payCard.querySelector('.qr-placeholder'), err.message || '网络错误');
+    });
+}
+
+function startPolling() {
+  stopPolling();
+
+  pollTimer = setInterval(function() {
+    // 超时检查
+    if (Date.now() - pollStart > PAYMENT_CONFIG.pollTimeout) {
+      stopPolling();
+      var statusEl = document.getElementById('qr-status');
+      if (statusEl) statusEl.textContent = '⏰ 支付超时，请重新生成二维码';
+      return;
+    }
+
+    fetch(PAYMENT_CONFIG.apiBase + '/api/check-order?orderNo=' + currentOrderNo)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.status === 'paid') {
+          stopPolling();
+          logPayment();
+
+          // 保存激活码到 localStorage（以码为 key，与 recovery.js 格式一致）
+          if (data.code) {
+            var codes = JSON.parse(localStorage.getItem('cc-activation-codes') || '{}');
+            codes[data.code] = {
+              type: data.plan === 'all' ? 'all' : 'single',
+              topicId: data.topicId || '',
+              ts: Date.now()
+            };
+            localStorage.setItem('cc-activation-codes', JSON.stringify(codes));
+          }
+
+          // 解锁
+          if (data.plan === 'all') {
+            localStorage.setItem('cc-learn-all-access', 'true');
+          } else if (data.plan === 'force') {
+            // force 解锁需同时更新 quiz 状态（与 simPay 行为一致）
+            var quizState = JSON.parse(localStorage.getItem('cc-learn-quiz') || '{}');
+            quizState[data.topicId] = {
+              score: 0, total: 5, passed: true,
+              date: new Date().toISOString(), forceUnlocked: true
+            };
+            localStorage.setItem('cc-learn-quiz', JSON.stringify(quizState));
+          }
+
+          window.location.href = 'success.html?plan=' + encodeURIComponent(data.plan) +
+            (data.topicId ? '&topic=' + encodeURIComponent(data.topicId) : '') +
+            (data.code ? '&code=' + encodeURIComponent(data.code) : '');
+        }
+      })
+      .catch(function() {
+        // 轮询失败静默跳过，下次继续
+      });
+  }, PAYMENT_CONFIG.pollInterval);
+}
+
+function stopPolling() {
+  if (pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
+}
+
+// ── 渲染页面 ──
+(function() {
+  var mode = PAYMENT_CONFIG.mode;
+  var payCard = document.getElementById('pay-card');
+
+  payCard.innerHTML =
+    '<h1>' + title + '</h1>' +
+    '<p class="sub">' + subtitle + '</p>' +
+    '<div class="course-summary">' +
+      '<h3>包含内容</h3>' +
+      '<ul>' + items.map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul>' +
+    '</div>' +
+    '<div class="price-block">' +
+      '<div class="amount"><span class="yen">¥</span>' + price + '</div>' +
+      '<div class="note">' +
+        (isForce
+          ? '也可通过手写 2 遍或等待 1-3 天免费解锁'
+          : (isSingle
+            ? '每个主题 ①-⑤ 模块永久免费'
+            : '入门 6 个主题 ①-⑤ 模块永久免费')) +
+      '</div>' +
+    '</div>' +
+    renderQR(mode, null) +
+    '<div id="btn-area">' + renderButton(mode, false) + '</div>';
+
+  // 绑定按钮
+  var simBtn = document.getElementById('sim-pay');
+  if (simBtn) {
+    simBtn.addEventListener('click', simPay);
+  }
+  var retryBtn = document.getElementById('retry-pay');
+  if (retryBtn) {
+    retryBtn.addEventListener('click', startRealPayment);
+  }
+
+  // 真实模式：自动触发下单
+  if (mode === 'real') {
+    startRealPayment();
+  }
+})();
 </script>
 <script src="../assets/js/common.js"></script>
 </body>

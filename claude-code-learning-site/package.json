@@ -1,0 +1,12 @@
+{
+  "name": "claude-code-learning-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Claude Code 学习站 — 纯静态 + Vercel Functions 支付后端",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  }
+}
