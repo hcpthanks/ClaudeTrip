@@ -109,6 +109,25 @@
       <p style="color:var(--green);font-family:var(--font-mono);font-size:0.9em;">"在 app/ 下新建 auth/ 目录，用 JWT + httpOnly cookie 做登录。后端用 FastAPI，前端 React。只做邮箱+密码一种方式，先别做 OAuth。"</p>
     </div>
   </div>
+
+  <figure class="screenshot" style="margin-top:24px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div style="color:var(--text-muted);margin-bottom:4px;">—— 模糊prompt的结果 ——</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude 帮我优化一下性能</span></div>
+          <div style="margin-top:6px;color:var(--orange);">🤖 Claude: 我检查了一下，可以考虑减小图片、加 lazy loading、删未用 CSS...</div>
+          <div style="color:var(--red);font-size:0.85em;margin-top:4px;">⚠️ 改了 20 个文件，首页反而更慢了</div>
+          <div style="margin-top:12px;padding-top:8px;border-top:1px dashed #333;color:var(--text-muted);">—— 清晰prompt的结果 ——</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude pages/dashboard.tsx 首页加载要 5 秒，帮我把 useEffect 里的 3 个串行请求改成 Promise.all 并行加载，首屏控制在 1 秒内。不要改 UI 结构，只改数据层。</span></div>
+          <div style="margin-top:6px;color:var(--green);">🤖 Claude: 分析了 dashboard.tsx，发现你用了 3 个 await 串行调用。改成 Promise.all 后首屏从 5.2s 降到 0.8s。只改了 1 个文件的 12 行代码。</div>
+          <div class="term-note">💡 清晰的 prompt = 精确的结果。模糊的 prompt = AI 猜谜。</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 同一个需求，模糊 vs 清晰的 prompt 输出对比——差距巨大</figcaption>
+  </figure>
 </section>
 
 <!-- ─── ③ 实战场景 ─── -->
@@ -143,6 +162,23 @@
       <td style="font-family:var(--font-mono);font-size:0.88em;">"这个项目该用 Zustand 还是 Redux？帮我列利弊"</td>
     </tr>
   </table>
+
+  <figure class="screenshot" style="margin-top:24px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude 先读 src/utils/auth.ts，告诉我每个函数是干什么的</span></div>
+          <div style="margin-top:6px;color:var(--green);">🤖 Claude: 已读取 src/utils/auth.ts（128行），分析如下：</div>
+          <div style="color:#c0c0c0;margin-top:4px;">📌 <span class="term-highlight">generateToken(userId)</span> — 生成 JWT token，有效期 7 天</div>
+          <div style="color:#c0c0c0;">📌 <span class="term-highlight">verifyToken(token)</span> — 验证 token 有效性</div>
+          <div style="color:#c0c0c0;">📌 <span class="term-highlight">hashPassword(pw)</span> — bcrypt 加密密码</div>
+          <div class="term-note">💡 秘诀：先让 AI 读文件再提问——它才能给出准确的回答</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 "先读 X 文件"策略——让 Claude 理解上下文后再回答，准确度翻倍</figcaption>
+  </figure>
 </section>
 
 <!-- ─── ④ 好 vs 烂 ─── -->

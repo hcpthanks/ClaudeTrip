@@ -54,7 +54,7 @@
     <strong>核心理念：</strong>先想清楚再动手。人做复杂任务需要先规划，AI 也一样。/plan 强制了"规划→确认→实现"这个流程，避免 AI 理解错需求就狂写代码。
   </div>
 
-  <h3>/plan 不放屁 vs 不放屁的区别</h3>
+  <h3>/plan 用 vs 不用的区别</h3>
   <table class="compare-table">
     <tr><th></th><th class="bad">不用 /plan</th><th class="good">用 /plan</th></tr>
     <tr><td>需求理解</td><td class="bad">可能理解错，写了半天才发现不对</td><td class="good">先复述需求给你确认，错了立刻纠正</td></tr>
@@ -62,6 +62,43 @@
     <tr><td>浪费</td><td class="bad">写了一半发现方向不对，重来</td><td class="good">计划阶段就调整方向，几乎零浪费</td></tr>
     <tr><td>可控性</td><td class="bad">AI 自己狂奔，你追不上</td><td class="good">每一步你都看到并确认</td></tr>
   </table>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;">
+    <figure class="screenshot">
+      <div class="screenshot-frame">
+        <div class="terminal-screenshot">
+          <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+          <div class="term-body">
+            <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude 加一个登录功能，要快</span></div>
+            <div style="margin-top:6px;color:#ff5f56;">🤖 Claude: 好的，开始写代码...</div>
+            <div style="color:#c0c0c0;margin:4px 0;">创建了 15 个文件，改了 8 个现有文件</div>
+            <div style="color:var(--orange);font-size:0.85em;">⚠️ 你没说要什么认证方式</div>
+            <div style="color:var(--orange);font-size:0.85em;">⚠️ 你没说用什么数据库</div>
+            <div class="term-note" style="color:#ff5f56;">❌ 写了半天发现不是你想要的——重来</div>
+          </div>
+        </div>
+      </div>
+      <figcaption>❌ 不用 /plan：AI 瞎猜，写了一堆废代码</figcaption>
+    </figure>
+    <figure class="screenshot">
+      <div class="screenshot-frame">
+        <div class="terminal-screenshot">
+          <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+          <div class="term-body">
+            <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude /plan 加密码登录，用 JWT + PostgreSQL</span></div>
+            <div style="margin-top:6px;color:var(--green);">🤖 Claude: 以下是实现计划：</div>
+            <div style="color:#c0c0c0;margin:4px 0;">1. 创建 users 表 + 索引</div>
+            <div style="color:#c0c0c0;">2. auth/login.ts — JWT 签发</div>
+            <div style="color:#c0c0c0;">3. auth/register.ts — 注册</div>
+            <div style="color:#c0c0c0;">4. middleware.ts — JWT 验证</div>
+            <div style="margin-top:4px;"><span class="term-prompt">确认后开始实现？(y/n)</span> <span class="term-cursor"></span></div>
+            <div class="term-note" style="color:var(--green);">✅ 计划确认后再动手，每一步都可控</div>
+          </div>
+        </div>
+      </div>
+      <figcaption>✅ 用 /plan：AI 先列计划，你确认后再做</figcaption>
+    </figure>
+  </div>
 </section>
 
 <!-- ─── ② 使用方式 ─── -->
@@ -85,6 +122,25 @@
     <div class="code-block">/plan docs/feature.prd.md</div>
     <p>先写一个需求文档（PRD），/plan 读取后生成正式的实现计划写到 <code>.claude/plans/</code>。</p>
   </div>
+
+  <figure class="screenshot" style="margin-top:24px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div style="color:var(--text-muted);margin-bottom:4px;">—— 方式一：直接 /plan ——</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude /plan 给用户设置页加一个导出 CSV 按钮</span></div>
+          <div style="margin-top:4px;color:var(--green);">🤖 Claude: 分析需求后，实现计划如下：</div>
+          <div style="color:#c0c0c0;">1. settings/page.tsx 添加导出按钮组件</div>
+          <div style="color:#c0c0c0;">2. lib/export-csv.ts 创建 CSV 格式化工具</div>
+          <div style="color:#c0c0c0;">3. 依赖：无新增，复用现有数据层</div>
+          <div style="margin-top:4px;"><span class="term-prompt">确认实现？(y/n)</span> <span class="term-cursor"></span></div>
+          <div class="term-note">💡 你确认后 Claude 才开始写代码——方向永远不会跑偏</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 方式一（最常用）：直接用 /plan + 需求描述，Claude 列出步骤等你确认</figcaption>
+  </figure>
 </section>
 
 <!-- ─── ③ 实战场景 ─── -->

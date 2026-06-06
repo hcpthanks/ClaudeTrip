@@ -79,6 +79,27 @@
     <tr><td>安装</td><td>打开浏览器即可</td><td>需要在终端里安装</td></tr>
   </table>
 
+  <figure class="screenshot" style="margin-top:24px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude</span></div>
+          <div style="margin-top:4px;color:#c0c0c0;">启动 Claude Code...</div>
+          <div style="color:var(--green);">🤖 Claude: 你好！我是 Claude，一个 AI 编程助手。</div>
+          <div style="color:#c0c0c0;margin-top:4px;">我已读取你的项目结构：</div>
+          <div style="color:var(--text-muted);">📁 src/components/ — 12 个组件</div>
+          <div style="color:var(--text-muted);">📁 src/lib/ — 工具函数</div>
+          <div style="color:var(--text-muted);">📄 package.json — React + TypeScript</div>
+          <div style="margin-top:4px;color:#c0c0c0;">有什么我可以帮你的？</div>
+          <div><span class="term-cursor"></span></div>
+          <div class="term-note">👆 这就是 Claude Code 启动后的样子——它已经读完了你的项目</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 运行 <code>claude</code> 后的界面——AI 自动读取整个项目，随时准备帮你</figcaption>
+  </figure>
+
   <h3>核心概念</h3>
   <div class="card">
     <p><strong>Claude Code = AI 模型 + Harness（运行环境）</strong></p>
@@ -116,6 +137,24 @@
       <td>长时间任务、CI/CD 自动化</td>
     </tr>
   </table>
+
+  <figure class="screenshot" style="margin-top:20px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div style="color:var(--text-muted);margin-bottom:4px;">—— 单次命令模式（不进入对话） ——</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude -p "src/utils/math.ts 这个文件有多少行代码？"</span></div>
+          <div style="color:#c0c0c0;margin-top:6px;">🤖 src/utils/math.ts 共 142 行，包含 6 个导出函数。</div>
+          <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #333;color:var(--text-muted);">—— 管道模式 ——</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">npm run build 2>&1 | claude -p "分析这些构建报错"</span></div>
+          <div style="color:#c0c0c0;margin-top:6px;">🤖 分析到 3 个错误：🔴 1个类型错误（CRITICAL），🟡 2个警告</div>
+          <div class="term-note">💡 <code>-p</code> 模式适合快速问答——不用进入对话，执行完就退出</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 单次命令（<code>claude -p</code>）和管道模式——快速问答，不进入交互对话</figcaption>
+  </figure>
 
   <div class="code-block">
 <span style="color:var(--text-muted);"># 交互模式 — 最常用</span>

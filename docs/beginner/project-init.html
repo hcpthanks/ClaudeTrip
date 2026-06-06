@@ -89,6 +89,27 @@
     <p>Claude 会逐文件创建：package.json、vite.config.ts、tsconfig.json、src/ 目录树、一个示例组件 + 测试。</p>
   </div>
 
+  <figure class="screenshot" style="margin:20px 0;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div><span class="term-prompt">PS C:\projects&gt;</span> <span class="term-cmd">claude 帮我创建一个 React + TypeScript + Vite 项目</span></div>
+          <div style="margin-top:6px;color:var(--green);">🤖 Claude: 正在创建项目骨架...</div>
+          <div style="color:#c0c0c0;margin-top:4px;">✅ package.json — 依赖配置</div>
+          <div style="color:#c0c0c0;">✅ vite.config.ts — 构建配置</div>
+          <div style="color:#c0c0c0;">✅ tsconfig.json — TypeScript 配置</div>
+          <div style="color:#c0c0c0;">✅ .eslintrc.cjs — 代码规范</div>
+          <div style="color:#c0c0c0;">✅ src/main.tsx — 入口文件</div>
+          <div style="color:#c0c0c0;">✅ src/App.tsx — 示例组件</div>
+          <div style="color:var(--green);margin-top:4px;">✅ 项目创建完成！npm install && npm run dev 即可启动</div>
+          <div class="term-note">👆 一条命令，10 个文件全部创建好——省了 1-2 小时手工搭建</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 方式一：从零生成——Claude 一口气创建所有项目文件</figcaption>
+  </figure>
+
   <div class="card">
     <h3>方式二：克隆模板后定制（最快）</h3>
     <div class="code-block"><span style="color:var(--text-muted);"># 先用 create-vite 生成骨架</span>
@@ -104,6 +125,34 @@ claude
 技术栈换成 FastAPI + SQLAlchemy，目录结构类似。</div>
     <p>给一个参考项目路径，Claude 会学习它的结构并适配到新技术栈。</p>
   </div>
+
+  <figure class="screenshot" style="margin:20px 0;">
+    <div class="screenshot-frame">
+      <div class="smart-placeholder">
+        <div class="ph-header"><div class="ph-dot"></div> 生成的项目结构预览</div>
+        <div class="ph-body">
+          <div class="ph-preview" style="font-size:0.82em;line-height:1.8;">
+            <div style="color:var(--accent);">📁 my-app/</div>
+            <div style="padding-left:1.2em;color:#c0c0c0;">├── 📄 package.json</div>
+            <div style="padding-left:1.2em;color:#c0c0c0;">├── 📄 vite.config.ts</div>
+            <div style="padding-left:1.2em;color:#c0c0c0;">├── 📄 tsconfig.json</div>
+            <div style="padding-left:1.2em;color:#c0c0c0;">├── 📄 .eslintrc.cjs</div>
+            <div style="padding-left:1.2em;color:#c0c0c0;">├── 📄 CLAUDE.md</div>
+            <div style="padding-left:1.2em;color:var(--accent);">├── 📁 src/</div>
+            <div style="padding-left:2.4em;color:#c0c0c0;">├── 📁 components/</div>
+            <div style="padding-left:2.4em;color:#c0c0c0;">├── 📁 hooks/</div>
+            <div style="padding-left:2.4em;color:#c0c0c0;">├── 📁 lib/</div>
+            <div style="padding-left:2.4em;color:#c0c0c0;">├── 📄 main.tsx</div>
+            <div style="padding-left:2.4em;color:#c0c0c0;">└── 📄 App.tsx</div>
+            <div style="padding-left:1.2em;color:var(--accent);">├── 📁 tests/</div>
+            <div style="padding-left:2.4em;color:#c0c0c0;">└── 📄 App.test.tsx</div>
+          </div>
+          <p class="ph-note">👆 一句话生成 15+ 个文件，所有配置文件按最佳实践生成</p>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 Claude Code 生成的项目目录结构——完整的工程骨架，并非只是空文件夹</figcaption>
+  </figure>
 </section>
 
 <!-- ─── ③ 实战场景 ─── -->

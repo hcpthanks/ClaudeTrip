@@ -78,10 +78,20 @@ if (!isAll) {
   }
 }
 
-var actCode = generateActivationCode(
+// 激活码：优先使用 URL 传入的 code（真实支付服务端生成，与 recovery.js 同算法可校验）
+// 无 code 时回退到客户端 generateActivationCode（模拟支付 / 旧版本兼容）
+var urlCode = params.get('code');
+var actCode = urlCode || generateActivationCode(
   isAll ? 'all' : 'single',
   params.get('topic') || ''
 );
+
+// 将服务端激活码也缓存到 localStorage（方便 recovery.js 查询）
+if (urlCode) {
+  var saved = JSON.parse(localStorage.getItem('cc-activation-codes') || '{}');
+  saved[urlCode] = { type: isAll ? 'all' : 'single', topicId: params.get('topic') || '', ts: Date.now() };
+  localStorage.setItem('cc-activation-codes', JSON.stringify(saved));
+}
 
 document.getElementById('success-card').innerHTML =
   '<div class="success-icon">' + (isAll ? '🎉' : '✅') + '</div>' +

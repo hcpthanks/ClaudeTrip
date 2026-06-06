@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="第一次跟 Claude Code 对话：启动 AI、说你好、提出第一个需求。零基础教程，每步都有截图。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+<title>第一次跟 AI 对话 — 预备课</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .chat-demo { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-lg); margin: var(--space-md) 0; font-family: var(--font-mono); font-size: 0.88em; }
+  .chat-demo .user-msg { color: var(--accent); margin-bottom: 8px; }
+  .chat-demo .user-msg::before { content: '👤 你: '; color: var(--text-muted); }
+  .chat-demo .ai-msg { color: var(--green); margin-bottom: 8px; padding-left: 16px; }
+  .chat-demo .ai-msg::before { content: '🤖 Claude: '; color: var(--text-muted); }
+  .chat-demo .system-msg { color: var(--text-muted); font-size: 0.85em; font-style: italic; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('first-chat'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>💬 第一次跟 AI 对话</h1>
+  <p class="subtitle">打开 Claude Code，跟它说"你好"——就像认识一个新朋友</p>
+</header>
+
+<div class="container" role="main">
+
+<div class="prereq-badge">
+  📖 先修课：<a href="install-claude-code.html">安装 Claude Code</a>（你必须已经装好了）
+</div>
+
+<nav class="module-nav">
+  <a href="#why">① 这个能帮你做什么</a>
+  <a href="#walkthrough">② 一步一步来</a>
+  <a href="#review">③ 再看一遍</a>
+  <a href="#pitfalls">④ 常见坑</a>
+  <a href="#practice">⑤ 做一遍</a>
+  <a href="#cheatsheet">⑥ 速查卡</a>
+  <a href="#learned">⑦ 学到了什么</a>
+</nav>
+
+<!-- ─── ① ─── -->
+<section id="why">
+  <h2>① 接下来会发生什么事</h2>
+  <div class="card" style="font-size:1.15em;font-weight:700;color:var(--accent);text-align:center;padding:28px;">
+    你打开 PowerShell → 输入一个命令 → AI 就出现了<br>
+    然后你们开始聊天——你说人话，AI 帮你干活
+  </div>
+
+  <div class="chat-demo">
+    <div class="system-msg">（你打开 PowerShell，输入 claude，按回车……）</div>
+    <div class="user-msg">你好，帮我写一段自我介绍</div>
+    <div class="ai-msg">你好！我很乐意帮你。请告诉我一些基本信息：你的名字、你想介绍给谁、有什么特别的经历或爱好？</div>
+    <div class="system-msg" style="margin-top:8px;">（AI 已经开始跟你对话了！它不理解的地方会主动问你。）</div>
+  </div>
+</section>
+
+<!-- ─── ② ─── -->
+<section id="walkthrough">
+  <h2>② 一步一步来：从打开到第一次对话</h2>
+
+  <ol class="step-list">
+    <li class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>打开 PowerShell</h3>
+        <div class="step-action">还记得怎么打开吗？（搜索 → 输入 powershell → 点图标）</div>
+        <div class="tip">
+          <strong>如果不记得了：</strong>回去看看 <a href="open-powershell.html">打开 PowerShell</a> 那节课。这是最后一次提醒——以后你就能自己开了。
+        </div>
+      </div>
+    </li>
+
+    <li class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>输入 "claude"，然后按回车</h3>
+        <div class="step-action">在 PowerShell 那个闪烁的光标处，打 6 个字母：c-l-a-u-d-e，然后按 Enter 键</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="terminal-screenshot">
+              <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+              <div class="term-body">
+                <div><span class="term-prompt">PS C:\Users\张三&gt;</span> <span class="term-highlight">claude</span><span class="term-cursor"></span></div>
+                <div class="term-note">👆 输入 claude 后按键盘上的 Enter（回车）键</div>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 就这一个单词——<strong>claude</strong>。全部小写，没有空格。然后按键盘上的 Enter（回车）键。</figcaption>
+        </figure>
+        <div class="checkpoint">
+          <p>按回车后，你应该看到一些文字开始出现。这是 AI 在"启动"——就像打开一个 App 需要等几秒。</p>
+        </div>
+      </div>
+    </li>
+
+    <li class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>第一次启动可能要登录</h3>
+        <div class="step-action">如果是第一次用，可能会让你登录 Anthropic 账号</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="terminal-screenshot">
+              <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+              <div class="term-body">
+                <div style="color:var(--text-muted);font-size:0.85em;">首次使用需要登录 Anthropic 账号</div>
+                <div style="margin-top:8px;color:var(--accent);">请在浏览器中打开以下网址完成登录：</div>
+                <div style="color:var(--accent);text-decoration:underline;">https://claude.ai/login/code?...</div>
+                <div class="term-note">🔑 复制这个网址到浏览器打开，登录一次就够了</div>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 如果出现"请打开这个网址登录"的提示——用鼠标选中那个网址，右键复制，粘贴到浏览器里打开。</figcaption>
+        </figure>
+        <div class="info">
+          <strong>登录一次就够了。</strong>以后每次输入 <code>claude</code> 都会直接进入对话，不需要重新登录。
+        </div>
+      </div>
+    </li>
+
+    <li class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>AI 准备好后，你会看到它跟你打招呼</h3>
+        <div class="step-action">启动完成后，Claude 会主动跟你说话</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="terminal-screenshot">
+              <div class="term-titlebar"><span class="term-title">Claude Code</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+              <div class="term-body">
+                <div style="color:var(--green);margin-bottom:8px;">🤖 Claude: 你好！我是 Claude，一个 AI 编程助手。我可以帮你写代码、调试、回答问题。有什么我可以帮你的？</div>
+                <div style="color:var(--text-muted);">─────────────────────────────</div>
+                <div style="margin-top:8px;"><span class="term-cursor"></span> <span style="color:var(--text-muted);">在此输入你的消息...</span></div>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 看到 AI 跟你打招呼了吗？现在你在跟一个真正的 AI 对话了。</figcaption>
+        </figure>
+        <div class="checkpoint">
+          <p>你应该看到 Claude 给你发了一段消息，最下面有个闪烁的光标——那是你打字的地方。</p>
+        </div>
+      </div>
+    </li>
+
+    <li class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h3>说"你好"——开始第一次对话</h3>
+        <div class="step-action">在光标处打字，说你想说的，按回车发送</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="terminal-screenshot">
+              <div class="term-titlebar"><span class="term-title">Claude Code</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+              <div class="term-body">
+                <div style="color:var(--accent);margin-bottom:4px;">👤 你: 你好！请帮我写一段自我介绍，我叫小明，刚大学毕业</div>
+                <div style="color:var(--green);margin-top:12px;">🤖 Claude: 你好小明！很高兴认识你。以下是为你写的自我介绍：</div>
+                <div style="color:var(--green);margin-top:4px;">"大家好，我叫小明，今年刚大学毕业。我对技术和编程充满热情..."</div>
+                <div class="term-note">💬 用中文聊天就行，AI 完全能理解</div>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 <strong>用中文，就像平时发微信一样。</strong>不用学什么特殊格式。你说人话，AI 能听懂。</figcaption>
+        </figure>
+      </div>
+    </li>
+
+    <li class="step-item">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h3>AI 在"思考"的时候，你会看到画面在动</h3>
+        <div class="step-action">你发送消息后，AI 不会马上回复——它需要几秒思考</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="terminal-screenshot">
+              <div class="term-titlebar"><span class="term-title">Claude Code</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+              <div class="term-body" style="text-align:center;">
+                <div style="color:var(--text-muted);font-size:1.1em;margin:12px 0;">🤔 Thinking...</div>
+                <div style="display:flex;gap:4px;justify-content:center;">
+                  <span style="width:6px;height:6px;background:var(--text-muted);border-radius:50%;animation:cursor-blink 0.6s step-end infinite;"></span>
+                  <span style="width:6px;height:6px;background:var(--text-muted);border-radius:50%;animation:cursor-blink 0.6s step-end 0.2s infinite;"></span>
+                  <span style="width:6px;height:6px;background:var(--text-muted);border-radius:50%;animation:cursor-blink 0.6s step-end 0.4s infinite;"></span>
+                </div>
+                <div class="term-note">⏳ 正常现象——AI 在思考你刚才说的话</div>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 等几秒就好。AI 思考的时候不要关掉窗口。如果等了超过 30 秒还没反应——看"常见坑"。</figcaption>
+        </figure>
+        <div class="checkpoint">
+          <p>AI 开始回复了吗？如果回复了——你刚刚完成了人生中第一次跟 AI 的工作对话！</p>
+        </div>
+      </div>
+    </li>
+
+    <li class="step-item">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <h3>怎么结束对话</h3>
+        <div class="step-action">想退出的时候，输入 /exit 或者直接关掉窗口</div>
+        <div class="code-block">/exit</div>
+        <p style="margin-top:8px;font-size:0.9em;color:var(--text-muted);">输入 /exit 然后按回车，就会回到普通的 PowerShell。或者直接点窗口右上角的 ✕ 关掉。</p>
+      </div>
+    </li>
+  </ol>
+
+  <div class="celebration">
+    <span class="celebration-emoji">🚀🚀🚀</span>
+    <h3>你做到了！你刚刚跟一个 AI 完成了第一次对话</h3>
+    <p>这是你使用 AI 工具的第一步。从今天开始，你有一个 24 小时在线的 AI 助手了。</p>
+  </div>
+</section>
+
+<!-- ─── ③ ─── -->
+<section id="review">
+  <h2>③ 再看一遍：完整对话流程</h2>
+  <div class="video-wrap">
+    <div class="video-label">第一次对话完整演示（25秒）</div>
+    <div class="smart-placeholder">
+      <div class="ph-header"><div class="ph-dot"></div> 第一次对话完整流程</div>
+      <div class="ph-body">
+        <div class="ph-preview">
+          <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:0.75em;">
+            <span style="background:var(--surface);padding:6px 10px;border-radius:16px;">💻 开PS</span><span style="color:var(--text-muted);">→</span>
+            <span style="background:var(--surface);padding:6px 10px;border-radius:16px;">⌨️ 输入claude</span><span style="color:var(--text-muted);">→</span>
+            <span style="background:var(--surface);padding:6px 10px;border-radius:16px;">🔑 登录</span><span style="color:var(--text-muted);">→</span>
+            <span style="background:var(--surface);padding:6px 10px;border-radius:16px;">🤖 打招呼</span><span style="color:var(--text-muted);">→</span>
+            <span style="background:var(--surface);padding:6px 10px;border-radius:16px;">💬 对话</span><span style="color:var(--text-muted);">→</span>
+            <span style="background:var(--surface);padding:6px 10px;border-radius:16px;">/exit</span>
+          </div>
+        </div>
+        <p class="ph-note">💡 跟着这个流程自己操作一遍，你就完成了第一次 AI 对话</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ④ ─── -->
+<section id="pitfalls">
+  <h2>④ 最容易遇到的 3 个问题</h2>
+  <div class="pitfall">
+    <div class="pitfall-title">坑 1：输入 claude 后说"不是内部或外部命令"</div>
+    <p style="color:var(--text-muted);">Claude Code 没装好。</p>
+    <div class="pitfall-fix">回到 <a href="install-claude-code.html">安装那节课</a>，重新执行 <code>npm install -g @anthropic-ai/claude-code</code>。如果装了还不行，关掉 PowerShell 重新打开一个新的。</div>
+  </div>
+  <div class="pitfall">
+    <div class="pitfall-title">坑 2：启动后一直没反应</div>
+    <p style="color:var(--text-muted);">可能是第一次启动需要登录，但登录页面没弹出来。</p>
+    <div class="pitfall-fix">仔细看 PowerShell 窗口里的文字——里面可能有一个网址。把那个网址复制到浏览器打开，完成登录。</div>
+  </div>
+  <div class="pitfall">
+    <div class="pitfall-title">坑 3：不知道跟 AI 说什么</div>
+    <p style="color:var(--text-muted);">AI 在等你说话，但你不知道说什么好。</p>
+    <div class="pitfall-fix">试试这几句："你好，介绍一下你自己"、"帮我写一段个人简介"、"我最近想学XX，你有什么建议？"——把这些当练手。</div>
+  </div>
+</section>
+
+<!-- ─── ⑤ ─── -->
+<section id="practice">
+  <h2>⑤ 做一遍：动手练习</h2>
+  <div class="practice-box">
+    <h3>你的练习任务</h3>
+    <div class="practice-task">
+      1. 打开 PowerShell，输入 <code>claude</code> 启动 AI<br>
+      2. 跟 AI 说："你好，请介绍一下你自己"<br>
+      3. 再问它一个问题（任何你想知道的事）<br>
+      4. 输入 <code>/exit</code> 退出
+    </div>
+    <p class="practice-hint">💡 试试让它帮你写点东西。比如："帮我写一封请假邮件，就说我感冒了，明天请假一天"——看它怎么回复。</p>
+  </div>
+</section>
+
+<!-- ─── ⑥ ─── -->
+<section id="cheatsheet">
+  <h2>⑥ 速查卡</h2>
+  <div class="cheat-sheet">
+    <h2>💬 Claude Code 对话速查卡</h2>
+    <table style="color:#000;">
+      <tr><th style="color:#000;">操作</th><th style="color:#000;">命令/动作</th></tr>
+      <tr><td>启动 AI</td><td>PowerShell 里输入 <code>claude</code> 回车</td></tr>
+      <tr><td>跟 AI 说话</td><td>用中文打字，像发微信一样</td></tr>
+      <tr><td>等 AI 回复</td><td>AI 思考需要几秒，耐心等</td></tr>
+      <tr><td>退出 AI</td><td>输入 <code>/exit</code> 或直接关窗口</td></tr>
+      <tr><td>重新进入</td><td>再输入一次 <code>claude</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ─── ⑦ ─── -->
+<section id="learned">
+  <h2>⑦ 检查一下：你学会了吗？</h2>
+  <ul class="learned-list">
+    <li>我知道在 PowerShell 里输入 claude 就能启动 AI</li>
+    <li>我能跟 AI 用中文对话，不需要特殊格式</li>
+    <li>我知道 AI 思考需要等几秒钟</li>
+    <li>我能用 /exit 退出对话</li>
+    <li>我至少跟 AI 完成了 2 轮对话</li>
+  </ul>
+  <div class="try-again" style="margin-top:32px;">
+    <strong>🤔 还没试？</strong> 现在就打开 PowerShell，输入 claude，说"你好"。动手比看教程重要 100 倍。<br>
+    <span style="font-size:0.85em;color:var(--text-muted);">下一课：<a href="file-basics.html">文件与文件夹基础 →</a></span>
+  </div>
+</section>
+
+<section class="quiz-section" data-topic="first-chat">
+  <div id="quiz-container"></div>
+</section>
+
+</div>
+
+<footer class="site-footer">
+  <p>Claude Code 学习站 · 预备课 · 零基础也能学会</p>
+  <p style="margin-top:4px;"><a href="../index.html">返回首页</a></p>
+</footer>
+
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>

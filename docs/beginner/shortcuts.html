@@ -56,6 +56,24 @@
       <span class="shortcut-desc"><span class="kbd">Ctrl+Shift+V</span></span>
     </div>
   </div>
+
+  <figure class="screenshot" style="margin-top:16px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div style="color:var(--text-muted);margin-bottom:4px;">❌ 按了 Ctrl+V 的结果：</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude </span><span style="color:var(--text-muted);">^V</span></div>
+          <div style="color:var(--orange);margin-top:4px;">⚠️ 终端里 Ctrl+V 不是粘贴！什么都没有发生</div>
+          <div style="margin-top:8px;padding-top:6px;border-top:1px dashed #333;"></div>
+          <div style="color:var(--text-muted);margin-bottom:4px;">✅ 正确做法：</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude </span><span style="color:var(--green);">[Shift+Insert] 粘贴的内容出现了！</span></div>
+          <div class="term-note">💡 终端里粘贴用 Shift+Insert 或 Ctrl+Shift+V，不是 Ctrl+V</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 新手最常见的坑：Ctrl+V 在终端里不管用。用 Shift+Insert 代替</figcaption>
+  </figure>
 </section>
 
 <!-- ══════ Navigation ══════ -->
@@ -91,6 +109,26 @@
     </div>
   </div>
   <div class="tip">扩展思考让 Claude 花更多时间推理复杂问题——默认开启，一般不用关。</div>
+
+  <figure class="screenshot" style="margin-top:16px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div style="color:var(--text-muted);margin-bottom:4px;">按 Alt+T 之前：</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude 这个架构怎么优化？</span></div>
+          <div style="color:#c0c0c0;margin-top:4px;">🤖 Claude (普通模式): 建议使用缓存和分页来优化性能...</div>
+          <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #333;color:var(--text-muted);">按 Alt+T 启用扩展思考后：</div>
+          <div style="color:var(--accent);font-size:0.85em;margin-bottom:4px;">🧠 扩展思考已启用（深度推理中...）</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude 这个架构怎么优化？</span></div>
+          <div style="color:#c0c0c0;margin-top:4px;">🤖 Claude (深度思考): 分析了 3 层架构的耦合点后，发现瓶颈在数据层...</div>
+          <div style="color:var(--green);">→ 给出了 5 点具体优化方案 + 每个方案的利弊对比</div>
+          <div class="term-note">💡 Alt+T 开关——简单问题关掉省 token，复杂问题打开更深入</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 按 <kbd>Alt+T</kbd> 前后的区别——扩展思考让 Claude 推理更深，适合复杂架构问题</figcaption>
+  </figure>
 </section>
 
 <!-- ══════ Session ══════ -->

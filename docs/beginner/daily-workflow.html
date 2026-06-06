@@ -114,6 +114,36 @@
       <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">提交代码</div>
     </div>
   </div>
+
+  <figure class="screenshot" style="margin-top:24px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div style="color:var(--text-muted);margin-bottom:6px;">—— 步骤 ①：/plan ——</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude /plan 给用户设置页加一个导出 CSV 按钮</span></div>
+          <div style="margin-top:4px;color:var(--green);">🤖 Claude: ## 实现计划</div>
+          <div style="color:#c0c0c0;">1. settings/page.tsx — 添加导出按钮</div>
+          <div style="color:#c0c0c0;">2. lib/export-csv.ts — CSV 生成工具</div>
+          <div style="color:#c0c0c0;">3. api/export/route.ts — 导出 API</div>
+          <div style="margin-top:8px;padding-top:6px;border-top:1px dashed #333;color:var(--text-muted);">—— 步骤 ③：/code-review ——</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude /code-review</span></div>
+          <div style="margin-top:4px;color:var(--accent);">🤖 Claude: ## 代码审查结果</div>
+          <div style="color:var(--green);">✅ 代码结构清晰，命名合理</div>
+          <div style="color:var(--orange);">⚠️ export-csv.ts 未处理空数据情况</div>
+          <div style="color:var(--orange);">⚠️ API 路由缺少参数校验</div>
+          <div style="margin-top:8px;padding-top:6px;border-top:1px dashed #333;color:var(--text-muted);">—— 步骤 ⑤：git diff ——</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">git diff --stat</span></div>
+          <div style="color:#c0c0c0;margin-top:4px;">settings/page.tsx &nbsp;&nbsp;&nbsp;| 15 +</div>
+          <div style="color:#c0c0c0;">lib/export-csv.ts &nbsp;&nbsp;| 42 ++</div>
+          <div style="color:#c0c0c0;">api/export/route.ts | 28 ++</div>
+          <div style="color:#c0c0c0;margin-top:2px;">3 files, 85 insertions</div>
+          <div class="term-note">✅ 审查通过，改动清晰——可以提交了</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 6 步工作流中 3 个关键步骤的终端输出：/plan → /code-review → git diff</figcaption>
+  </figure>
 </section>
 
 <!-- ─── ③ 各环节详解 ─── -->
@@ -222,6 +252,30 @@
   <div class="tip">
     <strong>效率提示：</strong>Claude Code 可以并行启动多个子代理。如果改动涉及安全和性能两个方面，可以同时启动 security-reviewer 和 performance-optimizer 审查。
   </div>
+
+  <figure class="screenshot" style="margin-top:24px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div style="color:var(--text-muted);margin-bottom:4px;">—— 新功能开发完整流程 ——</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude /plan 加导出CSV功能</span></div>
+          <div style="color:var(--green);margin-top:4px;">🤖 ## 计划: 1) lib/export-csv.ts 2) api/export 3) 按钮组件</div>
+          <div><span class="term-prompt">确认？(y/n)</span> <span style="color:var(--green);">y</span></div>
+          <div style="margin-top:6px;padding-top:6px;border-top:1px dashed #333;color:#c0c0c0;">🤖 正在实现... 3 files created.</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude /code-review</span></div>
+          <div style="color:var(--orange);margin-top:2px;">🤖 发现 2 个问题：未处理空数组、缺少文件类型校验</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span style="color:var(--green);">修复完毕，重新审查通过 ✅</span></div>
+          <div style="margin-top:6px;padding-top:6px;border-top:1px dashed #333;color:#c0c0c0;"><span class="term-prompt">PS C:\project&gt;</span> npm run build && npm test</div>
+          <div style="color:var(--green);">✅ 构建成功 &nbsp; ✅ 12 tests passed</div>
+          <div style="color:#c0c0c0;margin-top:4px;"><span class="term-prompt">PS C:\project&gt;</span> git diff --stat → 3 files, 85 insertions</div>
+          <div style="color:var(--green);">git commit -m "feat: 添加CSV导出功能" ✅</div>
+          <div class="term-note">💡 这个流程每天都用——养成肌肉记忆后，Bug 率真的会降</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 新功能开发完整命令串联：plan → 实现 → review → 修复 → 测试 → commit</figcaption>
+  </figure>
 </section>
 
 <!-- ══════ 付费墙 ══════ -->

@@ -124,6 +124,7 @@
     <a href="index.html" class="logo">Claude Code <span>学习站</span></a>
     <div class="nav-links" role="navigation" aria-label="页面导航">
       <a href="index.html" class="active">首页</a>
+      <a href="#pre-basics">预备课</a>
       <a href="#beginner">入门</a>
       <a href="#intermediate">进阶</a>
       <a href="#expert">专家</a>
@@ -137,22 +138,90 @@
 <header class="hero">
   <h1>掌握 <span class="brand">Claude Code</span><br>从第一次对话到生产力飞跃</h1>
   <p class="subtitle">
-    分三级路线 · 8模块教学模板 · 每条命令都有实战练习。<br>
+    分四级路线 · 7模块教学模板 · 每条命令都有实战练习。<br>
     不用啃文档，直接上手。
   </p>
   <div class="badge-row">
-    <span class="badge lv-beginner">🌱 入门 — 15分钟上手</span>
+    <span class="badge lv-prebasics">🖥️ 预备课 — 零基础开始</span>
+	    <span class="badge lv-beginner">🌱 入门 — 15分钟上手</span>
     <span class="badge lv-intermediate">⚡ 进阶 — 效率翻倍</span>
     <span class="badge lv-expert">🚀 专家 — 自定义一切</span>
   </div>
   <div class="stats">
     <div class="stat"><div class="stat-num">79+</div><div class="stat-label">命令覆盖</div></div>
-    <div class="stat"><div class="stat-num">14</div><div class="stat-label">学习主题</div></div>
-    <div class="stat"><div class="stat-num">3</div><div class="stat-label">能力等级</div></div>
+    <div class="stat"><div class="stat-num">20</div><div class="stat-label">学习主题</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">能力等级</div></div>
   </div>
 </header>
 
 <main class="container" role="main">
+
+<!-- ══════════ PRE-BASICS ══════════ -->
+<section class="level-section" id="pre-basics">
+  <div class="level-header lv-prebasics-header">
+    <div class="level-icon">🖥️</div>
+    <div>
+      <h2>预备课 · 电脑基础</h2>
+      <p class="level-desc">从零开始——如果你还不太会用电脑，从这里开始。全部免费。</p>
+    </div>
+  </div>
+  <div class="progress-bar-wrap" id="prebasics-progress">
+    <span class="pb-label">📊 学习进度</span>
+    <div class="pb-track"><div class="pb-fill" id="pb-fill-prebasics" style="width:0%"></div></div>
+    <span class="pb-count" id="pb-count-prebasics">0/6</span>
+  </div>
+  <div class="topic-grid">
+
+    <a href="pre-basics/computer-basics.html" class="topic-card lv-prebasics card-link" data-topic="pc-basics">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🖥️</div>
+      <div class="level-tag">预备课</div>
+      <h3>认识你的电脑</h3>
+      <p>桌面、开始菜单、任务栏、文件/文件夹——认识屏幕上每样东西的名字</p>
+    </a>
+
+    <a href="pre-basics/open-powershell.html" class="topic-card lv-prebasics card-link" data-topic="open-ps">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">💻</div>
+      <div class="level-tag">预备课</div>
+      <h3>第一次打开 PowerShell</h3>
+      <p>3 种打开方式 + 每步截图——学会给电脑"发指令"</p>
+    </a>
+
+    <a href="pre-basics/install-claude-code.html" class="topic-card lv-prebasics card-link" data-topic="install-cc">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">📦</div>
+      <div class="level-tag">预备课</div>
+      <h3>安装 Claude Code</h3>
+      <p>从零到装好 AI 助手——Node.js 地基 + Claude Code 安装</p>
+    </a>
+
+    <a href="pre-basics/first-conversation.html" class="topic-card lv-prebasics card-link" data-topic="first-chat">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">💬</div>
+      <div class="level-tag">预备课</div>
+      <h3>第一次跟 AI 对话</h3>
+      <p>启动 AI → 说"你好" → 提出第一个需求 → 看 AI 帮你干活</p>
+    </a>
+
+    <a href="pre-basics/file-basics.html" class="topic-card lv-prebasics card-link" data-topic="file-basics">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">📁</div>
+      <div class="level-tag">预备课</div>
+      <h3>文件与文件夹基础</h3>
+      <p>理解"路径"是什么、怎么切换文件夹、怎么找到你的文件</p>
+    </a>
+
+    <a href="pre-basics/when-things-go-wrong.html" class="topic-card lv-prebasics card-link" data-topic="troubleshoot">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🆘</div>
+      <div class="level-tag">预备课</div>
+      <h3>遇到错误怎么办</h3>
+      <p>三步法：截图→读错误→发给AI。5 个最常见错误直接抄答案</p>
+    </a>
+
+  </div>
+</section>
 
 <!-- ══════════ BEGINNER ══════════ -->
 <section class="level-section" id="beginner">
@@ -350,21 +419,38 @@
 <script>
 // ── Apply lock/progress to homepage topic cards ──
 (function () {
+  var PREBASICS_IDS = ['pc-basics','open-ps','install-cc','first-chat','file-basics','troubleshoot'];
+  var BEGINNER_IDS  = ['intro','plan','shortcuts','convo','init','workflow'];
   var cards = document.querySelectorAll('.topic-card[data-topic]');
-  var passedCount = 0;
-  var totalCount = cards.length;
+  var pbPassed = 0, begPassed = 0;
 
   cards.forEach(function (card) {
     var topicId = card.dataset.topic;
-    if (isTopicUnlockedByProgress(topicId)) {
-      // Check if passed
-      var quizState = getQuizState();
+    var isPrebasics = PREBASICS_IDS.indexOf(topicId) >= 0;
+    var quizState = getQuizState();
+
+    // Pre-basics: always unlocked (free), no locking ever
+    if (isPrebasics) {
       if (quizState[topicId] && quizState[topicId].passed) {
         card.classList.add('has-passed');
         var badge = document.createElement('span');
         badge.className = 'passed-badge';
         badge.textContent = '✅';
         card.appendChild(badge);
+        pbPassed++;
+      }
+      return;
+    }
+
+    // Beginner: apply progress-based locking
+    if (isTopicUnlockedByProgress(topicId)) {
+      if (quizState[topicId] && quizState[topicId].passed) {
+        card.classList.add('has-passed');
+        var badge2 = document.createElement('span');
+        badge2.className = 'passed-badge';
+        badge2.textContent = '✅';
+        card.appendChild(badge2);
+        begPassed++;
       }
     } else {
       card.classList.add('locked');
@@ -375,29 +461,36 @@
       });
       // Cooldown badge
       var cooldown = getCooldown();
-      var prevIdx = TOPIC_ORDER.indexOf(topicId) - 1;
+      var prevIdx = BEGINNER_IDS.indexOf(topicId) - 1;
       if (prevIdx >= 0) {
-        var prevTopic = TOPIC_ORDER[prevIdx];
+        var prevTopic = BEGINNER_IDS[prevIdx];
         if (cooldown[prevTopic]) {
           var remaining = new Date(cooldown[prevTopic]).getTime() - Date.now();
           if (remaining > 0) {
             var hours = Math.ceil(remaining / 3600000);
-            var badge = document.createElement('span');
-            badge.className = 'cooldown-badge';
-            badge.textContent = '⏳ ' + hours + 'h';
-            card.appendChild(badge);
+            var badge3 = document.createElement('span');
+            badge3.className = 'cooldown-badge';
+            badge3.textContent = '⏳ ' + hours + 'h';
+            card.appendChild(badge3);
           }
         }
       }
     }
-    // Count passed
-    if (quizState[topicId] && quizState[topicId].passed) passedCount++;
   });
 
-  // Update progress bar
-  var pct = Math.round((passedCount / totalCount) * 100);
-  document.getElementById('pb-fill').style.width = pct + '%';
-  document.getElementById('pb-count').textContent = passedCount + '/' + totalCount;
+  // Update pre-basics progress bar
+  var pbPct = Math.round((pbPassed / PREBASICS_IDS.length) * 100);
+  var pbFill = document.getElementById('pb-fill-prebasics');
+  var pbCount = document.getElementById('pb-count-prebasics');
+  if (pbFill) pbFill.style.width = pbPct + '%';
+  if (pbCount) pbCount.textContent = pbPassed + '/' + PREBASICS_IDS.length;
+
+  // Update beginner progress bar
+  var begPct = Math.round((begPassed / BEGINNER_IDS.length) * 100);
+  var begFill = document.getElementById('pb-fill');
+  var begCount = document.getElementById('pb-count');
+  if (begFill) begFill.style.width = begPct + '%';
+  if (begCount) begCount.textContent = begPassed + '/' + BEGINNER_IDS.length;
 })();
 </script>
 <script src="assets/js/common.js"></script>
