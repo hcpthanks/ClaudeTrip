@@ -228,10 +228,11 @@ claude-code-learning-site/
 ## 当前状态
 
 - ✅ 预备课 6 个主题完成（7 模块简化模板，始终免费，CSS 插图已替换占位符）
-- ✅ 入门 6 个主题完成（含付费墙 + 激活码 + 考核递进系统）
+- ✅ 入门 6 个主题完成（含付费墙 + 激活码 + 考核递进系统，已添加 13 个 CSS 终端插图）
 - ✅ GitHub Pages 部署上线 — https://hcpthanks.github.io/hcpthanks/
 - ✅ CSS 插图组件（`.terminal-screenshot`, `.win-desktop`, `.win-window`, `.smart-placeholder`）替换全部 36 个 `.img-placeholder` 占位符
 - ✅ 终端插图 Win10 风格统一（`.terminal-screenshot` 标题栏已改为 Win10 PowerShell 白底+右侧按钮，15 处全部更新）
+- ✅ 入门课程视觉化（6 页新增 13 个 CSS 终端插图：plan-guide 6个, conversation-skills/daily-workflow/project-init/claude-intro/shortcuts 各4个）
 - ⬜ 进阶 4 个主题（占位卡片）
 - ⬜ 专家 3 个主题（占位卡片）
 - ⬜ 国内 CDN + 域名备案
@@ -240,12 +241,11 @@ claude-code-learning-site/
 
 ## 下一步计划（2026-06-06 更新）
 
-1. **入门课程视觉化** — 给现有 6 个入门页加截图和降低难度
-2. **找真人测试** — 找 1 个电脑小白，看能否独立完成预备课 6 节
-3. **根据反馈调整** — 难度、语言、截图数量都可能需要调
-4. **入门课程视觉化** — 给现有 6 个入门页加截图和降难度（Phase 3）
-5. **国内 CDN + 域名备案** — 解决 GitHub Pages 国内访问慢的问题
-6. **微信支付后端设计** — 商户号申请、支付回调、服务端签名验证
+1. **找真人测试** — 找 1 个电脑小白，看能否独立完成预备课 6 节
+2. **根据反馈调整** — 难度、语言、插图数量都可能需要调
+3. **国内 CDN + 域名备案** — 解决 GitHub Pages 国内访问慢的问题
+4. **微信支付后端设计** — 商户号申请、支付回调、服务端签名验证
+5. **进阶/专家课程** — 进阶 4 个 + 专家 3 个主题
 
 ## 开发注意事项
 
