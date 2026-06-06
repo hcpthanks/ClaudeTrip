@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code 快捷键大全：编辑、导航、思考模式、会话管理。最常用的 Slash 命令速查，告别鼠标操作。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>快捷键大全 — 入门</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/paywall.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .kbd {
+    display: inline-block; padding: 3px 10px; border-radius: 4px;
+    background: var(--surface); border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 0.88em; color: var(--accent);
+    min-width: 24px; text-align: center;
+  }
+  .kbd-group { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .shortcut-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-light); }
+  .shortcut-row:last-child { border-bottom: none; }
+  .shortcut-action { font-weight: 600; }
+  .shortcut-desc { color: var(--text-muted); font-size: 0.88em; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('shortcuts'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>⌨️ 快捷键大全</h1>
+  <p class="subtitle">告别鼠标，键盘操作让效率翻 3 倍</p>
+</header>
+
+<div class="container" role="main">
+
+<!-- ══════ Editing ══════ -->
+<section>
+  <h2>📝 编辑操作</h2>
+  <div class="card">
+    <div class="shortcut-row">
+      <span class="shortcut-action">提交消息</span>
+      <span class="shortcut-desc"><span class="kbd">Enter</span> 发消息，<span class="kbd">Shift+Enter</span> 换行</span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">中断生成</span>
+      <span class="shortcut-desc"><span class="kbd">Esc</span> 或 <span class="kbd">Ctrl+C</span></span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">粘贴（通用终端）</span>
+      <span class="shortcut-desc"><span class="kbd">Shift+Insert</span> 或右键</span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">粘贴（Windows Terminal）</span>
+      <span class="shortcut-desc"><span class="kbd">Ctrl+Shift+V</span></span>
+    </div>
+  </div>
+
+  <figure class="screenshot" style="margin-top:16px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div style="color:var(--text-muted);margin-bottom:4px;">❌ 按了 Ctrl+V 的结果：</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude </span><span style="color:var(--text-muted);">^V</span></div>
+          <div style="color:var(--orange);margin-top:4px;">⚠️ 终端里 Ctrl+V 不是粘贴！什么都没有发生</div>
+          <div style="margin-top:8px;padding-top:6px;border-top:1px dashed #333;"></div>
+          <div style="color:var(--text-muted);margin-bottom:4px;">✅ 正确做法：</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude </span><span style="color:var(--green);">[Shift+Insert] 粘贴的内容出现了！</span></div>
+          <div class="term-note">💡 终端里粘贴用 Shift+Insert 或 Ctrl+Shift+V，不是 Ctrl+V</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 新手最常见的坑：Ctrl+V 在终端里不管用。用 Shift+Insert 代替</figcaption>
+  </figure>
+</section>
+
+<!-- ══════ Navigation ══════ -->
+<section>
+  <h2>🧭 导航</h2>
+  <div class="card">
+    <div class="shortcut-row">
+      <span class="shortcut-action">切换文件</span>
+      <span class="shortcut-desc"><span class="kbd">Ctrl+Tab</span> 下一个，<span class="kbd">Ctrl+Shift+Tab</span> 上一个</span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">跳转到行</span>
+      <span class="shortcut-desc"><span class="kbd">Ctrl+G</span></span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">搜索文件</span>
+      <span class="shortcut-desc"><span class="kbd">Ctrl+P</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ Thinking ══════ -->
+<section>
+  <h2>🧠 思考模式</h2>
+  <div class="card">
+    <div class="shortcut-row">
+      <span class="shortcut-action">切换扩展思考</span>
+      <span class="shortcut-desc"><span class="kbd">Alt+T</span>（Windows）/ <span class="kbd">Option+T</span>（Mac）</span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">查看思考过程</span>
+      <span class="shortcut-desc"><span class="kbd">Ctrl+O</span>（详细模式）</span>
+    </div>
+  </div>
+  <div class="tip">扩展思考让 Claude 花更多时间推理复杂问题——默认开启，一般不用关。</div>
+
+  <figure class="screenshot" style="margin-top:16px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div style="color:var(--text-muted);margin-bottom:4px;">按 Alt+T 之前：</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude 这个架构怎么优化？</span></div>
+          <div style="color:#c0c0c0;margin-top:4px;">🤖 Claude (普通模式): 建议使用缓存和分页来优化性能...</div>
+          <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #333;color:var(--text-muted);">按 Alt+T 启用扩展思考后：</div>
+          <div style="color:var(--accent);font-size:0.85em;margin-bottom:4px;">🧠 扩展思考已启用（深度推理中...）</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude 这个架构怎么优化？</span></div>
+          <div style="color:#c0c0c0;margin-top:4px;">🤖 Claude (深度思考): 分析了 3 层架构的耦合点后，发现瓶颈在数据层...</div>
+          <div style="color:var(--green);">→ 给出了 5 点具体优化方案 + 每个方案的利弊对比</div>
+          <div class="term-note">💡 Alt+T 开关——简单问题关掉省 token，复杂问题打开更深入</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 按 <kbd>Alt+T</kbd> 前后的区别——扩展思考让 Claude 推理更深，适合复杂架构问题</figcaption>
+  </figure>
+</section>
+
+<!-- ══════ Session ══════ -->
+<section>
+  <h2>💬 会话管理</h2>
+  <div class="card">
+    <div class="shortcut-row">
+      <span class="shortcut-action">清空上下文</span>
+      <span class="shortcut-desc">输入 <span class="kbd">/clear</span></span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">退出</span>
+      <span class="shortcut-desc"><span class="kbd">Ctrl+C</span> 或 <span class="kbd">/exit</span></span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">帮助</span>
+      <span class="shortcut-desc"><span class="kbd">/help</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 常用命令 ══════ -->
+<section>
+  <h2>⚡ 最常用的 Slash 命令</h2>
+  <div class="card">
+    <div class="shortcut-row">
+      <span class="shortcut-action"><code style="color:var(--accent);">/plan</code></span>
+      <span class="shortcut-desc">功能实现前做计划</span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action"><code style="color:var(--accent);">/code-review</code></span>
+      <span class="shortcut-desc">审查刚写的代码</span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action"><code style="color:var(--accent);">/clear</code></span>
+      <span class="shortcut-desc">清空对话上下文</span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action"><code style="color:var(--accent);">/save-session</code></span>
+      <span class="shortcut-desc">保存当前会话，下次继续</span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action"><code style="color:var(--accent);">/resume-session</code></span>
+      <span class="shortcut-desc">恢复上次保存的会话</span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action"><code style="color:var(--accent);">/build-fix</code></span>
+      <span class="shortcut-desc">自动修复构建错误</span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action"><code style="color:var(--accent);">/pr</code></span>
+      <span class="shortcut-desc">创建 Pull Request</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 付费墙 ══════ -->
+<div class="paywall-container" data-topic="shortcuts">
+  <div class="paywall-content">
+
+<!-- ══════ 速查卡 ══════ -->
+<section>
+  <h2>📋 速查卡（打印友好）</h2>
+  <div class="cheat-sheet">
+    <table style="color:#111;width:100%;">
+      <tr><th style="color:#555;width:30%;">操作</th><th style="color:#555;">快捷键/命令</th></tr>
+      <tr><td>发消息</td><td>Enter</td></tr>
+      <tr><td>换行</td><td>Shift + Enter</td></tr>
+      <tr><td>中断</td><td>Esc / Ctrl+C</td></tr>
+      <tr><td>粘贴</td><td>Shift + Insert 或 右键</td></tr>
+      <tr><td>扩展思考</td><td>Alt+T / Option+T</td></tr>
+      <tr><td>查看思考</td><td>Ctrl+O</td></tr>
+      <tr><td>做计划</td><td>/plan</td></tr>
+      <tr><td>代码审查</td><td>/code-review</td></tr>
+      <tr><td>清空上下文</td><td>/clear</td></tr>
+      <tr><td>保存/恢复会话</td><td>/save-session / /resume-session</td></tr>
+      <tr><td>退出</td><td>/exit 或 Ctrl+C</td></tr>
+    </table>
+  </div>
+</section>
+
+
+<!-- ─── ⑨ 总结 ─── -->
+<section id="summary" class="summary-section">
+  <h2>⑨ 总结：最常用 & 最易错</h2>
+
+  <div class="summary-grid">
+    <div class="scene">
+      <h3>🎯 每天必用 TOP 6</h3>
+      <ul>
+        <li><strong>Enter</strong> — 发送消息，最频繁的操作</li>
+        <li><strong>Esc / Ctrl+C</strong> — 中断 AI 跑偏的输出</li>
+        <li><strong>Shift+Insert / 右键</strong> — 粘贴到终端（Ctrl+V 无效！）</li>
+        <li><strong>/plan</strong> — 做任何复杂功能前先规划</li>
+        <li><strong>/code-review</strong> — 写完代码立即审查</li>
+        <li><strong>/clear</strong> — 话题跑远了就清空重来</li>
+      </ul>
+    </div>
+
+    <div class="mistake">
+      <h3>⚠️ 最常犯错误</h3>
+      <ul>
+        <li><strong>狂按 Ctrl+V 没反应</strong> — 命令行粘贴用 Shift+Insert 或右键，Ctrl+V 是编辑器的习惯</li>
+        <li><strong>不知道 Esc 可以中断</strong> — AI 跑偏了不要等它说完，直接 Esc 打断</li>
+        <li><strong>不知道 Alt+T 开关思考</strong> — 复杂任务开启扩展思考，简单任务关闭省时间</li>
+        <li><strong>没有保存会话习惯</strong> — 长任务中途用 /save-session，防止丢了上下文</li>
+        <li><strong>Slash 命令不用 Tab 补全</strong> — 输 /pla 按 Tab 自动补全 /plan，效率翻倍</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+  </div><!-- .paywall-content -->
+  <div class="paywall-fade"></div>
+  <div class="paywall-card">
+    <div class="lock-icon">🔒</div>
+    <h3>以下内容需付费解锁</h3>
+    <div class="locked-modules">📋 速查卡 · ⑨ 总结</div>
+    <div class="paywall-actions">
+      <button class="paywall-btn paywall-btn-single">
+        <span class="price">¥5</span>
+        <span class="price-label">解锁本页全部内容</span>
+      </button>
+      <button class="paywall-btn paywall-btn-all">
+        <span class="price">¥99</span>
+        <span class="price-label">永久解锁全站 · 含进阶专家</span>
+      </button>
+    </div>
+  </div>
+</div><!-- .paywall-container -->
+
+<!-- ══════ ⑩ 考核 ══════ -->
+<section class="quiz-section" data-topic="shortcuts">
+  <div id="quiz-container"></div>
+</section>
+
+</div>
+
+<footer class="site-footer">
+  <p><a href="../index.html">← 返回首页</a></p>
+</footer>
+
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/paywall.js"></script>
+<script>renderPaywall('shortcuts');</script>
+<script src="../assets/js/common.js"></script>
+</body>
+</html>

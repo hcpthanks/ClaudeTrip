@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="掌握 Claude Code 对话万能公式"背景+目标+约束"，让 AI 一次就理解你的需求。纠错策略、迭代技巧、常见对话错误。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>对话技巧入门 — 入门</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/paywall.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .comparison-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  @media (max-width: 768px) { .comparison-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('convo'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>💬 对话技巧入门</h1>
+  <p class="subtitle">同样用 Claude Code，高手产出是新手 10 倍——差距就在怎么说话</p>
+</header>
+
+<div class="container" role="main">
+
+<nav class="module-nav">
+  <a href="#core">① 核心理解</a>
+  <a href="#modes">② 提问公式</a>
+  <a href="#scenarios">③ 实战场景</a>
+  <a href="#good-bad">④ 好 vs 烂</a>
+  <a href="#workflow">⑤ 迭代策略</a>
+  <a href="#practice">⑥ 练习</a>
+  <a href="#quick">⑦ 快速掌握</a>
+  <a href="#cheatsheet">⑧ 速查卡</a>
+  <a href="#summary">⑨ 总结</a>
+</nav>
+
+<!-- ─── ① 核心理解 ─── -->
+<section id="core">
+  <h2>① Claude Code 怎么"听"你的话</h2>
+
+  <div class="card">
+    <h3>一句话</h3>
+    <p style="font-size:1.15em;font-weight:700;color:var(--accent);">
+      Claude 不是读心术——你给的上下文越具体，它产出的代码越准确。模糊的输入 = 模糊的输出。
+    </p>
+  </div>
+
+  <div class="info">
+    <strong>关键认知：</strong>Claude Code 在对话开始时会读取项目结构（CLAUDE.md、文件树等），但它不会自动理解你"脑子里想的是什么"。你需要用清晰的语言描述你的意图，就像跟一个新加入团队的同事讲话一样。
+  </div>
+
+  <h3>对话质量的三个决定因素</h3>
+  <div class="topic-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:16px 0;">
+    <div class="topic-card lv-beginner">
+      <div class="level-stripe"></div>
+      <h3>📋 上下文</h3>
+      <p>你有没有让它先读相关文件？有没有说清楚背景？</p>
+    </div>
+    <div class="topic-card lv-beginner">
+      <div class="level-stripe"></div>
+      <h3>🎯 目标清晰度</h3>
+      <p>"加个功能" vs "在用户设置页加一个导出 CSV 的按钮"</p>
+    </div>
+    <div class="topic-card lv-beginner">
+      <div class="level-stripe"></div>
+      <h3>🔄 迭代方式</h3>
+      <p>跑偏了是纠正还是重开？上下文乱了知不知道清空？</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ② 提问公式 ─── -->
+<section id="modes">
+  <h2>② 万能提问公式：背景 + 目标 + 约束</h2>
+
+  <div class="card">
+    <h3>公式</h3>
+    <div class="code-block">
+<span style="color:var(--text-muted);">[背景]</span> 我在做XX项目，用的是YY技术栈，相关文件在ZZ
+<span style="color:var(--text-muted);">[目标]</span> 我想实现AA功能 / 修复BB问题 / 理解CC逻辑
+<span style="color:var(--text-muted);">[约束]</span> 要求：XXX，不要：YYY，注意：ZZZ</div>
+  </div>
+
+  <h3>拆解示例</h3>
+  <div class="comparison-row">
+    <div class="card">
+      <h4 class="bad">❌ 模糊版</h4>
+      <p style="color:var(--red);font-family:var(--font-mono);font-size:0.9em;">"帮我优化一下性能"</p>
+      <p style="color:var(--text-muted);font-size:0.82em;margin-top:8px;">Claude 不知道哪个文件、哪种性能、什么指标，只能瞎猜。</p>
+    </div>
+    <div class="card">
+      <h4 class="good">✅ 公式版</h4>
+      <p style="color:var(--green);font-family:var(--font-mono);font-size:0.9em;">"pages/dashboard.tsx 首页加载要 5 秒。帮我把 useEffect 里的数据请求改成并行加载，首屏渲染控制在 1 秒内。不要改 UI 结构，只改数据层。"</p>
+    </div>
+  </div>
+
+  <div class="comparison-row">
+    <div class="card">
+      <h4 class="bad">❌ 模糊版</h4>
+      <p style="color:var(--red);font-family:var(--font-mono);font-size:0.9em;">"帮我加个登录功能"</p>
+    </div>
+    <div class="card">
+      <h4 class="good">✅ 公式版</h4>
+      <p style="color:var(--green);font-family:var(--font-mono);font-size:0.9em;">"在 app/ 下新建 auth/ 目录，用 JWT + httpOnly cookie 做登录。后端用 FastAPI，前端 React。只做邮箱+密码一种方式，先别做 OAuth。"</p>
+    </div>
+  </div>
+
+  <figure class="screenshot" style="margin-top:24px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div style="color:var(--text-muted);margin-bottom:4px;">—— 模糊prompt的结果 ——</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude 帮我优化一下性能</span></div>
+          <div style="margin-top:6px;color:var(--orange);">🤖 Claude: 我检查了一下，可以考虑减小图片、加 lazy loading、删未用 CSS...</div>
+          <div style="color:var(--red);font-size:0.85em;margin-top:4px;">⚠️ 改了 20 个文件，首页反而更慢了</div>
+          <div style="margin-top:12px;padding-top:8px;border-top:1px dashed #333;color:var(--text-muted);">—— 清晰prompt的结果 ——</div>
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude pages/dashboard.tsx 首页加载要 5 秒，帮我把 useEffect 里的 3 个串行请求改成 Promise.all 并行加载，首屏控制在 1 秒内。不要改 UI 结构，只改数据层。</span></div>
+          <div style="margin-top:6px;color:var(--green);">🤖 Claude: 分析了 dashboard.tsx，发现你用了 3 个 await 串行调用。改成 Promise.all 后首屏从 5.2s 降到 0.8s。只改了 1 个文件的 12 行代码。</div>
+          <div class="term-note">💡 清晰的 prompt = 精确的结果。模糊的 prompt = AI 猜谜。</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 同一个需求，模糊 vs 清晰的 prompt 输出对比——差距巨大</figcaption>
+  </figure>
+</section>
+
+<!-- ─── ③ 实战场景 ─── -->
+<section id="scenarios">
+  <h2>③ 不同场景的提问策略</h2>
+
+  <table>
+    <tr><th>场景</th><th>策略</th><th>示例开头</th></tr>
+    <tr>
+      <td>理解代码</td>
+      <td>指定文件 + 具体问题</td>
+      <td style="font-family:var(--font-mono);font-size:0.88em;">"src/utils/auth.ts 里这个函数是干什么的"</td>
+    </tr>
+    <tr>
+      <td>写新功能</td>
+      <td>背景 + 目标 + 约束（用 /plan）</td>
+      <td style="font-family:var(--font-mono);font-size:0.88em;">"/plan 在 settings 页加导出 CSV 按钮"</td>
+    </tr>
+    <tr>
+      <td>改已有代码</td>
+      <td>先让 Claude 读文件，再提修改</td>
+      <td style="font-family:var(--font-mono);font-size:0.88em;">"先读 components/Nav.tsx，然后把 logo 改成可点击的"</td>
+    </tr>
+    <tr>
+      <td>修 Bug</td>
+      <td>贴报错 + 相关文件</td>
+      <td style="font-family:var(--font-mono);font-size:0.88em;">"npm run build 报这个错 [贴错误]，相关文件在 src/build/"</td>
+    </tr>
+    <tr>
+      <td>技术选型</td>
+      <td>给选项 + 让 AI 对比</td>
+      <td style="font-family:var(--font-mono);font-size:0.88em;">"这个项目该用 Zustand 还是 Redux？帮我列利弊"</td>
+    </tr>
+  </table>
+
+  <figure class="screenshot" style="margin-top:24px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude 先读 src/utils/auth.ts，告诉我每个函数是干什么的</span></div>
+          <div style="margin-top:6px;color:var(--green);">🤖 Claude: 已读取 src/utils/auth.ts（128行），分析如下：</div>
+          <div style="color:#c0c0c0;margin-top:4px;">📌 <span class="term-highlight">generateToken(userId)</span> — 生成 JWT token，有效期 7 天</div>
+          <div style="color:#c0c0c0;">📌 <span class="term-highlight">verifyToken(token)</span> — 验证 token 有效性</div>
+          <div style="color:#c0c0c0;">📌 <span class="term-highlight">hashPassword(pw)</span> — bcrypt 加密密码</div>
+          <div class="term-note">💡 秘诀：先让 AI 读文件再提问——它才能给出准确的回答</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 "先读 X 文件"策略——让 Claude 理解上下文后再回答，准确度翻倍</figcaption>
+  </figure>
+</section>
+
+<!-- ─── ④ 好 vs 烂 ─── -->
+<section id="good-bad">
+  <h2>④ 好习惯 vs 烂习惯</h2>
+
+  <table>
+    <tr><th></th><th class="bad">❌ 烂习惯</th><th class="good">✅ 好习惯</th></tr>
+    <tr>
+      <td>开篇</td>
+      <td class="bad">"帮我看看"</td>
+      <td class="good">先说 /plan 或说清楚要做什么</td>
+    </tr>
+    <tr>
+      <td>上下文</td>
+      <td class="bad">不提文件，让 AI 自己找</td>
+      <td class="good">"先读 XX 文件"，再提需求</td>
+    </tr>
+    <tr>
+      <td>迭代</td>
+      <td class="bad">跑偏了还在追着问</td>
+      <td class="good">发现偏了立刻 /clear 重来</td>
+    </tr>
+    <tr>
+      <td>信任</td>
+      <td class="bad">全部接受，不审查</td>
+      <td class="good">每轮用 /code-review 检查</td>
+    </tr>
+    <tr>
+      <td>任务拆分</td>
+      <td class="bad">一个大任务聊到底</td>
+      <td class="good">拆成小任务，每次独立会话</td>
+    </tr>
+    <tr>
+      <td>纠错</td>
+      <td class="bad">"你又错了"（没有帮助）</td>
+      <td class="good">"不对，我要的是XX，不是YY。重来"</td>
+    </tr>
+  </table>
+
+  <div class="warn">
+    <strong>最坑的习惯：</strong>在一个会话里堆 10 个任务。上下文越长 Claude 越笨——它会把前面的对话当参考，产生混乱。一个新任务 = 一个新会话。
+  </div>
+</section>
+
+<!-- ─── ⑤ 迭代策略 ─── -->
+<section id="workflow">
+  <h2>⑤ 高效迭代：错了怎么纠正</h2>
+
+  <div class="workflow" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:16px 0;overflow-x:auto;">
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">提出需求</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">背景+目标+约束</div>
+    </div>
+    <span style="color:var(--text-muted);font-size:1.3em;">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">看产出</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">读代码+测试</div>
+    </div>
+    <span style="color:var(--text-muted);font-size:1.3em;">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
+      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">纠正/确认</div>
+      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">不对就具体说哪里不对</div>
+    </div>
+  </div>
+
+  <h3>纠正的三种方式</h3>
+  <div class="card">
+    <p><strong>小偏差：</strong>直接说"不对，XXX 应该是 YYY，改一下"</p>
+  </div>
+  <div class="card">
+    <p><strong>方向错了：</strong>"停。我重新描述需求：[重新描述]"</p>
+  </div>
+  <div class="card">
+    <p><strong>上下文乱了：</strong><code>/clear</code> 然后重新开始，把关键上下文再给一次</p>
+  </div>
+
+  <div class="tip">
+    <strong>什么时候果断 /clear：</strong>连续纠正 3 次还不对、Claude 开始重复之前的代码、输出越来越长但不解决问题——说明上下文已经脏了，清空比重写更快。
+  </div>
+</section>
+
+<!-- ══════ 付费墙 ══════ -->
+<div class="paywall-container" data-topic="convo">
+  <div class="paywall-content">
+
+<!-- ─── ⑥ 练习 ─── -->
+<section id="practice">
+  <h2>⑥ 改造练习：把模糊需求变清晰</h2>
+
+  <div class="card">
+    <p><strong>练习 1：</strong>把下面这句话改写成"背景+目标+约束"格式：</p>
+    <p style="font-family:var(--font-mono);color:var(--red);margin:8px 0;">"帮我改一下登录页面"</p>
+    <details style="margin-top:12px;">
+      <summary style="cursor:pointer;color:var(--accent);">点击看参考改写</summary>
+      <p style="margin-top:8px;color:var(--green);">"改 pages/login.tsx。把背景色换成品牌色 #1a1a2e，登录按钮改成圆角 8px，hover 时颜色加深。不要动布局和表单逻辑。"</p>
+    </details>
+  </div>
+
+  <div class="card">
+    <p><strong>练习 2：</strong>把下面这句话改写成"背景+目标+约束"格式：</p>
+    <p style="font-family:var(--font-mono);color:var(--red);margin:8px 0;">"帮我优化一下数据库查询"</p>
+    <details style="margin-top:12px;">
+      <summary style="cursor:pointer;color:var(--accent);">点击看参考改写</summary>
+      <p style="margin-top:8px;color:var(--green);">"services/user.ts 的 getUserList 现在一次查 5000 条，页面慢。帮我加分页（每页 20 条），用 Prisma 的 skip+take。不要改返回的数据结构，前端还在用。"</p>
+    </details>
+  </div>
+
+  <div class="card">
+    <p><strong>练习 3：</strong>你最近一次跟 Claude Code 对话，能不能用公式重写一遍？试试看。</p>
+  </div>
+</section>
+
+<!-- ─── ⑦ 快速掌握 ─── -->
+<section id="quick">
+  <h2>⑦ 快速掌握清单</h2>
+  <div class="card">
+    <ol style="padding-left:20px;line-height:2.2;">
+      <li><input type="checkbox" style="margin-right:8px;">记牢公式：背景 + 目标 + 约束</li>
+      <li><input type="checkbox" style="margin-right:8px;">大任务先用 /plan 拆解，小任务直接说</li>
+      <li><input type="checkbox" style="margin-right:8px;">提问前先说文件名，让 Claude 先读</li>
+      <li><input type="checkbox" style="margin-right:8px;">纠错时具体说"哪里不对"，不要只说"错了"</li>
+      <li><input type="checkbox" style="margin-right:8px;">连续 3 次纠正无效 → /clear，重开</li>
+      <li><input type="checkbox" style="margin-right:8px;">每次产出用 /code-review 检查</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ─── ⑧ 速查卡 ─── -->
+<section id="cheatsheet">
+  <h2>⑧ 速查卡</h2>
+  <div class="cheat-sheet">
+    <h2 style="font-size:1.2em;">对话公式速查</h2>
+    <table style="color:#111;">
+      <tr><th style="color:#555;width:25%;">要素</th><th style="color:#555;">怎么写</th></tr>
+      <tr><td>背景</td><td>"在XX项目里，用的是YY技术栈，相关文件是ZZ"</td></tr>
+      <tr><td>目标</td><td>"我想实现AA / 修复BB / 理解CC"</td></tr>
+      <tr><td>约束</td><td>"要求：XXX · 不要：YYY · 注意：ZZZ"</td></tr>
+      <tr><td>纠错</td><td>"不对，我要的是XX不是YY。重来"</td></tr>
+      <tr><td>重开</td><td>/clear + 重新描述背景</td></tr>
+    </table>
+    <p style="font-size:0.8em;margin-top:12px;color:#555;">💡 核心原则：你给的上下文 = AI 产出的上限</p>
+  </div>
+</section>
+
+<!-- ─── ⑨ 总结 ─── -->
+<section id="summary" class="summary-section">
+  <h2>⑨ 总结：最常用 & 最易错</h2>
+  <div class="summary-grid">
+    <div class="scene">
+      <h3>🎯 最常用提问模板</h3>
+      <ul>
+        <li><strong>读文件</strong> — "先读 XX 文件，告诉我这段逻辑是干什么的"</li>
+        <li><strong>写功能</strong> — "/plan 在 XX 文件做 YY 功能，要求 ZZ"</li>
+        <li><strong>修 Bug</strong> — "YY 文件第 N 行这里报错 [贴错误]，帮我修"</li>
+        <li><strong>重构</strong> — "把这个文件里重复的 XX 逻辑提取成独立函数"</li>
+        <li><strong>审查</strong> — "/code-review 刚才的改动"</li>
+      </ul>
+    </div>
+    <div class="mistake">
+      <h3>⚠️ 最常犯错误</h3>
+      <ul>
+        <li><strong>一句话抛给 AI</strong> — "帮我看看这个" = AI 不知道看哪个</li>
+        <li><strong>不提文件路径</strong> — 不给文件 = AI 只能凭项目结构瞎猜</li>
+        <li><strong>会话堆满任务</strong> — 上下文污染，越聊越偏</li>
+        <li><strong>连续纠正不停手</strong> — 3次还不对就该 /clear，不是追问第4次</li>
+        <li><strong>纠错不说原因</strong> — "错了"没用，"我要XX不要YY"才有用</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+  </div><!-- .paywall-content -->
+  <div class="paywall-fade"></div>
+  <div class="paywall-card">
+    <div class="lock-icon">🔒</div>
+    <h3>以下内容需付费解锁</h3>
+    <div class="locked-modules">⑥ 练习 · ⑦ 快速掌握 · ⑧ 速查卡 · ⑨ 总结</div>
+    <div class="paywall-actions">
+      <button class="paywall-btn paywall-btn-single">
+        <span class="price">¥5</span>
+        <span class="price-label">解锁本页全部内容</span>
+      </button>
+      <button class="paywall-btn paywall-btn-all">
+        <span class="price">¥99</span>
+        <span class="price-label">永久解锁全站 · 含进阶专家</span>
+      </button>
+    </div>
+  </div>
+</div><!-- .paywall-container -->
+
+<!-- ══════ ⑩ 考核 ══════ -->
+<section class="quiz-section" data-topic="convo">
+  <div id="quiz-container"></div>
+</section>
+
+</div>
+
+<footer class="site-footer">
+  <p><a href="../index.html">← 返回首页</a></p>
+</footer>
+
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/paywall.js"></script>
+<script>renderPaywall('convo');</script>
+<script src="../assets/js/common.js"></script>
+</body>
+</html>

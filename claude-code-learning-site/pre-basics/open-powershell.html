@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="零基础教你打开 PowerShell：3 种方法，每种都有示意图。PowerShell 是你给电脑发指令的窗口。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+<title>第一次打开 PowerShell — 预备课</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .method-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+  .method-tab { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; }
+  .method-tab .method-num { font-size: 1.5em; font-weight: 800; color: var(--accent); }
+  .method-tab .method-label { font-size: 0.85em; color: var(--text-muted); margin-top: 4px; }
+  @media (max-width: 768px) { .method-tabs { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('open-ps'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>💻 第一次打开 PowerShell</h1>
+  <p class="subtitle">PowerShell 就是一个"给电脑发短信"的窗口——你打字，电脑照做</p>
+</header>
+
+<div class="container" role="main">
+
+<div class="prereq-badge">
+  📖 先修课：<a href="computer-basics.html">认识你的电脑</a>（如果你还不知道"开始菜单"在哪，建议先看那一课）
+</div>
+
+<nav class="module-nav">
+  <a href="#why">① 这个能帮你做什么</a>
+  <a href="#walkthrough">② 一步一步来</a>
+  <a href="#review">③ 再看一遍</a>
+  <a href="#pitfalls">④ 常见坑</a>
+  <a href="#practice">⑤ 做一遍</a>
+  <a href="#cheatsheet">⑥ 速查卡</a>
+  <a href="#learned">⑦ 学到了什么</a>
+</nav>
+
+<!-- ─── ① ─── -->
+<section id="why">
+  <h2>① 什么是 PowerShell？为什么你要学它？</h2>
+  <div class="card" style="font-size:1.15em;font-weight:700;color:var(--accent);text-align:center;padding:28px;">
+    PowerShell = 你打字给电脑下命令的地方<br>
+    学完这节课，你能自己打开它，看到那个蓝色/黑色的窗口
+  </div>
+  <div class="analogy-card" style="background:linear-gradient(135deg, #1a2e2e 0%, var(--surface) 50%);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-xl);margin:var(--space-lg) 0;">
+    <h3 style="color:var(--cyan);">📱 把它想象成"跟电脑发微信"</h3>
+    <table>
+      <tr><th style="width:35%">你用手机的时候</th><th>用 PowerShell 的时候</th></tr>
+      <tr><td>打开微信，找到联系人</td><td>打开 PowerShell，看到一个窗口</td></tr>
+      <tr><td>打字发消息："明天几点见？"</td><td>打字发命令："帮我创建一个文件夹"</td></tr>
+      <tr><td>对方回复你</td><td>电脑执行你的命令，显示结果</td></tr>
+    </table>
+    <p style="color:var(--text-muted);margin-top:12px;font-size:0.9em;">区别只有一个：你发微信是用中文聊天，PowerShell 里用的是简短的英文命令。但别怕——<strong>以后 90% 的命令都是 AI 帮你写的</strong>，你只需要会打开这个窗口就行。</p>
+  </div>
+  <div class="info"><strong>Claude Code 就在 PowerShell 里运行。</strong>所以你要先学会打开 PowerShell，才能用 Claude Code。这是第一步。</div>
+</section>
+
+<!-- ─── ② ─── -->
+<section id="walkthrough">
+  <h2>② 一步一步来：三种打开方式</h2>
+  <p style="color:var(--text-muted);margin-bottom:24px;">三种方法都能打开，选一个你最喜欢的。推荐方法一（最简单）。</p>
+
+  <!-- Method 1 -->
+  <h3 style="color:var(--accent);margin-top:32px;">🔍 方法一：搜索打开（最推荐 👍）</h3>
+  <p style="color:var(--text-muted);margin-bottom:16px;">大多数人用的方法——最快最简单。</p>
+
+  <ol class="step-list">
+    <li class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>点一下任务栏上的搜索框</h3>
+        <div class="step-action">任务栏上有个放大镜图标或搜索框，点它</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame" style="background:#1a1a2e;padding:8px 12px;">
+            <div class="win-taskbar" style="position:static;border-radius:0;height:40px;">
+              <div class="tb-start">⊞</div>
+              <div class="tb-search" style="border:2px solid var(--lv-prebasics);">🔍 powershell</div>
+              <div class="tb-time">15:42</div>
+            </div>
+          </div>
+          <figcaption>👆 点一下任务栏上的搜索框（写着"在此键入以搜索"的那个长条），然后看下一步。</figcaption>
+        </figure>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>输入 "powershell"</h3>
+        <div class="step-action">在搜索框里打这 10 个字母：p-o-w-e-r-s-h-e-l-l</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="smart-placeholder">
+              <div class="ph-header"><div class="ph-dot"></div> 搜索结果预览</div>
+              <div class="ph-body">
+                <div class="ph-preview">
+                  <div style="display:flex;align-items:center;gap:12px;padding:8px;background:var(--surface);border-radius:6px;">
+                    <span style="font-size:1.5em;">💻</span>
+                    <div style="text-align:left;">
+                      <div style="color:#fff;font-weight:700;">Windows PowerShell</div>
+                      <div style="color:var(--text-muted);font-size:0.8em;">桌面应用</div>
+                    </div>
+                    <span style="margin-left:auto;color:var(--green);font-size:0.8em;">← 点这里打开</span>
+                  </div>
+                </div>
+                <p class="ph-note">👆 不用打完——通常打到 "pow" 它就出来了。看到蓝色图标就对了。</p>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 输入后，搜索框下面会出现一个蓝色图标，旁边写着 "Windows PowerShell"。</figcaption>
+        </figure>
+        <div class="checkpoint"><p>输入后，搜索框下面是不是出现了一个蓝色图标、旁边写着 "Windows PowerShell"？</p></div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>点一下那个蓝色图标，打开它</h3>
+        <div class="step-action">用鼠标左键点一下搜索结果里的 "Windows PowerShell"</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="terminal-screenshot">
+              <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+              <div class="term-body">
+                <div style="color:var(--text-muted);font-size:0.8em;margin-bottom:8px;">Windows PowerShell 版权所有 (C) Microsoft Corporation。</div>
+                <div style="margin-bottom:4px;"><span class="term-prompt">PS C:\Users\张三&gt;</span> <span class="term-cursor"></span></div>
+                <div class="term-note">看到这个闪烁的光标了吗？这就是你打字的地方！</div>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 点了之后会弹出一个新窗口。如果背景是蓝色或黑色的——恭喜，你成功了！</figcaption>
+        </figure>
+      </div>
+    </li>
+  </ol>
+
+  <div class="celebration"><span class="celebration-emoji">🎉</span><h3>你打开了 PowerShell！</h3><p>你看，没那么难对吧？这个窗口以后就是你和 AI 聊天的地方。</p></div>
+
+  <!-- Method 2 -->
+  <h3 style="color:var(--accent);margin-top:48px;">🖱️ 方法二：右键开始菜单（备选）</h3>
+  <p style="color:var(--text-muted);margin-bottom:16px;">如果方法一搜不到，试试这个。</p>
+
+  <ol class="step-list">
+    <li class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>在开始菜单图标上点"右键"</h3>
+        <div class="step-action">鼠标移到左下角开始菜单图标 → 点右键（不是左键！）</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="smart-placeholder">
+              <div class="ph-header"><div class="ph-dot"></div> 右键菜单预览</div>
+              <div class="ph-body">
+                <div class="ph-preview">
+                  <div style="background:#1a1a2e;border:1px solid #444;border-radius:4px;padding:8px 0;text-align:left;font-size:0.85em;">
+                    <div style="padding:6px 16px;color:#fff;">程序和功能</div>
+                    <div style="padding:6px 16px;color:#fff;">电源选项</div>
+                    <div style="padding:6px 16px;color:#fff;">事件查看器</div>
+                    <div style="padding:6px 16px;background:var(--lv-prebasics-bg);color:var(--lv-prebasics);font-weight:700;border-left:3px solid var(--lv-prebasics);">Windows PowerShell ← 点这个！</div>
+                    <div style="padding:6px 16px;color:#fff;">任务管理器</div>
+                    <div style="padding:6px 16px;color:#fff;">设置</div>
+                  </div>
+                </div>
+                <p class="ph-note">👆 在弹出的深色菜单里找到 "Windows PowerShell"，左键点它。</p>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 右键（通常用中指点的那个键）——会弹出一个菜单。</figcaption>
+        </figure>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>在菜单里找到 "Windows PowerShell"，左键点它</h3>
+        <div class="step-action">在弹出的菜单里找到这几个字，左键点一下</div>
+        <div class="checkpoint"><p>弹出来的菜单里应该有 "Windows PowerShell" 这一项。点一下就打开了。</p></div>
+      </div>
+    </li>
+  </ol>
+
+  <!-- Method 3 -->
+  <h3 style="color:var(--accent);margin-top:48px;">📁 方法三：在文件夹里打开（高级）</h3>
+  <p style="color:var(--text-muted);margin-bottom:16px;">以后你可能会在特定文件夹里打开 PowerShell——Claude Code 需要在你的项目文件夹里运行。</p>
+  <div class="info"><strong>这个方法现在不用学。</strong>等你看完"文件与文件夹"那节课再回来学也不迟。现在用方法一就够了。</div>
+
+  <!-- What it looks like -->
+  <h3 style="margin-top:48px;">✅ 打开了！它长什么样？</h3>
+  <figure class="screenshot">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot" style="font-size:0.9em;">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div class="annotate-arrow" style="position:absolute;top:50px;right:60px;"></div>
+          <div class="annotate-box" style="top:28px;right:8px;width:70px;height:22px;" data-label="①标题栏"></div>
+          <div style="color:var(--text-muted);font-size:0.8em;">Windows PowerShell 版权所有 (C) Microsoft Corporation。</div>
+          <div style="margin:8px 0;"><span class="term-highlight">PS C:\Users\张三&gt;</span> <span style="color:var(--text-muted);font-size:0.8em;">← ② 这行告诉你"在哪个文件夹"</span></div>
+          <div><span class="term-cursor"></span> <span style="color:var(--text-muted);font-size:0.8em;">← ③ 闪烁的光标 = 打字的地方</span></div>
+          <div class="term-note" style="position:relative;z-index:1;">🔍 三个关键部分：①窗口标题 ②当前路径 ③打字光标</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 看到那个闪烁的下划线了吗？那里就是你打字的地方。</figcaption>
+  </figure>
+  <div class="checkpoint"><p>窗口打开后，你应该看到类似 <code style="background:var(--bg);padding:2px 8px;border-radius:3px;color:var(--green);">PS C:\Users\你的名字&gt;</code> 这样一行字，最后有个闪烁的光标。</p></div>
+</section>
+
+<!-- ─── ③ ─── -->
+<section id="review">
+  <h2>③ 再看一遍：方法一全程演示</h2>
+  <div class="smart-placeholder">
+    <div class="ph-header"><div class="ph-dot"></div> 打开 PowerShell 全程流程图</div>
+    <div class="ph-body">
+      <div class="ph-preview">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:0.85em;">
+          <span style="background:var(--surface);padding:8px 12px;border-radius:20px;">🔍 点搜索框</span>
+          <span style="color:var(--text-muted);">→</span>
+          <span style="background:var(--surface);padding:8px 12px;border-radius:20px;">⌨️ 输入 powershell</span>
+          <span style="color:var(--text-muted);">→</span>
+          <span style="background:var(--surface);padding:8px 12px;border-radius:20px;">💻 点蓝色图标</span>
+          <span style="color:var(--text-muted);">→</span>
+          <span style="background:var(--surface);padding:8px 12px;border-radius:20px;">✅ 窗口打开了！</span>
+        </div>
+      </div>
+      <p class="ph-note">💡 跟着这个流程在自己电脑上操作一遍。能独立打开两次，才算真正会了。</p>
+    </div>
+  </div>
+  <div class="try-again"><strong>💡 现在自己试一遍：</strong>关掉 PowerShell 窗口（点 ✕），然后用方法一重新打开它。</div>
+</section>
+
+
+<section id="pitfalls">
+  <h2>④ 最容易遇到的 3 个问题</h2>
+  <div class="pitfall"><div class="pitfall-title">坑 1：搜 "powershell" 搜不到</div><p style="color:var(--text-muted);">可能是拼错了，或者 Windows 版本比较旧。</p><div class="pitfall-fix">检查拼写：p-o-w-e-r-s-h-e-l-l（没有空格，结尾两个 L）。如果还是搜不到，试试搜 "cmd"（命令提示符），功能差不多。或者用方法二（右键开始菜单）。</div></div>
+  <div class="pitfall"><div class="pitfall-title">坑 2：窗口一闪就没了</div><p style="color:var(--text-muted);">点开之后窗口闪了一下就消失了。</p><div class="pitfall-fix">试试：在搜索结果的 "Windows PowerShell" 上点<strong>右键</strong> → 选择"以管理员身份运行"。如果还不行，重启电脑再试。</div></div>
+  <div class="pitfall"><div class="pitfall-title">坑 3：窗口里的字看不懂</div><p style="color:var(--text-muted);">打开后看到一堆英文，不知道什么意思。</p><div class="pitfall-fix">正常！现在你只需要知道一件事：那个闪烁的光标就是你打字的地方。其余的字是电脑在告诉你"我准备好了"。以后 AI 会帮你处理这些。</div></div>
+</section>
+
+<section id="practice">
+  <h2>⑤ 做一遍：动手练习</h2>
+  <div class="practice-box"><h3>你的练习任务</h3><div class="practice-task">1. 用<strong>方法一</strong>（搜索）打开 PowerShell<br>2. 看看窗口里那个闪烁的光标——你找到它了吗？<br>3. 关掉窗口（点 ✕）<br>4. 等 5 秒，用<strong>方法一</strong>再打开一次<br>5. 再关掉，用<strong>方法二</strong>（右键开始菜单）打开</div><p class="practice-hint">💡 目标：你能用至少两种方法打开 PowerShell。反复练到不需要看教程为止。</p></div>
+</section>
+
+<section id="cheatsheet">
+  <h2>⑥ 速查卡</h2>
+  <div class="cheat-sheet"><h2>💻 打开 PowerShell 速查卡</h2><table style="color:#000;"><tr><th style="color:#000;">方法</th><th style="color:#000;">操作</th><th style="color:#000;">难度</th></tr><tr><td>🔍 搜索</td><td>点任务栏搜索框 → 输入 powershell → 点图标</td><td>⭐ 最简单</td></tr><tr><td>🖱️ 右键菜单</td><td>右键开始菜单图标 → 点 Windows PowerShell</td><td>⭐⭐ 备选</td></tr><tr><td>📁 文件夹内</td><td>在文件夹地址栏输入 powershell → 回车</td><td>⭐⭐⭐ 以后学</td></tr></table><p style="color:#555;font-size:0.8em;margin-top:8px;">💡 PowerShell 就是给电脑发指令的窗口。Claude Code 就在这里运行。</p></div>
+</section>
+
+<section id="learned">
+  <h2>⑦ 检查一下：你学会了吗？</h2>
+  <ul class="learned-list">
+    <li>我能用搜索方式（方法一）打开 PowerShell</li>
+    <li>我知道 PowerShell 是一个蓝色/黑色的窗口，里面有个闪烁的光标</li>
+    <li>我知道 PowerShell 就是"给电脑发指令"的地方</li>
+    <li>我能用右键开始菜单（方法二）打开 PowerShell</li>
+    <li>如果搜不到，我知道检查拼写（powershell）</li>
+  </ul>
+  <div class="try-again" style="margin-top:32px;"><strong>🤔 打不开？</strong> 回头看看"常见坑"那一节。如果试了所有方法都不行，问身边会用电脑的人帮你看一眼。<br><span style="font-size:0.85em;color:var(--text-muted);">下一课：<a href="install-claude-code.html">安装 Claude Code →</a></span></div>
+</section>
+
+<section class="quiz-section" data-topic="open-ps"><div id="quiz-container"></div></section>
+
+</div>
+
+<footer class="site-footer">
+  <p>Claude Code 学习站 · 预备课 · 零基础也能学会</p>
+  <p style="margin-top:4px;"><a href="../index.html">返回首页</a></p>
+</footer>
+
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>

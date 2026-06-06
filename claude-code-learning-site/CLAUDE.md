@@ -1,0 +1,257 @@
+# Claude Code 学习站
+
+纯静态 HTML/CSS/JS 构建的 Claude Code 互动学习网站，面向国内用户。
+
+## 技术栈
+
+- 纯静态 HTML + CSS + JS，无框架、无构建工具
+- 暗色主题（GitHub-dark 风格）
+- localStorage 做解锁状态 + 激活码跨设备恢复
+- 无需后端、无需数据库、无需登录
+
+## 文件结构
+
+```
+claude-code-learning-site/
+├── index.html                  # 首页（四级路线 + 6预备课 + 6入门卡片）
+├── CLAUDE.md                   # 本文件
+├── assets/
+│   ├── css/
+│   │   ├── common.css          # 全局样式（设计令牌、布局、组件、截图样式）
+│   │   ├── paywall.css         # 付费墙样式
+│   │   └── quiz.css            # 考核系统样式
+│   ├── js/
+│   │   ├── common.js           # 公共脚本（复制按钮、导航高亮、滚动监听）
+│   │   ├── nav.js              # 共享导航栏（一处修改全站生效）
+│   │   ├── paywall.js          # 付费墙逻辑（localStorage + 渲染）
+│   │   ├── recovery.js         # 激活码系统（生成 + 校验）
+│   │   └── quiz.js             # 考核系统（5题 / 80%达标 / 冷却 / 手写模式）
+│   └── images/
+│       ├── README.md           # 截图规范和文件清单
+│       ├── screenshots/        # 静态截图（PNG，1280×720）
+│       └── gifs/               # 操作演示（MP4，10-30秒）
+├── pre-basics/                 # 🆕 预备课（7 模块简化模板，始终免费）
+│   ├── computer-basics.html    # ① 认识你的电脑
+│   ├── open-powershell.html    # ② 第一次打开 PowerShell
+│   ├── install-claude-code.html # ③ 安装 Claude Code
+│   ├── first-conversation.html # ④ 第一次跟 AI 对话
+│   ├── file-basics.html        # ⑤ 文件与文件夹基础
+│   └── when-things-go-wrong.html # ⑥ 遇到错误怎么办
+├── beginner/                   # 入门课程（6个主题，10 模块模板）
+│   ├── claude-intro.html       # ① Claude Code 简介
+│   ├── plan-guide.html         # ② /plan 命令完全指南
+│   ├── shortcuts.html          # ③ 快捷键大全
+│   ├── conversation-skills.html # ④ 对话技巧入门
+│   ├── project-init.html       # ⑤ 项目初始化
+│   └── daily-workflow.html     # ⑥ 日常工作流
+├── intermediate/               # 进阶课程（待建）
+├── expert/                     # 专家课程（待建）
+└── pay/
+    ├── pay.html                # 支付页（¥1强制 / ¥5单页 / ¥99全站）
+    ├── success.html            # 支付成功页（显示激活码）
+    └── recover.html            # 激活码恢复页
+```
+
+## 设计系统
+
+### 色彩令牌（`common.css :root`）
+
+| 用途 | 变量 | 值 |
+|------|------|-----|
+| 背景 | `--bg` | `#0d1117` |
+| 表面 | `--surface` | `#161b22` |
+| 边框 | `--border` | `#30363d` |
+| 文字 | `--text` | `#c9d1d9` |
+| 次要文字 | `--text-muted` | `#8b949e` |
+| 强调色 | `--accent` | `#58a6ff` |
+| 绿色（成功） | `--green` | `#3fb950` |
+| 橙色（警告） | `--orange` | `#d2991d` |
+| 紫色（付费） | `--purple` | `#a371f7` |
+
+### 等级色
+
+| 等级 | 颜色 | 用途 |
+|------|------|------|
+| 预备课 | `--lv-prebasics: #f0a860` | 暖黄顶部条纹（全免费） |
+| 入门 | `--lv-beginner: #3fb950` | 绿色顶部条纹 |
+| 进阶 | `--lv-intermediate: #d2991d` | 橙色顶部条纹 |
+| 专家 | `--lv-expert: #a371f7` | 紫色顶部条纹 |
+
+### 排版
+
+- 中文字体：`-apple-system, 'Noto Sans SC', sans-serif`
+- 代码字体：`'JetBrains Mono', 'Fira Code', monospace`
+- 文件上限：800 行（CSS 当前 ~900 行）
+
+## 教学模板
+
+### 预备课：7 模块简化模板
+
+预备课面向电脑零基础用户。每个页面**始终免费**，不包含付费墙。
+
+```
+① 这个能帮你做什么 — 一句话，用生活场景
+② 一步一步来 — 每步 1 张截图 + 1 句话 + "你应该看到"检查点
+③ 再看一遍 — 完整流程 GIF（10-30 秒无声循环）
+④ 常见坑 — 2-3 个易犯错误 + 解决方案（每个配截图）
+⑤ 做一遍 — 实操练习
+⑥ 速查卡 — 打印友好卡片
+⑦ 学到了什么 — 勾选确认清单
+────── 考核 ──────
+⑩ 学习考核 — 5道选择题，答对4题（80%）即通过
+```
+
+### 入门/进阶/专家：10 模块教学模板
+
+每个主题页面**必须**遵循此结构（shortcuts.html 例外，它是参考卡而非教学页）：
+
+```
+① 核心理解 — 一句话说清这是什么
+② 输入模式 — 怎么用（方式/公式/命令）
+③ 实战场景 — 什么时候用
+④ 好 vs 烂 — 正确用法 vs 错误用法（表格）
+⑤ 工作流 — 标准操作流程（steps 图表）
+────── 付费墙 ──────
+⑥ 练习 — 互动练习题（翻转卡片/自测/改写）
+⑦ 快速掌握 — 勾选清单
+⑧ 速查卡 — 打印友好的白底黑字速查表
+⑨ 总结 — 双栏：🎯最常用 + ⚠️最易错
+────── 考核 ──────
+⑩ 学习考核 — 5道选择题，答对4题（80%）即通过
+```
+
+### ⑩ 考核区域 HTML
+
+```html
+<section class="quiz-section" data-topic="TOPIC_ID">
+  <div id="quiz-container"></div>
+</section>
+```
+
+题目数据在 `assets/js/quiz.js` 的 `QUIZ_DATA` 对象中定义。
+
+**页面中 ⑥-⑨ 必须包裹在：**
+```html
+<div class="paywall-container" data-topic="TOPIC_ID">
+  <div class="paywall-content">
+    <!-- ⑥-⑨ sections -->
+  </div>
+  <div class="paywall-fade"></div>
+  <div class="paywall-card">...</div>
+</div>
+```
+
+## 添加新页面的步骤
+
+1. 复制任意已有入门页面作为模板
+2. 改 hero `<h1>` 和 `<title>`（后缀用 `— 入门`）
+3. 填充 ①-⑨ 内容，标记好付费墙和 ⑩ 考核区域
+4. 在 `assets/js/nav.js` 的三个 window 变量里加新 topic（`TOPIC_ORDER` + `TOPIC_NAMES` + `TOPIC_PAGES` + `NAV_PAGES`）—— **这是唯一的 topic 定义源**
+5. 在 `assets/js/quiz.js` 的 `QUIZ_DATA` 里加 5 道选择题 + 手写内容
+6. 更新 `index.html`：卡片加 `data-topic` 属性，如非首个则自动锁定
+7. 所有其他文件（`recovery.js`、`pay.html`、`success.html`、`recover.html`）自动从 `window.TOPIC_*` 读取，无需额外修改
+
+## 付费系统
+
+### 状态存储
+
+| Key | 类型 | 说明 |
+|-----|------|------|
+| `cc-learn-all-access` | `"true"` / 不存在 | 全站永久解锁 |
+| `cc-learn-unlocked` | JSON 数组 | 单页解锁的 topic ID 列表 |
+| `cc-activation-codes` | JSON 对象 | 激活码缓存（同浏览器） |
+
+### Topic ID 映射
+
+| ID | 页面 | 中文名 |
+|----|------|--------|
+| `pc-basics` | computer-basics.html | 认识你的电脑 |
+| `open-ps` | open-powershell.html | 打开 PowerShell |
+| `install-cc` | install-claude-code.html | 安装 Claude Code |
+| `first-chat` | first-conversation.html | 第一次对话 |
+| `file-basics` | file-basics.html | 文件与文件夹 |
+| `troubleshoot` | when-things-go-wrong.html | 遇到错误怎么办 |
+| `intro` | claude-intro.html | Claude Code 简介 |
+| `plan` | plan-guide.html | /plan 命令完全指南 |
+| `shortcuts` | shortcuts.html | 快捷键大全 |
+| `convo` | conversation-skills.html | 对话技巧入门 |
+| `init` | project-init.html | 项目初始化 |
+| `workflow` | daily-workflow.html | 日常工作流 |
+
+### 激活码
+
+- 格式：`CC-XXXX-XXXX`（10 字符）
+- 自包含验证，无需后端
+- 算法：type_byte + topic_byte + random×2 + checksum×4
+- 安全级别：对 ¥5-99 课程足够
+
+## 考核与递进解锁系统
+
+### 流程
+
+```
+学完 ①-⑨ → ⑩ 做 5 道选择题
+  ├─ ✅ ≥4/5 正确 → 下一主题立即解锁
+  └─ ❌ <4/5 正确 → 选择：
+        ├─ ⏰ 1 天后自动解锁
+        ├─ ⏰ 3 天后自动解锁（推荐）
+        ├─ 💰 ¥1 立即解锁（跳 pay.html?plan=force）
+        └─ ✍️ 手写 2 遍核心内容 + 拍照提交 → 解锁
+```
+
+### localStorage Key
+
+| Key | 类型 | 说明 |
+|-----|------|------|
+| `cc-learn-quiz` | JSON | `{topicId: {score, total, passed, date, method?, forceUnlocked?}}` |
+| `cc-learn-cooldown` | JSON | `{topicId: "ISO-date"}` — 冷却到期时间 |
+| `cc-handwrite-{topicId}` | JSON | `{completed, date, photoPreview}` — 手写记录 |
+
+### 题目数据
+
+在 `assets/js/quiz.js` 的 `QUIZ_DATA` 对象中。每个 topic 包含：
+- `handwritingContent`: 4 条抄写内容（自动提取自页面的关键信息）
+- `questions`: 5 道选择题，每题 {q, opts: [A,B,C,D], ans: 正确索引}
+
+### 添加新 topic 时
+
+1. 在 `QUIZ_DATA` 添加题目和手写内容
+2. 在 `TOPIC_ORDER` 数组末尾添加 topic ID
+3. 在 `TOPIC_NAMES` 和 `TOPIC_PAGES` 添加映射
+
+### 主题递进顺序
+
+`pc-basics → open-ps → install-cc → first-chat → file-basics → troubleshoot → intro → plan → shortcuts → convo → init → workflow`
+
+首页卡片根据 `isTopicUnlockedByProgress()` 显示 🔒 锁定状态和 ⏳ 冷却倒计时。预备课卡片始终不锁定（全免费）。
+
+## 当前状态
+
+- ✅ 预备课 6 个主题完成（7 模块简化模板，始终免费，CSS 插图已替换占位符）
+- ✅ 入门 6 个主题完成（含付费墙 + 激活码 + 考核递进系统）
+- ✅ GitHub Pages 部署上线 — https://hcpthanks.github.io/hcpthanks/
+- ✅ CSS 插图组件（`.terminal-screenshot`, `.win-desktop`, `.win-window`, `.smart-placeholder`）替换全部 36 个 `.img-placeholder` 占位符
+- ✅ 终端插图 Win10 风格统一（`.terminal-screenshot` 标题栏已改为 Win10 PowerShell 白底+右侧按钮，15 处全部更新）
+- ⬜ 进阶 4 个主题（占位卡片）
+- ⬜ 专家 3 个主题（占位卡片）
+- ⬜ 国内 CDN + 域名备案
+- ⬜ 微信支付真实接入 + 后端设计
+- ⬜ 数据统计看板（等微信支付接入后实现）
+
+## 下一步计划（2026-06-06 更新）
+
+1. **入门课程视觉化** — 给现有 6 个入门页加截图和降低难度
+2. **找真人测试** — 找 1 个电脑小白，看能否独立完成预备课 6 节
+3. **根据反馈调整** — 难度、语言、截图数量都可能需要调
+4. **入门课程视觉化** — 给现有 6 个入门页加截图和降难度（Phase 3）
+5. **国内 CDN + 域名备案** — 解决 GitHub Pages 国内访问慢的问题
+6. **微信支付后端设计** — 商户号申请、支付回调、服务端签名验证
+
+## 开发注意事项
+
+- **不要引入框架或构建工具**，保持纯静态
+- 所有页面必须包含 `<meta name="description">`、favicon、`role="main"`
+- 导航用 `nav.js` 的 `document.write` 动态生成，不要手动写 `<nav>`
+- 修改付费墙/激活码逻辑时，确保 `nav.js`、`paywall.js`、`recovery.js` 的 TOPIC 映射保持同步
+- 每次改动后手动开浏览器验证（无需 build 步骤）
+- 暗色主题下 `.cheat-sheet` 组件必须白底黑字（打印友好）

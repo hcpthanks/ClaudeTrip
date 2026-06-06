@@ -1,0 +1,151 @@
+/* ═══════════════════════════════════════════════════════
+   付费墙样式 — ⑤→⑥ 渐变过渡 + 解锁卡片
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Paywall Container ── */
+.paywall-container {
+  position: relative;
+  margin-top: var(--space-xl);
+}
+
+/* Hidden content behind paywall */
+.paywall-content {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.5s var(--ease-out-expo),
+              opacity 0.4s var(--ease-out-expo);
+}
+
+.paywall-content.unlocked {
+  max-height: 20000px;
+  opacity: 1;
+}
+
+/* ── Gradient fade ── */
+.paywall-fade {
+  position: relative;
+  height: 80px;
+  margin-top: -80px;
+  background: linear-gradient(to bottom, transparent 0%, var(--bg) 85%);
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.paywall-content.unlocked ~ .paywall-fade,
+.paywall-container.unlocked .paywall-fade {
+  opacity: 0;
+  height: 0;
+  margin-top: 0;
+}
+
+/* ── Paywall Card ── */
+.paywall-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  text-align: center;
+  margin: var(--space-lg) 0;
+  z-index: 3;
+  position: relative;
+}
+
+.paywall-card .lock-icon {
+  font-size: 2.2em;
+  margin-bottom: var(--space-sm);
+}
+
+.paywall-card h3 {
+  font-size: 1.2em;
+  color: var(--text-high);
+  margin-bottom: var(--space-xs);
+}
+
+.paywall-card .locked-modules {
+  color: var(--text-muted);
+  font-size: 0.9em;
+  margin-bottom: var(--space-lg);
+}
+
+/* ── Price Buttons ── */
+.paywall-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.paywall-btn {
+  padding: 14px 28px;
+  border-radius: var(--radius-lg);
+  font-size: 0.95em;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all var(--duration-fast);
+  text-align: center;
+  min-width: 180px;
+}
+
+.paywall-btn-single {
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  color: var(--accent);
+}
+
+.paywall-btn-single:hover {
+  background: var(--accent-dim);
+  border-color: #79b8ff;
+  color: #79b8ff;
+}
+
+.paywall-btn-all {
+  background: var(--purple);
+  border: 2px solid var(--purple);
+  color: #fff;
+}
+
+.paywall-btn-all:hover {
+  background: #b380f8;
+  border-color: #b380f8;
+}
+
+.paywall-btn .price {
+  display: block;
+  font-size: 1.3em;
+  margin-bottom: 2px;
+}
+
+.paywall-btn .price-label {
+  display: block;
+  font-size: 0.75em;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+/* Already unlocked hint */
+.paywall-unlocked-hint {
+  color: var(--green);
+  font-size: 0.85em;
+  margin-top: var(--space-md);
+  display: none;
+}
+
+.paywall-unlocked-hint.show {
+  display: block;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .paywall-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .paywall-btn {
+    min-width: 100%;
+    max-width: 320px;
+  }
+}
