@@ -9,15 +9,16 @@ window.CC_SITE_CONFIG = {
   // 新域名直接加到这里即可，anti-theft.js 会自动读取
   allowedDomains: [
     'hcpthanks.github.io',
+    'hcpthanks.com',
+    'www.hcpthanks.com',
     'localhost',
     '127.0.0.1'
-    // 例: 'www.your-domain.cn',   ← 新域名加这里
   ],
 
   // ══════ 官方信息 ══════
-  officialDomain: 'hcpthanks.github.io',
+  officialDomain: 'hcpthanks.com',
   officialName:    'Claude Code 学习站',
-  officialPayUrl:  'https://hcpthanks.github.io/ClaudeTrip/pay/pay.html',
-  officialSiteUrl: 'https://hcpthanks.github.io/ClaudeTrip/'
+  officialPayUrl:  'https://www.hcpthanks.com/pay/pay.html',
+  officialSiteUrl: 'https://www.hcpthanks.com/'
 
 };
