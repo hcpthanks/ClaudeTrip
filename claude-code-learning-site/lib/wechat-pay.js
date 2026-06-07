@@ -203,7 +203,8 @@ const ACT_SALT = 0xCC1E4;
 // Topic 顺序必须与 assets/js/nav.js 中 TOPIC_ORDER 完全一致
 const TOPIC_ORDER = [
   'pc-basics', 'open-ps', 'install-cc', 'first-chat', 'file-basics',
-  'troubleshoot', 'intro', 'plan', 'shortcuts', 'convo', 'init', 'workflow',
+  'troubleshoot', 'deepseek', 'ai-for-business', 'talk-to-ai', 'ai-writing', 'bridge-to-coding',
+  'intro', 'plan', 'shortcuts', 'convo', 'init', 'workflow',
 ];
 
 function topicToChar(topicId) {
@@ -225,7 +226,7 @@ function computeCheck(prefix) {
 }
 
 function generateActivationCode(plan, topicId) {
-  const typeChar = plan === 'all' ? 'A' : 'S';
+  const typeChar = plan === 'all' ? 'A' : plan === 'force' ? 'F' : 'S';
   const topicChar = plan === 'all' ? '0' : topicToChar(topicId);
 
   // 用 crypto.randomBytes 替代 Math.random（服务端安全随机）

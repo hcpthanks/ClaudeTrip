@@ -13,7 +13,7 @@
 
 ```
 claude-code-learning-site/
-├── index.html                  # 首页（四级路线 + 6预备课 + 6入门卡片）
+├── index.html                  # 首页（五级路线 + 6预备课 + 4应用课 + 6入门卡片）
 ├── CLAUDE.md                   # 本文件
 ├── package.json                # Vercel Functions 依赖（supabase-js）
 ├── vercel.json                 # Vercel 部署配置（Node.js 20.x）
@@ -40,13 +40,19 @@ claude-code-learning-site/
 │   └── payment-notify.js       # POST 微信支付结果回调（验签+解密+发码）
 ├── lib/
 │   └── wechat-pay.js           # 微信支付工具库（API v3 签名/下单/查单/验签/激活码）
-├── pre-basics/                 # 🆕 预备课（7 模块简化模板，始终免费）
+├── pre-basics/                 # 预备课（7 模块简化模板，始终免费）
 │   ├── computer-basics.html    # ① 认识你的电脑
 │   ├── open-powershell.html    # ② 第一次打开 PowerShell
 │   ├── install-claude-code.html # ③ 安装 Claude Code
 │   ├── first-conversation.html # ④ 第一次跟 AI 对话
 │   ├── file-basics.html        # ⑤ 文件与文件夹基础
-│   └── when-things-go-wrong.html # ⑥ 遇到错误怎么办
+│   ├── when-things-go-wrong.html # ⑥ 遇到错误怎么办
+│   └── deepseek-setup.html     # ⑦ 让 Claude Code 在国内也能用
+├── applied/                    # 🆕 应用课（10 模块模板，含付费墙）
+│   ├── ai-for-business.html    # ① AI 能帮你做什么
+│   ├── talk-to-ai.html         # ② 怎么让 AI 听懂你
+│   ├── ai-writing.html         # ③ 让 AI 帮你写文案
+│   └── bridge-to-coding.html   # ④ 接下来学什么
 ├── beginner/                   # 入门课程（6个主题，10 模块模板）
 │   ├── claude-intro.html       # ① Claude Code 简介
 │   ├── plan-guide.html         # ② /plan 命令完全指南
@@ -83,6 +89,7 @@ claude-code-learning-site/
 | 等级 | 颜色 | 用途 |
 |------|------|------|
 | 预备课 | `--lv-prebasics: #f0a860` | 暖黄顶部条纹（全免费） |
+| 应用课 | `--lv-applied: #2eaadc` | 青色顶部条纹（AI帮生意） |
 | 入门 | `--lv-beginner: #3fb950` | 绿色顶部条纹 |
 | 进阶 | `--lv-intermediate: #d2991d` | 橙色顶部条纹 |
 | 专家 | `--lv-expert: #a371f7` | 紫色顶部条纹 |
@@ -235,6 +242,11 @@ claude-code-learning-site/
 | `first-chat` | first-conversation.html | 第一次对话 |
 | `file-basics` | file-basics.html | 文件与文件夹 |
 | `troubleshoot` | when-things-go-wrong.html | 遇到错误怎么办 |
+| `deepseek` | deepseek-setup.html | 让 CC 在国内也能用 |
+| `ai-for-business` | ai-for-business.html | AI 能帮你做什么 |
+| `talk-to-ai` | talk-to-ai.html | 怎么让 AI 听懂你 |
+| `ai-writing` | ai-writing.html | 让 AI 帮你写文案 |
+| `bridge-to-coding` | bridge-to-coding.html | 接下来学什么 |
 | `intro` | claude-intro.html | Claude Code 简介 |
 | `plan` | plan-guide.html | /plan 命令完全指南 |
 | `shortcuts` | shortcuts.html | 快捷键大全 |
@@ -285,13 +297,14 @@ claude-code-learning-site/
 
 ### 主题递进顺序
 
-`pc-basics → open-ps → install-cc → first-chat → file-basics → troubleshoot → intro → plan → shortcuts → convo → init → workflow`
+`pc-basics → open-ps → install-cc → first-chat → file-basics → troubleshoot → deepseek → ai-for-business → talk-to-ai → ai-writing → bridge-to-coding → intro → plan → shortcuts → convo → init → workflow`
 
 首页卡片根据 `isTopicUnlockedByProgress()` 显示 🔒 锁定状态和 ⏳ 冷却倒计时。预备课卡片始终不锁定（全免费）。
 
 ## 当前状态
 
-- ✅ 预备课 6 个主题完成（7 模块简化模板，始终免费，CSS 插图已替换占位符）
+- ✅ 预备课 7 个主题完成（7 模块简化模板，始终免费，CSS 插图已替换占位符）
+- ✅ 应用课 4 个主题完成（10 模块模板，含付费墙，面向个体户生意场景）
 - ✅ 入门 6 个主题完成（含付费墙 + 激活码 + 考核递进系统，已添加 13 个 CSS 终端插图）
 - ✅ GitHub Pages 部署上线 — https://hcpthanks.github.io/hcpthanks/
 - ✅ CSS 插图组件（`.terminal-screenshot`, `.win-desktop`, `.win-window`, `.smart-placeholder`）替换全部 36 个 `.img-placeholder` 占位符
@@ -331,3 +344,20 @@ claude-code-learning-site/
   - 改价格只需改 `api/create-order.js` 的 `PLAN_PRICES` 和 `pay.html` 的 `price` 计算
   - API 用 Vercel Functions 部署，本地调试需 `vercel dev`
   - 绝对不要在 API 文件中使用 `console.log`
+
+## AI 协作规范
+
+> 以下规则适用于 Claude Code 在此项目中的所有操作。
+
+### 通用操作规范
+
+1. **优先编辑，非必要不重写** — 改一处用 Edit，不 Write 整个文件；除非改动超过文件一半
+2. **不重复读已读文件** — 同一个文件，如果没被编辑过，不要再次 Read；信任之前的读取结果
+3. **输出简洁，推理详尽** — 对用户只说结论和关键信息；但 `thinking` 块里的推理过程必须充分展开
+
+### 代码规范
+
+1. **单文件 ≤ 800 行** — 超过 800 行必须拆分为多个文件
+2. **嵌套 ≤ 4 层** — 超过 4 层嵌套用提前返回（early return）或提取函数打破
+
+> 与全局 ECC rules（`.claude/rules/ecc/common/coding-style.md`）保持一致。
