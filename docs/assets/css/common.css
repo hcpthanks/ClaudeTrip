@@ -44,6 +44,8 @@
   --lv-intermediate-bg: #2e2a1a;
   --lv-expert: #a371f7;
   --lv-expert-bg: #2e1a2e;
+  --lv-applied: #2eaadc;
+  --lv-applied-bg: #1a2a2e;
 
   /* Spacing scale */
   --space-xs: 4px;
@@ -183,6 +185,7 @@ a:hover { color: var(--text-high); }
 .badge.lv-prebasics { border-color: var(--lv-prebasics); color: var(--lv-prebasics); }
 .badge.lv-beginner { border-color: var(--lv-beginner); color: var(--lv-beginner); }
 .badge.lv-intermediate { border-color: var(--lv-intermediate); color: var(--lv-intermediate); }
+.badge.lv-applied { border-color: var(--lv-applied); color: var(--lv-applied); }
 .badge.lv-expert { border-color: var(--lv-expert); color: var(--lv-expert); }
 
 /* ── Cards ── */
@@ -232,6 +235,7 @@ a:hover { color: var(--text-high); }
 .topic-card.lv-beginner .level-stripe { background: var(--lv-beginner); }
 .topic-card.lv-intermediate .level-stripe { background: var(--lv-intermediate); }
 .topic-card.lv-expert .level-stripe { background: var(--lv-expert); }
+.topic-card.lv-applied .level-stripe { background: var(--lv-applied); }
 .topic-card .level-tag {
   display: inline-block; padding: 3px 10px; border-radius: var(--radius-sm);
   font-size: 0.72em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
@@ -241,6 +245,7 @@ a:hover { color: var(--text-high); }
 .topic-card.lv-beginner .level-tag { background: var(--lv-beginner-bg); color: var(--lv-beginner); }
 .topic-card.lv-intermediate .level-tag { background: var(--lv-intermediate-bg); color: var(--lv-intermediate); }
 .topic-card.lv-expert .level-tag { background: var(--lv-expert-bg); color: var(--lv-expert); }
+.topic-card.lv-applied .level-tag { background: var(--lv-applied-bg); color: var(--lv-applied); }
 .topic-card .topic-icon { font-size: 1.6em; margin-bottom: var(--space-sm); }
 .topic-card h3 { font-size: 1.1em; margin-bottom: var(--space-xs); }
 .topic-card p { color: var(--text-muted); font-size: 0.88em; line-height: 1.5; }

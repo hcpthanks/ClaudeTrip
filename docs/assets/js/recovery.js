@@ -37,7 +37,7 @@
 
   /* ── Generate: CC-[S/A][topic][random×2]-[check×4] ── */
   window.generateActivationCode = function (type, topicId) {
-    var typeChar = type === 'all' ? 'A' : 'S';
+    var typeChar = type === 'all' ? 'A' : type === 'force' ? 'F' : 'S';
     var topicChar = type === 'all' ? '0' : topicToChar(topicId);
     var random = CHARS[Math.floor(Math.random() * CHARS.length)]
                + CHARS[Math.floor(Math.random() * CHARS.length)];
@@ -59,7 +59,7 @@
 
     // Match: CC-[S/A][topic-char][2 random]-[4 check]
     var parts = code.match(
-      /^CC-([SA])([A-HJ-NP-Z2-90])([A-HJ-NP-Z2-9]{2})-([A-HJ-NP-Z2-9]{4})$/
+      /^CC-([SAF])([A-HJ-NP-Z2-90])([A-HJ-NP-Z2-9]{2})-([A-HJ-NP-Z2-9]{4})$/
     );
     if (!parts) {
       // Fallback: check localStorage cache
@@ -72,8 +72,9 @@
     var check = computeCheck(prefix);
     if (check !== parts[4]) return null;
 
-    var type = parts[1] === 'A' ? 'all' : 'single';
-    var topicId = parts[1] === 'A' ? null : charToTopic(parts[2]);
+    var typeChar = parts[1];
+    var type = typeChar === 'A' ? 'all' : typeChar === 'F' ? 'force' : 'single';
+    var topicId = typeChar === 'A' ? null : charToTopic(parts[2]);
 
     return { type: type, topicId: topicId };
   };
@@ -83,6 +84,17 @@
     if (!result) return false;
     if (result.type === 'all') {
       localStorage.setItem('cc-learn-all-access', 'true');
+    } else if (result.type === 'force' && result.topicId) {
+      // Force unlock: mark quiz passed + forceUnlocked（跳过冷却，解锁下一课）
+      var quizState = JSON.parse(localStorage.getItem('cc-learn-quiz') || '{}');
+      quizState[result.topicId] = { score: 0, total: 5, passed: true, date: new Date().toISOString(), forceUnlocked: true };
+      localStorage.setItem('cc-learn-quiz', JSON.stringify(quizState));
+      // Also unlock page content
+      var topicsF = JSON.parse(localStorage.getItem('cc-learn-unlocked') || '[]');
+      if (topicsF.indexOf(result.topicId) === -1) {
+        topicsF.push(result.topicId);
+        localStorage.setItem('cc-learn-unlocked', JSON.stringify(topicsF));
+      }
     } else if (result.topicId) {
       var topics = JSON.parse(localStorage.getItem('cc-learn-unlocked') || '[]');
       if (topics.indexOf(result.topicId) === -1) {

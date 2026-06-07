@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code 在国内用不了？给它换个国产发动机——DeepSeek。不用魔法、不用翻墙，每步都有截图。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+<title>让 Claude Code 在国内也能用 — 预备课</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .analogy-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  @media (max-width: 600px) { .analogy-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('deepseek'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>🔧 让 Claude Code 在国内也能用</h1>
+  <p class="subtitle">给它换个"国产发动机"——不用魔法、不用翻墙，每个月几块钱</p>
+</header>
+
+<div class="container" role="main">
+
+<div class="prereq-badge">
+  📖 先修课：<a href="install-claude-code.html">安装 Claude Code</a> + <a href="first-conversation.html">第一次对话</a>（你必须已经装好了 Claude Code）
+</div>
+
+<nav class="module-nav">
+  <a href="#why">① 为什么要搞这个</a>
+  <a href="#walkthrough">② 一步一步来</a>
+  <a href="#review">③ 再看一遍</a>
+  <a href="#pitfalls">④ 常见坑</a>
+  <a href="#practice">⑤ 做一遍</a>
+  <a href="#cheatsheet">⑥ 速查卡</a>
+  <a href="#learned">⑦ 学到了什么</a>
+</nav>
+
+<!-- ─── ① ─── -->
+<section id="why">
+  <h2>① 为什么要搞这个——用开车来理解</h2>
+
+  <div class="card" style="font-size:1.15em;font-weight:700;color:var(--accent);text-align:center;padding:28px;">
+    你装了 Claude Code，但打开后它说要"登录"、或者一直没反应<br>
+    <strong style="color:var(--orange);">不是你没装好——是 Claude 的"大脑"（AI模型）在国内被挡住了</strong>
+  </div>
+
+  <div class="analogy-card" style="background:linear-gradient(135deg, #2e2218 0%, var(--surface) 50%);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-xl);margin:var(--space-lg) 0;">
+    <h3 style="color:var(--lv-prebasics);">🚗 用开车来比喻——这个比喻很重要，记住它</h3>
+    <table>
+      <tr><th style="width:30%">东西</th><th>相当于…</th><th style="width:30%">说明</th></tr>
+      <tr>
+        <td><strong>Claude Code</strong></td>
+        <td>一辆好车（车架）</td>
+        <td>它负责"怎么干活"——读文件、写代码、执行命令</td>
+      </tr>
+      <tr>
+        <td><strong>AI 模型</strong><br>（Claude / DeepSeek）</td>
+        <td>发动机 + 汽油</td>
+        <td>它负责"思考"——理解你说的话、想出答案</td>
+      </tr>
+    </table>
+    <p style="color:var(--text-muted);margin-top:16px;font-size:0.9em;">
+      <strong>Claude Code 原装的"发动机"（Claude 模型）在国内用不了。</strong>就像一台好车配了个国外才能加的油——车没问题，油进不来。<br><br>
+      <strong style="color:var(--green);">解决办法：换一个国产发动机——DeepSeek。</strong>它是中国公司做的 AI 模型，国内直接能用，价格便宜（充 10 块钱能用好几个月），效果也很不错。
+    </p>
+  </div>
+
+  <div class="info">
+    <strong>这节课要做什么：</strong>给 Claude Code 装一个"转换器"（叫 ccswitch），让它能使用 DeepSeek 这个国产发动机。全程 15 分钟，不花一分钱（DeepSeek 新用户送免费额度）。
+  </div>
+</section>
+
+<!-- ─── ② ─── -->
+<section id="walkthrough">
+  <h2>② 一步一步来：装转换器 + 换发动机</h2>
+
+  <ol class="step-list">
+    <!-- Step 1: Install ccswitch -->
+    <li class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>安装 ccswitch（转换器）</h3>
+        <div class="step-action">打开 PowerShell，输入下面这行命令，按回车：</div>
+        <div class="code-block">npm install -g ccswitch</div>
+        <div class="tip">
+          <strong>这是什么？</strong>ccswitch 是一个小工具，专门帮 Claude Code 切换不同的 AI 模型。就像手机换 SIM 卡——换一张卡就能用不同运营商，换一个模型 Claude Code 就能用不同的 AI。
+        </div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="terminal-screenshot">
+              <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+              <div class="term-body">
+                <div><span class="term-prompt">PS C:\Users\张三&gt;</span> <span class="term-highlight">npm install -g ccswitch</span></div>
+                <div style="color:var(--text-muted);font-size:0.85em;margin-top:8px;">npm notice ...</div>
+                <div style="color:var(--green);">+ ccswitch@latest</div>
+                <div style="color:var(--text-muted);">added 1 package in 2s</div>
+                <div class="term-note">看到 "+ ccswitch" 就说明装好了</div>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 输入命令后，等几秒。看到绿色的 "+ ccswitch" 就是成功了。</figcaption>
+        </figure>
+        <div class="checkpoint">
+          <p>✅ 检查点：出现 "+ ccswitch" 字样了吗？出现了就继续下一步。</p>
+        </div>
+      </div>
+    </li>
+
+    <!-- Step 2: Open ccswitch -->
+    <li class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>打开 ccswitch</h3>
+        <div class="step-action">在 PowerShell 里输入 <code>ccswitch</code>，按回车</div>
+        <div class="code-block">ccswitch</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="terminal-screenshot">
+              <div class="term-titlebar"><span class="term-title">ccswitch</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+              <div class="term-body" style="text-align:center;padding:20px;">
+                <div style="font-size:2em;margin-bottom:12px;">⚙️</div>
+                <div style="color:var(--text);font-weight:700;">ccswitch 配置面板</div>
+                <div style="color:var(--text-muted);font-size:0.85em;margin-top:8px;">显示 Claude Code 图标和各个模型供应商</div>
+                <div class="term-note">点击 Claude Code 图标 → 再点右侧的 "+" 加号按钮</div>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 打开的 ccswitch 面板。点第一个（Claude Code 图标），然后点右边的 <strong>+</strong>（加号）按钮。</figcaption>
+        </figure>
+        <div class="checkpoint">
+          <p>✅ 检查点：看到 ccswitch 的配置面板了吗？能看到几个模型供应商的图标？</p>
+        </div>
+      </div>
+    </li>
+
+    <!-- Step 3: Get DeepSeek API Key -->
+    <li class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>去 DeepSeek 官网拿"钥匙"（API Key）</h3>
+        <div class="step-action">打开浏览器，访问 DeepSeek 官网</div>
+
+        <div class="analogy-card" style="background:linear-gradient(135deg, #1a2236 0%, var(--surface) 50%);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin:12px 0;">
+          <h4 style="color:var(--accent);margin:0 0 8px 0;">🔑 什么是 API Key？——用住酒店来理解</h4>
+          <p style="margin:0;color:var(--text-muted);font-size:0.9em;">
+            你去酒店前台登记，拿到一张<strong>房卡</strong>。只有这张卡才能打开你的房间门。<br>
+            <strong>API Key 就是这张"房卡"</strong>——你用它告诉 DeepSeek："是我在用，请让我进去。"<br>
+            区别是：酒店房卡只能用一个房间，API Key 是<strong>按用量扣费</strong>（用多少扣多少，很便宜）。
+          </p>
+        </div>
+
+        <ol style="margin-top:12px;">
+          <li style="margin-bottom:12px;">
+            <strong>打开 DeepSeek 官网：</strong><br>
+            在浏览器地址栏输入 <code>chat.deepseek.com</code>，按回车<br>
+            <span style="color:var(--text-muted);font-size:0.85em;">（如果你已经有 DeepSeek 账号，直接登录；没有的话用手机号注册一个——跟注册微信差不多）</span>
+          </li>
+          <li style="margin-bottom:12px;">
+            <strong>进入 API 开放平台：</strong><br>
+            登录后，点页面右上角的 <strong>"API 开放平台"</strong> 按钮
+            <figure class="screenshot">
+              <div class="screenshot-frame">
+                <div class="win-window">
+                  <div class="win-titlebar"><span class="win-title">DeepSeek 官网 — chat.deepseek.com</span><span class="win-btns"><span class="win-btn min">─</span><span class="win-btn max">□</span><span class="win-btn close">×</span></span></div>
+                  <div class="win-body" style="padding:16px;text-align:center;">
+                    <div style="display:flex;justify-content:flex-end;margin-bottom:16px;gap:12px;">
+                      <span style="background:var(--surface);padding:6px 14px;border-radius:16px;font-size:0.85em;">🏠 首页</span>
+                      <span style="background:var(--accent);color:#fff;padding:6px 14px;border-radius:16px;font-size:0.85em;font-weight:700;">🔌 API 开放平台</span>
+                    </div>
+                    <div style="color:var(--text-muted);font-size:0.85em;">👆 点右上角的 "API 开放平台"</div>
+                  </div>
+                </div>
+              </div>
+              <figcaption>👆 登录后，右上角那个 "API 开放平台" 按钮——点它。</figcaption>
+            </figure>
+          </li>
+          <li style="margin-bottom:12px;">
+            <strong>创建 API Key：</strong><br>
+            进入 API 平台后，点左侧菜单的 <strong>"API Keys"</strong>，然后点 <strong>"创建 API Key"</strong> 按钮
+            <figure class="screenshot">
+              <div class="screenshot-frame">
+                <div class="win-window">
+                  <div class="win-titlebar"><span class="win-title">DeepSeek API 平台</span><span class="win-btns"><span class="win-btn min">─</span><span class="win-btn max">□</span><span class="win-btn close">×</span></span></div>
+                  <div class="win-body" style="padding:16px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                      <span style="font-weight:700;">🔑 API Keys</span>
+                      <span style="background:var(--accent);color:#fff;padding:4px 12px;border-radius:4px;font-size:0.85em;">+ 创建 API Key</span>
+                    </div>
+                    <div style="border:1px dashed var(--border);border-radius:8px;padding:24px;text-align:center;color:var(--text-muted);">
+                      📋 还没有 API Key<br><span style="font-size:0.85em;">点右上角 "创建 API Key"</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <figcaption>👆 点 "创建 API Key"，随便起个名字（比如"我的电脑"），然后确认。</figcaption>
+            </figure>
+          </li>
+          <li style="margin-bottom:12px;">
+            <strong style="color:var(--orange);">⚠️ 重要！复制并保存你的 API Key：</strong><br>
+            创建后会弹出一个窗口，显示一串字母和数字（像这样：<code>sk-xxxxxxxxxxxxxxxxxxxxxxxx</code>）<br>
+            <div class="warning" style="background:rgba(210,153,29,0.1);border:1px solid var(--orange);border-radius:var(--radius);padding:14px;margin:10px 0;">
+              <strong>🚨 这个窗口关掉之后就再也看不到了！</strong>必须现在就复制下来，保存到一个安全的地方。<br>
+              <span style="font-size:0.85em;color:var(--text-muted);">建议：新建一个记事本文件，粘贴进去，保存到桌面。文件名就叫"DeepSeek钥匙.txt"</span>
+            </div>
+            <figure class="screenshot">
+              <div class="screenshot-frame">
+                <div class="win-window">
+                  <div class="win-titlebar"><span class="win-title">API Key 已创建</span><span class="win-btns"><span class="win-btn min">─</span><span class="win-btn max">□</span><span class="win-btn close">×</span></span></div>
+                  <div class="win-body" style="padding:16px;text-align:center;">
+                    <div style="color:var(--orange);font-weight:700;margin-bottom:8px;">⚠️ 请复制并保存你的 API Key</div>
+                    <div style="background:var(--surface);padding:12px;border-radius:6px;font-family:var(--font-mono);margin:8px 0;word-break:break-all;font-size:0.85em;">
+                      sk-a1b2c3d4e5f6g7h8i9j0k...
+                    </div>
+                    <div style="font-size:0.8em;color:var(--text-muted);">👆 用鼠标选中这串字 → 右键复制 → 粘贴到记事本保存</div>
+                  </div>
+                </div>
+              </div>
+              <figcaption>👆 这就是你的 API Key（钥匙）。<strong>必须马上复制保存！</strong>关了就没了。</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <div class="checkpoint">
+          <p>✅ 检查点：你的 DeepSeek API Key 已经复制到记事本里了吗？是不是以 <code>sk-</code> 开头的一长串字母数字？</p>
+        </div>
+      </div>
+    </li>
+
+    <!-- Step 4: Configure ccswitch with DeepSeek -->
+    <li class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>把 DeepSeek 的"钥匙"交给 ccswitch</h3>
+        <div class="step-action">回到 ccswitch 面板，找到 DeepSeek，填入你的 API Key</div>
+
+        <ol style="margin-top:12px;">
+          <li style="margin-bottom:8px;">在 ccswitch 配置页面里，找到并点击 <strong>DeepSeek</strong></li>
+          <li style="margin-bottom:8px;">往下滑，找到 <strong>"API Key"</strong> 输入框</li>
+          <li style="margin-bottom:8px;">把你刚才保存的那串 <code>sk-</code> 开头的钥匙，<strong>粘贴进去</strong></li>
+        </ol>
+
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="win-window">
+              <div class="win-titlebar"><span class="win-title">ccswitch — DeepSeek 配置</span><span class="win-btns"><span class="win-btn min">─</span><span class="win-btn max">□</span><span class="win-btn close">×</span></span></div>
+              <div class="win-body" style="padding:16px;">
+                <div style="margin-bottom:12px;">
+                  <label style="font-size:0.85em;color:var(--text-muted);">供应商名称</label>
+                  <div style="background:var(--surface);padding:8px;border-radius:4px;margin-top:4px;">DeepSeek</div>
+                </div>
+                <div style="margin-bottom:12px;">
+                  <label style="font-size:0.85em;color:var(--text-muted);">请求地址</label>
+                  <div style="background:var(--surface);padding:8px;border-radius:4px;margin-top:4px;font-size:0.85em;">https://api.deepseek.com/anthropic</div>
+                </div>
+                <div style="margin-bottom:12px;">
+                  <label style="font-size:0.85em;color:var(--text-muted);">API Key</label>
+                  <div style="background:var(--surface);padding:8px;border-radius:4px;margin-top:4px;font-family:var(--font-mono);font-size:0.8em;color:var(--green);">
+                    sk-a1b2c3d4e5f6g7h8i9j0k...
+                  </div>
+                  <div class="term-note" style="margin-top:4px;">👆 这里粘贴你的 API Key</div>
+                </div>
+                <div style="margin-bottom:12px;">
+                  <label style="font-size:0.85em;color:var(--text-muted);">模型名称（需要修改）</label>
+                  <div style="background:var(--surface);padding:8px;border-radius:4px;margin-top:4px;font-family:var(--font-mono);font-size:0.85em;color:var(--accent);">
+                    deepseek-v4-flash[1m]
+                  </div>
+                  <div class="term-note" style="margin-top:4px;">👆 把模型名改成这个（包含后面的[1m]，不要漏）</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 三件事：①粘贴 API Key ②确认请求地址是 <code>https://api.deepseek.com/anthropic</code> ③把模型名改成 <code>deepseek-v4-flash[1m]</code></figcaption>
+        </figure>
+
+        <div class="tip">
+          <strong>请求地址和 API 格式不用改</strong>——ccswitch 已经帮你填好了。你只需要填 API Key 和改模型名。然后点 <strong>"保存"</strong>。
+        </div>
+
+        <div class="info">
+          <strong>模型名后面的 [1m] 是什么意思？</strong>1m = 100 万。这个标记告诉 DeepSeek："我可以一次跟你说很多话（100 万个词的上下文）"。不加这个标记的话，AI 的"记忆力"会变差。
+        </div>
+
+        <div class="checkpoint">
+          <p>✅ 检查点：API Key 粘贴好了吗？模型名改成 <code>deepseek-v4-flash[1m]</code> 了吗？点了保存吗？</p>
+        </div>
+      </div>
+    </li>
+
+    <!-- Step 5: Verify it works -->
+    <li class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h3>验证——看看是不是真的能用了</h3>
+        <div class="step-action">回到 PowerShell，输入 <code>claude</code>，按回车启动</div>
+        <div class="code-block">claude</div>
+        <p style="margin-top:8px;color:var(--text-muted);">第一次启动可能会问你"是否信任"——按 <strong>1</strong> 然后回车（选"信任"）。</p>
+        <p>启动后，输入这句话来验证：</p>
+        <div class="chat-demo" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:var(--space-lg);margin:12px 0;font-family:var(--font-mono);font-size:0.88em;">
+          <div class="user-msg" style="color:var(--accent);margin-bottom:8px;">你是什么模型？</div>
+          <div class="ai-msg" style="color:var(--green);padding-left:16px;">我是 DeepSeek-V4-Flash，由深度求索公司开发的大语言模型……</div>
+        </div>
+
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="terminal-screenshot">
+              <div class="term-titlebar"><span class="term-title">Claude Code ✕ DeepSeek</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+              <div class="term-body">
+                <div style="color:var(--accent);margin-bottom:4px;">👤 你: 你是什么模型？</div>
+                <div style="color:var(--green);margin-top:8px;">🤖 Claude: 我是 DeepSeek-V4-Flash，由深度求索（DeepSeek）公司开发的大语言模型。我现在通过 Claude Code 这个平台在为你服务！</div>
+                <div class="term-note">🎉 看到 "DeepSeek" 就说明成功了！</div>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 如果 AI 回复里提到了 <strong>"DeepSeek"</strong>——恭喜你，搞定了！Claude Code 现在用的是国产发动机。</figcaption>
+        </figure>
+
+        <div class="checkpoint">
+          <p>✅ 检查点：AI 回答里有没有 "DeepSeek" 这几个字？有的话就说明换发动机成功！</p>
+        </div>
+      </div>
+    </li>
+
+    <!-- Step 6: Top up if needed -->
+    <li class="step-item">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h3>（可选）如果提示"余额不足"——给 DeepSeek 充值</h3>
+        <div class="step-action" style="color:var(--text-muted);">大部分新用户有免费额度。如果用完了，才需要充值。</div>
+
+        <div class="analogy-card" style="background:linear-gradient(135deg, #1a2e1a 0%, var(--surface) 50%);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin:12px 0;">
+          <h4 style="color:var(--green);margin:0 0 8px 0;">💰 充多少钱够用？</h4>
+          <p style="margin:0;color:var(--text-muted);font-size:0.9em;">
+            DeepSeek 非常便宜——<strong>充 10 块钱，个人正常用能用好几个月</strong>。<br>
+            就像交手机费：不是按月交很多，而是用多少扣多少。偶尔用用的话，一个月几毛钱。<br>
+            <span style="font-size:0.85em;">充值方法：回到 DeepSeek API 平台 → 左侧菜单点"充值" → 微信/支付宝扫码付钱。</span>
+          </p>
+        </div>
+
+        <div class="tip">
+          <strong>别担心花钱。</strong>相比 Claude 官方每月 20 美元（约 140 人民币）的订阅费，DeepSeek 便宜了 100 倍不止。这就是为什么我们说"换国产发动机更划算"。
+        </div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="celebration">
+    <span class="celebration-emoji">🔧🚗🎉</span>
+    <h3>恭喜！你的 Claude Code 现在用上了国产发动机</h3>
+    <p>从现在开始，你不用魔法、不用翻墙，就能在国内正常使用 Claude Code 了。DeepSeek 虽然比 Claude 原版稍弱一点，但日常使用完全够用——而且便宜了 100 倍。</p>
+    <p style="font-size:0.85em;color:var(--text-muted);">还记得那个比喻吗？好车配了好油，可以上路了。</p>
+  </div>
+</section>
+
+<!-- ─── ③ ─── -->
+<section id="review">
+  <h2>③ 再看一遍：完整流程图</h2>
+  <div class="video-wrap">
+    <div class="video-label">整套操作流程一览</div>
+    <div class="smart-placeholder">
+      <div class="ph-header"><div class="ph-dot"></div> 给 Claude Code 换国产发动机</div>
+      <div class="ph-body">
+        <div class="ph-preview">
+          <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:0.75em;">
+            <span style="background:var(--surface);padding:6px 10px;border-radius:16px;">📦 装ccswitch</span><span style="color:var(--text-muted);">→</span>
+            <span style="background:var(--surface);padding:6px 10px;border-radius:16px;">🔑 取API Key</span><span style="color:var(--text-muted);">→</span>
+            <span style="background:var(--surface);padding:6px 10px;border-radius:16px;">⚙️ 配置模型</span><span style="color:var(--text-muted);">→</span>
+            <span style="background:var(--surface);padding:6px 10px;border-radius:16px;">💾 保存</span><span style="color:var(--text-muted);">→</span>
+            <span style="background:var(--surface);padding:6px 10px;border-radius:16px;">✅ 验证</span>
+          </div>
+        </div>
+        <p class="ph-note">💡 五个步骤：装→取→配→存→验。全程 15 分钟，一次搞定永久能用。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info" style="margin-top:16px;">
+    <strong>回忆一下那个比喻：</strong><br>
+    Claude Code = 🚗 车架（负责干活）<br>
+    DeepSeek = ⛽ 发动机+油（负责思考）<br>
+    ccswitch = 🔧 转换器（让车能用国产油）<br>
+    API Key = 🔑 钥匙（证明你有权使用）
+  </div>
+</section>
+
+<!-- ─── ④ ─── -->
+<section id="pitfalls">
+  <h2>④ 最容易遇到的 4 个问题</h2>
+
+  <div class="pitfall">
+    <div class="pitfall-title">坑 1：输入 ccswitch 说"不是内部或外部命令"</div>
+    <p style="color:var(--text-muted);">ccswitch 没装好。</p>
+    <div class="pitfall-fix">重新在 PowerShell 里输入 <code>npm install -g ccswitch</code>，等它跑完。如果还是不行，关掉 PowerShell 重新打开一个再试。</div>
+  </div>
+
+  <div class="pitfall">
+    <div class="pitfall-title">坑 2：配置好之后，Claude Code 还是连不上 / 报错</div>
+    <p style="color:var(--text-muted);">90% 是因为 API Key 没填对。</p>
+    <div class="pitfall-fix">
+      检查三件事：<br>
+      ① API Key 是不是完整复制了？（<code>sk-</code> 开头，后面一大串）有没有多复制空格？<br>
+      ② 请求地址是不是 <code>https://api.deepseek.com/anthropic</code>？<br>
+      ③ API Key 对应的 DeepSeek 账号里有没有余额？（新用户一般有免费额度，如果用完了去充 10 块）
+    </div>
+  </div>
+
+  <div class="pitfall">
+    <div class="pitfall-title">坑 3：API Key 找不到了（关掉窗口后忘了保存）</div>
+    <p style="color:var(--text-muted);">创建 API Key 时关掉弹窗就再也看不到了。</p>
+    <div class="pitfall-fix">回到 DeepSeek API 平台 → API Keys 页面 → 删掉旧的 → 创建一个新的。这次记得<strong>马上复制到记事本保存</strong>。</div>
+  </div>
+
+  <div class="pitfall">
+    <div class="pitfall-title">坑 4：AI 回答很慢或者回答一半就停了</div>
+    <p style="color:var(--text-muted);">可能是模型名没写对，或者网络波动。</p>
+    <div class="pitfall-fix">
+      检查模型名是不是 <code>deepseek-v4-flash[1m]</code>——注意后面的 <code>[1m]</code> 不能漏。<br>
+      如果模型名没错，可能是网络问题——等几分钟再试。DeepSeek 在国内的服务器很稳定，偶尔卡一下正常。
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑤ ─── -->
+<section id="practice">
+  <h2>⑤ 做一遍：动手练习</h2>
+  <div class="practice-box">
+    <h3>你的练习任务</h3>
+    <div class="practice-task">
+      1. 打开 PowerShell，输入 <code>npm install -g ccswitch</code> 安装转换器<br>
+      2. 去 DeepSeek 官网（chat.deepseek.com）注册账号，创建 API Key<br>
+      3. 打开 ccswitch，找到 DeepSeek，粘贴 API Key，模型名改成 <code>deepseek-v4-flash[1m]</code><br>
+      4. 点保存，然后输入 <code>claude</code> 启动，问它"你是什么模型？"<br>
+      5. 看到回复里有 "DeepSeek" 就成功了！
+    </div>
+    <p class="practice-hint">💡 搞定了吗？试试让它帮你做一件事——比如"帮我写一段朋友圈文案，介绍我新开的五金店"——看它怎么回复。</p>
+  </div>
+</section>
+
+<!-- ─── ⑥ ─── -->
+<section id="cheatsheet">
+  <h2>⑥ 速查卡</h2>
+  <div class="cheat-sheet">
+    <h2>🔧 Claude Code + DeepSeek 速查卡</h2>
+    <table style="color:#000;">
+      <tr><th style="color:#000;">操作</th><th style="color:#000;">命令 / 地址</th></tr>
+      <tr><td>安装 ccswitch</td><td><code>npm install -g ccswitch</code></td></tr>
+      <tr><td>打开 ccswitch</td><td>PowerShell 输入 <code>ccswitch</code></td></tr>
+      <tr><td>DeepSeek 官网</td><td><code>chat.deepseek.com</code></td></tr>
+      <tr><td>API 请求地址</td><td><code>https://api.deepseek.com/anthropic</code></td></tr>
+      <tr><td>模型名（要改）</td><td><code>deepseek-v4-flash[1m]</code></td></tr>
+      <tr><td>验证是否成功</td><td>问 AI "你是什么模型？" → 回答提到 DeepSeek</td></tr>
+      <tr><td>充值（如需）</td><td>API 平台 → 充值 → 微信/支付宝</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ─── ⑦ ─── -->
+<section id="learned">
+  <h2>⑦ 检查一下：你学会了吗？</h2>
+  <ul class="learned-list">
+    <li>我理解 Claude Code 是"车架"，AI 模型是"发动机"——可以分开换</li>
+    <li>我知道为什么 Claude Code 在国内直接打开用不了</li>
+    <li>我装了 ccswitch（转换器）</li>
+    <li>我在 DeepSeek 官网创建了自己的 API Key</li>
+    <li>我把 API Key 填进了 ccswitch，改了模型名为 deepseek-v4-flash[1m]</li>
+    <li>我验证成功了——AI 说它是 DeepSeek</li>
+  </ul>
+  <div class="try-again" style="margin-top:32px;">
+    <strong>🤔 还没试？</strong> 现在就去 deepseek.com 注册一个账号，创建 API Key。免费的，5 分钟搞定。<br>
+    <span style="font-size:0.85em;color:var(--text-muted);">下一课：<a href="../applied/ai-for-business.html">AI 能帮你做什么 →</a></span>
+  </div>
+</section>
+
+<section class="quiz-section" data-topic="deepseek">
+  <div id="quiz-container"></div>
+</section>
+
+</div>
+
+<footer class="site-footer">
+  <p>Claude Code 学习站 · 预备课 · 零基础也能学会</p>
+  <p style="margin-top:4px;"><a href="../index.html">返回首页</a></p>
+</footer>
+
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>

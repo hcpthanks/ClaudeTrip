@@ -30,6 +30,7 @@
     font-size: 1.2em; flex-shrink: 0;
   }
   .lv-beginner-header .level-icon { background: var(--lv-beginner-bg); color: var(--lv-beginner); }
+  .lv-applied-header .level-icon { background: var(--lv-applied-bg); color: var(--lv-applied); }
   .lv-intermediate-header .level-icon { background: var(--lv-intermediate-bg); color: var(--lv-intermediate); }
   .lv-expert-header .level-icon { background: var(--lv-expert-bg); color: var(--lv-expert); }
   .level-header h2 { border: none; padding: 0; margin: 0; }
@@ -125,7 +126,8 @@
     <div class="nav-links" role="navigation" aria-label="页面导航">
       <a href="index.html" class="active">首页</a>
       <a href="#pre-basics">预备课</a>
-      <a href="#beginner">入门</a>
+      <a href="#applied">应用课</a>
+	      <a href="#beginner">入门</a>
       <a href="#intermediate">进阶</a>
       <a href="#expert">专家</a>
       <a href="#premium">付费课程</a>
@@ -138,19 +140,20 @@
 <header class="hero">
   <h1>掌握 <span class="brand">Claude Code</span><br>从第一次对话到生产力飞跃</h1>
   <p class="subtitle">
-    分四级路线 · 7模块教学模板 · 每条命令都有实战练习。<br>
+    分五级路线 · 7/10模块教学模板 · 每条命令都有实战练习。<br>
     不用啃文档，直接上手。
   </p>
   <div class="badge-row">
     <span class="badge lv-prebasics">🖥️ 预备课 — 零基础开始</span>
+	    <span class="badge lv-applied">💼 应用课 — AI 帮生意</span>
 	    <span class="badge lv-beginner">🌱 入门 — 15分钟上手</span>
     <span class="badge lv-intermediate">⚡ 进阶 — 效率翻倍</span>
     <span class="badge lv-expert">🚀 专家 — 自定义一切</span>
   </div>
   <div class="stats">
     <div class="stat"><div class="stat-num">79+</div><div class="stat-label">命令覆盖</div></div>
-    <div class="stat"><div class="stat-num">20</div><div class="stat-label">学习主题</div></div>
-    <div class="stat"><div class="stat-num">4</div><div class="stat-label">能力等级</div></div>
+    <div class="stat"><div class="stat-num">24</div><div class="stat-label">学习主题</div></div>
+    <div class="stat"><div class="stat-num">5</div><div class="stat-label">能力等级</div></div>
   </div>
 </header>
 
@@ -220,9 +223,68 @@
       <p>三步法：截图→读错误→发给AI。5 个最常见错误直接抄答案</p>
     </a>
 
+    <a href="pre-basics/deepseek-setup.html" class="topic-card lv-prebasics card-link" data-topic="deepseek">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🔧</div>
+      <div class="level-tag">预备课</div>
+      <h3>让 Claude Code 在国内也能用</h3>
+      <p>换个国产发动机 DeepSeek——不用魔法、不用翻墙，每月几块钱</p>
+    </a>
+
   </div>
 </section>
 
+
+<!-- ══════════ APPLIED ══════════ -->
+<section class="level-section" id="applied">
+  <div class="level-header lv-applied-header">
+    <div class="level-icon">💼</div>
+    <div>
+      <h2>应用课 · AI 帮你做生意</h2>
+      <p class="level-desc">从"会用AI"到"AI帮你赚钱"——每节课都是用你生意上的真实场景。前5个模块免费。</p>
+    </div>
+  </div>
+  <div class="progress-bar-wrap" id="applied-progress">
+    <span class="pb-label">📊 学习进度</span>
+    <div class="pb-track"><div class="pb-fill" id="pb-fill-applied" style="width:0%"></div></div>
+    <span class="pb-count" id="pb-count-applied">0/4</span>
+  </div>
+  <div class="topic-grid">
+
+    <a href="applied/ai-for-business.html" class="topic-card lv-applied card-link" data-topic="ai-for-business">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">💼</div>
+      <div class="level-tag">应用课</div>
+      <h3>AI 能帮你做什么</h3>
+      <p>10个你马上用得上的实例——写文案、回消息、算账、做图、整理信息</p>
+    </a>
+
+    <a href="applied/talk-to-ai.html" class="topic-card lv-applied card-link" data-topic="talk-to-ai">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">💬</div>
+      <div class="level-tag">应用课</div>
+      <h3>怎么让 AI 听懂你</h3>
+      <p>"我是谁+我要什么+要什么样的"三句话公式——用生意场景举例</p>
+    </a>
+
+    <a href="applied/ai-writing.html" class="topic-card lv-applied card-link" data-topic="ai-writing">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">✍️</div>
+      <div class="level-tag">应用课</div>
+      <h3>让 AI 帮你写文案</h3>
+      <p>手把手——从打开 PowerShell 到拿到能发的朋友圈文案</p>
+    </a>
+
+    <a href="applied/bridge-to-coding.html" class="topic-card lv-applied card-link" data-topic="bridge-to-coding">
+      <div class="level-stripe"></div>
+      <div class="topic-icon">🚀</div>
+      <div class="level-tag">应用课</div>
+      <h3>接下来学什么</h3>
+      <p>你已经会用AI了——看看入门课还能带你走多远</p>
+    </a>
+
+  </div>
+</section>
 <!-- ══════════ BEGINNER ══════════ -->
 <section class="level-section" id="beginner">
   <div class="level-header lv-beginner-header">
@@ -419,14 +481,16 @@
 <script>
 // ── Apply lock/progress to homepage topic cards ──
 (function () {
-  var PREBASICS_IDS = ['pc-basics','open-ps','install-cc','first-chat','file-basics','troubleshoot'];
+  var PREBASICS_IDS = ['pc-basics','open-ps','install-cc','first-chat','file-basics','troubleshoot','deepseek'];
+  var APPLIED_IDS   = ['ai-for-business','talk-to-ai','ai-writing','bridge-to-coding'];
   var BEGINNER_IDS  = ['intro','plan','shortcuts','convo','init','workflow'];
   var cards = document.querySelectorAll('.topic-card[data-topic]');
-  var pbPassed = 0, begPassed = 0;
+  var pbPassed = 0, appPassed = 0, begPassed = 0;
 
   cards.forEach(function (card) {
     var topicId = card.dataset.topic;
     var isPrebasics = PREBASICS_IDS.indexOf(topicId) >= 0;
+    var isApplied = APPLIED_IDS.indexOf(topicId) >= 0;
     var quizState = getQuizState();
 
     // Pre-basics: always unlocked (free), no locking ever
@@ -442,7 +506,7 @@
       return;
     }
 
-    // Beginner: apply progress-based locking
+    // Applied + Beginner: apply progress-based locking
     if (isTopicUnlockedByProgress(topicId)) {
       if (quizState[topicId] && quizState[topicId].passed) {
         card.classList.add('has-passed');
@@ -450,7 +514,7 @@
         badge2.className = 'passed-badge';
         badge2.textContent = '✅';
         card.appendChild(badge2);
-        begPassed++;
+        if (isApplied) { appPassed++; } else { begPassed++; }
       }
     } else {
       card.classList.add('locked');
@@ -459,11 +523,11 @@
         var reason = getLockReason(topicId);
         alert(reason || '请按顺序完成前面的课程考核');
       });
-      // Cooldown badge
+      // Cooldown badge — check TOPIC_ORDER for previous topic
       var cooldown = getCooldown();
-      var prevIdx = BEGINNER_IDS.indexOf(topicId) - 1;
-      if (prevIdx >= 0) {
-        var prevTopic = BEGINNER_IDS[prevIdx];
+      var topicIdx = window.TOPIC_ORDER.indexOf(topicId);
+      if (topicIdx > 0) {
+        var prevTopic = window.TOPIC_ORDER[topicIdx - 1];
         if (cooldown[prevTopic]) {
           var remaining = new Date(cooldown[prevTopic]).getTime() - Date.now();
           if (remaining > 0) {
@@ -484,6 +548,13 @@
   var pbCount = document.getElementById('pb-count-prebasics');
   if (pbFill) pbFill.style.width = pbPct + '%';
   if (pbCount) pbCount.textContent = pbPassed + '/' + PREBASICS_IDS.length;
+
+  // Update applied progress bar
+  var appPct = Math.round((appPassed / APPLIED_IDS.length) * 100);
+  var appFill = document.getElementById('pb-fill-applied');
+  var appCount = document.getElementById('pb-count-applied');
+  if (appFill) appFill.style.width = appPct + '%';
+  if (appCount) appCount.textContent = appPassed + '/' + APPLIED_IDS.length;
 
   // Update beginner progress bar
   var begPct = Math.round((begPassed / BEGINNER_IDS.length) * 100);
