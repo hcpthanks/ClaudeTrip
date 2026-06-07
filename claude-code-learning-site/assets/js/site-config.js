@@ -16,7 +16,7 @@ window.CC_SITE_CONFIG = {
   ],
 
   // ══════ 官方信息 ══════
-  officialDomain: 'hcpthanks.com',
+  officialDomain: 'www.hcpthanks.com',
   officialName:    'Claude Code 学习站',
   officialPayUrl:  'https://www.hcpthanks.com/pay/pay.html',
   officialSiteUrl: 'https://www.hcpthanks.com/'

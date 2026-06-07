@@ -2,6 +2,55 @@
    ⑩ 学习考核系统 — 5题 / 80%达标 / 冷却选择 / 手写模式
    ═══════════════════════════════════════════════════════ */
 
+/* ══════ 内联防盗锁 — 非官方域名拦截付费入口 ══════ */
+(function () {
+  'use strict';
+  var CFG = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.allowedDomains)
+    ? window.CC_SITE_CONFIG
+    : {
+        allowedDomains: ['hcpthanks.github.io', 'hcpthanks.com', 'www.hcpthanks.com', 'localhost', '127.0.0.1'],
+        officialPayUrl: 'https://www.hcpthanks.com/pay/pay.html'
+      };
+  var DOMAINS = CFG.allowedDomains;
+  var PAY_URL = CFG.officialPayUrl;
+  var host = (window.location.hostname || '').toLowerCase();
+
+  function isOfficial() {
+    for (var i = 0; i < DOMAINS.length; i++) {
+      if (host === DOMAINS[i] || host.endsWith('.' + DOMAINS[i])) return true;
+    }
+    return host === '';
+  }
+
+  if (!isOfficial()) {
+    // 拦截所有指向 pay/pay.html 的链接点击，重定向到官方支付页
+    document.addEventListener('click', function (e) {
+      var el = e.target;
+      while (el && el.tagName !== 'A') el = el.parentElement;
+      if (!el) return;
+      var href = el.getAttribute('href') || '';
+      if (href.indexOf('pay/pay.html') === -1 && href.indexOf('pay%2Fpay.html') === -1) return;
+
+      e.preventDefault();
+      // 提取原始参数
+      var m = href.match(/plan=([^&]+)/);
+      var plan = m ? decodeURIComponent(m[1]) : 'all';
+      m = href.match(/topic=([^&]+)/);
+      var topic = m ? decodeURIComponent(m[1]) : '';
+
+      var url = PAY_URL + '?plan=' + encodeURIComponent(plan);
+      if (topic) url += '&topic=' + encodeURIComponent(topic);
+      url += '&ref=' + encodeURIComponent(host) + '&hijacked=1';
+
+      if (confirm('⚠️ 当前网站（' + host + '）非官方站点。\n即将跳转到官方支付页面，付款直接付给原作者。\n是否继续？')) {
+        window.location.href = url;
+      }
+    }, true);
+    console.log('[quiz内联防护] anti-theft.js 缺失，已启用付费入口保护');
+  }
+})();
+/* ════════════════════════════════════════════════════════════ */
+
 (function () {
   'use strict';
 

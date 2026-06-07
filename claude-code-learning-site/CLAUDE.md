@@ -27,9 +27,11 @@ claude-code-learning-site/
 │   ├── js/
 │   │   ├── common.js           # 公共脚本（复制按钮、导航高亮、滚动监听）
 │   │   ├── nav.js              # 共享导航栏（一处修改全站生效）
-│   │   ├── paywall.js          # 付费墙逻辑（localStorage + 渲染）
+│   │   ├── site-config.js      # 站点配置（域名白名单、官方链接，改域名只改此文件）
+│   │   ├── anti-theft.js       # 防盗保护（域名锁、支付劫持、DevTools检测、DOM投毒）
+│   │   ├── paywall.js          # 付费墙逻辑（含内联防盗降级，localStorage + 渲染）
 │   │   ├── recovery.js         # 激活码系统（生成 + 校验，含 checksum 自验证）
-│   │   └── quiz.js             # 考核系统（5题 / 80%达标 / 冷却 / 手写模式）
+│   │   └── quiz.js             # 考核系统（含内联防盗降级，5题/80%/冷却/手写）
 │   └── images/
 │       ├── README.md           # 截图规范和文件清单
 │       ├── screenshots/        # 静态截图（PNG，1280×720）
@@ -306,17 +308,21 @@ claude-code-learning-site/
 - ✅ 预备课 7 个主题完成（7 模块简化模板，始终免费，CSS 插图已替换占位符）
 - ✅ 应用课 4 个主题完成（10 模块模板，含付费墙，面向个体户生意场景）
 - ✅ 入门 6 个主题完成（含付费墙 + 激活码 + 考核递进系统，已添加 13 个 CSS 终端插图）
-- ✅ GitHub Pages 部署上线 — https://hcpthanks.github.io/hcpthanks/
+- ✅ 独立域名上线 — https://www.hcpthanks.com/（腾讯云购买+DNSPod DNS+GitHub Pages）
+- ✅ 防盗系统 — 域名锁、支付劫持、DevTools检测、DOM投毒、AI爬虫毒药，全站21页接入
+- ✅ 防盗内联降级 — paywall.js + quiz.js 含内联防护，anti-theft.js 被删后仍有效
+- ✅ 支付页优化 — 域名引用更新、信任信号（永久有效·21节课）、联系方式引导
 - ✅ CSS 插图组件（`.terminal-screenshot`, `.win-desktop`, `.win-window`, `.smart-placeholder`）替换全部 36 个 `.img-placeholder` 占位符
 - ✅ 终端插图 Win10 风格统一（`.terminal-screenshot` 标题栏已改为 Win10 PowerShell 白底+右侧按钮，15 处全部更新）
 - ✅ 入门课程视觉化（6 页新增 13 个 CSS 终端插图）
 - ✅ 微信支付后端代码完成（3 个 API + 1 个工具库 + DB schema + 激活码统一算法）
-- ⬜ 微信商户号申请
+- ⬜ 微信商户号申请（或先用个人收款码起步）
 - ⬜ Supabase 项目创建 + schema 执行
 - ⬜ Vercel 部署 + 环境变量配置
 - ⬜ 进阶 4 个主题（占位卡片）
 - ⬜ 专家 3 个主题（占位卡片）
-- ⬜ 国内 CDN + 域名备案
+- ⏳ ICP 备案（腾讯云轻量服务器已购 ¥192/年，草稿已填，等域名实名同步）
+- ⬜ 国内 CDN（备案通过后配腾讯云 CDN→GitHub Pages）
 - ⬜ 数据统计看板
 
 ## 下一步计划（2026-06-07 更新）
@@ -338,6 +344,11 @@ claude-code-learning-site/
 - 修改付费墙/激活码逻辑时，确保 `nav.js`、`paywall.js`、`recovery.js` 的 TOPIC 映射保持同步
 - 每次改动后手动开浏览器验证（无需 build 步骤）
 - 暗色主题下 `.cheat-sheet` 组件必须白底黑字（打印友好）
+- **域名与部署**：
+  - 官方域名：`www.hcpthanks.com`（腾讯云注册，DNSPod 解析，GitHub Pages 托管）
+  - DNS：`www CNAME hcpthanks.github.io` + `@ A 185.199.108.153`
+  - GitHub Pages：Custom domain 设置后自动签发 Let's Encrypt 证书，Enforce HTTPS 已开启
+  - 防盗域名白名单集中在 `site-config.js`，新增域名只改一个文件
 - **支付后端**：
   - `wechat-pay.js` 的 `TOPIC_ORDER` 必须与 `nav.js` 完全一致
   - `wechat-pay.js` 的激活码算法（CHARS/SALT/computeCheck）必须与 `recovery.js` 同步

@@ -74,12 +74,16 @@
   <div id="domain-warning" style="display:none;background:rgba(210,153,29,0.15);border:1px solid var(--orange);border-radius:var(--radius);padding:14px 20px;margin:0 auto 20px;max-width:780px;text-align:center;">
     <strong>⚠️ 注意：</strong>你当前访问的域名（<span id="dw-domain"></span>）并非官方站点。<br>
     本站内容来自 <strong>hcpthanks.github.io</strong>（Claude Code 学习站官方），<br>
-    下方支付将直接付给原作者。建议<a href="https://hcpthanks.github.io/ClaudeTrip/" style="color:var(--accent);">前往官方站点</a>获得完整体验。
+    下方支付将直接付给原作者。建议<a href="https://www.hcpthanks.com/" style="color:var(--accent);">前往官方站点</a>获得完整体验。
   </div>
   <div class="pay-container">
 
     <div class="pay-card" id="pay-card">
       <!-- filled by JS -->
+    </div>
+
+    <div style="max-width:780px;margin:20px auto;text-align:center;color:var(--text-faint);font-size:0.82em;line-height:1.8;">
+      <p style="margin:0;">✅ 永久有效 · 📚 21节课已完结持续更新 · 🔐 激活码换机可恢复</p>
     </div>
 
   </div>
@@ -99,7 +103,7 @@
 (function () {
   var OFFICIAL_DOMAINS = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.allowedDomains)
     ? window.CC_SITE_CONFIG.allowedDomains
-    : ['hcpthanks.github.io', 'localhost', '127.0.0.1'];
+    : ['hcpthanks.github.io', 'hcpthanks.com', 'www.hcpthanks.com', 'localhost', '127.0.0.1'];
   var host = window.location.hostname || '';
   var isOfficial = OFFICIAL_DOMAINS.indexOf(host) >= 0 || host === '';
   if (!isOfficial) {
@@ -121,7 +125,7 @@
 // ═══════════════════════════════════════════════
 var PAYMENT_CONFIG = {
   mode: 'sim',                              // 'sim' | 'real'
-  apiBase: 'https://你的域名.vercel.app',    // Vercel 部署后换成真实域名
+  apiBase: '/api',    // Vercel 部署后换成真实域名
   pollInterval: 2000,                       // 轮询间隔（毫秒）
   pollTimeout: 300000,                      // 轮询超时（5 分钟）
 };
