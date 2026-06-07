@@ -168,26 +168,26 @@
     },
     deepseek: {
       handwritingContent: [
-        'Claude Code是"车架"，AI模型是"发动机"——可以分开换。车架负责干活，发动机负责思考',
-        'Claude原装模型在国内被挡住了——所以需要换国产发动机DeepSeek',
-        '装ccswitch转换器：PowerShell输入 npm install -g ccswitch',
-        '去chat.deepseek.com注册→API开放平台→创建API Key→保存到记事本→填入ccswitch'
+        'Agent产品 = "壳" + "大脑"：Claude Code是壳（负责干活），DeepSeek是大脑（负责思考）',
+        '用Workbuddy装Node.js/Git/Claude Code：说人话"帮我安装XXX"，它帮你执行',
+        'ccswitch = 模型转换器，DeepSeek API Key = 钥匙，模型名要改成 deepseek-v4-flash[1m]',
+        'VS Code + Claude Code插件 = 可视化驾驶舱，CLAUDE.md = AI的员工档案，权限模式 = 安全锁'
       ],
       questions: [
-        { q: 'Claude Code 在国内直接用不了，主要原因是什么？',
-          opts: ['电脑配置不够', 'Claude 的原生 AI 模型在国内被挡住了', '没装 Node.js', '键盘坏了'],
-          ans: 1 },
-        { q: 'ccswitch 的作用是什么？',
-          opts: ['加速网络', '帮 Claude Code 切换不同的 AI 模型（换发动机）', '清理电脑垃圾', '翻译英文'],
+        { q: 'Claude Code 是"壳"，那"大脑"（大模型）可以是哪个？',
+          opts: ['只能是 Claude', 'DeepSeek 或其他大模型都可以', '只能是 ChatGPT', '不需要大模型'],
           ans: 1 },
         { q: 'API Key 创建后，关掉弹窗之前必须做什么？',
-          opts: ['截图发朋友圈', '马上复制保存到记事本——关了再也看不到了', '不用管', '打电话给客服'],
+          opts: ['截图发朋友圈', '马上复制保存到记事本——关了再也看不到了', '不用管它', '拍照留念'],
           ans: 1 },
         { q: 'ccswitch 里 DeepSeek 的模型名应该改成什么？',
-          opts: ['gpt-4', 'claude-opus', 'deepseek-v4-flash[1m]', '随便写'],
+          opts: ['DeepSeek-V3.2', 'claude-opus-4-8', 'deepseek-v4-flash[1m]', 'gpt-4o'],
           ans: 2 },
         { q: '怎么验证 DeepSeek 已经接入成功了？',
-          opts: ['看桌面有没有新图标', '问 AI "你是什么模型？"，回答里提到 DeepSeek', '重启电脑', '检查网速'],
+          opts: ['看桌面有没有新图标', '问 AI "你是什么模型？"，回答提到 DeepSeek', '重启电脑', '检查网速'],
+          ans: 1 },
+        { q: 'CLAUDE.md 文件的作用是什么？',
+          opts: ['只是装饰文件', '告诉 AI 你的习惯和偏好——就像一份员工档案', '存密码用的', '写日记用的'],
           ans: 1 }
       ]
     },
