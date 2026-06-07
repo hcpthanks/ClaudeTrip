@@ -6,14 +6,17 @@
 (function () {
   'use strict';
 
-  /* ══════ 配置 ══════ */
-  var ALLOWED_DOMAINS = [
-    'hcpthanks.github.io',
-    'localhost',
-    '127.0.0.1'
-  ];
-  var OFFICIAL_DOMAIN = 'hcpthanks.github.io';
-  var OFFICIAL_PAY_URL = 'https://hcpthanks.github.io/ClaudeTrip/pay/pay.html';
+  /* ══════ 配置 — 从 site-config.js 读取，删了 site-config.js 就用默认值 ══════ */
+  var CFG = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.allowedDomains)
+    ? window.CC_SITE_CONFIG
+    : {
+        allowedDomains: ['hcpthanks.github.io', 'localhost', '127.0.0.1'],
+        officialDomain: 'hcpthanks.github.io',
+        officialPayUrl: 'https://hcpthanks.github.io/ClaudeTrip/pay/pay.html'
+      };
+  var ALLOWED_DOMAINS = CFG.allowedDomains;
+  var OFFICIAL_DOMAIN = CFG.officialDomain;
+  var OFFICIAL_PAY_URL = CFG.officialPayUrl;
 
   /* ══════ 域名检测 ══════ */
   function currentHostname() {

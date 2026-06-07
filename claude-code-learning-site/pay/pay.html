@@ -90,13 +90,16 @@
 </footer>
 
 <script src="../assets/js/nav.js"></script>
+<script src="../assets/js/site-config.js"></script>
 <script src="../assets/js/anti-theft.js"></script>
 <script>
 // ═══════════════════════════════════════════════
 // 域名检测 — 非官方域名显示警告横幅
 // ═══════════════════════════════════════════════
 (function () {
-  var OFFICIAL_DOMAINS = ['hcpthanks.github.io', 'localhost', '127.0.0.1'];
+  var OFFICIAL_DOMAINS = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.allowedDomains)
+    ? window.CC_SITE_CONFIG.allowedDomains
+    : ['hcpthanks.github.io', 'localhost', '127.0.0.1'];
   var host = window.location.hostname || '';
   var isOfficial = OFFICIAL_DOMAINS.indexOf(host) >= 0 || host === '';
   if (!isOfficial) {
