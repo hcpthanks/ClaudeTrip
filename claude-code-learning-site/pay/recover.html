@@ -30,6 +30,12 @@
   .msg.success { color: var(--green); display: block; }
   .msg.error { color: var(--red); display: block; }
   .btn-row { margin-top: 20px; }
+  .divider { display: flex; align-items: center; margin: 32px 0 24px; color: var(--text-faint); font-size: 0.82em; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .divider span { padding: 0 16px; }
+  .order-input { width: 100%; padding: 12px 14px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 0.95em; font-family: var(--font-mono); text-align: center; transition: border-color var(--duration-fast); }
+  .order-input:focus { outline: none; border-color: var(--accent); }
+  .order-hint { color: var(--text-muted); font-size: 0.76em; margin-top: 6px; }
   @media (max-width: 768px) {
     .recover-card { padding: 32px 20px; }
   }
@@ -69,8 +75,21 @@
       </button>
     </div>
 
+    <div class="divider"><span>或</span></div>
+
+    <p style="font-size:0.9em;color:var(--text-muted);margin-bottom:12px;">通过订单号找回激活码</p>
+    <input type="text" class="order-input" id="order-input" placeholder="输入订单号（如 CC250607A3K2XM）" maxlength="20" autocomplete="off">
+    <p class="order-hint">订单号在支付成功页面显示过，或在浏览器历史记录中查找 pay/success.html</p>
+
+    <div class="btn-row">
+      <button class="btn" id="recover-btn" style="font-size:0.9em;padding:10px 32px;opacity:0.85;">
+        查找激活码 →
+      </button>
+    </div>
+    <div class="msg" id="order-msg"></div>
+
     <p style="margin-top:24px;font-size:0.82em;color:var(--text-faint);">
-      找不到激活码？<br>联系微信客服，提供支付截图可重新获取。
+      以上方式都找不到？<br>联系微信客服，提供支付截图可人工处理。
     </p>
   </div>
 </main>
@@ -114,17 +133,25 @@
     }
 
     applyActivationCode(result);
-    msg.textContent = result.type === 'all'
-      ? '✅ 全站永久解锁成功！即将跳转首页...'
-      : '✅ 单页解锁成功！即将跳转课程页...';
+    var labels = { all: '全站永久解锁', force: '强制解锁（跳过冷却）', single: '单页解锁' };
+    msg.textContent = '✅ ' + (labels[result.type] || '解锁') + '成功！即将跳转...';
     msg.className = 'msg success';
 
     setTimeout(function () {
       if (result.type === 'all') {
         window.location.href = '../index.html';
+      } else if (result.topicId) {
+        var page = (window.TOPIC_PAGES || {})[result.topicId];
+        if (page) {
+          // Use topicPagePath logic: idx<6=pre-basics, <10=applied, >=10=beginner
+          var idx = (window.TOPIC_ORDER || []).indexOf(result.topicId);
+          var dir = idx < 6 ? 'pre-basics' : idx < 10 ? 'applied' : 'beginner';
+          window.location.href = '../' + dir + '/' + page;
+        } else {
+          window.location.href = '../index.html';
+        }
       } else {
-        var p = (window.TOPIC_PAGES || {intro:'claude-intro'})[result.topicId] || 'claude-intro.html';
-        window.location.href = '../beginner/' + p;
+        window.location.href = '../index.html';
       }
     }, 1500);
   }
@@ -132,6 +159,83 @@
   btn.addEventListener('click', verify);
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') verify();
+  });
+
+  // ── Order number recovery ──
+  var orderInput = document.getElementById('order-input');
+  var recoverBtn = document.getElementById('recover-btn');
+  var orderMsg = document.getElementById('order-msg');
+
+  recoverBtn.addEventListener('click', function () {
+    var orderNo = orderInput.value.trim().toUpperCase();
+    orderMsg.className = 'msg';
+    orderMsg.textContent = '';
+
+    if (!orderNo || orderNo.length < 10) {
+      orderMsg.textContent = '请输入有效的订单号';
+      orderMsg.className = 'msg error';
+      return;
+    }
+
+    recoverBtn.disabled = true;
+    recoverBtn.innerHTML = '<span class="loader"></span>查找中...';
+    orderMsg.textContent = '';
+
+    var apiBase = (window.PAYMENT_CONFIG && window.PAYMENT_CONFIG.apiBase) || '/api';
+    fetch(apiBase + '/recover-code?orderNo=' + encodeURIComponent(orderNo))
+      .then(function (r) { return r.json().then(function (d) { return {ok: r.ok, data: d}; }); })
+      .then(function (resp) {
+        recoverBtn.disabled = false;
+        recoverBtn.textContent = '查找激活码 →';
+
+        if (!resp.ok) {
+          orderMsg.textContent = resp.data.error || '未找到激活码，请检查订单号或联系客服';
+          orderMsg.className = 'msg error';
+          return;
+        }
+
+        // Found — fill and verify
+        orderInput.value = resp.data.code;
+        input.value = resp.data.code;
+        orderMsg.textContent = '✅ 激活码已找到！正在验证...';
+        orderMsg.className = 'msg success';
+
+        // Auto-apply
+        var result = verifyActivationCode(resp.data.code);
+        if (result) {
+          applyActivationCode(result);
+          orderMsg.textContent = '✅ 激活码恢复成功！即将跳转...';
+          setTimeout(function () {
+            if (result.type === 'all') {
+              window.location.href = '../index.html';
+            } else if (result.topicId) {
+              var page = (window.TOPIC_PAGES || {})[result.topicId];
+              if (page) {
+                var idx = (window.TOPIC_ORDER || []).indexOf(result.topicId);
+                var dir = idx < 6 ? 'pre-basics' : idx < 10 ? 'applied' : 'beginner';
+                window.location.href = '../' + dir + '/' + page;
+              } else {
+                window.location.href = '../index.html';
+              }
+            } else {
+              window.location.href = '../index.html';
+            }
+          }, 1500);
+        } else {
+          orderMsg.textContent = '⚠️ 激活码格式异常，请尝试手动输入上方激活码验证';
+          orderMsg.className = 'msg error';
+        }
+      })
+      .catch(function () {
+        recoverBtn.disabled = false;
+        recoverBtn.textContent = '查找激活码 →';
+        orderMsg.textContent = '网络错误，请稍后重试。如持续失败请联系客服。';
+        orderMsg.className = 'msg error';
+      });
+  });
+
+  orderInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') recoverBtn.click();
   });
 })();
 </script>

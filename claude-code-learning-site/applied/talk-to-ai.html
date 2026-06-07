@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="学会跟 AI 说话的三句话公式，让 AI 一次就听懂你的意思。用生意上的例子，不讲代码。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>">
+<title>怎么让 AI 听懂你 — 应用课</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/paywall.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .formula-card { background: linear-gradient(135deg, #1a2a2e 0%, var(--surface) 50%); border: 2px solid var(--lv-applied); border-radius: var(--radius-xl); padding: 32px; margin: 24px 0; text-align: center; }
+  .formula-card .formula { font-size: 1.4em; font-weight: 800; color: var(--lv-applied); margin-bottom: 10px; }
+  .formula-card .formula-desc { color: var(--text-muted); font-size: 0.9em; }
+  .example-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-lg); margin: var(--space-md) 0; }
+  .example-card h3 { color: var(--accent); }
+  .bad-example { background: #2e1a1a; border: 1px solid var(--red); border-radius: var(--radius); padding: 14px; margin: 10px 0; }
+  .good-example { background: #1a2e1a; border: 1px solid var(--green); border-radius: var(--radius); padding: 14px; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('talk-to-ai'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>💼 怎么让 AI 一次就听懂你的话</h1>
+  <p class="subtitle">三句话公式——说清楚了，AI 秒懂；说不清楚，AI 瞎猜</p>
+</header>
+
+<div class="container" role="main">
+
+<nav class="module-nav">
+  <a href="#core">① 核心理解</a>
+  <a href="#modes">② 三句话公式</a>
+  <a href="#scenarios">③ 对比实例</a>
+  <a href="#good-bad">④ 好 vs 烂</a>
+  <a href="#workflow">⑤ 实战流程</a>
+  <a href="#practice">⑥ 练习</a>
+  <a href="#quick">⑦ 快速掌握</a>
+  <a href="#cheatsheet">⑧ 速查卡</a>
+  <a href="#summary">⑨ 总结</a>
+</nav>
+
+<!-- ─── ① ─── -->
+<section id="core">
+  <h2>① 为什么 AI 有时候听不懂你的话？</h2>
+  <div class="card" style="font-size:1.15em;font-weight:700;color:var(--accent);text-align:center;padding:28px;">
+    AI 没有读心术。<br>你说得越模糊，它猜得越离谱。
+  </div>
+  <div class="analogy-card" style="background:linear-gradient(135deg, #1a2a2e 0%, var(--surface) 50%);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-xl);margin:var(--space-lg) 0;">
+    <h3 style="color:var(--lv-applied);">🍜 好比你去餐馆点菜</h3>
+    <table>
+      <tr><th style="width:50%">你这样说</th><th>老板的反应</th></tr>
+      <tr><td>"给我来点吃的"</td><td>老板一脸懵：吃啥？什么口味？几个人？</td></tr>
+      <tr><td>"来一碗牛肉面，少辣，加个蛋"</td><td>老板秒懂，马上去做</td></tr>
+    </table>
+    <p style="color:var(--text-muted);margin-top:12px;">跟 AI 说话一模一样——你给的细节越多，它做的越对。</p>
+  </div>
+</section>
+
+<!-- ─── ② ─── -->
+<section id="modes">
+  <h2>② 三句话公式</h2>
+  <div class="formula-card">
+    <div class="formula">① 我是谁 + ② 我要什么 + ③ 要什么样的</div>
+    <div class="formula-desc">这个公式对 AI 和跟人说话都管用</div>
+  </div>
+
+  <div class="example-card">
+    <h3>📱 例子1：卖货文案</h3>
+    <div class="bad-example"><strong>❌ 烂："帮我写个文案"</strong><br><span style="color:var(--text-muted);">AI：写什么文案？卖什么？什么风格？多少字？一脸懵。</span></div>
+    <div class="good-example"><strong>✅ 好："我是卖茶叶的（①），帮我写一段朋友圈文案介绍新到的龙井（②），要口语化、80字左右、让人看了想买（③）"</strong><br><span style="color:var(--text-muted);">AI：懂了，30秒写出来。</span></div>
+  </div>
+
+  <div class="example-card">
+    <h3>💬 例子2：回客户消息</h3>
+    <div class="bad-example"><strong>❌ 烂："帮我回一下这个客户"</strong></div>
+    <div class="good-example"><strong>✅ 好："我是开网店的（①），有个客户说快递三天没到很生气要退款（②），帮我写一个回复，先道歉再解释快递慢是天气原因，最后给他补5块钱优惠券（③）"</strong></div>
+  </div>
+
+  <div class="example-card">
+    <h3>🧮 例子3：算账</h3>
+    <div class="bad-example"><strong>❌ 烂："帮我算一下"</strong></div>
+    <div class="good-example"><strong>✅ 好："我是开五金店的（①），帮我算这个月赚了多少（②）：进货8600，卖货14200，房租2500，水电380（③）"</strong></div>
+  </div>
+</section>
+
+<!-- ─── ③ ─── -->
+<section id="scenarios">
+  <h2>③ 用你的生意套这个公式</h2>
+  <p style="color:var(--text-muted);margin-bottom:16px;">不管你是卖什么的，填这个模板就行：</p>
+  <div class="card" style="background:var(--bg);border:1px dashed var(--lv-applied);padding:24px;">
+    <p style="font-family:var(--font-mono);font-size:1.05em;line-height:2;">
+      我是 <span style="color:var(--lv-applied);">______</span>（你的身份：卖水果的/开网店的/做小生意的/……），<br>
+      帮我 <span style="color:var(--lv-applied);">______</span>（你要做什么：写文案/回消息/算账/做图/……），<br>
+      要 <span style="color:var(--lv-applied);">______</span>（什么样的结果：口语化/50字/红底白字/……）
+    </p>
+  </div>
+  <div class="info"><strong>不用一字不差。</strong>意思到了就行。关键是三个信息都告诉 AI，别漏。</div>
+</section>
+
+<!-- ─── ④ ─── -->
+<section id="good-bad">
+  <h2>④ 好 vs 烂：一句话的区别</h2>
+  <table>
+    <tr><th>场景</th><th class="bad">❌ 烂（太模糊）</th><th class="good">✅ 好（三句话）</th></tr>
+    <tr><td>写文案</td><td class="bad">"写个文案"</td><td class="good">"我是卖水果的，帮我写一段芒果朋友圈文案，口语化50字"</td></tr>
+    <tr><td>回消息</td><td class="bad">"帮我回他"</td><td class="good">"我是店主，客户说货没到很生气，帮我回他一段先道歉再解释的话"</td></tr>
+    <tr><td>做图</td><td class="bad">"做个海报"</td><td class="good">"我是开花店的，帮我做一张情人节促销海报，粉色背景，大字写'情人节鲜花预订中'"</td></tr>
+    <tr><td>整理</td><td class="bad">"帮我整理一下"</td><td class="good">"帮我把下面这些客户购买记录按金额从高到低排成表格：[粘贴]"</td></tr>
+    <tr><td>学习</td><td class="bad">"教我开店"</td><td class="good">"我开了一家小超市，想学做抖音宣传，第一步应该做什么？用最简单的话说"</td></tr>
+  </table>
+  <div class="tip">诀窍就一个：<strong>别怕啰嗦。给的信息越多，AI 回的越准。</strong>你跟朋友说"帮我写个东西"朋友也不知道你要啥，AI也一样。</div>
+</section>
+
+<!-- ─── ⑤ ─── -->
+<section id="workflow">
+  <h2>⑤ 记住这个流程</h2>
+  <div class="workflow" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:16px 0;overflow-x:auto;">
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:110px;">
+      <div class="wf-cmd" style="font-weight:700;color:var(--lv-applied);">想清楚三句话</div>
+      <div class="wf-what" style="font-size:.75em;color:var(--text-muted);margin-top:3px;">我是谁+要什么+要怎样</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:110px;">
+      <div class="wf-cmd" style="font-weight:700;color:var(--lv-applied);">发给 AI</div>
+      <div class="wf-what" style="font-size:.75em;color:var(--text-muted);margin-top:3px;">复制粘贴到 Claude Code</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:110px;">
+      <div class="wf-cmd" style="font-weight:700;color:var(--lv-applied);">不满意就改</div>
+      <div class="wf-what" style="font-size:.75em;color:var(--text-muted);margin-top:3px;">说"太官方了，口语一点"</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:110px;">
+      <div class="wf-cmd" style="font-weight:700;color:var(--lv-applied);">自己改一改</div>
+      <div class="wf-what" style="font-size:.75em;color:var(--text-muted);margin-top:3px;">加点自己的味道，收工</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 付费墙 ══════ -->
+<div class="paywall-container" data-topic="talk-to-ai">
+  <div class="paywall-content">
+
+<section id="practice">
+  <h2>⑥ 动手试试</h2>
+  <p style="margin-bottom:16px;">把下面这些填好，打开 Claude Code 试试 👇</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">
+    <div class="flashcard" onclick="this.classList.toggle('flipped')" style="perspective:1000px;height:150px;cursor:pointer;margin:12px 0;">
+      <div class="flashcard-inner" style="position:relative;width:100%;height:100%;transition:transform .45s cubic-bezier(.16,1,.3,1);transform-style:preserve-3d;border-radius:var(--radius);">
+        <div class="flashcard-front" style="position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:var(--radius);padding:20px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text);">用三句话公式写一段你自己的文案需求</div>
+        <div class="flashcard-back" style="position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:var(--radius);padding:20px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:600;background:var(--lv-applied-bg);border:1px solid var(--lv-applied);color:var(--lv-applied);transform:rotateY(180deg);flex-direction:column;">
+          <div class="answer" style="font-size:1.1em;margin-bottom:6px;">模板：我是___，帮我写___，要___</div>
+          <div class="detail" style="font-size:.82em;color:var(--text-muted);">比如：我是卖童装的，帮我写一段冬装清仓文案，要可爱活泼的风格，60字</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="quick">
+  <h2>⑦ 快速掌握清单</h2>
+  <div class="card">
+    <ol style="padding-left:20px;line-height:2.2;">
+      <li><input type="checkbox">记住三句话公式：我是谁 + 我要什么 + 要什么样的</li>
+      <li><input type="checkbox">用你自己的生意，填上面的模板</li>
+      <li><input type="checkbox">打开 Claude Code，把你填好的发过去</li>
+      <li><input type="checkbox">看 AI 返回的结果——满意就收工，不满意说"改一下"</li>
+    </ol>
+  </div>
+</section>
+
+<section id="cheatsheet">
+  <h2>⑧ 速查卡</h2>
+  <div class="cheat-sheet">
+    <h2 style="font-size:1.2em;">三句话公式速查</h2>
+    <table style="color:#111;">
+      <tr><th style="color:#555;">要素</th><th style="color:#555;">你填什么</th><th style="color:#555;">例子</th></tr>
+      <tr><td>① 我是谁</td><td>你的身份/生意</td><td>"我是卖水果的"</td></tr>
+      <tr><td>② 我要什么</td><td>具体任务</td><td>"帮我写朋友圈文案"</td></tr>
+      <tr><td>③ 要什么样的</td><td>风格/长度/格式</td><td>"口语化、50字、让人想买"</td></tr>
+    </table>
+    <p style="font-size:0.8em;margin-top:12px;color:#555;">💡 截图保存，每次跟AI说话前看一遍</p>
+  </div>
+</section>
+
+<section id="summary" class="summary-section">
+  <h2>⑨ 总结</h2>
+  <div class="summary-grid">
+    <div class="scene">
+      <h3>🎯 记住</h3>
+      <ul>
+        <li><strong>三句话公式 = 我是谁 + 我要什么 + 要什么样的</strong></li>
+        <li><strong>别怕啰嗦</strong> — 信息越多 AI 越准</li>
+        <li><strong>不满意就让它改</strong> — "太官方了，口语一点"</li>
+      </ul>
+    </div>
+    <div class="mistake">
+      <h3>⚠️ 别犯</h3>
+      <ul>
+        <li><strong>只说"帮我写个东西"</strong> — AI 不是神，没法猜</li>
+        <li><strong>第一次不好就放弃</strong> — 多说两句就对了</li>
+        <li><strong>觉得"我不会说话"</strong> — 你天天跟客户说话，跟AI说话更简单</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+  </div><!-- .paywall-content -->
+  <div class="paywall-fade"></div>
+  <div class="paywall-card">
+    <div class="lock-icon">🔒</div>
+    <h3>以下内容需付费解锁</h3>
+    <div class="locked-modules">⑥ 练习 · ⑦ 快速掌握 · ⑧ 速查卡 · ⑨ 总结</div>
+    <div class="paywall-actions">
+      <button class="paywall-btn paywall-btn-single">
+        <span class="price">¥5</span>
+        <span class="price-label">解锁本页全部内容</span>
+      </button>
+      <button class="paywall-btn paywall-btn-all">
+        <span class="price">¥99</span>
+        <span class="price-label">永久解锁全站 · 含进阶专家</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<section class="quiz-section" data-topic="talk-to-ai">
+  <div id="quiz-container"></div>
+</section>
+
+</div>
+
+<footer class="site-footer">
+  <p><a href="../index.html">← 返回首页</a></p>
+</footer>
+
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>
