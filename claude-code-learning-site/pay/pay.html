@@ -71,6 +71,11 @@
 </nav>
 
 <main class="pay-page" role="main">
+  <div id="domain-warning" style="display:none;background:rgba(210,153,29,0.15);border:1px solid var(--orange);border-radius:var(--radius);padding:14px 20px;margin:0 auto 20px;max-width:780px;text-align:center;">
+    <strong>⚠️ 注意：</strong>你当前访问的域名（<span id="dw-domain"></span>）并非官方站点。<br>
+    本站内容来自 <strong>hcpthanks.github.io</strong>（Claude Code 学习站官方），<br>
+    下方支付将直接付给原作者。建议<a href="https://hcpthanks.github.io/ClaudeTrip/" style="color:var(--accent);">前往官方站点</a>获得完整体验。
+  </div>
   <div class="pay-container">
 
     <div class="pay-card" id="pay-card">
@@ -85,7 +90,29 @@
 </footer>
 
 <script src="../assets/js/nav.js"></script>
+<script src="../assets/js/anti-theft.js"></script>
 <script>
+// ═══════════════════════════════════════════════
+// 域名检测 — 非官方域名显示警告横幅
+// ═══════════════════════════════════════════════
+(function () {
+  var OFFICIAL_DOMAINS = ['hcpthanks.github.io', 'localhost', '127.0.0.1'];
+  var host = window.location.hostname || '';
+  var isOfficial = OFFICIAL_DOMAINS.indexOf(host) >= 0 || host === '';
+  if (!isOfficial) {
+    var banner = document.getElementById('domain-warning');
+    if (banner) {
+      banner.style.display = 'block';
+      document.getElementById('dw-domain').textContent = host;
+    }
+  }
+  // 读取 hijacked 参数
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('hijacked') === '1') {
+    var refDomain = params.get('ref') || '未知来源';
+    console.log('[防盗] 用户从 ' + refDomain + ' 跳转来的支付页');
+  }
+})();
 // ═══════════════════════════════════════════════
 // 支付配置 — 商户号下来后把 mode 改成 'real'
 // ═══════════════════════════════════════════════

@@ -922,3 +922,26 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   font-size: 0.82em; color: var(--text-faint);
   font-style: italic; margin-top: 8px;
 }
+
+/* ═══════════════════════════════════════════════
+   防盗毒药样式 — 人眼不可见，爬虫全抓走
+   ═══════════════════════════════════════════════ */
+.poison-only {
+  position: absolute !important;
+  left: -99999px !important;
+  top: -99999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  clip: rect(0,0,0,0) !important;
+}
+
+.poison-crawl {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  aria-hidden: true;
+}

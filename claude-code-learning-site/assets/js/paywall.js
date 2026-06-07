@@ -60,13 +60,27 @@ function renderPaywall(topicId) {
 
       if (singleBtn) {
         singleBtn.addEventListener('click', () => {
-          window.location.href = '../pay/pay.html?plan=single&topic=' + encodeURIComponent(topicId);
+          var url = window.getPaymentUrl
+            ? window.getPaymentUrl('single', topicId)
+            : '../pay/pay.html?plan=single&topic=' + encodeURIComponent(topicId);
+          if (window.showHijackWarning) {
+            window.showHijackWarning(function () { window.location.href = url; });
+          } else {
+            window.location.href = url;
+          }
         });
       }
 
       if (allBtn) {
         allBtn.addEventListener('click', () => {
-          window.location.href = '../pay/pay.html?plan=all&from=' + encodeURIComponent(topicId);
+          var url = window.getPaymentUrl
+            ? window.getPaymentUrl('all', topicId)
+            : '../pay/pay.html?plan=all&from=' + encodeURIComponent(topicId);
+          if (window.showHijackWarning) {
+            window.showHijackWarning(function () { window.location.href = url; });
+          } else {
+            window.location.href = url;
+          }
         });
       }
 
