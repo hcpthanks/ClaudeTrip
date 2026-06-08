@@ -114,4 +114,90 @@
     }
     return true;
   };
+
+  /* ── Device Fingerprint ── */
+  function getFingerprint() {
+    var data = [
+      screen.width, screen.height, screen.colorDepth,
+      navigator.language,
+      new Date().getTimezoneOffset(),
+      navigator.hardwareConcurrency || 0,
+      navigator.platform || '',
+      (navigator.userAgent || '').substring(0, 120)
+    ].join('|');
+
+    var hash = 0;
+    for (var i = 0; i < data.length; i++) {
+      hash = ((hash << 5) - hash) + data.charCodeAt(i);
+      hash = hash | 0;
+    }
+    return Math.abs(hash).toString(36);
+  }
+
+  /* ── Cloud Verify：本地校验 + 服务端校验设备数 ── */
+  window.verifyWithCloud = function (code, apiBase, callback) {
+    // Step 1：本地校验
+    var localResult = window.verifyActivationCode(code);
+    if (!localResult) {
+      callback({ ok: false, error: '激活码无效，请检查是否输入正确' });
+      return;
+    }
+
+    // Step 2：服务端校验设备激活次数
+    var fingerprint = getFingerprint();
+    var url = (apiBase || '').replace(/\/+$/, '') + '/activate';
+
+    try {
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: code, fingerprint: fingerprint })
+      })
+      .then(function (resp) { return resp.json(); })
+      .then(function (data) {
+        if (data.ok) {
+          // 服务端通过 → 本地解锁
+          window.applyActivationCode(localResult);
+          callback({
+            ok: true,
+            type: localResult.type,
+            topicId: localResult.topicId,
+            remaining: data.remaining,
+            message: data.message
+          });
+        } else {
+          // 服务端拒绝
+          callback({
+            ok: false,
+            error: data.error || '激活失败',
+            count: data.count,
+            maxAllowed: data.maxAllowed
+          });
+        }
+      })
+      .catch(function (err) {
+        // 网络错误 → 降级允许（不阻塞已付费用户）
+        console.warn('[激活] 云端不可达，降级为本地校验:', err.message || err);
+        window.applyActivationCode(localResult);
+        callback({
+          ok: true,
+          type: localResult.type,
+          topicId: localResult.topicId,
+          remaining: '?',
+          message: '云端暂不可达，已降级为本地解锁。下次联网时自动同步。'
+        });
+      });
+    } catch (e) {
+      // 同上
+      console.warn('[激活] 云端请求异常，降级为本地校验:', e.message || e);
+      window.applyActivationCode(localResult);
+      callback({
+        ok: true,
+        type: localResult.type,
+        topicId: localResult.topicId,
+        remaining: '?',
+        message: '云端暂不可达，已降级为本地解锁。'
+      });
+    }
+  };
 })();

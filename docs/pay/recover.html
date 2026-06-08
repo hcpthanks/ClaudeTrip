@@ -26,9 +26,10 @@
   .code-input:focus { outline: none; border-color: var(--accent); }
   .code-input::placeholder { color: var(--text-faint); font-size: 0.8em; letter-spacing: 0; }
   .code-hint { color: var(--text-muted); font-size: 0.78em; margin-top: 8px; }
-  .msg { margin-top: 20px; font-weight: 600; display: none; }
+  .msg { margin-top: 20px; font-weight: 600; display: none; line-height: 1.6; }
   .msg.success { color: var(--green); display: block; }
   .msg.error { color: var(--red); display: block; }
+  .msg.loading { color: var(--accent); display: block; }
   .btn-row { margin-top: 20px; }
   .divider { display: flex; align-items: center; margin: 32px 0 24px; color: var(--text-faint); font-size: 0.82em; }
   .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
@@ -36,6 +37,8 @@
   .order-input { width: 100%; padding: 12px 14px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 0.95em; font-family: var(--font-mono); text-align: center; transition: border-color var(--duration-fast); }
   .order-input:focus { outline: none; border-color: var(--accent); }
   .order-hint { color: var(--text-muted); font-size: 0.76em; margin-top: 6px; }
+  .device-notice { margin-top: 16px; padding: 10px 14px; background: rgba(88,166,255,0.06); border: 1px solid rgba(88,166,255,0.2); border-radius: 8px; font-size: 0.78em; color: var(--text-muted); line-height: 1.6; display: none; }
+  .device-notice.show { display: block; }
   @media (max-width: 768px) {
     .recover-card { padding: 32px 20px; }
   }
@@ -68,6 +71,7 @@
     <p class="code-hint">格式：CC-SXXX-YYYY-ZZZZ，16 个字符（S=单页/A=全站）</p>
 
     <div class="msg" id="msg"></div>
+    <div class="device-notice" id="device-notice"></div>
     <pre id="debug-log" style="display:none;margin-top:12px;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;font-size:0.72em;line-height:1.6;color:#8b949e;text-align:left;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow-y:auto;"></pre>
 
     <div class="btn-row">
@@ -106,8 +110,13 @@
   var input = document.getElementById('code-input');
   var btn = document.getElementById('verify-btn');
   var msg = document.getElementById('msg');
+  var notice = document.getElementById('device-notice');
 
-  // Auto-format: CC-SXXX-YYYY-ZZZZ（15字符）
+  // ══════ API 配置 ══════
+  // 部署 SCF 后将下方地址替换为腾讯云 API 网关地址
+  var API_BASE = 'https://service-xxxxxxxx-xxxxxxxxxx.gz.apigw.tencentcs.com/release';
+
+  // Auto-format: CC-SXXX-YYYY-ZZZZ
   input.addEventListener('input', function () {
     var val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (val.length > 2) val = val.substring(0,2) + '-' + val.substring(2);
@@ -115,17 +124,29 @@
     input.value = val.substring(0, 17);
   });
 
+  function navigateToCourse(topicId) {
+    if (!topicId) { window.location.href = '../index.html'; return; }
+    var page = (window.TOPIC_PAGES || {})[topicId];
+    if (page) {
+      var idx = (window.TOPIC_ORDER || []).indexOf(topicId);
+      var dir = idx < 6 ? 'pre-basics' : idx < 10 ? 'applied' : 'beginner';
+      window.location.href = '../' + dir + '/' + page;
+    } else {
+      window.location.href = '../index.html';
+    }
+  }
+
   function verify() {
     var code = input.value.trim();
     msg.className = 'msg';
     msg.textContent = '';
+    notice.className = 'device-notice';
 
     // ── Debug log ──
     var debug = document.getElementById('debug-log');
     debug.style.display = 'block';
     var log = [];
     log.push('输入码  : "' + code + '" (长度=' + code.length + ')');
-    log.push('原始值  : "' + input.value + '"');
 
     if (!code || code.length < 16) {
       msg.textContent = '请输入完整的激活码（CC-SXXX-YYYY-ZZZZ 格式）';
@@ -135,80 +156,57 @@
       return;
     }
 
-    // Step-by-step verification
-    var CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    var regex = /^CC-([SA])([A-HJ-NP-Z2-9]{3})([A-HJ-NP-Z2-9]{4})-([A-HJ-NP-Z2-9]{4})$/;
-    var parts = code.match(regex);
-    log.push('正则匹配: ' + (parts ? 'YES' : 'NO'));
-    if (parts) {
-      log.push('  类型字符: ' + parts[1]);
-      log.push('  主题字符: ' + parts[2]);
-      log.push('  随机字符: ' + parts[3]);
-      log.push('  校验字符: ' + parts[4]);
-    }
-
-    // Checksum check
-    var SECRET_SALT = 0xCC1E4;
-    function computeCheck(prefix) {
-      var hash = SECRET_SALT;
-      for (var i = 0; i < prefix.length; i++) {
-        hash = ((hash << 5) - hash) + prefix.charCodeAt(i);
-        hash = hash | 0;
-      }
-      var r = '';
-      for (var j = 0; j < 4; j++) {
-        r += CHARS[Math.abs((hash >> (j * 5)) % CHARS.length)];
-      }
-      return r;
-    }
-    if (parts) {
-      var pfx = 'CC-' + parts[1] + parts[2] + parts[3];
-      var expected = computeCheck(pfx);
-      log.push('前缀    : ' + pfx);
-      log.push('期望校验: ' + expected);
-      log.push('实际校验: ' + parts[4]);
-      log.push('校验匹配: ' + (expected === parts[4] ? 'YES' : 'NO'));
-    }
-
-    // TOPIC_ORDER check
-    log.push('TOPIC_ORDER 存在: ' + (window.TOPIC_ORDER ? 'YES (长度=' + window.TOPIC_ORDER.length + ')' : 'NO!'));
+    // ── 本地预检 ──
     log.push('verifyActivationCode 存在: ' + (typeof window.verifyActivationCode === 'function' ? 'YES' : 'NO!'));
+    var localCheck = window.verifyActivationCode(code);
+    log.push('本地校验: ' + JSON.stringify(localCheck));
 
-    var result = verifyActivationCode(code);
-    log.push('验证结果: ' + JSON.stringify(result));
-
-    if (!result) {
+    if (!localCheck) {
       msg.textContent = '激活码无效，请检查是否输入正确';
       msg.className = 'msg error';
-      log.push('→ FAIL: verifyActivationCode 返回 null/undefined');
+      log.push('→ FAIL: 本地校验不通过');
       debug.textContent = log.join('\n');
       return;
     }
 
-    applyActivationCode(result);
-    var labels = { all: '全站永久解锁', single: '单页解锁' };
-    msg.textContent = '✅ ' + (labels[result.type] || '解锁') + '成功！即将跳转...';
-    msg.className = 'msg success';
-    log.push('→ PASS: 解锁成功! ' + JSON.stringify(result));
-    debug.textContent = log.join('\n');
+    // ── 云端校验 ──
+    msg.textContent = '⏳ 正在云端验证...';
+    msg.className = 'msg loading';
+    btn.disabled = true;
+    btn.textContent = '验证中...';
 
-    setTimeout(function () {
-      if (result.type === 'all') {
-        window.location.href = '../index.html';
-      } else if (result.topicId) {
-        var page = (window.TOPIC_PAGES || {})[result.topicId];
-        if (page) {
-          // Use topicPagePath logic: idx<6=pre-basics, <10=applied, >=10=beginner
-          var idx = (window.TOPIC_ORDER || []).indexOf(result.topicId);
-          var dir = idx < 6 ? 'pre-basics' : idx < 10 ? 'applied' : 'beginner';
-          window.location.href = '../' + dir + '/' + page;
-        } else {
-          window.location.href = '../index.html';
+    var labels = { all: '全站永久解锁', single: '单页解锁' };
+
+    window.verifyWithCloud(code, API_BASE, function (result) {
+      btn.disabled = false;
+      btn.textContent = '验证激活 →';
+
+      if (result.ok) {
+        log.push('云端校验: PASS');
+        log.push('剩余设备数: ' + result.remaining);
+        log.push('消息: ' + (result.message || ''));
+        debug.textContent = log.join('\n');
+
+        msg.textContent = '✅ ' + (labels[result.type] || '解锁') + '成功！即将跳转...';
+        msg.className = 'msg success';
+
+        // 显示剩余设备信息
+        if (typeof result.remaining === 'number' && result.remaining >= 0) {
+          notice.innerHTML = '💡 该激活码可在 <b>' + (result.remaining + 1) + '</b> 台设备上使用（最多 3 台）。<br>激活码仅限本人使用，请勿分享给他人。';
+          notice.className = 'device-notice show';
         }
+
+        setTimeout(function () {
+          navigateToCourse(result.topicId);
+        }, 2000);
       } else {
-        window.location.href = '../index.html';
+        log.push('云端校验: FAIL — ' + (result.error || ''));
+        debug.textContent = log.join('\n');
+
+        msg.innerHTML = '❌ ' + (result.error || '激活失败').replace(/\n/g, '<br>');
+        msg.className = 'msg error';
       }
-    }, 1500);
+    });
   }
 
   btn.addEventListener('click', verify);
@@ -249,37 +247,30 @@
           return;
         }
 
-        // Found — fill and verify
+        // Found — fill and verify with cloud
         orderInput.value = resp.data.code;
         input.value = resp.data.code;
-        orderMsg.textContent = '✅ 激活码已找到！正在验证...';
+        orderMsg.textContent = '✅ 激活码已找到！正在进行云端验证...';
         orderMsg.className = 'msg success';
 
-        // Auto-apply
-        var result = verifyActivationCode(resp.data.code);
-        if (result) {
-          applyActivationCode(result);
-          orderMsg.textContent = '✅ 激活码恢复成功！即将跳转...';
-          setTimeout(function () {
-            if (result.type === 'all') {
-              window.location.href = '../index.html';
-            } else if (result.topicId) {
-              var page = (window.TOPIC_PAGES || {})[result.topicId];
-              if (page) {
-                var idx = (window.TOPIC_ORDER || []).indexOf(result.topicId);
-                var dir = idx < 6 ? 'pre-basics' : idx < 10 ? 'applied' : 'beginner';
-                window.location.href = '../' + dir + '/' + page;
-              } else {
-                window.location.href = '../index.html';
-              }
-            } else {
-              window.location.href = '../index.html';
+        window.verifyWithCloud(resp.data.code, API_BASE, function (result) {
+          if (result.ok) {
+            orderMsg.textContent = '✅ 激活码恢复成功！即将跳转...';
+            orderMsg.className = 'msg success';
+
+            if (typeof result.remaining === 'number' && result.remaining >= 0) {
+              notice.innerHTML = '💡 该激活码可在 <b>' + (result.remaining + 1) + '</b> 台设备上使用（最多 3 台）。<br>激活码仅限本人使用，请勿分享给他人。';
+              notice.className = 'device-notice show';
             }
-          }, 1500);
-        } else {
-          orderMsg.textContent = '⚠️ 激活码格式异常，请尝试手动输入上方激活码验证';
-          orderMsg.className = 'msg error';
-        }
+
+            setTimeout(function () {
+              navigateToCourse(result.topicId);
+            }, 2000);
+          } else {
+            orderMsg.textContent = '❌ ' + (result.error || '激活失败');
+            orderMsg.className = 'msg error';
+          }
+        });
       })
       .catch(function () {
         recoverBtn.disabled = false;
