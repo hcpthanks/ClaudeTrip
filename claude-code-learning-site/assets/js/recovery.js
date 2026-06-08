@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════
-   激活码系统 v3 — 永久编号格式 CC-SXXX-YYY-ZZZZ（15字符）
-   3-char计数器：每课独立递增，保证10万用户零重复
+   激活码系统 v3 — 永久编号格式 CC-SXXX-YYYY-ZZZZ（16字符）
+   4-char计数器：每课92万容量，100万人够用
    ═══════════════════════════════════════════════════════ */
 
 (function () {
@@ -33,7 +33,7 @@
     return result;
   }
 
-  /* ── Verify：CC-[SA][3-char-id][3-counter]-[4-check] ── */
+  /* ── Verify：CC-[SA][3-char-id][4-counter]-[4-check] ── */
   window.verifyActivationCode = function (code) {
     code = code.toUpperCase().trim();
 
@@ -70,7 +70,7 @@
     // ── v3 格式验证 ──
     var typeChar = parts[1];
     var idCode   = parts[2];  // 3字符 永久编号
-    var random   = parts[3];  // 3字符 计数器
+    var random   = parts[3];  // 4字符 计数器
     var check    = parts[4];  // 4字符 校验和
 
     var prefix = 'CC-' + typeChar + idCode + random;

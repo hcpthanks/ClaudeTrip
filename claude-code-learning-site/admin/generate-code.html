@@ -16,7 +16,15 @@
 	  return ACT_CHARS[Math.floor(n / 961)]
 	       + ACT_CHARS[Math.floor((n % 961) / 31)]
 	       + ACT_CHARS[n % 31];
+	function encodeCounter(n) {
+	  var c = n - 1;
+	  return ACT_CHARS[Math.floor(c / 29791)]
+	       + ACT_CHARS[Math.floor((c % 29791) / 961)]
+	       + ACT_CHARS[Math.floor((c % 961) / 31)]
+	       + ACT_CHARS[c % 31];
 	}
+
+		}
 
 	function computeCheck(prefix) {
 	  var hash = SECRET_SALT;
@@ -41,7 +49,7 @@
 	var c = (counters[counterKey] || 0) + 1;
 	counters[counterKey] = c;
 	localStorage.setItem('cc-code-counters', JSON.stringify(counters));
-	var counterCode = encodeId(c);
+	var counterCode = encodeCounter(c);
 	  var prefix = 'CC-' + typeChar + topicCode + counterCode;
 	  var check = computeCheck(prefix);
 	  return prefix + '-' + check;

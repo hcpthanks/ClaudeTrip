@@ -61,11 +61,11 @@
       type="text"
       class="code-input"
       id="code-input"
-      placeholder="CC-SXXX-YYY-ZZZZ"
-      maxlength="16"
+      placeholder="CC-SXXX-YYYY-ZZZZ"
+      maxlength="17"
       autocomplete="off"
     >
-    <p class="code-hint">格式：CC-SXXX-YYY-ZZZZ，15 个字符（S=单页/A=全站）</p>
+    <p class="code-hint">格式：CC-SXXX-YYYY-ZZZZ，16 个字符（S=单页/A=全站）</p>
 
     <div class="msg" id="msg"></div>
     <pre id="debug-log" style="display:none;margin-top:12px;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;font-size:0.72em;line-height:1.6;color:#8b949e;text-align:left;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow-y:auto;"></pre>
@@ -107,12 +107,12 @@
   var btn = document.getElementById('verify-btn');
   var msg = document.getElementById('msg');
 
-  // Auto-format: CC-SXXX-YYY-ZZZZ（15字符）
+  // Auto-format: CC-SXXX-YYYY-ZZZZ（15字符）
   input.addEventListener('input', function () {
     var val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (val.length > 2) val = val.substring(0,2) + '-' + val.substring(2);
     if (val.length > 7) val = val.substring(0,7) + '-' + val.substring(7);
-    input.value = val.substring(0, 16);
+    input.value = val.substring(0, 17);
   });
 
   function verify() {
@@ -127,17 +127,17 @@
     log.push('输入码  : "' + code + '" (长度=' + code.length + ')');
     log.push('原始值  : "' + input.value + '"');
 
-    if (!code || code.length < 15) {
-      msg.textContent = '请输入完整的激活码（CC-SXXX-YYY-ZZZZ 格式）';
+    if (!code || code.length < 16) {
+      msg.textContent = '请输入完整的激活码（CC-SXXX-YYYY-ZZZZ 格式）';
       msg.className = 'msg error';
-      log.push('→ FAIL: 长度不足 15');
+      log.push('→ FAIL: 长度不足 16');
       debug.textContent = log.join('\n');
       return;
     }
 
     // Step-by-step verification
     var CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    var regex = /^CC-([SA])([A-HJ-NP-Z2-9]{3})([A-HJ-NP-Z2-9]{3})-([A-HJ-NP-Z2-9]{4})$/;
+    var regex = /^CC-([SA])([A-HJ-NP-Z2-9]{3})([A-HJ-NP-Z2-9]{4})-([A-HJ-NP-Z2-9]{4})$/;
     var parts = code.match(regex);
     log.push('正则匹配: ' + (parts ? 'YES' : 'NO'));
     if (parts) {
