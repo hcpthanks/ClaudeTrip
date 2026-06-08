@@ -74,12 +74,16 @@
   <div id="domain-warning" style="display:none;background:rgba(210,153,29,0.15);border:1px solid var(--orange);border-radius:var(--radius);padding:14px 20px;margin:0 auto 20px;max-width:780px;text-align:center;">
     <strong>⚠️ 注意：</strong>你当前访问的域名（<span id="dw-domain"></span>）并非官方站点。<br>
     本站内容来自 <strong>hcpthanks.github.io</strong>（Claude Code 学习站官方），<br>
-    下方支付将直接付给原作者。建议<a href="https://hcpthanks.github.io/ClaudeTrip/" style="color:var(--accent);">前往官方站点</a>获得完整体验。
+    下方支付将直接付给原作者。建议<a href="https://www.hcpthanks.com/" style="color:var(--accent);">前往官方站点</a>获得完整体验。
   </div>
   <div class="pay-container">
 
     <div class="pay-card" id="pay-card">
       <!-- filled by JS -->
+    </div>
+
+    <div style="max-width:780px;margin:20px auto;text-align:center;color:var(--text-faint);font-size:0.82em;line-height:1.8;">
+      <p style="margin:0;">✅ 永久有效 · 📚 21节课已完结持续更新 · 🔐 激活码换机可恢复</p>
     </div>
 
   </div>
@@ -99,7 +103,7 @@
 (function () {
   var OFFICIAL_DOMAINS = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.allowedDomains)
     ? window.CC_SITE_CONFIG.allowedDomains
-    : ['hcpthanks.github.io', 'localhost', '127.0.0.1'];
+    : ['hcpthanks.github.io', 'hcpthanks.com', 'www.hcpthanks.com', 'localhost', '127.0.0.1'];
   var host = window.location.hostname || '';
   var isOfficial = OFFICIAL_DOMAINS.indexOf(host) >= 0 || host === '';
   if (!isOfficial) {
@@ -121,7 +125,7 @@
 // ═══════════════════════════════════════════════
 var PAYMENT_CONFIG = {
   mode: 'sim',                              // 'sim' | 'real'
-  apiBase: 'https://你的域名.vercel.app',    // Vercel 部署后换成真实域名
+  apiBase: '/api',    // Vercel 部署后换成真实域名
   pollInterval: 2000,                       // 轮询间隔（毫秒）
   pollTimeout: 300000,                      // 轮询超时（5 分钟）
 };
@@ -157,12 +161,12 @@ function renderQR(mode, qrUrl) {
       '<div class="qr-hint" id="qr-status">等待支付…</div>' +
       '</div>';
   }
-  // Sim 模式 — 占位 UI
-  return '<div class="qr-placeholder">' +
-    '<div class="qr-icon">📱</div>' +
-    '<div class="qr-text">微信扫码支付</div>' +
-    '<div class="qr-hint">（商户号申请中，暂用下方按钮模拟）</div>' +
-    '</div>';
+  // Sim 模式 — 显示真实收款码
+	  return '<div class="qr-placeholder" style="background:#fff;">' +
+	    '<img src="../assets/images/wechat-pay-qr.png" alt="微信扫码支付" style="width:220px;height:auto;display:block;margin:0 auto;border-radius:4px;">' +
+	    '<div class="qr-text" style="margin-top:12px;">微信扫码支付 ¥' + price + '</div>' +
+	    '<div class="qr-hint">扫码支付后，点击下方按钮解锁</div>' +
+	    '</div>';
 }
 
 // ── 按钮区域 ──
@@ -170,7 +174,7 @@ function renderButton(mode, polling) {
   if (mode === 'real' && polling) {
     return '<p style="color:var(--text-muted);margin-top:16px;">⏳ 等待支付确认中…</p>' +
       '<button class="btn" style="font-size:0.9em;padding:10px 28px;margin-top:8px;opacity:0.7;" id="sim-pay">' +
-        '改用模拟支付 ¥' + price + ' →' +
+        '改用扫码支付 ¥' + price + ' →' +
       '</button>';
   }
   if (mode === 'real') {
@@ -183,10 +187,10 @@ function renderButton(mode, polling) {
   }
   // Sim 模式
   return '<button class="btn btn-success" style="font-size:1em;padding:14px 40px;margin-top:12px;" id="sim-pay">' +
-     '模拟支付 ¥' + price + ' →' +
+     '支付完成，解锁内容 →' +
    '</button>' +
    '<p class="pay-footer-note">' +
-     '支付成功后自动解锁。如有问题，请微信联系我们。' +
+     '扫码支付后点击上方按钮即可解锁。如有问题，请微信联系我们。' +
    '</p>';
 }
 
