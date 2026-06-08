@@ -50,18 +50,18 @@ claude-code-learning-site/
 │   ├── file-basics.html        # ⑤ 文件与文件夹基础
 │   ├── when-things-go-wrong.html # ⑥ 遇到错误怎么办
 │   └── deepseek-setup.html     # ⑦ 让 Claude Code 在国内也能用
-├── applied/                    # 🆕 应用课（10 模块模板，含付费墙）
+├── applied/                    # 应用课（10 模块模板，含付费墙，2026-06-08 重写）
 │   ├── ai-for-business.html    # ① AI 能帮你做什么
-│   ├── talk-to-ai.html         # ② 怎么让 AI 听懂你
+│   ├── talk-to-ai.html         # ② 让AI处理更复杂的事（进阶对话技巧）
 │   ├── ai-writing.html         # ③ 让 AI 帮你写文案
-│   └── bridge-to-coding.html   # ④ 接下来学什么
-├── beginner/                   # 入门课程（6个主题，10 模块模板）
-│   ├── claude-intro.html       # ① Claude Code 简介
-│   ├── plan-guide.html         # ② /plan 命令完全指南
+│   └── bridge-to-coding.html   # ④ AI帮你管好客户（原"接下来学什么"已替换）
+├── beginner/                   # 入门课程（6个主题，2026-06-08 全面重写为老王向）
+│   ├── claude-intro.html       # ① 认识 Claude Code
+│   ├── plan-guide.html         # ② 做事之前先想清楚
 │   ├── shortcuts.html          # ③ 快捷键大全
-│   ├── conversation-skills.html # ④ 对话技巧入门
-│   ├── project-init.html       # ⑤ 项目初始化
-│   └── daily-workflow.html     # ⑥ 日常工作流
+│   ├── conversation-skills.html # ④ 让AI听懂你的话
+│   ├── project-init.html       # ⑤ 第一次让AI帮你做事
+│   └── daily-workflow.html     # ⑥ 每天都能用的AI场景
 ├── intermediate/               # 进阶课程（待建）
 ├── expert/                     # 专家课程（待建）
 └── pay/
@@ -122,22 +122,32 @@ claude-code-learning-site/
 
 ### 入门/进阶/专家：10 模块教学模板
 
-每个主题页面**必须**遵循此结构（shortcuts.html 例外，它是参考卡而非教学页）：
+每个主题页面**必须**遵循此结构（shortcuts.html 例外，它是参考卡而非教学页）。2026-06-08 付费墙提前到④步前。
 
 ```
-① 核心理解 — 一句话说清这是什么
-② 输入模式 — 怎么用（方式/公式/命令）
-③ 实战场景 — 什么时候用
+① 核心理解 — 一句话说清这是什么            ← 免费预览
+② 输入方法 — 怎么用（方式/公式/命令）        ← 免费预览
+③ 实战场景 — 什么时候用                     ← 免费预览
+────── 付费墙 ──────
 ④ 好 vs 烂 — 正确用法 vs 错误用法（表格）
 ⑤ 工作流 — 标准操作流程（steps 图表）
-────── 付费墙 ──────
-⑥ 练习 — 互动练习题（翻转卡片/自测/改写）
+⑥ 练习 — 互动练习题
 ⑦ 快速掌握 — 勾选清单
 ⑧ 速查卡 — 打印友好的白底黑字速查表
 ⑨ 总结 — 双栏：🎯最常用 + ⚠️最易错
 ────── 考核 ──────
 ⑩ 学习考核 — 5道选择题，答对4题（80%）即通过
 ```
+
+### 写作原则（面向老王：40+岁个体户，零电脑基础）
+
+- **零编程术语** — 不用 terminal/shell/CLI/git/npm 等词，除非先解释
+- **口语化** — 像跟朋友聊天一样写，不要教科书语气
+- **每概念一个例子** — 新概念立刻跟一个老王秒懂的实例
+- **不超3步** — 任何操作说明不超过3步
+- **给安全感** — 每页至少一处"别怕，这步不会弄坏你的电脑"
+- **学了就能用** — 每页结尾有"现在你就打开试试____"
+- **允许重复** — 前几课反复强调基本操作，用户需要重复
 
 ### ⑩ 考核区域 HTML
 
@@ -223,12 +233,25 @@ claude-code-learning-site/
 
 注：¥1 强制解锁已于 2026-06-08 移除。¥99 用户自动绕过全部付费墙。
 
-### 激活码格式
+### 激活码格式 v3（2026-06-08 重构）
 
-- 格式：`CC-{type}{topic}{rand2}-{check4}`（如 `CC-A0XK-W9M3`）
-- 服务端（wechat-pay.js）与客户端（recovery.js）使用相同算法
-- `verifyActivationCode()` 通过 checksum 自校验，无需查数据库
-- 真实支付时 success.html 优先展示服务端生成的码
+**格式：** `CC-SXXX-YYYY-ZZZZ`（16字符）
+
+| 位置 | 含义 | 编码 |
+|------|------|------|
+| `CC-` | 前缀 | 固定 |
+| `S`/`A` | 类型 | S=单页解锁，A=全站永久 |
+| `XXX` | 课程编号（3字符） | 永久编号，31³=29,791课，nav.js 中 `TOPIC_IDS` 定义 |
+| `YYYY` | 计数器（4字符） | 每课独立递增，31⁴=923,521/课，localStorage `cc-code-counters` |
+| `ZZZZ` | 校验码（4字符） | 32位 checksum，防伪造 |
+
+**核心特性：**
+- 永久编号替代位置索引 — 插入新课不破坏已有激活码
+- 计数器替代随机字符 — 保证绝对不重复，10年100万用户够用
+- 兼容旧v2格式（12字符 `CC-SBTT-JBZL`）
+- 自包含验证，无需后端数据库
+- `generateActivationCode` 不在客户端暴露，仅作者本地 `admin/generate-code.html` 可生成
+- `verifyActivationCode` + `applyActivationCode` 保留在 `window`，供 `recover.html` 使用
 
 ### 状态存储
 
@@ -236,38 +259,32 @@ claude-code-learning-site/
 |-----|------|------|
 | `cc-learn-all-access` | `"true"` / 不存在 | 全站永久解锁 |
 | `cc-learn-unlocked` | JSON 数组 | 单页解锁的 topic ID 列表 |
-| `cc-activation-codes` | JSON 对象 | 激活码缓存（同浏览器） |
+| `cc-activation-codes` | JSON 对象 | 激活码缓存（同浏览器，旧版兼容） |
+| `cc-code-counters` | JSON 对象 | 每课计数器（admin 本地） |
 
 ### Topic ID 映射
 
-| ID | 页面 | 中文名 |
-|----|------|--------|
-| `pc-basics` | computer-basics.html | 认识你的电脑 |
-| `open-ps` | open-powershell.html | 打开 PowerShell |
-| `install-cc` | install-claude-code.html | 安装 Claude Code |
-| `first-chat` | first-conversation.html | 第一次对话 |
-| `file-basics` | file-basics.html | 文件与文件夹 |
-| `troubleshoot` | when-things-go-wrong.html | 遇到错误怎么办 |
-| `deepseek` | deepseek-setup.html | 让 CC 在国内也能用 |
-| `ai-for-business` | ai-for-business.html | AI 能帮你做什么 |
-| `talk-to-ai` | talk-to-ai.html | 怎么让 AI 听懂你 |
-| `ai-writing` | ai-writing.html | 让 AI 帮你写文案 |
-| `bridge-to-coding` | bridge-to-coding.html | 接下来学什么 |
-| `intro` | claude-intro.html | Claude Code 简介 |
-| `plan` | plan-guide.html | /plan 命令完全指南 |
-| `shortcuts` | shortcuts.html | 快捷键大全 |
-| `convo` | conversation-skills.html | 对话技巧入门 |
-| `init` | project-init.html | 项目初始化 |
-| `workflow` | daily-workflow.html | 日常工作流 |
+| ID | 永久编号 | 页面 | 中文名 |
+|----|---------|------|--------|
+| `pc-basics` | 1 | computer-basics.html | 认识你的电脑 |
+| `open-ps` | 2 | open-powershell.html | 打开 PowerShell |
+| `install-cc` | 3 | install-claude-code.html | 安装 Claude Code |
+| `first-chat` | 4 | first-conversation.html | 第一次对话 |
+| `file-basics` | 5 | file-basics.html | 文件与文件夹 |
+| `troubleshoot` | 6 | when-things-go-wrong.html | 遇到错误怎么办 |
+| `deepseek` | 7 | deepseek-setup.html | 国内也能用 |
+| `ai-for-business` | 8 | ai-for-business.html | AI 能帮你做什么 |
+| `talk-to-ai` | 9 | talk-to-ai.html | 让AI处理更复杂的事 |
+| `ai-writing` | 10 | ai-writing.html | 让 AI 帮你写文案 |
+| `bridge-to-coding` | 11 | bridge-to-coding.html | AI帮你管好客户 |
+| `intro` | 12 | claude-intro.html | 认识 Claude Code |
+| `plan` | 13 | plan-guide.html | 做事之前先想清楚 |
+| `shortcuts` | 14 | shortcuts.html | 快捷键大全 |
+| `convo` | 15 | conversation-skills.html | 让AI听懂你的话 |
+| `init` | 16 | project-init.html | 第一次让AI帮你做事 |
+| `workflow` | 17 | daily-workflow.html | 每天都能用的AI场景 |
 
-### 激活码
-
-- 格式：`CC-XXXX-XXXX`（10 字符）
-- 自包含验证，无需后端数据库
-- 算法：type_byte + topic_byte + random×2 + checksum×4
-- `generateActivationCode` 已从 `window` 移除（2026-06-08），仅作者本地 admin 工具可生成
-- `verifyActivationCode` 和 `applyActivationCode` 保留在 window，供 recover.html 使用
-- 安全级别：对 ¥5-99 课程足够，码不可伪造（checksum 密钥仅存在于代码中）
+添加新课程：在 `nav.js` 的 `TOPIC_IDS` 加一行 `新ID: 18`，`TOPIC_BY_ID` 自动同步。已有激活码不受影响。
 
 ## 考核与递进解锁系统
 
@@ -311,33 +328,28 @@ claude-code-learning-site/
 
 ## 当前状态
 
-- ✅ 预备课 7 个主题完成（7 模块简化模板，始终免费，CSS 插图已替换占位符）
-- ✅ 应用课 4 个主题完成（10 模块模板，含付费墙，面向个体户生意场景）
-- ✅ 入门 6 个主题完成（含付费墙 + 激活码 + 考核递进系统，已添加 13 个 CSS 终端插图）
-- ✅ 独立域名上线 — https://www.hcpthanks.com/（腾讯云购买+DNSPod DNS+GitHub Pages）
-- ✅ 防盗系统 — 域名锁、支付劫持、DevTools检测、DOM投毒、AI爬虫毒药，全站21页接入
-- ✅ 防盗内联降级 — paywall.js + quiz.js 含内联防护，anti-theft.js 被删后仍有效
-- ✅ 支付页优化 — 域名引用更新、信任信号（永久有效·21节课）、联系方式引导
-- ✅ CSS 插图组件（`.terminal-screenshot`, `.win-desktop`, `.win-window`, `.smart-placeholder`）替换全部 36 个 `.img-placeholder` 占位符
-- ✅ 终端插图 Win10 风格统一（`.terminal-screenshot` 标题栏已改为 Win10 PowerShell 白底+右侧按钮，15 处全部更新）
-- ✅ 入门课程视觉化（6 页新增 13 个 CSS 终端插图）
-- ✅ 微信支付后端代码完成（3 个 API + 1 个工具库 + DB schema + 激活码统一算法）
-- ✅ 个人微信收款码已嵌入（支付页展示真实收款码 + 邮箱联系 hcpthanks@163.com）
-- ✅ 支付安全加固：generateActivationCode 从全局移除，仅本地 admin 工具可生成
-- ✅ ¥1 force unlock 全站删除，支付简化为 ¥5 单主题 / ¥99 全站两档
-- ⬜ 进阶 4 个主题（占位卡片）
-- ⬜ 专家 3 个主题（占位卡片）
-- ⏳ ICP 备案（腾讯云轻量服务器已购 ¥192/年，草稿已填，等域名实名同步）
-- ⬜ 国内 CDN（备案通过后配腾讯云 CDN→GitHub Pages）
-- ⬜ 数据统计看板
+- ✅ 预备课 7 个主题完成（始终免费，CSS 插图）
+- ✅ 应用课 4 个主题完成（2026-06-08 重写：去重叠+进阶对话+客户管理）
+- ✅ 入门 6 个主题完成（2026-06-08 全面重写为老王向：零编程术语，生意场景）
+- ✅ 激活码 v3 永久编号系统（16字符，29,791课+92万/课，10年100万人够用）
+- ✅ 付费墙提前到④步（①-③免费预览）
+- ✅ 付费页精简（仅¥99，130行）
+- ✅ 导航简化（移除17个主题链接，分区高亮+滚动跟踪）
+- ✅ 独立域名上线 — https://www.hcpthanks.com/
+- ✅ 防盗系统 — 全站接入
+- ✅ 个人微信收款码 + 邮箱 hcpthanks@163.com
+- ⬜ 进阶 4 个主题（待开发）
+- ⬜ 专家 3 个主题（待开发）
+- ⬜ quiz.js 测验题更新（匹配新课程内容）
+- ⏳ ICP 备案（等域名实名同步）
+- ⬜ 国内 CDN
 
 ## 下一步计划（2026-06-08 更新）
 
-1. **真人测试支付流程** — 找 1 个真实用户扫码支付 → 发邮件 → 你生成激活码 → 他解锁
-2. **ICP 备案提交** — 等域名实名同步完成（1-2天），回腾讯云提交草稿
-3. **微信商户号申请** — 如需自动化：申请商户号 → Supabase 建表 → Vercel 部署后端
-4. **进阶/专家课程** — 进阶 4 个 + 专家 3 个主题
-5. **国内 CDN** — 备案通过后配腾讯云 CDN 加速
+1. **真人测试支付流程** — 找真实用户扫码支付 → 发邮件 → 生成激活码 → 解锁
+2. **quiz.js 更新** — 测验题目匹配重写后的课程内容
+3. **进阶/专家课程** — 进阶 4 个 + 专家 3 个主题开发
+4. **ICP 备案提交** — 域名实名同步完成后提交
 
 ## 开发注意事项
 
