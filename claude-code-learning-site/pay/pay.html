@@ -165,7 +165,7 @@ function renderQR(mode, qrUrl) {
 	  return '<div class="qr-placeholder" style="background:#fff;">' +
 	    '<img src="../assets/images/wechat-pay-qr.png" alt="微信扫码支付" style="width:220px;height:auto;display:block;margin:0 auto;border-radius:4px;">' +
 	    '<div class="qr-text" style="margin-top:12px;">微信扫码支付 ¥' + price + '</div>' +
-	    '<div class="qr-hint">扫码支付后，点击下方按钮解锁</div>' +
+	    '<div class="qr-hint">支付成功后，请微信联系我领取激活码</div>' +
 	    '</div>';
 }
 
@@ -185,13 +185,13 @@ function renderButton(mode, polling) {
         '扫码后等待几秒自动跳转。如遇问题请联系我们。' +
       '</p>';
   }
-  // Sim 模式
-  return '<button class="btn btn-success" style="font-size:1em;padding:14px 40px;margin-top:12px;" id="sim-pay">' +
-     '支付完成，解锁内容 →' +
-   '</button>' +
-   '<p class="pay-footer-note">' +
-     '扫码支付后点击上方按钮即可解锁。如有问题，请微信联系我们。' +
-   '</p>';
+  // Sim 模式 — 纯收款码，邮件联系领取激活码
+  return '<div style="margin-top:24px;padding:20px 24px;background:rgba(210,153,29,0.08);border:1px solid var(--orange);border-radius:var(--radius);text-align:center;">' +
+    '<p style="margin:0 0 8px;font-weight:600;color:var(--text-high);">📧 支付完成后，请发送邮件</p>' +
+    '<p style="margin:0;font-size:1.2em;font-weight:700;"><a href="mailto:hcpthanks@163.com?subject=Claude Code 学习站 激活码申请" style="color:var(--accent);text-decoration:none;">hcpthanks@163.com</a></p>' +
+    '<p style="margin:6px 0 0;font-size:0.82em;color:var(--text-muted);">邮件附上付款截图 → 我回复激活码 → 永久解锁全站</p>' +
+    '<p class="pay-footer-note" style="margin-top:10px;">激活码保存在邮箱里，随时可查，永不丢失。</p>' +
+  '</div>';
 }
 
 // ── 保存支付日志 ──
