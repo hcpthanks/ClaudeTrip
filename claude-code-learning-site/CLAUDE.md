@@ -262,6 +262,39 @@ claude-code-learning-site/
 | `cc-activation-codes` | JSON 对象 | 激活码缓存（同浏览器，旧版兼容） |
 | `cc-code-counters` | JSON 对象 | 每课计数器（admin 本地） |
 
+### 云端激活校验（2026-06-08 新增）
+
+防止激活码被多人分享——每码最多 3 台设备。
+
+**架构：**
+```
+recover.html → recovery.js verifyWithCloud()
+  ├ 本地 verifyActivationCode() 校验格式
+  ├ fetch() → Cloudflare Worker → KV 存储
+  ├ < 3 设备 → 允许 → 写入 localStorage
+  └ ≥ 3 设备 → 拒绝，提示联系客服
+```
+
+**文件：**
+- `serverless/cloudflare-worker.js` — Worker 代码（零依赖，~68行）
+- `assets/js/recovery.js` — 已加 verifyWithCloud() + getFingerprint()
+- `pay/recover.html` — 已加云端校验 UI（loading/成功/失败/设备提示）
+- `docs/pay/recover.html` — 同步副本
+
+**Cloudflare Worker 部署：** 需创建 KV namespace 绑定变量名 `DB`。API_BASE 填入 Worker URL 后即可生效。
+
+**降级策略：** 云端不可达时自动降级为本地解锁，不阻塞已付费用户。
+
+### ⚠️ 不要重试 SCF
+
+腾讯云 SCF 部署已确认不可行（2026-06-08 反复验证）：
+- Event 函数 + Function URL → error 145
+- Web 函数 + scf_bootstrap → exec format error
+- 在线编辑不支持 Web 函数的 bash shebang
+- 本地上传 zip 包结构不兼容
+
+如需中国大陆服务端，用腾讯云其他产品（如 Lighthouse 轻量服务器跑 Node），不要用 SCF。
+
 ### Topic ID 映射
 
 | ID | 永久编号 | 页面 | 中文名 |
@@ -335,9 +368,11 @@ claude-code-learning-site/
 - ✅ 付费墙提前到④步（①-③免费预览）
 - ✅ 付费页精简（仅¥99，130行）
 - ✅ 导航简化（移除17个主题链接，分区高亮+滚动跟踪）
-- ✅ 独立域名上线 — https://www.hcpthanks.com/
+- ✅ 独立域名上线 + SSL — https://www.hcpthanks.com/（Enforce HTTPS 已开启）
 - ✅ 防盗系统 — 全站接入
 - ✅ 个人微信收款码 + 邮箱 hcpthanks@163.com
+- ✅ 管理后台增强 — 邮箱自动补全 + Chart.js 数据概览 + 一键复制报表
+- 🔴 激活码云端校验 — recovery.js 客户端已就绪，服务端待部署（Cloudflare Worker）
 - ⬜ 进阶 4 个主题（待开发）
 - ⬜ 专家 3 个主题（待开发）
 - ⬜ quiz.js 测验题更新（匹配新课程内容）
@@ -346,10 +381,11 @@ claude-code-learning-site/
 
 ## 下一步计划（2026-06-08 更新）
 
-1. **真人测试支付流程** — 找真实用户扫码支付 → 发邮件 → 生成激活码 → 解锁
-2. **quiz.js 更新** — 测验题目匹配重写后的课程内容
-3. **进阶/专家课程** — 进阶 4 个 + 专家 3 个主题开发
-4. **ICP 备案提交** — 域名实名同步完成后提交
+1. **部署 Cloudflare Worker** — 激活码云端校验（限制 3 台设备），代码在 `serverless/cloudflare-worker.js`
+2. **真人测试支付流程** — 找真实用户扫码支付 → 发邮件 → 生成激活码 → 解锁
+3. **quiz.js 更新** — 测验题目匹配重写后的课程内容
+4. **进阶/专家课程** — 进阶 4 个 + 专家 3 个主题开发
+5. **ICP 备案提交** — 域名实名同步完成后提交
 
 ## 开发注意事项
 
