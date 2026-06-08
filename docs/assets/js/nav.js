@@ -49,41 +49,20 @@ function topicPagePath(topicId) {
 }
 window.topicPagePath = topicPagePath;
 
-/* ══════ Nav Build ══════ */
-var NAV_PAGES = [
-  { id: 'pc-basics',        href: topicPagePath('pc-basics'),        label: '认识电脑' },
-  { id: 'open-ps',          href: topicPagePath('open-ps'),          label: '开 PowerShell' },
-  { id: 'install-cc',       href: topicPagePath('install-cc'),       label: '安装 CC' },
-  { id: 'first-chat',       href: topicPagePath('first-chat'),       label: '第一次对话' },
-  { id: 'file-basics',      href: topicPagePath('file-basics'),      label: '文件基础' },
-  { id: 'troubleshoot',     href: topicPagePath('troubleshoot'),     label: '遇到错误' },
-  { id: 'deepseek',         href: topicPagePath('deepseek'),         label: '国内也能用' },
-  { id: 'ai-for-business',  href: topicPagePath('ai-for-business'),  label: 'AI 帮你做什么' },
-  { id: 'talk-to-ai',       href: topicPagePath('talk-to-ai'),       label: '让 AI 听懂你' },
-  { id: 'ai-writing',       href: topicPagePath('ai-writing'),       label: 'AI 写文案' },
-  { id: 'bridge-to-coding', href: topicPagePath('bridge-to-coding'), label: '接下来' },
-  { id: 'intro',            href: topicPagePath('intro'),            label: '简介' },
-  { id: 'plan',             href: topicPagePath('plan'),             label: '/plan 指南' },
-  { id: 'shortcuts',        href: topicPagePath('shortcuts'),        label: '快捷键' },
-  { id: 'convo',            href: topicPagePath('convo'),            label: '对话技巧' },
-  { id: 'init',             href: topicPagePath('init'),             label: '项目初始化' },
-  { id: 'workflow',         href: topicPagePath('workflow'),         label: '工作流' }
-];
-
+/* ══════ Nav Build — 简洁模式：只显示分区链接 ══════ */
 function renderNav(activeId) {
-  var links = NAV_PAGES.map(function(p) {
-    return '<a href="' + p.href + '"' + (p.id === activeId ? ' class="active"' : '') + '>' + p.label + '</a>';
-  }).join('\n        ');
+  // 当前主题所属分区高亮
+  var idx = window.TOPIC_ORDER.indexOf(activeId);
+  var section = idx < 0 ? '' : idx < 7 ? 'pre-basics' : idx < 11 ? 'applied' : 'beginner';
 
   return '\n<nav class="site-nav" aria-label="主导航">\n' +
     '  <div class="nav-inner">\n' +
     '    <a href="../index.html" class="logo">Claude Code <span>学习站</span></a>\n' +
     '    <div class="nav-links" role="navigation" aria-label="课程导航">\n' +
     '      <a href="../index.html">首页</a>\n' +
-    '      <a href="../index.html#pre-basics">预备课</a>\n' +
-    '      <a href="../index.html#applied">应用课</a>\n' +
-    '      <a href="../index.html#beginner">入门</a>\n' +
-    '      ' + links + '\n' +
+    '      <a href="../index.html#pre-basics"' + (section === 'pre-basics' ? ' class="active"' : '') + '>预备课</a>\n' +
+    '      <a href="../index.html#applied"'    + (section === 'applied'    ? ' class="active"' : '') + '>应用课</a>\n' +
+    '      <a href="../index.html#beginner"'   + (section === 'beginner'   ? ' class="active"' : '') + '>入门</a>\n' +
     '    </div>\n' +
     '    <a href="../pay/pay.html" class="nav-cta">升级</a>\n' +
     '  </div>\n' +
