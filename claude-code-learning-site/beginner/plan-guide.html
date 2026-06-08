@@ -3,16 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Claude Code /plan 命令完全指南：掌握"规划→确认→实现"的标准化开发流程。3种使用方式、实战场景、常见错误。">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
-<title>/plan 命令完全指南 — 入门</title>
+<meta name="description" content="学会在做事之前先想清楚——万能三步法让你的AI帮手一次做对，不用反复修改。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+<title>做事之前先想清楚 — 入门</title>
 <link rel="stylesheet" href="../assets/css/common.css">
 <link rel="stylesheet" href="../assets/css/paywall.css">
 <link rel="stylesheet" href="../assets/css/quiz.css">
 <style>
   .module-nav { position: sticky; top: 64px; z-index: 50; }
-  .scenario-card { margin: 12px 0; }
-  .compare-table td:first-child { width: 35%; }
+  .formula-card {
+    background: linear-gradient(135deg, #1a202c 0%, var(--surface) 50%);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    text-align: center;
+    margin: 20px 0;
+  }
+  .formula-card .big { font-size: 1.4em; font-weight: 800; color: var(--accent); letter-spacing: 0.05em; }
 </style>
 </head>
 <body>
@@ -21,150 +28,118 @@
 <script>document.write(renderNav('plan'));</script>
 
 <header class="hero" style="padding:48px 24px;">
-  <h1>🗺️ /plan 命令完全指南</h1>
-  <p class="subtitle">从"知道有这个命令"到"每次编码前自动使用"</p>
+  <h1>📋 做事之前先想清楚</h1>
+  <p class="subtitle">你交代小工干活之前，是不是要先想清楚让他干什么？对AI也一样——想清楚了再说，它一次就做对。</p>
 </header>
 
 <div class="container" role="main">
 
 <nav class="module-nav">
-  <a href="#core">① 核心理解</a>
-  <a href="#modes">② 使用方式</a>
-  <a href="#scenarios">③ 实战场景</a>
-  <a href="#good-bad">④ 好 vs 烂</a>
-  <a href="#workflow">⑤ 工作流</a>
-  <a href="#practice">⑥ 练习</a>
-  <a href="#quick">⑦ 快速掌握</a>
-  <a href="#cheatsheet">⑧ 速查卡</a>
-  <a href="#summary">⑨ 总结</a>
+  <a href="#core">① 为什么要先想清楚</a>
+  <a href="#modes">② 万能三步法</a>
+  <a href="#scenarios">③ 糊涂 vs 清楚</a>
+  <a href="#good-bad">④ /plan 怎么用</a>
+  <a href="#workflow">⑤ 实战例子</a>
+  <a href="#first-use">⑥ 第一次用它做计划</a>
+  <a href="#practice">⑦ 练习</a>
+  <a href="#quick">⑧ 快速掌握</a>
+  <a href="#cheatsheet">⑨ 总结</a>
 </nav>
 
-<!-- ─── ① 核心理解 ─── -->
+<!-- ─── ① ─── -->
 <section id="core">
-  <h2>① /plan 到底做什么</h2>
+  <h2>① 为什么要先想清楚</h2>
 
   <div class="card">
     <h3>一句话</h3>
     <p style="font-size:1.15em;font-weight:700;color:var(--accent);">
-      /plan 让 Claude 在动手写代码之前，先停下来做一个实现计划——然后等你确认。
+      AI 不是你肚里的蛔虫——你不说清楚，它就只能瞎猜。想清楚了再说，它一次就做对，省得反复改。
+    </p>
+  </div>
+
+  <div class="analogy-card" style="background: linear-gradient(135deg, #1a2e2e 0%, var(--surface) 50%); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-xl); margin: var(--space-lg) 0;">
+    <h3 style="color: var(--cyan);">🏪 好比交代小工干活</h3>
+    <p style="line-height:1.8;">
+      你对店里的小工说<strong>"去，干点活"</strong>——他肯定蒙了，不知道该干啥。<br><br>
+      但你说<strong>"把门口那箱啤酒搬到冰箱里，摆整齐，过期的挑出来扔掉"</strong>——他就知道怎么干了。<br><br>
+      跟 AI 说话，<strong>一模一样</strong>。
     </p>
   </div>
 
   <div class="info">
-    <strong>核心理念：</strong>先想清楚再动手。人做复杂任务需要先规划，AI 也一样。/plan 强制了"规划→确认→实现"这个流程，避免 AI 理解错需求就狂写代码。
-  </div>
-
-  <h3>/plan 用 vs 不用的区别</h3>
-  <table class="compare-table">
-    <tr><th></th><th class="bad">不用 /plan</th><th class="good">用 /plan</th></tr>
-    <tr><td>需求理解</td><td class="bad">可能理解错，写了半天才发现不对</td><td class="good">先复述需求给你确认，错了立刻纠正</td></tr>
-    <tr><td>方案质量</td><td class="bad">边写边想，方案可能不完整</td><td class="good">全盘考虑后再动手，考虑依赖和风险</td></tr>
-    <tr><td>浪费</td><td class="bad">写了一半发现方向不对，重来</td><td class="good">计划阶段就调整方向，几乎零浪费</td></tr>
-    <tr><td>可控性</td><td class="bad">AI 自己狂奔，你追不上</td><td class="good">每一步你都看到并确认</td></tr>
-  </table>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;">
-    <figure class="screenshot">
-      <div class="screenshot-frame">
-        <div class="terminal-screenshot">
-          <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
-          <div class="term-body">
-            <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude 加一个登录功能，要快</span></div>
-            <div style="margin-top:6px;color:#ff5f56;">🤖 Claude: 好的，开始写代码...</div>
-            <div style="color:#c0c0c0;margin:4px 0;">创建了 15 个文件，改了 8 个现有文件</div>
-            <div style="color:var(--orange);font-size:0.85em;">⚠️ 你没说要什么认证方式</div>
-            <div style="color:var(--orange);font-size:0.85em;">⚠️ 你没说用什么数据库</div>
-            <div class="term-note" style="color:#ff5f56;">❌ 写了半天发现不是你想要的——重来</div>
-          </div>
-        </div>
-      </div>
-      <figcaption>❌ 不用 /plan：AI 瞎猜，写了一堆废代码</figcaption>
-    </figure>
-    <figure class="screenshot">
-      <div class="screenshot-frame">
-        <div class="terminal-screenshot">
-          <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
-          <div class="term-body">
-            <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude /plan 加密码登录，用 JWT + PostgreSQL</span></div>
-            <div style="margin-top:6px;color:var(--green);">🤖 Claude: 以下是实现计划：</div>
-            <div style="color:#c0c0c0;margin:4px 0;">1. 创建 users 表 + 索引</div>
-            <div style="color:#c0c0c0;">2. auth/login.ts — JWT 签发</div>
-            <div style="color:#c0c0c0;">3. auth/register.ts — 注册</div>
-            <div style="color:#c0c0c0;">4. middleware.ts — JWT 验证</div>
-            <div style="margin-top:4px;"><span class="term-prompt">确认后开始实现？(y/n)</span> <span class="term-cursor"></span></div>
-            <div class="term-note" style="color:var(--green);">✅ 计划确认后再动手，每一步都可控</div>
-          </div>
-        </div>
-      </div>
-      <figcaption>✅ 用 /plan：AI 先列计划，你确认后再做</figcaption>
-    </figure>
+    <strong>你可能会想：</strong>"我说得再清楚，它不还是AI吗？" 是的，但说清楚和不説清楚，结果差十倍。多花30秒想清楚，省掉来回改的10分钟。
   </div>
 </section>
 
-<!-- ─── ② 使用方式 ─── -->
+<!-- ─── ② ─── -->
 <section id="modes">
-  <h2>② 三种使用方式</h2>
+  <h2>② 万能三步法</h2>
 
-  <div class="card">
-    <h3>方式一：直接输 /plan（最常用）</h3>
-    <div class="code-block">/plan 我想给用户加一个头像上传功能</div>
-    <p>Claude 会复述需求、分析风险、列出步骤，然后等你确认。</p>
+  <p style="margin-bottom:16px;">每次跟AI说话之前，用这三步想一遍。熟练了之后10秒就能想好。</p>
+
+  <div class="formula-card">
+    <div class="big">我是谁 → 我要什么 → 要什么样的</div>
   </div>
 
-  <div class="card">
-    <h3>方式二：带上下文 /plan</h3>
-    <div class="code-block">/plan 我刚看了 auth.ts，现在想在 login 页面加"记住我"功能</div>
-    <p>提到具体文件名，Claude 会先去读那个文件再做计划。</p>
-  </div>
-
-  <div class="card">
-    <h3>方式三：带 PRD 文件 /plan</h3>
-    <div class="code-block">/plan docs/feature.prd.md</div>
-    <p>先写一个需求文档（PRD），/plan 读取后生成正式的实现计划写到 <code>.claude/plans/</code>。</p>
-  </div>
-
-  <figure class="screenshot" style="margin-top:24px;">
-    <div class="screenshot-frame">
-      <div class="terminal-screenshot">
-        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
-        <div class="term-body">
-          <div style="color:var(--text-muted);margin-bottom:4px;">—— 方式一：直接 /plan ——</div>
-          <div><span class="term-prompt">PS C:\project&gt;</span> <span class="term-cmd">claude /plan 给用户设置页加一个导出 CSV 按钮</span></div>
-          <div style="margin-top:4px;color:var(--green);">🤖 Claude: 分析需求后，实现计划如下：</div>
-          <div style="color:#c0c0c0;">1. settings/page.tsx 添加导出按钮组件</div>
-          <div style="color:#c0c0c0;">2. lib/export-csv.ts 创建 CSV 格式化工具</div>
-          <div style="color:#c0c0c0;">3. 依赖：无新增，复用现有数据层</div>
-          <div style="margin-top:4px;"><span class="term-prompt">确认实现？(y/n)</span> <span class="term-cursor"></span></div>
-          <div class="term-note">💡 你确认后 Claude 才开始写代码——方向永远不会跑偏</div>
-        </div>
-      </div>
+  <div class="topic-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;">
+    <div class="topic-card" style="border-left:3px solid var(--accent);">
+      <h3>1️⃣ 我是谁</h3>
+      <p style="font-size:0.88em;">你的身份、你的生意。让AI知道它是在帮谁干活。<br><br><em>"我是开五金店的"<br>"我是卖茶叶的"<br>"我是做服装批发的"</em></p>
     </div>
-    <figcaption>👆 方式一（最常用）：直接用 /plan + 需求描述，Claude 列出步骤等你确认</figcaption>
-  </figure>
+    <div class="topic-card" style="border-left:3px solid var(--accent);">
+      <h3>2️⃣ 我要什么</h3>
+      <p style="font-size:0.88em;">具体要做什么事。越具体越好。<br><br><em>"帮我写一段朋友圈文案"<br>"帮我回这个客户的消息"<br>"帮我算这个月的利润"</em></p>
+    </div>
+    <div class="topic-card" style="border-left:3px solid var(--accent);">
+      <h3>3️⃣ 要什么样的</h3>
+      <p style="font-size:0.88em;">长度、语气、格式、特别要求。<br><br><em>"口语化、80字"<br>"客气但不卑微"<br>"做个表格，清楚点"</em></p>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>💡 这个三步法不是只给AI用的——</strong>你交代任何事都用得上。交代员工、写通知、跟供应商谈价格，想清楚这三点，说话就利索了。
+  </div>
 </section>
 
-<!-- ─── ③ 实战场景 ─── -->
+<!-- ─── ③ ─── -->
 <section id="scenarios">
-  <h2>③ 什么时候必须用 /plan</h2>
+  <h2>③ 糊涂版 vs 清楚版</h2>
 
-  <div class="card scenario-card">
-    <h3>✅ 新功能开发</h3>
-    <p style="color:var(--text-muted);">"加一个导出功能"、"新增用户设置页"——涉及多文件修改，必须先规划。</p>
+  <p style="margin-bottom:16px;">看几个真实的对比。左边是糊涂版（AI会做错），右边是用三步法改过的（AI一遍就做对）。</p>
+
+  <div class="comparison-row">
+    <div class="card">
+      <h4 class="bad">❌ 糊涂版</h4>
+      <p style="color:var(--red);margin:8px 0;">"帮我写个文案"</p>
+      <p style="color:var(--text-muted);font-size:0.82em;">AI不知道你卖什么、卖给谁、什么风格——写出来多半不能用。</p>
+    </div>
+    <div class="card">
+      <h4 class="good">✅ 三步法版</h4>
+      <p style="color:var(--green);margin:8px 0;">"我是开五金店的（①），帮我写一段朋友圈文案介绍刚到的新螺丝刀套装（②）。要口语化、80字、让人看了想买（③）。"</p>
+    </div>
   </div>
 
-  <div class="card scenario-card">
-    <h3>✅ 重构</h3>
-    <p style="color:var(--text-muted);">"把这个大文件拆了"、"把 Redux 换成 Zustand"——影响面大，必须看清全局。</p>
+  <div class="comparison-row">
+    <div class="card">
+      <h4 class="bad">❌ 糊涂版</h4>
+      <p style="color:var(--red);margin:8px 0;">"帮我回一下这个客户"</p>
+      <p style="color:var(--text-muted);font-size:0.82em;">没说客户说了什么、你要什么态度——AI只能乱编。</p>
+    </div>
+    <div class="card">
+      <h4 class="good">✅ 三步法版</h4>
+      <p style="color:var(--green);margin:8px 0;">"我是开网店的（①），帮我回一个客户消息，他说快递三天没到很生气要退款（②）。先道歉，解释是天气原因，最后给他补5块钱优惠券。口语化（③）。"</p>
+    </div>
   </div>
 
-  <div class="card scenario-card">
-    <h3>✅ 技术决策</h3>
-    <p style="color:var(--text-muted);">"该用 Redis 还是内存缓存？"——让 /plan 列出利弊，你做决定。</p>
-  </div>
-
-  <div class="card scenario-card">
-    <h3>❌ 不需要用 /plan</h3>
-    <p style="color:var(--text-muted);">修复一个明显的小 bug、改一行文字、加一个简单注释——直接说就行。</p>
+  <div class="comparison-row">
+    <div class="card">
+      <h4 class="bad">❌ 糊涂版</h4>
+      <p style="color:var(--red);margin:8px 0;">"帮我做一个促销方案"</p>
+    </div>
+    <div class="card">
+      <h4 class="good">✅ 三步法版</h4>
+      <p style="color:var(--green);margin:8px 0;">"我是开小超市的（①），国庆快到了帮我策划一个促销活动（②）。主要卖零食和饮料，预算500块，活动搞三天。给我几个方案让我选（③）。"</p>
+    </div>
   </div>
 </section>
 
@@ -172,151 +147,158 @@
 <div class="paywall-container" data-topic="plan">
   <div class="paywall-content">
 
-<!-- ─── ④ 好 vs 烂 ── -->
+<!-- ─── ④ ─── -->
 <section id="good-bad">
-  <h2>④ 好用法 vs 烂用法</h2>
+  <h2>④ /plan 命令怎么用</h2>
 
-  <table>
-    <tr><th></th><th class="bad">❌ 烂</th><th class="good">✅ 好</th></tr>
-    <tr>
-      <td>描述需求</td>
-      <td class="bad">"加个功能"</td>
-      <td class="good">"在设置页加一个导出按钮，点击后下载 CSV，包含所有用户字段"</td>
-    </tr>
-    <tr>
-      <td>确认计划</td>
-      <td class="bad">扫一眼就 yes</td>
-      <td class="good">认真看每一步，确认文件清单和依赖关系</td>
-    </tr>
-    <tr>
-      <td>修改计划</td>
-      <td class="bad">不满意也硬着头皮继续</td>
-      <td class="good">说"modify: 第二步应该先做数据库迁移"</td>
-    </tr>
-    <tr>
-      <td>简单任务</td>
-      <td class="bad">改个变量名也用 /plan</td>
-      <td class="good">简单任务直接做，复杂任务才用 /plan</td>
-    </tr>
-  </table>
-
-  <div class="warn">
-    <strong>小心"假确认"：</strong>计划出来后不要习惯性点 yes。花 30 秒看一遍——这 30 秒可能省掉后面 30 分钟的回滚。
-  </div>
-</section>
-
-<!-- ─── ⑤ 工作流 ─── -->
-<section id="workflow">
-  <h2>⑤ /plan 的标准工作流</h2>
-
-  <div class="workflow" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:16px 0;overflow-x:auto;">
-    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
-      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">描述需求</div>
-      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">越具体越好</div>
-    </div>
-    <span style="color:var(--text-muted);font-size:1.3em;">→</span>
-    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
-      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">AI 出计划</div>
-      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">复述+分析+步骤</div>
-    </div>
-    <span style="color:var(--text-muted);font-size:1.3em;">→</span>
-    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
-      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">你审查</div>
-      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">检查+修改</div>
-    </div>
-    <span style="color:var(--text-muted);font-size:1.3em;">→</span>
-    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
-      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">确认</div>
-      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">yes 开始实现</div>
-    </div>
-    <span style="color:var(--text-muted);font-size:1.3em;">→</span>
-    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
-      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">AI 实现</div>
-      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">按计划执行</div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── ⑥ 练习 ─── -->
-<section id="practice">
-  <h2>⑥ 自测练习</h2>
+  <p style="margin-bottom:16px;">三步法适合简单的事。但有些事比较复杂——比如"帮我策划一周的朋友圈内容"。这种时候用 <code>/plan</code> 命令，让AI先帮你理清思路。</p>
 
   <div class="card">
-    <p><strong>Q1：</strong>下面哪个场景 <strong>不需要</strong> 用 /plan？</p>
-    <p style="margin-top:8px;">
-      A. 新增一个导出 CSV 的功能<br>
-      B. 把用户模块从 JavaScript 重构成 TypeScript<br>
-      C. 修一个函数名的拼写错误<br>
-      D. 决定用 WebSocket 还是 SSE 做实时通知
+    <h3>/plan 做了什么</h3>
+    <p style="line-height:1.8;">
+      你输入 <code>/plan 你想做的事</code>，AI不会马上动手——它会<strong>先列一个计划给你看</strong>。你觉得可以，它再做。你觉得不对，改完计划再让它做。<br><br>
+      就像你让小工干一件复杂活——先让他说说打算怎么干，你点头了他再动手。省得干了一半发现不对。
     </p>
-    <p style="margin-top:12px;color:var(--green);font-weight:700;">✅ 答案：C — 拼写错误是单行修改，直接改就行。</p>
   </div>
 
-  <div class="card">
-    <p><strong>Q2：</strong>AI 给出了计划，你觉得第二步不应该是"写前端组件"而应该是"先加 API 接口"，你应该说什么？</p>
-    <p style="margin-top:12px;color:var(--green);font-weight:700;">✅ 答案：<code>modify: 第二步应该先加 API 接口，前端组件放到第三步</code></p>
+  <div class="info">
+    <strong>/plan 不是什么高级功能——</strong>它就是"AI先列计划给你确认"而已。不是只有程序员才能用。你策划促销活动、整理仓库、安排一周工作，都能用它。
   </div>
 </section>
 
-<!-- ─── ⑦ 快速掌握 ─── -->
+<!-- ─── ⑤ ─── -->
+<section id="workflow">
+  <h2>⑤ 实战例子</h2>
+
+  <div class="card" style="margin-bottom:16px;">
+    <h3>📱 例子1：策划一周朋友圈</h3>
+    <p style="color:var(--text-muted);margin-bottom:8px;">在 Claude Code 里输入：</p>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;font-size:0.95em;">
+      /plan 我是卖茶叶的，帮我策划一周的朋友圈内容。周一到周日每天一条，要有产品介绍、客户反馈、茶叶知识、促销信息。不要太硬广，让人看了觉得有用。
+    </div>
+    <p style="color:var(--text-muted);margin-top:8px;">AI 会先列出7天的主题、每天发什么、大概的文案方向——你确认了它再一条条写。</p>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <h3>📊 例子2：整理客户信息</h3>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;font-size:0.95em;">
+      /plan 我是做服装批发的，手上有50多个客户的联系方式、拿货记录、欠款情况，散落在微信聊天和本子上。帮我想一个整理方案，让这些信息以后好查。
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📦 例子3：规划促销活动</h3>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;font-size:0.95em;">
+      /plan 我开了一家小超市，下个月店庆一周年。帮我策划一个店庆活动：做什么促销、怎么通知老客户、需要准备什么东西、预算大概多少。预算是1000块。
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:16px;">
+    <strong>💡 看出来了吗：</strong>这三个例子，没有一个是跟写代码有关系的。全部是你做生意用得上的。/plan 就是一个"让AI帮你把想法整理成步骤"的工具。
+  </div>
+</section>
+
+<!-- ─── ⑥ ─── -->
+<section id="first-use">
+  <h2>⑥ 第一次用它做计划</h2>
+
+  <p style="margin-bottom:16px;">现在就试一个。挑一个跟你生意相关的，照着做。</p>
+
+  <div class="card">
+    <h3>📋 跟做步骤</h3>
+    <div style="padding:12px 0;">
+      <p><strong>1.</strong> 打开 PowerShell → 输入 <code>claude</code> → 回车</p>
+      <p><strong>2.</strong> 输入 <code>/plan</code> 后面跟上你想做的事。从下面选一个，或者自己想一个：</p>
+    </div>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;margin:8px 0;font-size:0.9em;">
+      <p style="margin:4px 0;">• /plan 帮我规划一周的朋友圈内容，我是卖___的</p>
+      <p style="margin:4px 0;">• /plan 帮我整理店里的库存，以后好管理</p>
+      <p style="margin:4px 0;">• /plan 帮我策划下个月的促销活动</p>
+    </div>
+    <div style="padding:12px 0;">
+      <p><strong>3.</strong> 看看AI列的计划——觉得OK就说"可以，开始做"</p>
+      <p><strong>4.</strong> 觉得不对就说"第三点改一下""加一个XX""第一步不要"</p>
+    </div>
+  </div>
+
+  <div class="info">
+    <strong>别怕改：</strong>计划不是合同。你随时可以改、随时可以重来。AI不会嫌你烦，改一百次它都照做。
+  </div>
+</section>
+
+<!-- ─── ⑦ ─── -->
+<section id="practice">
+  <h2>⑦ 动手试试</h2>
+  <p style="margin-bottom:16px;">用 /plan 试做下面这些事。每个都跟生意有关，挑一个你最近正好需要的。</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">
+    <div class="card">
+      <h3>📱 朋友圈规划</h3>
+      <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.88em;margin-top:8px;">
+        /plan 帮我规划一周的朋友圈内容。我是卖水果的，想要有产品图、客户好评、水果知识、特价信息。不要太广告。
+      </div>
+    </div>
+    <div class="card">
+      <h3>📊 客户管理</h3>
+      <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.88em;margin-top:8px;">
+        /plan 我是做批发生意的，有30多个老客户。帮我想一个方法，记录每个客户的拿货习惯和欠款情况，以后翻起来方便。
+      </div>
+    </div>
+    <div class="card">
+      <h3>🎯 促销策划</h3>
+      <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.88em;margin-top:8px;">
+        /plan 我是开小超市的，中秋节快到了。帮我策划中秋促销：礼品组合、定价、宣传文案、怎么通知老客户。预算1000。
+      </div>
+    </div>
+    <div class="card">
+      <h3>📋 日常工作安排</h3>
+      <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.88em;margin-top:8px;">
+        /plan 帮我规划每天的固定工作流程。我是开店的，每天要理货、回客户消息、发朋友圈、记账、补货。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑧ ─── -->
 <section id="quick">
-  <h2>⑦ 快速掌握清单</h2>
+  <h2>⑧ 快速掌握清单</h2>
+
   <div class="card">
-    <ol style="padding-left:20px;line-height:2.2;">
-      <li><input type="checkbox" style="margin-right:8px;">记住触发词：新功能、重构、技术选型 → 必须 /plan</li>
-      <li><input type="checkbox" style="margin-right:8px;">描述需求时提到具体文件名，AI 会先去读</li>
-      <li><input type="checkbox" style="margin-right:8px;">计划出来后认真审查，不要习惯性 yes</li>
-      <li><input type="checkbox" style="margin-right:8px;">修改计划用 modify: 开头</li>
-      <li><input type="checkbox" style="margin-right:8px;">简单任务（单文件、几行）不用 /plan，别过度使用</li>
-    </ol>
-  </div>
-</section>
-
-<!-- ─── ⑧ 速查卡 ─── -->
-<section id="cheatsheet">
-  <h2>⑧ 速查卡</h2>
-  <div class="cheat-sheet">
-    <h2 style="font-size:1.2em;">/plan 命令速查</h2>
-    <table style="color:#111;">
-      <tr><th style="color:#555;">场景</th><th style="color:#555;">命令</th></tr>
-      <tr><td>新功能</td><td><code>/plan 我想加一个 XX 功能</code></td></tr>
-      <tr><td>带文件上下文</td><td><code>/plan 看了 auth.ts，想在 login 加记住我</code></td></tr>
-      <tr><td>带需求文档</td><td><code>/plan docs/feature.prd.md</code></td></tr>
-      <tr><td>修改计划</td><td><code>modify: 第二步应该先做数据库迁移</code></td></tr>
-      <tr><td>确认实施</td><td><code>yes</code> 或 <code>proceed</code></td></tr>
-      <tr><td>放弃重来</td><td><code>different approach: 用 Redis 代替内存缓存</code></td></tr>
+    <table>
+      <tr><th>情况</th><th>怎么做</th></tr>
+      <tr><td>简单的事（写个文案、回个消息）</td><td>直接用三步法：我是谁+我要什么+要什么样的</td></tr>
+      <tr><td>复杂的事（策划活动、整理信息）</td><td>用 /plan 先列计划，确认再动手</td></tr>
+      <tr><td>AI列的计划不对</td><td>直接说哪里不对、要怎么改，AI会调整</td></tr>
+      <tr><td>不知道从哪开始</td><td>用 /plan 把想法说出来，让AI帮你理</td></tr>
+      <tr><td>怕AI跑偏</td><td>用 /plan，它先列计划给你看，不会乱跑</td></tr>
     </table>
-    <p style="font-size:0.8em;margin-top:12px;color:#555;">💡 核心原则：复杂的事先规划，简单的事直接做</p>
   </div>
 </section>
 
-
-<!-- ─── ⑨ 总结 ─── -->
+<!-- ─── ⑨ ─── -->
 <section id="summary" class="summary-section">
   <h2>⑨ 总结：最常用 & 最易错</h2>
 
-  <div class="summary-grid">
-    <div class="scene">
-      <h3>🎯 最常用场景</h3>
-      <ul>
-        <li><strong>新功能开发</strong> — 涉及多文件修改，先 /plan 再看清全局</li>
-        <li><strong>重构代码</strong> — 影响面大，用 /plan 列出所有需要改的文件</li>
-        <li><strong>技术选型</strong> — "Redis vs 内存缓存"，让 /plan 列利弊帮你决策</li>
-        <li><strong>多步骤任务</strong> — 需要分阶段做的事情，/plan 自动拆步骤</li>
-        <li><strong>团队协作</strong> — /plan 输出可存档，其他人能看到完整的实现方案</li>
-      </ul>
+  <div class="card">
+    <h3>🎯 记住这三点</h3>
+    <div style="padding:8px 0;">
+      <p>✅ <strong>三步法万能</strong>——我是谁+我要什么+要什么样的。任何事都先用这个想一遍。</p>
+      <p>✅ <strong>复杂事用 /plan</strong>——让AI先列计划给你看，确认了再让它做。</p>
+      <p>✅ <strong>不满意就改计划</strong>——计划不是合同，随时改。AI不会嫌烦。</p>
     </div>
+  </div>
 
-    <div class="mistake">
-      <h3>⚠️ 最常犯错误</h3>
-      <ul>
-        <li><strong>习惯性 yes</strong> — 扫一眼就确认，30秒的审查省掉30分钟回滚</li>
-        <li><strong>简单任务也用 /plan</strong> — 改个拼写、加个注释直接说就行</li>
-        <li><strong>描述太模糊</strong> — "加个功能" → AI 只能猜，"在XX文件加YY功能" → 准确</li>
-        <li><strong>不满意也不说</strong> — 直接说 modify: 或 different approach:，别忍着</li>
-        <li><strong>不提具体文件</strong> — 提到文件名，AI 会先读再计划，准确度高很多</li>
-      </ul>
+  <div class="card" style="margin-top:16px;">
+    <h3>⚠️ 别犯这三个错</h3>
+    <div style="padding:8px 0;">
+      <p>❌ <strong>觉得 /plan 是给程序员用的</strong>——你策划活动、安排工作、整理信息，全都能用它。</p>
+      <p>❌ <strong>说了第一步不说后两步</strong>——"我是开店的（①）"完了就不说了。AI还是不知道你要什么。</p>
+      <p>❌ <strong>计划要完美了才动手</strong>——不用。大概对就行，边做边改。</p>
     </div>
+  </div>
+
+  <div class="tip" style="margin-top:16px;">
+    <strong>🔑 今天就用一次：</strong>打开 Claude Code，输入 <code>/plan</code> 加上你最近想做的一件事。不管结果怎么样——先迈出第一步。
   </div>
 </section>
 
@@ -325,7 +307,7 @@
   <div class="paywall-card">
     <div class="lock-icon">🔒</div>
     <h3>以下内容需付费解锁</h3>
-    <div class="locked-modules">④ 好 vs 烂 · ⑤ 工作流 · ⑥ 练习 · ⑦ 快速掌握 · ⑧ 速查卡 · ⑨ 总结</div>
+    <div class="locked-modules">④ /plan 怎么用 · ⑤ 实战例子 · ⑥ 第一次用它做计划 · ⑦ 练习 · ⑧ 快速掌握 · ⑨ 总结</div>
     <div class="paywall-actions">
       <button class="paywall-btn paywall-btn-single">
         <span class="price">¥5</span>
@@ -339,12 +321,7 @@
   </div>
 </div><!-- .paywall-container -->
 
-<!-- ══════ ⑩ 考核 ══════ -->
-<section class="quiz-section" data-topic="plan">
-  <div id="quiz-container"></div>
-</section>
-
-</div>
+</div><!-- .container -->
 
 <footer class="site-footer">
   <p><a href="../index.html">← 返回首页</a></p>
@@ -352,7 +329,6 @@
 
 <script src="../assets/js/quiz.js"></script>
 <script src="../assets/js/paywall.js"></script>
-<script>renderPaywall('plan');</script>
 <script src="../assets/js/common.js"></script>
 <script src="../assets/js/site-config.js"></script>
 <script src="../assets/js/anti-theft.js"></script>

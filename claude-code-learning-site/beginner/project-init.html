@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="用 Claude Code 10分钟搭好新项目：三种创建方式、CLAUDE.md 自动生成、完整配置一键生成。从零到可运行项目的标准流程。">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
-<title>项目初始化 — 入门</title>
+<meta name="description" content="第一次让AI帮你做完一整件事——从想法到成品，一步不落地跟做。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+<title>第一次让AI帮你做完一件事 — 入门</title>
 <link rel="stylesheet" href="../assets/css/common.css">
 <link rel="stylesheet" href="../assets/css/paywall.css">
 <link rel="stylesheet" href="../assets/css/quiz.css">
@@ -19,328 +19,272 @@
 <script>document.write(renderNav('init'));</script>
 
 <header class="hero" style="padding:48px 24px;">
-  <h1>🏗️ 项目初始化</h1>
-  <p class="subtitle">用 Claude Code 10分钟搭好一个新项目的完整骨架</p>
+  <h1>🎯 第一次让AI帮你做完一件事</h1>
+  <p class="subtitle">从前你可能只是问了AI几个问题。今天不一样——今天你跟AI从头到尾合作，完成一整件事。</p>
 </header>
 
 <div class="container" role="main">
 
 <nav class="module-nav">
-  <a href="#core">① 核心理解</a>
-  <a href="#modes">② 三种方式</a>
-  <a href="#scenarios">③ 实战场景</a>
-  <a href="#good-bad">④ 好 vs 烂</a>
-  <a href="#workflow">⑤ 标准流程</a>
+  <a href="#core">① 这次跟以前不一样</a>
+  <a href="#modes">② 选一件你想做的事</a>
+  <a href="#scenarios">③ 跟做：朋友圈文案完整版</a>
+  <a href="#good-bad">④ 不满意就改</a>
+  <a href="#workflow">⑤ AI不是一次性的</a>
   <a href="#practice">⑥ 练习</a>
   <a href="#quick">⑦ 快速掌握</a>
   <a href="#cheatsheet">⑧ 速查卡</a>
   <a href="#summary">⑨ 总结</a>
 </nav>
 
-<!-- ─── ① 核心理解 ─── -->
+<!-- ─── ① ─── -->
 <section id="core">
-  <h2>① Claude Code 怎么帮你初始化项目</h2>
+  <h2>① 这次跟以前不一样</h2>
 
   <div class="card">
-    <h3>一句话</h3>
-    <p style="font-size:1.15em;font-weight:700;color:var(--accent);">
-      Claude Code 可以帮你一次生成完整的项目结构——不仅仅是文件，还包括配置文件、依赖、README、测试框架。
+    <h3>之前你可能是这样用的</h3>
+    <p style="line-height:1.8;">
+      打开AI → 随便问一句 → 看一眼结果 → 关了。<br>
+      下次打开 → 又问一句 → 又关了。<br><br>
+      这就像你请了小工，但每次只让他干一件小事——他明明能帮你干更多。
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>今天你要学会的是</h3>
+    <p style="font-size:1.15em;font-weight:700;color:var(--accent);line-height:1.8;">
+      打开AI → 说清楚要做什么 → AI做出来 → 不满意就改 → 改到满意 → 保存下来用。<br><br>
+      从头到尾做完一件事，不再只是"问一句就走了"。
     </p>
   </div>
 
   <div class="info">
-    <strong>关键认知：</strong>手工搭项目要 1-2 小时：创建目录、写 package.json、配 ESLint、装依赖、建文件夹结构……Claude Code 一句命令全搞定。但它生成的配置你需要检查——不是因为它会出错，而是有些选择要你自己确认。
-  </div>
-
-  <h3>Claude Code 能初始化什么</h3>
-  <div class="topic-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:16px 0;">
-    <div class="topic-card lv-beginner">
-      <div class="level-stripe"></div>
-      <h3>📦 项目脚手架</h3>
-      <p>React / Vue / Next.js / FastAPI / Express……任何框架的项目骨架</p>
-    </div>
-    <div class="topic-card lv-beginner">
-      <div class="level-stripe"></div>
-      <h3>⚙️ 配置文件</h3>
-      <p>ESLint、Prettier、tsconfig、.gitignore、CLAUDE.md 一次生成</p>
-    </div>
-    <div class="topic-card lv-beginner">
-      <div class="level-stripe"></div>
-      <h3>📁 目录结构</h3>
-      <p>按最佳实践组织文件夹，src/、tests/、docs/ 层次清晰</p>
-    </div>
-    <div class="topic-card lv-beginner">
-      <div class="level-stripe"></div>
-      <h3>🧪 测试框架</h3>
-      <p>Jest / Vitest / pytest 配置 + 第一个示例测试</p>
-    </div>
+    <strong>别怕：</strong>这跟前面几课教的东西完全一样。你只是在把"三步法"和"不满意就改"串起来用一次而已。
   </div>
 </section>
 
-<!-- ─── ② 三种方式 ─── -->
+<!-- ─── ② ─── -->
 <section id="modes">
-  <h2>② 启动新项目的三种方式</h2>
+  <h2>② 选一件你想做的事</h2>
 
-  <div class="card">
-    <h3>方式一：从零生成（最灵活）</h3>
-    <div class="code-block">帮我创建一个 React + TypeScript + Vite 项目。
-要求：ESLint用airbnb风格，测试用Vitest，
-目录结构：src/components/ src/hooks/ src/lib/ tests/</div>
-    <p>Claude 会逐文件创建：package.json、vite.config.ts、tsconfig.json、src/ 目录树、一个示例组件 + 测试。</p>
-  </div>
+  <p style="margin-bottom:16px;">从下面挑一个，或者想你自己的。选好了就记住它——这节课从头到尾都用同一件事。</p>
 
-  <figure class="screenshot" style="margin:20px 0;">
-    <div class="screenshot-frame">
-      <div class="terminal-screenshot">
-        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
-        <div class="term-body">
-          <div><span class="term-prompt">PS C:\projects&gt;</span> <span class="term-cmd">claude 帮我创建一个 React + TypeScript + Vite 项目</span></div>
-          <div style="margin-top:6px;color:var(--green);">🤖 Claude: 正在创建项目骨架...</div>
-          <div style="color:#c0c0c0;margin-top:4px;">✅ package.json — 依赖配置</div>
-          <div style="color:#c0c0c0;">✅ vite.config.ts — 构建配置</div>
-          <div style="color:#c0c0c0;">✅ tsconfig.json — TypeScript 配置</div>
-          <div style="color:#c0c0c0;">✅ .eslintrc.cjs — 代码规范</div>
-          <div style="color:#c0c0c0;">✅ src/main.tsx — 入口文件</div>
-          <div style="color:#c0c0c0;">✅ src/App.tsx — 示例组件</div>
-          <div style="color:var(--green);margin-top:4px;">✅ 项目创建完成！npm install && npm run dev 即可启动</div>
-          <div class="term-note">👆 一条命令，10 个文件全部创建好——省了 1-2 小时手工搭建</div>
-        </div>
-      </div>
+  <div class="topic-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;">
+    <div class="topic-card" style="border-left:3px solid var(--accent);">
+      <h3>📱 写一篇朋友圈文案</h3>
+      <p style="font-size:0.85em;">介绍你的产品/服务，让人看了想买</p>
     </div>
-    <figcaption>👆 方式一：从零生成——Claude 一口气创建所有项目文件</figcaption>
-  </figure>
-
-  <div class="card">
-    <h3>方式二：克隆模板后定制（最快）</h3>
-    <div class="code-block"><span style="color:var(--text-muted);"># 先用 create-vite 生成骨架</span>
-npm create vite@latest my-app -- --template react-ts
-<span style="color:var(--text-muted);"># 再让 Claude 按你的需求定制</span>
-claude
-&gt; 我刚用 create-vite 建了项目，帮我加 Tailwind、Vitest 和 CLAUDE.md</div>
-  </div>
-
-  <div class="card">
-    <h3>方式三：从已有项目复制结构（最省心）</h3>
-    <div class="code-block">&gt; 参考 everything-claude-code 的项目结构，帮我创建一个新项目。
-技术栈换成 FastAPI + SQLAlchemy，目录结构类似。</div>
-    <p>给一个参考项目路径，Claude 会学习它的结构并适配到新技术栈。</p>
-  </div>
-
-  <figure class="screenshot" style="margin:20px 0;">
-    <div class="screenshot-frame">
-      <div class="smart-placeholder">
-        <div class="ph-header"><div class="ph-dot"></div> 生成的项目结构预览</div>
-        <div class="ph-body">
-          <div class="ph-preview" style="font-size:0.82em;line-height:1.8;">
-            <div style="color:var(--accent);">📁 my-app/</div>
-            <div style="padding-left:1.2em;color:#c0c0c0;">├── 📄 package.json</div>
-            <div style="padding-left:1.2em;color:#c0c0c0;">├── 📄 vite.config.ts</div>
-            <div style="padding-left:1.2em;color:#c0c0c0;">├── 📄 tsconfig.json</div>
-            <div style="padding-left:1.2em;color:#c0c0c0;">├── 📄 .eslintrc.cjs</div>
-            <div style="padding-left:1.2em;color:#c0c0c0;">├── 📄 CLAUDE.md</div>
-            <div style="padding-left:1.2em;color:var(--accent);">├── 📁 src/</div>
-            <div style="padding-left:2.4em;color:#c0c0c0;">├── 📁 components/</div>
-            <div style="padding-left:2.4em;color:#c0c0c0;">├── 📁 hooks/</div>
-            <div style="padding-left:2.4em;color:#c0c0c0;">├── 📁 lib/</div>
-            <div style="padding-left:2.4em;color:#c0c0c0;">├── 📄 main.tsx</div>
-            <div style="padding-left:2.4em;color:#c0c0c0;">└── 📄 App.tsx</div>
-            <div style="padding-left:1.2em;color:var(--accent);">├── 📁 tests/</div>
-            <div style="padding-left:2.4em;color:#c0c0c0;">└── 📄 App.test.tsx</div>
-          </div>
-          <p class="ph-note">👆 一句话生成 15+ 个文件，所有配置文件按最佳实践生成</p>
-        </div>
-      </div>
+    <div class="topic-card" style="border-left:3px solid var(--accent);">
+      <h3>📋 做一个价目表</h3>
+      <p style="font-size:0.85em;">把你的产品列成整齐的表格</p>
     </div>
-    <figcaption>👆 Claude Code 生成的项目目录结构——完整的工程骨架，并非只是空文件夹</figcaption>
-  </figure>
+    <div class="topic-card" style="border-left:3px solid var(--accent);">
+      <h3>📢 写一个活动通知</h3>
+      <p style="font-size:0.85em;">搞个促销，让老客户知道</p>
+    </div>
+    <div class="topic-card" style="border-left:3px solid var(--accent);">
+      <h3>💬 写几条客户回复模板</h3>
+      <p style="font-size:0.85em;">以后客户问同样的话就直接用</p>
+    </div>
+    <div class="topic-card" style="border-left:3px solid var(--accent);">
+      <h3>📊 算这个月的账</h3>
+      <p style="font-size:0.85em;">把散在各处的数字整理清楚</p>
+    </div>
+    <div class="topic-card" style="border-left:3px solid var(--accent);">
+      <h3>🗂️ 整理一个东西</h3>
+      <p style="font-size:0.85em;">客户名单、库存清单、待办事项——什么都能整理</p>
+    </div>
+  </div>
 </section>
 
-<!-- ─── ③ 实战场景 ─── -->
+<!-- ─── ③ ─── -->
 <section id="scenarios">
-  <h2>③ 初始化项目时别漏了 CLAUDE.md</h2>
+  <h2>③ 跟做：从头到尾完成一件事</h2>
 
-  <div class="card">
-    <h3>CLAUDE.md 是 Claude Code 的"项目说明书"</h3>
-    <p>放在项目根目录，Claude 每次启动会自动读取。它告诉 Claude：</p>
-    <ul style="padding-left:20px;line-height:2;margin-top:8px;">
-      <li>项目的技术栈和框架版本</li>
-      <li>目录结构说明（哪个目录放什么）</li>
-      <li>编码规范（命名、格式化、测试要求）</li>
-      <li>常用命令（build、test、lint）</li>
-    </ul>
+  <p style="margin-bottom:16px;">下面用"写朋友圈文案"做例子。你跟着做就行——换成你选的那件事，步骤一模一样。</p>
+
+  <div class="card" style="margin-bottom:12px;">
+    <h3>⏱️ 第1分钟：打开</h3>
+    <p>打开 PowerShell → 输入 <code>claude</code> → 回车</p>
   </div>
 
-  <div class="code-block"><span style="color:var(--text-muted);"># CLAUDE.md 示例片段</span>
-## Tech Stack
-- Next.js 14 (App Router) + TypeScript
-- Prisma ORM + PostgreSQL
-- Tailwind CSS + shadcn/ui
+  <div class="card" style="margin-bottom:12px;">
+    <h3>⏱️ 第2分钟：说清楚</h3>
+    <p>套用三步法，把你要做的事说清楚：</p>
+    <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.9em;margin-top:8px;">
+      我是<strong>卖茶叶的</strong>。帮我写一段<strong>朋友圈文案</strong>介绍新到的龙井。要求：<strong>口语化、80字左右、让人看了想买</strong>。
+    </div>
+  </div>
 
-## Commands
-- Build: `pnpm build`
-- Test: `pnpm test -- --coverage`
-- Lint: `pnpm lint`
+  <div class="card" style="margin-bottom:12px;">
+    <h3>⏱️ 第3分钟：看结果</h3>
+    <p>AI写出了文案。读一遍。问自己：能用吗？</p>
+    <p style="color:var(--text-muted);font-size:0.88em;">如果满意 → 跳到最后一步"保存下来"<br>如果不满意 → 继续下一步</p>
+  </div>
 
-## Conventions
-- 组件用 PascalCase，文件同名
-- 每个组件要有 loading/error 状态
-- API 返回统一用 { success, data, error } 格式</div>
+  <div class="card" style="margin-bottom:12px;">
+    <h3>⏱️ 第4-5分钟：改到满意</h3>
+    <p>用最简单的话告诉AI改哪里：</p>
+    <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.9em;margin-top:8px;">
+      "太长了，缩到60字"<br>
+      "太正式了，口语化一点"<br>
+      "把价格加上"<br>
+      "换个开头"<br>
+      "再写两版让我选"
+    </div>
+  </div>
 
-  <div class="tip">创建 CLAUDE.md 最简单的方法：项目搭好后说 <strong>"帮我写一份 CLAUDE.md"</strong>，Claude 会扫描项目结构自动生成。</div>
-</section><!-- ══════ 付费墙 ══════ -->
+  <div class="card">
+    <h3>⏱️ 最后一步：保存下来</h3>
+    <p>满意了之后：<strong>复制出来，存到你能找到的地方</strong>。</p>
+    <p style="color:var(--text-muted;font-size:0.88em;">复制到微信发出去、存到Word、粘到记事本——随你。关键是下次还能找到。</p>
+  </div>
+
+  <div class="tip" style="margin-top:16px;">
+    <strong>💡 全程不超过10分钟。</strong>第一次可能慢点，做两次就熟了。你刚才做的不只是"问了一个问题"——你是跟AI合作，完成了一整件事。
+  </div>
+</section>
+
+<!-- ══════ 付费墙 ══════ -->
 <div class="paywall-container" data-topic="init">
   <div class="paywall-content">
 
-
-
-<!-- ─── ④ 好 vs 烂 ─── -->
+<!-- ─── ④ ─── -->
 <section id="good-bad">
-  <h2>④ 好 vs 烂：初始化项目的常见坑</h2>
+  <h2>④ 不满意就改——这是AI最好用的地方</h2>
 
-  <table>
-    <tr><th></th><th class="bad">❌ 烂</th><th class="good">✅ 好</th></tr>
-    <tr>
-      <td>需求描述</td>
-      <td class="bad">"帮我搭个项目"</td>
-      <td class="good">"React+TS+Vite，ESLint airbnb，Vitest"</td>
-    </tr>
-    <tr>
-      <td>配置文件</td>
-      <td class="bad">全部接受默认值</td>
-      <td class="good">逐一检查 tsconfig、ESLint 规则是否符合团队规范</td>
-    </tr>
-    <tr>
-      <td>CLAUDE.md</td>
-      <td class="bad">跳过不写</td>
-      <td class="good">搭完就让 Claude 生成，是第一优先级</td>
-    </tr>
-    <tr>
-      <td>目录结构</td>
-      <td class="bad">让 Claude 自由发挥</td>
-      <td class="good">先说你想要的目录结构，参考已有项目</td>
-    </tr>
-    <tr>
-      <td>验证</td>
-      <td class="bad">创建完就不管了</td>
-      <td class="good">立刻 npm install + npm run build 验证能跑</td>
-    </tr>
-  </table>
+  <p style="margin-bottom:16px;">AI跟人最大的区别：人会烦、会累、会偷懒。AI不会。你让改一百次它改一百次。</p>
 
-  <div class="warn">
-    <strong>最常见的翻车：</strong>Claude 创建了一堆文件，你没立刻验证，过了两天才发现项目跑不起来——那时候上下文早丢了，排查成本翻倍。创建完第一件事：<strong>跑一遍 build 和 test</strong>。
+  <div class="card">
+    <h3>🔄 改的万能句式</h3>
+    <p style="margin-bottom:8px;">每次只说<strong>一个</strong>要改的地方：</p>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;line-height:2;">
+      <strong>"____一点"</strong><br>
+      <span style="color:var(--text-muted);">短一点 · 长一点 · 口语化一点 · 正式一点 · 热情一点 · 客气一点</span><br><br>
+      <strong>"加上____"</strong><br>
+      <span style="color:var(--text-muted);">加上价格 · 加上地址 · 加上电话 · 加上优惠信息</span><br><br>
+      <strong>"换成____"</strong><br>
+      <span style="color:var(--text-muted);">换成列表形式 · 换成表格 · 换成更年轻的语气</span>
+    </div>
+  </div>
+
+  <div class="info" style="margin-top:16px;">
+    <strong>最省事的改法：</strong>不要一次让AI改三四个地方。一次只改一个，改完看结果，再改下一个。就像捏泥人——捏一下看一下，比一次全捏了再看好。
   </div>
 </section>
 
-<!-- ─── ⑤ 标准流程 ─── -->
+<!-- ─── ⑤ ─── -->
 <section id="workflow">
-  <h2>⑤ 标准初始化流程</h2>
+  <h2>⑤ AI不是一次性的</h2>
 
-  <div class="workflow" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:16px 0;overflow-x:auto;">
-    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
-      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">描述需求</div>
-      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">技术栈+规范</div>
-    </div>
-    <span style="color:var(--text-muted);">→</span>
-    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
-      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">生成骨架</div>
-      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">Claude写文件</div>
-    </div>
-    <span style="color:var(--text-muted);">→</span>
-    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
-      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">验证构建</div>
-      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">build+test</div>
-    </div>
-    <span style="color:var(--text-muted);">→</span>
-    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
-      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">生成CLAUDE.md</div>
-      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">项目说明书</div>
-    </div>
-    <span style="color:var(--text-muted);">→</span>
-    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:90px;">
-      <div class="wf-cmd" style="font-family:var(--font-mono);font-weight:700;color:var(--accent);">git init</div>
-      <div class="wf-what" style="font-size:0.75em;color:var(--text-muted);margin-top:3px;">初始化仓库</div>
-    </div>
+  <p style="margin-bottom:16px;">很多人以为AI是"打一枪换一个地方"——问一句、关了、下次重新来。其实你可以跟它一直聊下去。</p>
+
+  <div class="card">
+    <h3>同一件事，可以接着聊</h3>
+    <p style="line-height:1.8;">
+      今天让AI写了龙井文案 → 明天打开，跟它说"我还是那个卖茶叶的，今天帮我写普洱的"→ 后天说"帮我写个红茶的活动通知"<br><br>
+      AI不嫌烦，越聊越熟。
+    </p>
   </div>
 
-  <div class="tip">项目初始化完成后别忘了 <strong>git init + 首次 commit</strong>。Claude 可以帮你写 .gitignore 和首次 commit message。</div>
+  <div class="card" style="margin-top:12px;">
+    <h3>同一件事，越做越好</h3>
+    <p style="line-height:1.8;">
+      第一次写龙井文案花了10分钟改了三回。<br>
+      第二次写普洱文案花了3分钟只改了一回。<br>
+      第三次写红茶文案30秒就好了——因为你已经知道怎么跟它说了。
+    </p>
+  </div>
+
+  <div class="tip" style="margin-top:16px;">
+    <strong>💡 关键习惯：</strong>每天打开Claude Code做的第一件事，就是告诉自己"今天我要让AI帮我完成一件什么事"。不要只是"随便问问"——想好一件事，做完它。
+  </div>
 </section>
 
-
-<!-- ─── ⑥ 练习 ─── -->
+<!-- ─── ⑥ ─── -->
 <section id="practice">
-  <h2>⑥ 动手练习</h2>
+  <h2>⑥ 现在轮到你</h2>
+  <p style="margin-bottom:16px;">打开 Claude Code，做完一件完整的事。从下面选一个，或者做你自己的。</p>
 
-  <div class="card">
-    <p><strong>练习 1：</strong>用 Claude Code 创建一个最简单的项目：</p>
-    <div class="code-block" style="cursor:pointer;">帮我创建一个纯 HTML+CSS+JS 的待办事项应用（Todo App）。
-目录：todo-app/
-要求：index.html + style.css + app.js，能添加、勾选、删除任务
-数据存 localStorage，不用任何框架</div>
-    <p style="margin-top:8px;">观察 Claude 创建了几个文件、文件内容的结构是否合理。</p>
-  </div>
-
-  <div class="card">
-    <p><strong>练习 2：</strong>给上面的项目加上 CLAUDE.md：</p>
-    <div class="code-block" style="cursor:pointer;">帮我给 todo-app 生成一份 CLAUDE.md</div>
-    <p style="margin-top:8px;">看看 Claude 写了什么——是不是准确反映了项目结构？</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;">
+    <div class="card">
+      <h3>📝 任务1</h3>
+      <p style="font-size:0.88em;">写一篇朋友圈文案 → 改到满意 → 复制发出去</p>
+    </div>
+    <div class="card">
+      <h3>📋 任务2</h3>
+      <p style="font-size:0.88em;">做一个产品价目表 → 整理成表格 → 保存</p>
+    </div>
+    <div class="card">
+      <h3>📢 任务3</h3>
+      <p style="font-size:0.88em;">写一个促销通知 → 改语气 → 复制到微信群</p>
+    </div>
+    <div class="card">
+      <h3>💬 任务4</h3>
+      <p style="font-size:0.88em;">写三条客户常见问题的回复模板 → 保存好，以后直接用</p>
+    </div>
+    <div class="card">
+      <h3>🧮 任务5</h3>
+      <p style="font-size:0.88em;">把这月的收入支出整理清楚 → 让AI告诉你赚了多少</p>
+    </div>
+    <div class="card">
+      <h3>⭐ 你自己的事</h3>
+      <p style="font-size:0.88em;">想一件你生意上最近要做的——让AI帮你做完。</p>
+    </div>
   </div>
 </section>
 
-<!-- ─── ⑦ 快速掌握 ─── -->
+<!-- ─── ⑦ ─── -->
 <section id="quick">
   <h2>⑦ 快速掌握清单</h2>
   <div class="card">
-    <ol style="padding-left:20px;line-height:2.2;">
-      <li><input type="checkbox" style="margin-right:8px;">描述项目时至少说：框架 + 语言 + 构建工具 + 测试框架</li>
-      <li><input type="checkbox" style="margin-right:8px;">创建完立刻 npm install + build，验证能跑</li>
-      <li><input type="checkbox" style="margin-right:8px;">第一时间生成 CLAUDE.md</li>
-      <li><input type="checkbox" style="margin-right:8px;">检查生成的配置文件是否符合你的习惯</li>
-      <li><input type="checkbox" style="margin-right:8px;">git init + 首次提交，别等写了功能代码再提交</li>
-    </ol>
-  </div>
-</section>
-
-<!-- ─── ⑧ 速查卡 ─── -->
-<section id="cheatsheet">
-  <h2>⑧ 速查卡</h2>
-  <div class="cheat-sheet">
-    <h2 style="font-size:1.2em;">项目初始化速查</h2>
-    <table style="color:#111;">
-      <tr><th style="color:#555;width:30%;">步骤</th><th style="color:#555;">操作</th></tr>
-      <tr><td>1. 描述需求</td><td>"帮我创建XX项目，技术栈：YY"</td></tr>
-      <tr><td>2. 验证构建</td><td>npm install && npm run build</td></tr>
-      <tr><td>3. 检查配置</td><td>逐一检查 tsconfig、ESLint、prettier</td></tr>
-      <tr><td>4. 生成说明</td><td>"帮我写一份 CLAUDE.md"</td></tr>
-      <tr><td>5. 初始化 Git</td><td>git init && git add -A && git commit</td></tr>
+    <table>
+      <tr><th>步骤</th><th>做什么</th></tr>
+      <tr><td>1. 打开</td><td>PowerShell → claude → 回车</td></tr>
+      <tr><td>2. 说清楚</td><td>套三步法：我是谁 + 要做什么 + 要什么样的</td></tr>
+      <tr><td>3. 看结果</td><td>读一遍，能用吗？</td></tr>
+      <tr><td>4. 改</td><td>不满意就说"短一点""口语一点""加上价格"</td></tr>
+      <tr><td>5. 保存</td><td>满意了就复制到你能找到的地方</td></tr>
     </table>
-    <p style="font-size:0.8em;margin-top:12px;color:#555;">💡 项目创建完第一件事永远是验证它能跑</p>
   </div>
 </section>
 
-<!-- ─── ⑨ 总结 ─── -->
+<!-- ─── ⑧ ─── -->
+<section id="cheatsheet" class="cheat-sheet">
+  <h2>⑧ 速查卡</h2>
+  <div class="card" style="background:#fff;color:#111;">
+    <h2 style="font-size:1.1em;text-align:center;">让AI帮你做完一件事</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0;">
+      <span style="background:#e8f5e9;padding:8px 16px;border-radius:20px;font-weight:700;">1. 打开</span>
+      <span style="color:#999;">→</span>
+      <span style="background:#e3f2fd;padding:8px 16px;border-radius:20px;font-weight:700;">2. 说清楚</span>
+      <span style="color:#999;">→</span>
+      <span style="background:#fff3e0;padding:8px 16px;border-radius:20px;font-weight:700;">3. 看结果</span>
+      <span style="color:#999;">→</span>
+      <span style="background:#fce4ec;padding:8px 16px;border-radius:20px;font-weight:700;">4. 改</span>
+      <span style="color:#999;">→</span>
+      <span style="background:#f3e5f5;padding:8px 16px;border-radius:20px;font-weight:700;">5. 保存</span>
+    </div>
+    <div style="font-size:0.88em;color:#555;text-align:center;">
+      每次打开AI，想好一件事<br>做完再关，不空手走
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑨ ─── -->
 <section id="summary" class="summary-section">
   <h2>⑨ 总结：最常用 & 最易错</h2>
-  <div class="summary-grid">
-    <div class="scene">
-      <h3>🎯 最常用命令</h3>
-      <ul>
-        <li><strong>从零创建</strong> — "帮我创建一个 [框架]+[语言] 项目，用 [规范]"</li>
-        <li><strong>加配置文件</strong> — "帮我加 ESLint、Prettier 和 tsconfig"</li>
-        <li><strong>生成 CLAUDE.md</strong> — "帮我写一份 CLAUDE.md"</li>
-        <li><strong>参考已有项目</strong> — "参考 XX 项目的结构，创建新技术栈的新项目"</li>
-        <li><strong>补全缺失</strong> — "帮我检查项目还缺什么配置文件"</li>
-      </ul>
-    </div>
-    <div class="mistake">
-      <h3>⚠️ 最常犯错误</h3>
-      <ul>
-        <li><strong>描述太模糊</strong> — "搭个项目" → Claude 不知道你要什么框架</li>
-        <li><strong>建完不验证</strong> — 没跑 build，过两天发现项目根本跑不起来</li>
-        <li><strong>不写 CLAUDE.md</strong> — 浪费了 Claude Code 最核心的上下文能力</li>
-        <li><strong>不检查生成配置</strong> — ESLint 规则可能跟你团队规范有冲突</li>
-        <li><strong>不初始化 git</strong> — 写了半天功能代码才发现还没 init</li>
-      </ul>
-    </div>
+  <div class="card">
+    <h3>🎯 记住</h3>
+    <p>✅ <strong>每次打开AI，想好一件事——做完再关</strong></p>
+    <p>✅ <strong>不满意就改——AI的好处就是改不烦</strong></p>
+    <p>✅ <strong>满意了就保存——别让它消失在聊天记录里</strong></p>
+  </div>
+  <div class="card" style="margin-top:16px;">
+    <h3>⚠️ 别犯</h3>
+    <p>❌ <strong>打开AI随便问一句就走了</strong>——跟没开一样</p>
+    <p>❌ <strong>一次让AI改太多地方</strong>——一次只改一个，改完再看</p>
+    <p>❌ <strong>满意了不保存</strong>——明天再打开找不到了</p>
   </div>
 </section>
 
@@ -349,7 +293,7 @@ claude
   <div class="paywall-card">
     <div class="lock-icon">🔒</div>
     <h3>以下内容需付费解锁</h3>
-    <div class="locked-modules">④ 好 vs 烂 · ⑤ 标准流程 · ⑥ 练习 · ⑦ 快速掌握 · ⑧ 速查卡 · ⑨ 总结</div>
+    <div class="locked-modules">④ 不满意就改 · ⑤ AI不是一次性的 · ⑥ 练习 · ⑦ 快速掌握 · ⑧ 速查卡 · ⑨ 总结</div>
     <div class="paywall-actions">
       <button class="paywall-btn paywall-btn-single">
         <span class="price">¥5</span>
@@ -363,12 +307,7 @@ claude
   </div>
 </div><!-- .paywall-container -->
 
-<!-- ══════ ⑩ 考核 ══════ -->
-<section class="quiz-section" data-topic="init">
-  <div id="quiz-container"></div>
-</section>
-
-</div>
+</div><!-- .container -->
 
 <footer class="site-footer">
   <p><a href="../index.html">← 返回首页</a></p>
@@ -376,7 +315,6 @@ claude
 
 <script src="../assets/js/quiz.js"></script>
 <script src="../assets/js/paywall.js"></script>
-<script>renderPaywall('init');</script>
 <script src="../assets/js/common.js"></script>
 <script src="../assets/js/site-config.js"></script>
 <script src="../assets/js/anti-theft.js"></script>

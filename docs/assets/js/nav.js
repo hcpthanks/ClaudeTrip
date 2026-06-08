@@ -16,9 +16,9 @@ window.TOPIC_NAMES  = {
   'deepseek': '国内也能用',
   'ai-for-business': 'AI 能帮你做什么', 'talk-to-ai': '让 AI 听懂你',
   'ai-writing': '让 AI 帮你写文案', 'bridge-to-coding': '接下来学什么',
-  intro: 'Claude Code 简介', plan: '/plan 命令完全指南',
-  shortcuts: '快捷键大全', convo: '对话技巧入门',
-  init: '项目初始化', workflow: '日常工作流'
+  intro: '认识 Claude Code', plan: '做事之前先想清楚',
+  shortcuts: '快捷键大全', convo: '让AI听懂你的话',
+  init: '第一次让AI帮你做事', workflow: '每天都能用的AI场景'
 };
 
 window.TOPIC_PAGES  = {
