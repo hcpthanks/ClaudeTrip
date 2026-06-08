@@ -127,10 +127,10 @@
     log.push('输入码  : "' + code + '" (长度=' + code.length + ')');
     log.push('原始值  : "' + input.value + '"');
 
-    if (!code || code.length < 13) {
+    if (!code || code.length < 12) {
       msg.textContent = '请输入完整的激活码（CC-XXXX-XXXX 格式）';
       msg.className = 'msg error';
-      log.push('→ FAIL: 长度不足 13');
+      log.push('→ FAIL: 长度不足 12');
       debug.textContent = log.join('\n');
       return;
     }
