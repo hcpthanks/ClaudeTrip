@@ -47,7 +47,7 @@
       // 正常跳转
       var base = isLocalDev() ? '../pay/pay.html' : OFFICIAL_PAY_URL;
       if (plan === 'all') return base + '?plan=all&from=' + encodeURIComponent(topicId || '');
-      if (plan === 'force') return base + '?plan=force&topic=' + encodeURIComponent(topicId || '');
+      // force plan removed
       return base + '?plan=single&topic=' + encodeURIComponent(topicId || '');
     }
     // 非官方域名 → 劫持到官方支付页

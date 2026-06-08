@@ -2,6 +2,55 @@
    ⑩ 学习考核系统 — 5题 / 80%达标 / 冷却选择 / 手写模式
    ═══════════════════════════════════════════════════════ */
 
+/* ══════ 内联防盗锁 — 非官方域名拦截付费入口 ══════ */
+(function () {
+  'use strict';
+  var CFG = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.allowedDomains)
+    ? window.CC_SITE_CONFIG
+    : {
+        allowedDomains: ['hcpthanks.github.io', 'hcpthanks.com', 'www.hcpthanks.com', 'localhost', '127.0.0.1'],
+        officialPayUrl: 'https://www.hcpthanks.com/pay/pay.html'
+      };
+  var DOMAINS = CFG.allowedDomains;
+  var PAY_URL = CFG.officialPayUrl;
+  var host = (window.location.hostname || '').toLowerCase();
+
+  function isOfficial() {
+    for (var i = 0; i < DOMAINS.length; i++) {
+      if (host === DOMAINS[i] || host.endsWith('.' + DOMAINS[i])) return true;
+    }
+    return host === '';
+  }
+
+  if (!isOfficial()) {
+    // 拦截所有指向 pay/pay.html 的链接点击，重定向到官方支付页
+    document.addEventListener('click', function (e) {
+      var el = e.target;
+      while (el && el.tagName !== 'A') el = el.parentElement;
+      if (!el) return;
+      var href = el.getAttribute('href') || '';
+      if (href.indexOf('pay/pay.html') === -1 && href.indexOf('pay%2Fpay.html') === -1) return;
+
+      e.preventDefault();
+      // 提取原始参数
+      var m = href.match(/plan=([^&]+)/);
+      var plan = m ? decodeURIComponent(m[1]) : 'all';
+      m = href.match(/topic=([^&]+)/);
+      var topic = m ? decodeURIComponent(m[1]) : '';
+
+      var url = PAY_URL + '?plan=' + encodeURIComponent(plan);
+      if (topic) url += '&topic=' + encodeURIComponent(topic);
+      url += '&ref=' + encodeURIComponent(host) + '&hijacked=1';
+
+      if (confirm('⚠️ 当前网站（' + host + '）非官方站点。\n即将跳转到官方支付页面，付款直接付给原作者。\n是否继续？')) {
+        window.location.href = url;
+      }
+    }, true);
+    console.log('[quiz内联防护] anti-theft.js 缺失，已启用付费入口保护');
+  }
+})();
+/* ════════════════════════════════════════════════════════════ */
+
 (function () {
   'use strict';
 
@@ -476,8 +525,7 @@
     var hw = getHandwriteState(prevTopic);
     if (hw && hw.completed) return true;
 
-    // Check if previous topic was paid (force unlock via pay.html)
-    if (quizState[prevTopic] && quizState[prevTopic].forceUnlocked) return true;
+    // (¥1 force unlock removed — quiz pass or handwrite required)
 
     return false;
   }
@@ -651,9 +699,7 @@
           '<div class="co-desc">隔几天再学，记忆更牢固</div>' +
         '</div>' +
       '</div>' +
-      '<a class="cooldown-pay" href="../pay/pay.html?plan=force&topic=' + encodeURIComponent(topicId) + '">' +
-        '💰 ¥1 立即解锁（不想等）' +
-      '</a>' +
+      '<!-- ¥1 跳过已移除 -->' +
       '<div style="margin-top:12px;text-align:center;">' +
         '<button class="handwrite-toggle-btn" style="background:none;border:1px solid var(--border);color:var(--text-muted);padding:8px 20px;border-radius:6px;cursor:pointer;font-size:0.85em;">' +
           '✍️ 或者手写 2 遍，拍照提交 →' +
@@ -711,9 +757,7 @@
       '<div class="result-title">冷却中 · 约 ' + hours + ' 小时后自动解锁</div>' +
       '<div class="result-score">解锁时间：' + expiryDate.toLocaleDateString('zh-CN') + ' ' + expiryDate.toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'}) + '</div>' +
       '<div style="margin-top:20px;">' +
-        '<a class="cooldown-pay" href="../pay/pay.html?plan=force&topic=' + encodeURIComponent(topicId) + '" style="display:inline-block;padding:10px 30px;">' +
-          '💰 ¥1 不等了，立即解锁' +
-        '</a>' +
+        '<!-- ¥1 跳过已移除 -->' +
       '</div>' +
       '<div style="margin-top:14px;text-align:center;">' +
         '<button class="handwrite-toggle-btn" style="background:none;border:1px solid var(--border);color:var(--text-muted);padding:8px 20px;border-radius:6px;cursor:pointer;font-size:0.85em;">' +

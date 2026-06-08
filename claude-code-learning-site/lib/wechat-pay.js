@@ -226,7 +226,7 @@ function computeCheck(prefix) {
 }
 
 function generateActivationCode(plan, topicId) {
-  const typeChar = plan === 'all' ? 'A' : plan === 'force' ? 'F' : 'S';
+  const typeChar = plan === 'all' ? 'A' : 'S';
   const topicChar = plan === 'all' ? '0' : topicToChar(topicId);
 
   // 用 crypto.randomBytes 替代 Math.random（服务端安全随机）

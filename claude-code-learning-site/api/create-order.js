@@ -15,7 +15,6 @@ const supabase = createClient(
 const PLAN_PRICES = {
   all: 9900,    // ¥99
   single: 500,  // ¥5
-  force: 100,   // ¥1
 };
 
 // CORS 白名单（生产环境改为实际域名）
@@ -47,7 +46,6 @@ module.exports = async function handler(req, res) {
     const descriptions = {
       all: 'Claude Code 学习站 — 全站永久解锁',
       single: 'Claude Code 学习站 — 单课解锁',
-      force: 'Claude Code 学习站 — 考核跳过',
     };
     const description = descriptions[plan] || 'Claude Code 学习课程';
 

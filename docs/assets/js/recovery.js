@@ -37,7 +37,7 @@
 
   /* ── Generate: CC-[S/A][topic][random×2]-[check×4] ── */
   window.generateActivationCode = function (type, topicId) {
-    var typeChar = type === 'all' ? 'A' : type === 'force' ? 'F' : 'S';
+    var typeChar = type === 'all' ? 'A' : 'S';
     var topicChar = type === 'all' ? '0' : topicToChar(topicId);
     var random = CHARS[Math.floor(Math.random() * CHARS.length)]
                + CHARS[Math.floor(Math.random() * CHARS.length)];

@@ -133,7 +133,7 @@
     }
 
     applyActivationCode(result);
-    var labels = { all: '全站永久解锁', force: '强制解锁（跳过冷却）', single: '单页解锁' };
+    var labels = { all: '全站永久解锁', single: '单页解锁' };
     msg.textContent = '✅ ' + (labels[result.type] || '解锁') + '成功！即将跳转...';
     msg.className = 'msg success';
 

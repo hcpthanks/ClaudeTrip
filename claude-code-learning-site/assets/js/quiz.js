@@ -525,8 +525,7 @@
     var hw = getHandwriteState(prevTopic);
     if (hw && hw.completed) return true;
 
-    // Check if previous topic was paid (force unlock via pay.html)
-    if (quizState[prevTopic] && quizState[prevTopic].forceUnlocked) return true;
+    // (¥1 force unlock removed — quiz pass or handwrite required)
 
     return false;
   }
@@ -700,9 +699,7 @@
           '<div class="co-desc">隔几天再学，记忆更牢固</div>' +
         '</div>' +
       '</div>' +
-      '<a class="cooldown-pay" href="../pay/pay.html?plan=force&topic=' + encodeURIComponent(topicId) + '">' +
-        '💰 ¥1 立即解锁（不想等）' +
-      '</a>' +
+      '<!-- ¥1 跳过已移除 -->' +
       '<div style="margin-top:12px;text-align:center;">' +
         '<button class="handwrite-toggle-btn" style="background:none;border:1px solid var(--border);color:var(--text-muted);padding:8px 20px;border-radius:6px;cursor:pointer;font-size:0.85em;">' +
           '✍️ 或者手写 2 遍，拍照提交 →' +
@@ -760,9 +757,7 @@
       '<div class="result-title">冷却中 · 约 ' + hours + ' 小时后自动解锁</div>' +
       '<div class="result-score">解锁时间：' + expiryDate.toLocaleDateString('zh-CN') + ' ' + expiryDate.toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'}) + '</div>' +
       '<div style="margin-top:20px;">' +
-        '<a class="cooldown-pay" href="../pay/pay.html?plan=force&topic=' + encodeURIComponent(topicId) + '" style="display:inline-block;padding:10px 30px;">' +
-          '💰 ¥1 不等了，立即解锁' +
-        '</a>' +
+        '<!-- ¥1 跳过已移除 -->' +
       '</div>' +
       '<div style="margin-top:14px;text-align:center;">' +
         '<button class="handwrite-toggle-btn" style="background:none;border:1px solid var(--border);color:var(--text-muted);padding:8px 20px;border-radius:6px;cursor:pointer;font-size:0.85em;">' +
