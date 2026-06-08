@@ -68,6 +68,7 @@
     <p class="code-hint">格式：CC-XXXX-XXXX，仅 10 个字符（支付成功时显示）</p>
 
     <div class="msg" id="msg"></div>
+    <pre id="debug-log" style="display:none;margin-top:12px;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;font-size:0.72em;line-height:1.6;color:#8b949e;text-align:left;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow-y:auto;"></pre>
 
     <div class="btn-row">
       <button class="btn btn-primary" id="verify-btn" style="font-size:1em;padding:12px 40px;">
@@ -119,16 +120,68 @@
     msg.className = 'msg';
     msg.textContent = '';
 
+    // ── Debug log ──
+    var debug = document.getElementById('debug-log');
+    debug.style.display = 'block';
+    var log = [];
+    log.push('输入码  : "' + code + '" (长度=' + code.length + ')');
+    log.push('原始值  : "' + input.value + '"');
+
     if (!code || code.length < 13) {
       msg.textContent = '请输入完整的激活码（CC-XXXX-XXXX 格式）';
       msg.className = 'msg error';
+      log.push('→ FAIL: 长度不足 13');
+      debug.textContent = log.join('\n');
       return;
     }
 
+    // Step-by-step verification
+    var CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    var regex = /^CC-([SAF])([A-HJ-NP-Z2-90])([A-HJ-NP-Z2-9]{2})-([A-HJ-NP-Z2-9]{4})$/;
+    var parts = code.match(regex);
+    log.push('正则匹配: ' + (parts ? 'YES' : 'NO'));
+    if (parts) {
+      log.push('  类型字符: ' + parts[1]);
+      log.push('  主题字符: ' + parts[2]);
+      log.push('  随机字符: ' + parts[3]);
+      log.push('  校验字符: ' + parts[4]);
+    }
+
+    // Checksum check
+    var SECRET_SALT = 0xCC1E4;
+    function computeCheck(prefix) {
+      var hash = SECRET_SALT;
+      for (var i = 0; i < prefix.length; i++) {
+        hash = ((hash << 5) - hash) + prefix.charCodeAt(i);
+        hash = hash | 0;
+      }
+      var r = '';
+      for (var j = 0; j < 4; j++) {
+        r += CHARS[Math.abs((hash >> (j * 5)) % CHARS.length)];
+      }
+      return r;
+    }
+    if (parts) {
+      var pfx = 'CC-' + parts[1] + parts[2] + parts[3];
+      var expected = computeCheck(pfx);
+      log.push('前缀    : ' + pfx);
+      log.push('期望校验: ' + expected);
+      log.push('实际校验: ' + parts[4]);
+      log.push('校验匹配: ' + (expected === parts[4] ? 'YES' : 'NO'));
+    }
+
+    // TOPIC_ORDER check
+    log.push('TOPIC_ORDER 存在: ' + (window.TOPIC_ORDER ? 'YES (长度=' + window.TOPIC_ORDER.length + ')' : 'NO!'));
+    log.push('verifyActivationCode 存在: ' + (typeof window.verifyActivationCode === 'function' ? 'YES' : 'NO!'));
+
     var result = verifyActivationCode(code);
+    log.push('验证结果: ' + JSON.stringify(result));
+
     if (!result) {
       msg.textContent = '激活码无效，请检查是否输入正确';
       msg.className = 'msg error';
+      log.push('→ FAIL: verifyActivationCode 返回 null/undefined');
+      debug.textContent = log.join('\n');
       return;
     }
 
@@ -136,6 +189,8 @@
     var labels = { all: '全站永久解锁', single: '单页解锁' };
     msg.textContent = '✅ ' + (labels[result.type] || '解锁') + '成功！即将跳转...';
     msg.className = 'msg success';
+    log.push('→ PASS: 解锁成功! ' + JSON.stringify(result));
+    debug.textContent = log.join('\n');
 
     setTimeout(function () {
       if (result.type === 'all') {
