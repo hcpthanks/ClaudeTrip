@@ -326,19 +326,22 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .site-footer a { color: var(--text-muted); }
 .site-footer a:hover { color: var(--text); }
 
-/* ── Module Layout (8-module teaching template) ── */
+/* ── Module Step Nav (horizontal scroll) ── */
 .module-nav {
-  display: flex; flex-wrap: wrap; gap: var(--space-xs);
+  display: flex; flex-wrap: nowrap; gap: var(--space-xs);
   margin: var(--space-lg) 0; padding: var(--space-md);
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius);
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.module-nav::-webkit-scrollbar { display: none; }
 .module-nav a {
   padding: 6px 14px; border-radius: var(--radius-sm);
-  font-size: 0.82em; color: var(--text-muted);
-  transition: all var(--duration-fast);
+  font-size: 0.82em; color: var(--text-muted); white-space: nowrap;
+  transition: all var(--duration-fast); flex-shrink: 0;
 }
-.module-nav a:hover, .module-nav a.active { background: var(--bg); color: var(--text); }
+.module-nav a:hover, .module-nav a.active { background: var(--accent); color: #fff; }
 
 /* ── Cheat Sheet (print) ── */
 .cheat-sheet {

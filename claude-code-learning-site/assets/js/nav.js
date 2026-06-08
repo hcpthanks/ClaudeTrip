@@ -38,6 +38,41 @@ var PRE_DIR = 'pre-basics/';
 var APP_DIR = 'applied/';
 var BEG_DIR = 'beginner/';
 
+/* ══════ Module Nav Scroll Tracking ══════ */
+(function () {
+  var nav = document.querySelector('.module-nav');
+  if (!nav) return;
+  var links = nav.querySelectorAll('a[href^="#"]');
+  if (!links.length) return;
+
+  // Build a map: id → link element
+  var map = {};
+  links.forEach(function (a) {
+    var id = a.getAttribute('href').slice(1);
+    map[id] = a;
+  });
+
+  // Observe all target sections
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      var link = map[entry.target.id];
+      if (!link) return;
+      if (entry.isIntersecting) {
+        // Remove active from all, add to current
+        links.forEach(function (l) { l.classList.remove('active'); });
+        link.classList.add('active');
+        // Scroll link into view if needed
+        link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+
+  Object.keys(map).forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+})();
+
 /* ══════ Three-tier routing: pre-basics(0-6) → applied(7-10) → beginner(11+) ══════ */
 function topicPagePath(topicId) {
   var page = window.TOPIC_PAGES[topicId];
