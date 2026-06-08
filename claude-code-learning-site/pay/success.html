@@ -57,7 +57,7 @@ var msg = isAll
   ? '入门 + 进阶 + 专家全部内容已解锁。<br>随时可以开始学习，内容更新永久免费。'
   : '本页剩余内容已解锁。<br>刷新页面即可查看全部内容。';
 var steps = isAll
-  ? ['加入微信答疑群（扫码加 hcpthanks 备注CC学习）','从"进阶 · 多代理编排"开始学习','课程内容更新时会第一时间通知你']
+  ? ['有问题发邮件至 hcpthanks@163.com','从"进阶 · 多代理编排"开始学习','课程内容更新时会第一时间通知你']
   : ['返回刚才的页面继续学习','也可以从首页浏览其他课程','考虑 ¥99 永久解锁全站更划算'];
 var btnText = isAll ? '开始学习 →' : '返回继续学习 →';
 var btnHref = isAll ? '../index.html' : (
@@ -78,13 +78,10 @@ if (!isAll) {
   }
 }
 
-// 激活码：优先使用 URL 传入的 code（真实支付服务端生成，与 recovery.js 同算法可校验）
-// 无 code 时回退到客户端 generateActivationCode（模拟支付 / 旧版本兼容）
+// 激活码：仅由服务端生成（通过 URL code 参数传入）
+// 客户端不再生成激活码（generateActivationCode 已从全局移除）
 var urlCode = params.get('code');
-var actCode = urlCode || generateActivationCode(
-  isAll ? 'all' : 'single',
-  params.get('topic') || ''
-);
+var actCode = urlCode || '请联系作者 hcpthanks@163.com 获取激活码';
 
 // 将服务端激活码也缓存到 localStorage（方便 recovery.js 查询）
 if (urlCode) {
@@ -108,7 +105,7 @@ document.getElementById('success-card').innerHTML =
       '<p>· 复制到手机备忘录或记事本</p>' +
       '<p>· 微信发给自己（文件传输助手）</p>' +
       '<p style="margin-top:8px;color:var(--orange);font-size:0.95em;">⚠️ 丢失激活码 = 换设备后需重新购买</p>' +
-      '<p style="font-size:0.9em;">如已丢失：联系微信客服，提供支付截图可重新获取</p>' +
+      '<p style="font-size:0.9em;">如已丢失：发邮件至 hcpthanks@163.com，提供支付截图可重新获取</p>' +
     '</div>' +
   '</div>' +
   '<div class="next-steps"><h3>下一步</h3><ol style="padding-left:20px;line-height:2;">' +

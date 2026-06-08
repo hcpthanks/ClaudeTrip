@@ -35,23 +35,7 @@
     return result;
   }
 
-  /* ── Generate: CC-[S/A][topic][random×2]-[check×4] ── */
-  window.generateActivationCode = function (type, topicId) {
-    var typeChar = type === 'all' ? 'A' : 'S';
-    var topicChar = type === 'all' ? '0' : topicToChar(topicId);
-    var random = CHARS[Math.floor(Math.random() * CHARS.length)]
-               + CHARS[Math.floor(Math.random() * CHARS.length)];
-    var prefix = 'CC-' + typeChar + topicChar + random;
-    var check = computeCheck(prefix);
-    var code = prefix + '-' + check;
-
-    // Cache in localStorage for same-browser convenience
-    var saved = JSON.parse(localStorage.getItem('cc-activation-codes') || '{}');
-    saved[code] = { type: type, topicId: topicId, ts: Date.now() };
-    localStorage.setItem('cc-activation-codes', JSON.stringify(saved));
-
-    return code;
-  };
+  /* ── Generate: 仅通过作者本地 admin 工具生成，不暴露到全局 ── */
 
   /* ── Verify ── */
   window.verifyActivationCode = function (code) {
