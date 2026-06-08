@@ -152,6 +152,8 @@ var MAX_TRIES = 3;
 var LOCK_MINUTES = 5;
 
 // ══════ Topic Registry ══════
+// 前 7 个是预备课（免费），后 10 个是应用课+入门（收费）
+var FREE_COUNT = 7; // pc-basics..deepseek = 免费，不生成激活码
 var TOPIC_ORDER = [
   'pc-basics','open-ps','install-cc','first-chat','file-basics','troubleshoot','deepseek',
   'ai-for-business','talk-to-ai','ai-writing','bridge-to-coding',
@@ -275,7 +277,8 @@ function doLogout() {
 function initUI() {
   var sel = document.getElementById('gen-topic');
   sel.innerHTML = '';
-  TOPIC_ORDER.forEach(function(id) {
+  TOPIC_ORDER.forEach(function(id, idx) {
+    if (idx < FREE_COUNT) return; // 预备课免费，不生成激活码
     var opt = document.createElement('option');
     opt.value = id;
     opt.textContent = TOPIC_NAMES[id] + ' (' + id + ')';
