@@ -1,209 +1,47 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>管理后台 — Claude Code 学习站</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0d1117; color: #c9d1d9; min-height: 100vh; padding: 20px; }
-  .wrap { max-width: 800px; margin: 0 auto; }
+// ══════ Activation Code Engine v3 — 永久编号 ══════
+	var ACT_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 31字符，去I/O/0/1
+	var SECRET_SALT = 0xCC1E4;
 
-  /* Password Gate */
-  .gate { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 60px 40px; text-align: center; margin-top: 15vh; }
-  .gate h1 { font-size: 1.4em; color: #f0f6fc; margin-bottom: 8px; }
-  .gate .sub { color: #8b949e; font-size: 0.85em; margin-bottom: 28px; }
-  .gate input { width: 260px; padding: 12px 16px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #c9d1d9; font-size: 1.1em; text-align: center; letter-spacing: 0.15em; font-family: "SF Mono", Consolas, monospace; }
-  .gate input:focus { border-color: #58a6ff; outline: none; }
-  .gate .btn { margin-top: 16px; padding: 10px 36px; background: #238636; color: #fff; border: none; border-radius: 8px; font-size: 0.95em; font-weight: 700; cursor: pointer; }
-  .gate .btn:hover { background: #2ea043; }
-  .gate .err { color: #f85149; font-size: 0.82em; margin-top: 12px; min-height: 20px; }
+	// 永久编号映射（与 nav.js 保持一致）
+	var TOPIC_IDS = {
+	  'pc-basics':1,'open-ps':2,'install-cc':3,'first-chat':4,'file-basics':5,'troubleshoot':6,'deepseek':7,
+	  'ai-for-business':8,'talk-to-ai':9,'ai-writing':10,'bridge-to-coding':11,
+	  'intro':12,'plan':13,'shortcuts':14,'convo':15,'init':16,'workflow':17
+	};
 
-  /* Main Panel */
-  .hidden { display: none !important; }
-  .panel { }
+	// 3字符编码：31³ = 29791 主题，永久编号不变
+	function encodeId(id) {
+	  var n = id - 1;
+	  return ACT_CHARS[Math.floor(n / 961)]
+	       + ACT_CHARS[Math.floor((n % 961) / 31)]
+	       + ACT_CHARS[n % 31];
+	}
 
-  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding: 16px 0; border-bottom: 1px solid #21262d; }
-  header h1 { font-size: 1.2em; color: #f0f6fc; }
-  header .info { font-size: 0.78em; color: #8b949e; }
+	function computeCheck(prefix) {
+	  var hash = SECRET_SALT;
+	  for (var i = 0; i < prefix.length; i++) {
+	    hash = ((hash << 5) - hash) + prefix.charCodeAt(i);
+	    hash = hash | 0;
+	  }
+	  var result = '';
+	  for (var j = 0; j < 4; j++) {
+	    result += ACT_CHARS[Math.abs((hash >> (j * 5)) % ACT_CHARS.length)];
+	  }
+	  return result;
+	}
 
-  .section { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 24px; margin-bottom: 20px; }
-  .section h2 { font-size: 1.05em; color: #f0f6fc; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+	function generateCode(type, topicId) {
+	  var typeChar = type === 'all' ? 'A' : 'S';
+	  var tid = type === 'all' ? 0 : (TOPIC_IDS[topicId] || 0);
+	  var topicCode = type === 'all' ? '000' : encodeId(tid);
+	  var random = ACT_CHARS[Math.floor(Math.random() * ACT_CHARS.length)];
+	  var prefix = 'CC-' + typeChar + topicCode + random;
+	  var check = computeCheck(prefix);
+	  return prefix + '-' + check;
+	}
 
-  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
-  .field { flex: 1; min-width: 140px; }
-  .field label { display: block; font-size: 0.82em; color: #8b949e; margin-bottom: 4px; font-weight: 600; }
-  .field input, .field select { width: 100%; padding: 9px 12px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: #c9d1d9; font-size: 0.9em; }
-  .field input:focus, .field select:focus { border-color: #58a6ff; outline: none; }
-
-  .btn { padding: 9px 20px; border-radius: 6px; border: none; font-weight: 700; cursor: pointer; font-size: 0.9em; }
-  .btn-gen { background: #238636; color: #fff; }
-  .btn-gen:hover { background: #2ea043; }
-  .btn-out { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
-  .btn-out:hover { background: #30363d; }
-  .btn-danger { background: transparent; color: #f85149; border: 1px solid #f85149; }
-  .btn-danger:hover { background: rgba(248,81,73,0.1); }
-
-  /* Result */
-  .result { margin-top: 16px; display: none; }
-  .result.show { display: block; }
-  .code-box { background: #0d1117; border: 2px solid #238636; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
-  .code-box .big { font-family: "SF Mono", Consolas, monospace; font-size: 1.8em; font-weight: 800; color: #58a6ff; letter-spacing: 0.06em; word-break: break-all; margin: 8px 0 12px; }
-  .email-pre { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 14px; font-size: 0.82em; line-height: 1.7; white-space: pre-wrap; color: #c9d1d9; max-height: 240px; overflow-y: auto; }
-
-  /* Records Table */
-  .toolbar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
-  .search { flex: 1; min-width: 180px; padding: 8px 12px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: #c9d1d9; font-size: 0.88em; }
-  .search:focus { border-color: #58a6ff; outline: none; }
-  .badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 0.75em; font-weight: 700; }
-  .badge-A { background: rgba(163,113,247,0.2); color: #a371f7; }
-  .badge-S { background: rgba(210,153,29,0.2); color: #d2991d; }
-
-  table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
-  th { text-align: left; padding: 8px 10px; border-bottom: 2px solid #21262d; color: #8b949e; font-size: 0.8em; }
-  td { padding: 8px 10px; border-bottom: 1px solid #21262d; }
-  tr:hover td { background: rgba(88,166,255,0.04); }
-  .empty { text-align: center; padding: 40px; color: #8b949e; }
-
-  .toast { position: fixed; bottom: 24px; right: 24px; background: #238636; color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 0.88em; opacity: 0; transition: opacity .2s; pointer-events: none; }
-  .toast.show { opacity: 1; }
-</style>
-</head>
-<body>
-<div class="wrap">
-
-  <!-- ══════ Gate ══════ -->
-  <div class="gate" id="gate">
-    <h1>🔐 管理后台</h1>
-    <p class="sub">Claude Code 学习站</p>
-    <input type="password" id="pw-input" placeholder="请输入密码" autofocus>
-    <br>
-    <button class="btn" onclick="doLogin()">进入后台</button>
-    <div class="err" id="gate-err"></div>
-  </div>
-
-  <!-- ══════ Panel ══════ -->
-  <div class="panel hidden" id="panel">
-
-    <header>
-      <div>
-        <h1>🔐 管理后台</h1>
-        <span class="info">本地工具 · 不公开</span>
-      </div>
-      <button class="btn btn-danger" onclick="doLogout()">退出</button>
-    </header>
-
-    <!-- 生成器 -->
-    <div class="section">
-      <h2>🎲 生成激活码</h2>
-      <div class="row">
-        <div class="field">
-          <label>客户邮箱</label>
-          <input type="email" id="cust-email" placeholder="xxx@qq.com">
-        </div>
-        <div class="field" style="flex:0 0 160px;">
-          <label>类型</label>
-          <select id="gen-type">
-            <option value="single">S 码 · 单主题 ¥5</option>
-            <option value="all">A 码 · 全站 ¥99</option>
-          </select>
-        </div>
-        <div class="field" style="flex:0 0 200px;" id="topic-col">
-          <label>主题</label>
-          <select id="gen-topic"></select>
-        </div>
-        <div style="padding-top:20px;">
-          <button class="btn btn-gen" onclick="doGenerate()">🎲 生成并记录</button>
-        </div>
-      </div>
-
-      <div class="result" id="result">
-        <div class="code-box">
-          <div style="font-size:0.78em;color:#8b949e;">激活码</div>
-          <div class="big" id="code-display"></div>
-          <button class="btn btn-out" onclick="copyResultCode()" id="btn-copy-code">📋 复制激活码</button>
-        </div>
-        <h3 style="font-size:0.9em;color:#8b949e;margin-bottom:8px;">📧 邮件回复模板</h3>
-        <div class="email-pre" id="email-body"></div>
-        <button class="btn btn-out" style="margin-top:8px;" onclick="copyResultEmail()">📋 复制邮件模板</button>
-      </div>
-    </div>
-
-    <!-- 记录 -->
-    <div class="section">
-      <h2>📋 支付记录 <span style="font-weight:400;color:#8b949e;font-size:0.75em;" id="rec-count"></span></h2>
-      <div class="toolbar">
-        <input class="search" type="text" id="search-input" placeholder="🔍 搜邮箱或激活码..." oninput="renderRecords()">
-        <button class="btn btn-out" onclick="exportCSV()">📥 导出 CSV</button>
-        <button class="btn btn-out" onclick="importCSV()">📤 导入 CSV</button>
-      </div>
-      <div id="records-table"></div>
-    </div>
-
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-// ══════ Config ══════
-var PASSWORD_HASH = '6f12b755a8346d0af16dd799c9f81008520961a11d752b6bd2c5681fa766d00c';
-var MAX_TRIES = 3;
-var LOCK_MINUTES = 5;
-
-// ══════ Topic Registry ══════
-// 前 7 个是预备课（免费），后 10 个是应用课+入门（收费）
-var FREE_COUNT = 7; // pc-basics..deepseek = 免费，不生成激活码
-var TOPIC_ORDER = [
-  'pc-basics','open-ps','install-cc','first-chat','file-basics','troubleshoot','deepseek',
-  'ai-for-business','talk-to-ai','ai-writing','bridge-to-coding',
-  'intro','plan','shortcuts','convo','init','workflow'
-];
-var TOPIC_NAMES = {
-  'pc-basics':'认识你的电脑','open-ps':'打开 PowerShell',
-  'install-cc':'安装 Claude Code','first-chat':'第一次对话',
-  'file-basics':'文件与文件夹','troubleshoot':'遇到错误怎么办',
-  'deepseek':'国内也能用',
-  'ai-for-business':'AI 能帮你做什么','talk-to-ai':'让 AI 听懂你',
-  'ai-writing':'让 AI 帮你写文案','bridge-to-coding':'AI帮你管好客户',
-  intro:'认识 Claude Code',plan:'做事之前先想清楚',
-  shortcuts:'快捷键大全',convo:'让AI听懂你的话',
-  init:'第一次让AI帮你做事',workflow:'每天都能用的AI场景'
-};
-
-// ══════ Activation Code Engine ══════
-var CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-var SECRET_SALT = 0xCC1E4;
-
-function topicToChar(topicId) {
-  var idx = TOPIC_ORDER.indexOf(topicId);
-  return idx >= 0 ? CHARS[idx + 1] : 'X';
-}
-
-function computeCheck(prefix) {
-  var hash = SECRET_SALT;
-  for (var i = 0; i < prefix.length; i++) {
-    hash = ((hash << 5) - hash) + prefix.charCodeAt(i);
-    hash = hash | 0;
-  }
-  var result = '';
-  for (var j = 0; j < 4; j++) {
-    result += CHARS[Math.abs((hash >> (j * 5)) % CHARS.length)];
-  }
-  return result;
-}
-
-function generateCode(type, topicId) {
-  var typeChar = type === 'all' ? 'A' : 'S';
-  var topicChar = type === 'all' ? '0' : topicToChar(topicId);
-  var random = CHARS[Math.floor(Math.random() * CHARS.length)]
-             + CHARS[Math.floor(Math.random() * CHARS.length)];
-  var prefix = 'CC-' + typeChar + topicChar + random;
-  var check = computeCheck(prefix);
-  return prefix + '-' + check;
-}
-
-// ══════ Records Store ══════
+	// ══════ Records Store ══════
 function getRecords() {
   try { return JSON.parse(localStorage.getItem('cc-admin-records') || '[]'); }
   catch(e) { return []; }

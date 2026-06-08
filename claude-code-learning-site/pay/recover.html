@@ -61,11 +61,11 @@
       type="text"
       class="code-input"
       id="code-input"
-      placeholder="CC-XXXX-XXXX"
-      maxlength="13"
+      placeholder="CC-SXXX-Y-ZZZZ"
+      maxlength="14"
       autocomplete="off"
     >
-    <p class="code-hint">格式：CC-XXXX-XXXX，仅 10 个字符（支付成功时显示）</p>
+    <p class="code-hint">格式：CC-SXXX-Y-ZZZZ，13 个字符（S=单页/A=全站）</p>
 
     <div class="msg" id="msg"></div>
     <pre id="debug-log" style="display:none;margin-top:12px;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;font-size:0.72em;line-height:1.6;color:#8b949e;text-align:left;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow-y:auto;"></pre>
@@ -107,12 +107,12 @@
   var btn = document.getElementById('verify-btn');
   var msg = document.getElementById('msg');
 
-  // Auto-format input: CC-XXXX-XXXX
+  // Auto-format: CC-SXXX-Y-ZZZZ（13字符）
   input.addEventListener('input', function () {
     var val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (val.length > 2) val = val.substring(0,2) + '-' + val.substring(2);
     if (val.length > 7) val = val.substring(0,7) + '-' + val.substring(7);
-    input.value = val.substring(0, 13);
+    input.value = val.substring(0, 14);
   });
 
   function verify() {
@@ -127,10 +127,10 @@
     log.push('输入码  : "' + code + '" (长度=' + code.length + ')');
     log.push('原始值  : "' + input.value + '"');
 
-    if (!code || code.length < 12) {
-      msg.textContent = '请输入完整的激活码（CC-XXXX-XXXX 格式）';
+    if (!code || code.length < 13) {
+      msg.textContent = '请输入完整的激活码（CC-SXXX-Y-ZZZZ 格式）';
       msg.className = 'msg error';
-      log.push('→ FAIL: 长度不足 12');
+      log.push('→ FAIL: 长度不足 13');
       debug.textContent = log.join('\n');
       return;
     }

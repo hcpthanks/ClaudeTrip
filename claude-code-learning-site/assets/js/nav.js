@@ -9,6 +9,37 @@ window.TOPIC_ORDER  = [
   'intro', 'plan', 'shortcuts', 'convo', 'init', 'workflow'
 ];
 
+/* ══════ 激活码永久编号系统 ══════
+   字符表31个（去I/O/0/1），3字符编码 = 31³ = 29791个主题
+   编号永久不变——插入新课不影响已有激活码 */
+window.ACT_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+// topicId → 永久编号（生成时用）
+window.TOPIC_IDS = {
+  'pc-basics':1,'open-ps':2,'install-cc':3,'first-chat':4,'file-basics':5,'troubleshoot':6,'deepseek':7,
+  'ai-for-business':8,'talk-to-ai':9,'ai-writing':10,'bridge-to-coding':11,
+  'intro':12,'plan':13,'shortcuts':14,'convo':15,'init':16,'workflow':17
+};
+
+// 永久编号 → topicId（验证时用）
+window.TOPIC_BY_ID = {};
+Object.keys(window.TOPIC_IDS).forEach(function(k) { window.TOPIC_BY_ID[window.TOPIC_IDS[k]] = k; });
+
+// 3字符编码 编号 → 字符串
+window.encodeTopicId = function(id) {
+  var n = id - 1;
+  return window.ACT_CHARS[Math.floor(n / 961)]
+       + window.ACT_CHARS[Math.floor((n % 961) / 31)]
+       + window.ACT_CHARS[n % 31];
+};
+
+// 3字符解码 字符串 → 编号
+window.decodeTopicId = function(code) {
+  return window.ACT_CHARS.indexOf(code[0]) * 961
+       + window.ACT_CHARS.indexOf(code[1]) * 31
+       + window.ACT_CHARS.indexOf(code[2]) + 1;
+};
+
 window.TOPIC_NAMES  = {
   'pc-basics': '认识你的电脑', 'open-ps': '打开 PowerShell',
   'install-cc': '安装 Claude Code', 'first-chat': '第一次对话',
