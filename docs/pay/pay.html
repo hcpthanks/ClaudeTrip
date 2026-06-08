@@ -3,58 +3,48 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Claude Code 学习站 — 入门到专家 17 个模块，实战项目源码，邮件支持。一次购买永久有效。">
+<meta name="description" content="Claude Code 学习站 — 永久解锁全部课程，一次购买，持续更新。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
-<title>购买课程 — Claude Code 学习站</title>
+<title>永久解锁 — Claude Code 学习站</title>
 <link rel="stylesheet" href="../assets/css/common.css">
 <style>
   .pay-page { min-height: calc(100vh - 56px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
-  .pay-container { max-width: 780px; width: 100%; }
+  .pay-container { max-width: 580px; width: 100%; }
 
   .pay-card {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius-xl); padding: 48px; text-align: center;
   }
-  .pay-card h1 { font-size: 2em; margin-bottom: 8px; }
-  .pay-card .sub { color: var(--text-muted); margin-bottom: 32px; }
+  .pay-card h1 { font-size: 1.8em; margin-bottom: 6px; }
+  .pay-card .sub { color: var(--text-muted); margin-bottom: 28px; font-size: 0.95em; }
 
-  /* course summary */
   .course-summary {
-    text-align: left; margin-bottom: 36px;
+    text-align: left; margin-bottom: 28px;
     background: var(--bg); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 20px 24px;
+    border-radius: var(--radius); padding: 16px 20px;
   }
-  .course-summary h3 { margin-bottom: 12px; }
-  .course-summary ul { list-style: none; padding: 0; }
-  .course-summary li { padding: 6px 0; font-size: 0.92em; display: flex; align-items: center; gap: 8px; }
+  .course-summary ul { list-style: none; padding: 0; margin: 0; }
+  .course-summary li { padding: 5px 0; font-size: 0.88em; display: flex; align-items: center; gap: 8px; }
   .course-summary li::before { content: '✓'; color: var(--green); font-weight: 700; }
 
-  /* price */
-  .price-block { margin: 28px 0 32px; }
-  .price-block .amount { font-size: 3.2em; font-weight: 800; color: var(--text-high); }
+  .price-block { margin: 24px 0; }
+  .price-block .amount { font-size: 3em; font-weight: 800; color: var(--text-high); }
   .price-block .amount .yen { font-size: 0.45em; color: var(--text-muted); }
   .price-block .note { color: var(--text-muted); font-size: 0.85em; margin-top: 4px; }
 
-  /* QR placeholder */
   .qr-placeholder {
     display: inline-flex; flex-direction: column; align-items: center;
-    padding: 28px 40px; margin: 20px 0 28px;
+    padding: 24px 36px; margin: 16px 0 20px;
     background: #fff; border-radius: var(--radius-lg);
     border: 2px solid var(--border);
-    min-width: 280px; min-height: 260px; justify-content: center;
   }
   .qr-placeholder img { display: block; border-radius: 4px; }
-  .qr-placeholder .qr-icon { font-size: 4em; margin-bottom: 12px; }
   .qr-placeholder .qr-text { color: #333; font-size: 0.9em; font-weight: 600; }
   .qr-placeholder .qr-hint { color: #999; font-size: 0.78em; margin-top: 6px; }
-  .qr-error { color: var(--orange); text-align: center; padding: 20px; }
-
-  .pay-footer-note { color: var(--text-faint); font-size: 0.8em; margin-top: 24px; line-height: 1.5; }
 
   @media (max-width: 768px) {
     .pay-card { padding: 28px 20px; }
-    .price-block .amount { font-size: 2.4em; }
-    .qr-placeholder { padding: 20px 24px; }
+    .price-block .amount { font-size: 2.2em; }
   }
 </style>
 </head>
@@ -65,26 +55,51 @@
     <a href="../index.html" class="logo">Claude Code <span>学习站</span></a>
     <div class="nav-links" role="navigation" aria-label="页面导航">
       <a href="../index.html">首页</a>
-      <a href="../index.html#beginner">入门</a>
     </div>
   </div>
 </nav>
 
 <main class="pay-page" role="main">
-  <div id="domain-warning" style="display:none;background:rgba(210,153,29,0.15);border:1px solid var(--orange);border-radius:var(--radius);padding:14px 20px;margin:0 auto 20px;max-width:780px;text-align:center;">
+  <div id="domain-warning" style="display:none;background:rgba(210,153,29,0.15);border:1px solid var(--orange);border-radius:var(--radius);padding:14px 20px;margin:0 auto 20px;max-width:580px;text-align:center;">
     <strong>⚠️ 注意：</strong>你当前访问的域名（<span id="dw-domain"></span>）并非官方站点。<br>
-    本站内容来自 <strong>hcpthanks.github.io</strong>（Claude Code 学习站官方），<br>
-    下方支付将直接付给原作者。建议<a href="https://www.hcpthanks.com/" style="color:var(--accent);">前往官方站点</a>获得完整体验。
+    请前往 <a href="https://www.hcpthanks.com/" style="color:var(--accent);">www.hcpthanks.com</a> 使用官方站点。
   </div>
   <div class="pay-container">
 
-    <div class="pay-card" id="pay-card">
-      <!-- filled by JS -->
+    <div class="pay-card">
+      <h1>⭐ 永久解锁全站</h1>
+      <p class="sub">一次购买，永久有效 · 内容持续更新</p>
+
+      <div class="course-summary">
+        <ul>
+          <li>预备课 7 节 — 永久免费 · 无需付费</li>
+          <li>应用课 4 节 + 入门课 6 节 — 全部解锁</li>
+          <li>进阶课 + 专家课 — 含未来全部更新</li>
+          <li>邮件答疑支持 · 激活码换机可恢复</li>
+        </ul>
+      </div>
+
+      <div class="price-block">
+        <div class="amount"><span class="yen">¥</span>99</div>
+        <div class="note">一次购买，永久有效</div>
+      </div>
+
+      <div class="qr-placeholder">
+        <img src="../assets/images/wechat-pay-qr.png" alt="微信扫码支付" style="width:200px;height:auto;display:block;margin:0 auto;border-radius:4px;">
+        <div class="qr-text" style="margin-top:10px;">微信扫码支付 ¥99</div>
+        <div class="qr-hint">支付成功后，请发邮件领取激活码</div>
+      </div>
+
+      <div style="margin-top:16px;padding:14px 18px;background:rgba(210,153,29,0.08);border:1px solid var(--orange);border-radius:var(--radius);text-align:center;">
+        <p style="margin:0;font-weight:600;">📧 支付后发送截图至</p>
+        <p style="margin:3px 0 0;font-size:1.05em;"><a href="mailto:hcpthanks@163.com?subject=Claude Code 学习站 ¥99 激活码申请" style="color:var(--accent);">hcpthanks@163.com</a></p>
+        <p style="margin:3px 0 0;font-size:0.78em;color:var(--text-muted);">24小时内回复全站激活码 · 永不丢失</p>
+      </div>
     </div>
 
-    <div style="max-width:780px;margin:20px auto;text-align:center;color:var(--text-faint);font-size:0.82em;line-height:1.8;">
-      <p style="margin:0;">✅ 永久有效 · 📚 21节课已完结持续更新 · 🔐 激活码换机可恢复</p>
-    </div>
+    <p style="max-width:580px;margin:16px auto;text-align:center;color:var(--text-faint);font-size:0.8em;">
+      ✅ 永久有效 · 🔐 激活码保存在邮箱随时可查
+    </p>
 
   </div>
 </main>
@@ -93,301 +108,19 @@
   <p><a href="../index.html">← 返回首页</a></p>
 </footer>
 
-<script src="../assets/js/nav.js"></script>
 <script src="../assets/js/site-config.js"></script>
 <script src="../assets/js/anti-theft.js"></script>
 <script>
-// ═══════════════════════════════════════════════
-// 域名检测 — 非官方域名显示警告横幅
-// ═══════════════════════════════════════════════
+// ══════ 域名检测 ══════
 (function () {
-  var OFFICIAL_DOMAINS = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.allowedDomains)
-    ? window.CC_SITE_CONFIG.allowedDomains
-    : ['hcpthanks.github.io', 'hcpthanks.com', 'www.hcpthanks.com', 'localhost', '127.0.0.1'];
+  var DOMAINS = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.allowedDomains)
+    || ['hcpthanks.github.io', 'hcpthanks.com', 'www.hcpthanks.com', 'localhost', '127.0.0.1'];
   var host = window.location.hostname || '';
-  var isOfficial = OFFICIAL_DOMAINS.indexOf(host) >= 0 || host === '';
-  if (!isOfficial) {
+  if (DOMAINS.indexOf(host) < 0 && host !== '') {
     var banner = document.getElementById('domain-warning');
-    if (banner) {
-      banner.style.display = 'block';
-      document.getElementById('dw-domain').textContent = host;
-    }
-  }
-  // 读取 hijacked 参数
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('hijacked') === '1') {
-    var refDomain = params.get('ref') || '未知来源';
-    console.log('[防盗] 用户从 ' + refDomain + ' 跳转来的支付页');
-  }
-})();
-// ═══════════════════════════════════════════════
-// 支付配置 — 商户号下来后把 mode 改成 'real'
-// ═══════════════════════════════════════════════
-var PAYMENT_CONFIG = {
-  mode: 'sim',                              // 'sim' | 'real'
-  apiBase: '/api',    // Vercel 部署后换成真实域名
-  pollInterval: 2000,                       // 轮询间隔（毫秒）
-  pollTimeout: 300000,                      // 轮询超时（5 分钟）
-};
-
-// ── Resolve payment plan from URL params ──
-var params = new URLSearchParams(window.location.search);
-var plan = params.get('plan') || 'all';
-var from  = params.get('topic') || params.get('from') || '';
-
-var TOPIC_LABELS = window.TOPIC_NAMES || {};
-
-var isSingle = plan === 'single';
-var price    = isSingle ? 5 : 99;
-var title    = isSingle ? '📄 解锁单页内容' : '⭐ 永久解锁全站';
-var subtitle = isSingle
-  ? '解锁「' + (TOPIC_LABELS[from] || '本页') + '」的全部内容'
-  : '一次购买，永久有效 · 内容持续更新';
-var items = isSingle
-  ? ['本页 ⑥ 练习 · ⑦ 快速掌握 · ⑧ 速查卡 · ⑨ 总结','永久可看，不受后续更新影响']
-  : ['入门全部 6 个主题完整内容','进阶 4 模块：多代理 · 钩子 · 自定义技能 · 记忆系统','专家 3 模块：MCP 服务器 · 工作流引擎 · 自定义代理','实战项目源码 + 深度视频讲解','邮件答疑支持（一对一指导）','永久更新，不再付费'];
-
-// ── QR 区域（根据模式动态渲染） ──
-function renderQR(mode, qrUrl) {
-  if (mode === 'real' && qrUrl) {
-    return '<div class="qr-placeholder" style="background:#fff;">' +
-      '<img src="' + qrUrl + '" alt="微信扫码支付" style="width:240px;height:240px;display:block;">' +
-      '<div class="qr-text" style="margin-top:12px;">微信扫码支付 ¥' + price + '</div>' +
-      '<div class="qr-hint" id="qr-status">等待支付…</div>' +
-      '</div>';
-  }
-  // Sim 模式 — 显示真实收款码
-	  return '<div class="qr-placeholder" style="background:#fff;">' +
-	    '<img src="../assets/images/wechat-pay-qr.png" alt="微信扫码支付" style="width:220px;height:auto;display:block;margin:0 auto;border-radius:4px;">' +
-	    '<div class="qr-text" style="margin-top:12px;">微信扫码支付 ¥' + price + '</div>' +
-	    '<div class="qr-hint">支付成功后，请发邮件领取激活码</div>' +
-	    '</div>';
-}
-
-// ── 按钮区域 ──
-function renderButton(mode, polling) {
-  if (mode === 'real' && polling) {
-    return '<p style="color:var(--text-muted);margin-top:16px;">⏳ 等待支付确认中…</p>' +
-      '<button class="btn" style="font-size:0.9em;padding:10px 28px;margin-top:8px;opacity:0.7;" id="sim-pay">' +
-        '改用扫码支付 ¥' + price + ' →' +
-      '</button>';
-  }
-  if (mode === 'real') {
-    return '<button class="btn btn-success" style="font-size:1em;padding:14px 40px;margin-top:12px;" id="retry-pay">' +
-      '🔄 重新生成二维码' +
-      '</button>' +
-      '<p class="pay-footer-note" style="margin-top:12px;">' +
-        '扫码后等待几秒自动跳转。如遇问题请联系我们。' +
-      '</p>';
-  }
-  // Sim 模式 — 纯收款码，邮件联系领取激活码
-  return '<div style="margin-top:24px;padding:20px 24px;background:rgba(210,153,29,0.08);border:1px solid var(--orange);border-radius:var(--radius);text-align:center;">' +
-    '<p style="margin:0 0 8px;font-weight:600;color:var(--text-high);">📧 支付完成后，请发送邮件</p>' +
-    '<p style="margin:0;font-size:1.2em;font-weight:700;"><a href="mailto:hcpthanks@163.com?subject=Claude Code 学习站 激活码申请" style="color:var(--accent);text-decoration:none;">hcpthanks@163.com</a></p>' +
-    '<p style="margin:6px 0 0;font-size:0.82em;color:var(--text-muted);">邮件附上付款截图 → 我回复激活码 → 永久解锁全站</p>' +
-    '<p class="pay-footer-note" style="margin-top:10px;">激活码保存在邮箱里，随时可查，永不丢失。</p>' +
-  '</div>';
-}
-
-// ── 保存支付日志 ──
-function logPayment() {
-  var payLog = JSON.parse(localStorage.getItem('cc-payment-log') || '[]');
-  payLog.push({ plan: plan, topic: from, price: price, date: new Date().toISOString() });
-  localStorage.setItem('cc-payment-log', JSON.stringify(payLog));
-}
-
-// ── 模拟支付（Sim 模式） ──
-function simPay() {
-  logPayment();
-
-  if (plan === 'all') {
-    localStorage.setItem('cc-learn-all-access', 'true');
-    window.location.href = 'success.html?plan=all';
-  } else {
-    window.location.href = 'success.html?plan=single&topic=' + encodeURIComponent(from);
-  }
-}
-
-// ── XSS 防护：HTML 转义 ──
-function escapeHtml(str) {
-  var div = document.createElement('div');
-  div.appendChild(document.createTextNode(str));
-  return div.innerHTML;
-}
-
-// ── 安全设置 QR 占位区内容（避免 innerHTML XSS） ──
-function setQRContent(el, html) {
-  el.innerHTML = html; // 仅用于静态内容（无用户输入）
-}
-function setQRError(el, message) {
-  el.innerHTML = ''; // 清空
-  var errDiv = document.createElement('div');
-  errDiv.style.cssText = 'padding:40px;color:var(--orange);';
-  errDiv.textContent = '❌ 下单失败: ' + message;
-  el.appendChild(errDiv);
-}
-function setQRImage(el, qrUrl) {
-  el.innerHTML = ''; // 清空，避免残留
-  var img = document.createElement('img');
-  img.src = qrUrl;
-  img.alt = '微信扫码支付';
-  img.style.cssText = 'width:240px;height:240px;display:block;margin:0 auto;';
-  el.appendChild(img);
-
-  var textDiv = document.createElement('div');
-  textDiv.className = 'qr-text';
-  textDiv.style.marginTop = '12px';
-  textDiv.textContent = '微信扫码支付 ¥' + price;
-  el.appendChild(textDiv);
-
-  var hintDiv = document.createElement('div');
-  hintDiv.className = 'qr-hint';
-  hintDiv.id = 'qr-status';
-  hintDiv.textContent = '等待支付…';
-  el.appendChild(hintDiv);
-}
-
-// ── 真实支付流程 ──
-var currentOrderNo = null;
-var pollTimer = null;
-var pollStart = 0;
-
-function startRealPayment() {
-  var payCard = document.getElementById('pay-card');
-  setQRContent(payCard.querySelector('.qr-placeholder'),
-    '<div style="padding:40px;color:var(--text-muted);">⏳ 正在生成支付二维码…</div>');
-
-  fetch(PAYMENT_CONFIG.apiBase + '/api/create-order', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan: plan, topicId: from || null, price: price * 100 }),
-  })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (!data.success || !data.orderNo || !data.qrCode) {
-        setQRError(payCard.querySelector('.qr-placeholder'), data.error || '服务器返回异常');
-        return;
-      }
-
-      currentOrderNo = data.orderNo;
-
-      // 安全设置 QR 图片（用 img.src 而非 innerHTML 拼接）
-      setQRImage(payCard.querySelector('.qr-placeholder'), data.qrCode);
-
-      // 更新按钮区
-      var btnArea = payCard.querySelector('#btn-area');
-      btnArea.innerHTML = renderButton('real', true);
-
-      // 绑定"改用模拟"按钮
-      var simBtn = document.getElementById('sim-pay');
-      if (simBtn) {
-        simBtn.addEventListener('click', function() {
-          stopPolling();
-          simPay();
-        });
-      }
-
-      // 开始轮询
-      pollStart = Date.now();
-      startPolling();
-    })
-    .catch(function(err) {
-      setQRError(payCard.querySelector('.qr-placeholder'), err.message || '网络错误');
-    });
-}
-
-function startPolling() {
-  stopPolling();
-
-  pollTimer = setInterval(function() {
-    // 超时检查
-    if (Date.now() - pollStart > PAYMENT_CONFIG.pollTimeout) {
-      stopPolling();
-      var statusEl = document.getElementById('qr-status');
-      if (statusEl) statusEl.textContent = '⏰ 支付超时，请重新生成二维码';
-      return;
-    }
-
-    fetch(PAYMENT_CONFIG.apiBase + '/api/check-order?orderNo=' + currentOrderNo)
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.status === 'paid') {
-          stopPolling();
-          logPayment();
-
-          // 保存激活码到 localStorage（以码为 key，与 recovery.js 格式一致）
-          if (data.code) {
-            var codes = JSON.parse(localStorage.getItem('cc-activation-codes') || '{}');
-            codes[data.code] = {
-              type: data.plan === 'all' ? 'all' : 'single',
-              topicId: data.topicId || '',
-              ts: Date.now()
-            };
-            localStorage.setItem('cc-activation-codes', JSON.stringify(codes));
-          }
-
-          // 解锁
-          if (data.plan === 'all') {
-            localStorage.setItem('cc-learn-all-access', 'true');
-          }
-
-          window.location.href = 'success.html?plan=' + encodeURIComponent(data.plan) +
-            (data.topicId ? '&topic=' + encodeURIComponent(data.topicId) : '') +
-            (data.code ? '&code=' + encodeURIComponent(data.code) : '');
-        }
-      })
-      .catch(function() {
-        // 轮询失败静默跳过，下次继续
-      });
-  }, PAYMENT_CONFIG.pollInterval);
-}
-
-function stopPolling() {
-  if (pollTimer) {
-    clearInterval(pollTimer);
-    pollTimer = null;
-  }
-}
-
-// ── 渲染页面 ──
-(function() {
-  var mode = PAYMENT_CONFIG.mode;
-  var payCard = document.getElementById('pay-card');
-
-  payCard.innerHTML =
-    '<h1>' + title + '</h1>' +
-    '<p class="sub">' + subtitle + '</p>' +
-    '<div class="course-summary">' +
-      '<h3>包含内容</h3>' +
-      '<ul>' + items.map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul>' +
-    '</div>' +
-    '<div class="price-block">' +
-      '<div class="amount"><span class="yen">¥</span>' + price + '</div>' +
-      '<div class="note">' +
-        (isSingle
-          ? '每个主题 ①-⑤ 模块永久免费'
-          : '入门 6 个主题 ①-⑤ 模块永久免费') +
-      '</div>' +
-    '</div>' +
-    renderQR(mode, null) +
-    '<div id="btn-area">' + renderButton(mode, false) + '</div>';
-
-  // 绑定按钮
-  var simBtn = document.getElementById('sim-pay');
-  if (simBtn) {
-    simBtn.addEventListener('click', simPay);
-  }
-  var retryBtn = document.getElementById('retry-pay');
-  if (retryBtn) {
-    retryBtn.addEventListener('click', startRealPayment);
-  }
-
-  // 真实模式：自动触发下单
-  if (mode === 'real') {
-    startRealPayment();
+    if (banner) { banner.style.display = 'block'; document.getElementById('dw-domain').textContent = host; }
   }
 })();
 </script>
-<script src="../assets/js/common.js"></script>
 </body>
 </html>
