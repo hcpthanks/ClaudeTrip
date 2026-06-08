@@ -172,18 +172,21 @@ claude-code-learning-site/
 
 ## 付费系统
 
-### 支付架构
+### 支付架构（当前：个人收款码 + 邮箱人工处理）
 
 ```
-用户浏览器（pay.html）
-  │
-  ├─ sim 模式（默认）→ localStorage 直接写入，无需后端
-  │
-  └─ real 模式（商户号下来后启用）
-      ├─ POST /api/create-order  → 微信统一下单 → 返回 code_url → 前端渲染二维码
-      ├─ 用户扫码支付
-      ├─ 微信回调 POST /api/payment-notify → 验签 → AES解密 → 更新 Supabase → 生成激活码
-      └─ 前端轮询 GET /api/check-order → 已支付 → 跳转 success.html
+用户扫码支付 → 发送邮件到 hcpthanks@163.com（附截图）
+  → 作者打开本地 admin/generate-code.html（密码保护）
+  → 生成激活码 → 邮件回复客户
+  → 客户在 recover.html 输入激活码 → 解锁内容
+```
+
+未来可选升级（需微信商户号）：
+```
+用户浏览器（pay.html real 模式）
+  ├─ POST /api/create-order → 微信统一下单 → 动态二维码
+  ├─ 微信回调 POST /api/payment-notify → 验签 → 生成激活码
+  └─ 前端轮询 GET /api/check-order → 自动跳转 success.html
 ```
 
 ### 后端栈
@@ -211,13 +214,14 @@ claude-code-learning-site/
 | `SUPABASE_SERVICE_ROLE` | Supabase Service Role（create-order/payment-notify 用） |
 | `CORS_ORIGIN` | 允许的前端域名（默认 `https://hcpthanks.github.io`） |
 
-### 价格强制定价（服务端，单位：分）
+### 价格（两档制）
 
 | plan | 价格 | 说明 |
 |------|------|------|
-| `all` | 9900（¥99） | 全站永久解锁 |
-| `single` | 500（¥5） | 单页解锁 |
-| `force` | 100（¥1） | 考核跳过 |
+| `all` | ¥99 | 全站永久解锁，之后不再看到任何付费墙 |
+| `single` | ¥5 | 单主题解锁（⑥-⑨付费模块）|
+
+注：¥1 强制解锁已于 2026-06-08 移除。¥99 用户自动绕过全部付费墙。
 
 ### 激活码格式
 
@@ -259,9 +263,11 @@ claude-code-learning-site/
 ### 激活码
 
 - 格式：`CC-XXXX-XXXX`（10 字符）
-- 自包含验证，无需后端
+- 自包含验证，无需后端数据库
 - 算法：type_byte + topic_byte + random×2 + checksum×4
-- 安全级别：对 ¥5-99 课程足够
+- `generateActivationCode` 已从 `window` 移除（2026-06-08），仅作者本地 admin 工具可生成
+- `verifyActivationCode` 和 `applyActivationCode` 保留在 window，供 recover.html 使用
+- 安全级别：对 ¥5-99 课程足够，码不可伪造（checksum 密钥仅存在于代码中）
 
 ## 考核与递进解锁系统
 
@@ -273,8 +279,8 @@ claude-code-learning-site/
   └─ ❌ <4/5 正确 → 选择：
         ├─ ⏰ 1 天后自动解锁
         ├─ ⏰ 3 天后自动解锁（推荐）
-        ├─ 💰 ¥1 立即解锁（跳 pay.html?plan=force）
-        └─ ✍️ 手写 2 遍核心内容 + 拍照提交 → 解锁
+        └─ ✍️ 手写 2 遍核心内容 → 拍照上传 → 免费解锁
+             （¥1 付费跳过已于 2026-06-08 移除）
 ```
 
 ### localStorage Key
@@ -316,25 +322,22 @@ claude-code-learning-site/
 - ✅ 终端插图 Win10 风格统一（`.terminal-screenshot` 标题栏已改为 Win10 PowerShell 白底+右侧按钮，15 处全部更新）
 - ✅ 入门课程视觉化（6 页新增 13 个 CSS 终端插图）
 - ✅ 微信支付后端代码完成（3 个 API + 1 个工具库 + DB schema + 激活码统一算法）
-- ⬜ 微信商户号申请（或先用个人收款码起步）
-- ⬜ Supabase 项目创建 + schema 执行
-- ⬜ Vercel 部署 + 环境变量配置
+- ✅ 个人微信收款码已嵌入（支付页展示真实收款码 + 邮箱联系 hcpthanks@163.com）
+- ✅ 支付安全加固：generateActivationCode 从全局移除，仅本地 admin 工具可生成
+- ✅ ¥1 force unlock 全站删除，支付简化为 ¥5 单主题 / ¥99 全站两档
 - ⬜ 进阶 4 个主题（占位卡片）
 - ⬜ 专家 3 个主题（占位卡片）
 - ⏳ ICP 备案（腾讯云轻量服务器已购 ¥192/年，草稿已填，等域名实名同步）
 - ⬜ 国内 CDN（备案通过后配腾讯云 CDN→GitHub Pages）
 - ⬜ 数据统计看板
 
-## 下一步计划（2026-06-07 更新）
+## 下一步计划（2026-06-08 更新）
 
-1. **Git 推送** — commit + push 支付后端所有改动到 GitHub
-2. **微信商户号申请** — 微信支付商户平台注册，获取 mch_id / API key / 证书
-3. **Supabase 建表** — 创建项目，执行 `supabase-schema.sql`
-4. **Vercel 部署** — 导入项目，配置 12 个环境变量，绑定域名
-5. **切换 pay.html 为 real 模式** — 改 `PAYMENT_CONFIG.mode = 'real'` + 填入真实 apiBase
-6. **找真人测试** — 找 1 个电脑小白，看能否独立完成预备课 6 节
-7. **国内 CDN + 域名备案** — 解决 GitHub Pages 国内访问慢的问题
-8. **进阶/专家课程** — 进阶 4 个 + 专家 3 个主题
+1. **真人测试支付流程** — 找 1 个真实用户扫码支付 → 发邮件 → 你生成激活码 → 他解锁
+2. **ICP 备案提交** — 等域名实名同步完成（1-2天），回腾讯云提交草稿
+3. **微信商户号申请** — 如需自动化：申请商户号 → Supabase 建表 → Vercel 部署后端
+4. **进阶/专家课程** — 进阶 4 个 + 专家 3 个主题
+5. **国内 CDN** — 备案通过后配腾讯云 CDN 加速
 
 ## 开发注意事项
 
