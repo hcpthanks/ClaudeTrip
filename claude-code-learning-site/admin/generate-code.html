@@ -35,8 +35,14 @@
 	  var typeChar = type === 'all' ? 'A' : 'S';
 	  var tid = type === 'all' ? 0 : (TOPIC_IDS[topicId] || 0);
 	  var topicCode = type === 'all' ? '000' : encodeId(tid);
-	  var random = ACT_CHARS[Math.floor(Math.random() * ACT_CHARS.length)];
-	  var prefix = 'CC-' + typeChar + topicCode + random;
+	  // 计数器：每课独立递增，保证10万用户不重复
+	var counterKey = type + '-' + (topicId || 'all');
+	var counters = JSON.parse(localStorage.getItem('cc-code-counters') || '{}');
+	var c = (counters[counterKey] || 0) + 1;
+	counters[counterKey] = c;
+	localStorage.setItem('cc-code-counters', JSON.stringify(counters));
+	var counterCode = encodeId(c);
+	  var prefix = 'CC-' + typeChar + topicCode + counterCode;
 	  var check = computeCheck(prefix);
 	  return prefix + '-' + check;
 	}

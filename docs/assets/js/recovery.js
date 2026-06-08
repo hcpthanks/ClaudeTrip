@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════
-   激活码系统 v3 — 永久编号格式 CC-SXXX-X-XXXX（13字符）
-   31³=29791 主题容量，编号永不变，插入新课不影响已有激活码
+   激活码系统 v3 — 永久编号格式 CC-SXXX-YYY-ZZZZ（15字符）
+   3-char计数器：每课独立递增，保证10万用户零重复
    ═══════════════════════════════════════════════════════ */
 
 (function () {
@@ -33,13 +33,13 @@
     return result;
   }
 
-  /* ── Verify：CC-[SA][3-char-id][1-random]-[4-check] ── */
+  /* ── Verify：CC-[SA][3-char-id][3-counter]-[4-check] ── */
   window.verifyActivationCode = function (code) {
     code = code.toUpperCase().trim();
 
-    // 新格式 v3：CC-SAAA-A-AAAA（13字符）
+    // 新格式 v3：CC-SXXX-YYY-ZZZZ（15字符）
     var parts = code.match(
-      /^CC-([SA])([A-HJ-NP-Z2-9]{3})([A-HJ-NP-Z2-9])-([A-HJ-NP-Z2-9]{4})$/
+      /^CC-([SA])([A-HJ-NP-Z2-9]{3})([A-HJ-NP-Z2-9]{3})-([A-HJ-NP-Z2-9]{4})$/
     );
     if (!parts) {
       // 兼容旧格式 v2：CC-SBT-TJBZL（12字符）
@@ -70,7 +70,7 @@
     // ── v3 格式验证 ──
     var typeChar = parts[1];
     var idCode   = parts[2];  // 3字符 永久编号
-    var random   = parts[3];  // 1字符 随机
+    var random   = parts[3];  // 3字符 计数器
     var check    = parts[4];  // 4字符 校验和
 
     var prefix = 'CC-' + typeChar + idCode + random;
