@@ -3,7 +3,7 @@
 ## 架构
 
 ```
-客户 → recover.html → API 网关 → SCF 云函数 → COS 存储（activations.json）
+客户 → recover.html → 函数 URL → SCF 云函数 → COS 存储（activations.json）
                         ↑ HTTP 层     ↑ 校验激活码
                                       ↑ 检查设备数 < 2
                                       ↑ 记录新设备
@@ -46,46 +46,30 @@
 4. 搜索 `QcloudCOSFullAccess` → 勾选 → 确定
 5. （生产环境建议：改为只授权特定 Bucket 的读写，不用 FullAccess）
 
-## 第四步：创建 API 网关触发器
+## 第四步：创建函数 URL 触发器
 
-> ⚠️ 不用 Function URL（不稳定）。用独立 API 网关产品。
+> ⚠️ 2025年6月起 API 网关独立产品及触发器已停服，改用函数 URL。
 
-1. 搜索"API 网关" → 进入
-2. 点击 **新建服务**
-   - 服务名称：`cc-activation-api`
-   - 前端类型：HTTP
-   - 地域：与 SCF/COS 相同
-3. 进入刚创建的服务 → **管理 API** → **新建 API**
-   - API 名称：`activate`
-   - 请求路径：`/activate`
-   - 请求方法：`POST`
-   - 后端类型：**云函数 SCF**
-   - 云函数：选择 `cc-activation-verify`
-   - 超时时间：10 秒
-   - 鉴权：**免鉴权**
-4. 创建后返回到 API 列表 → 点击 `/activate` → **编辑 CORS**
-   - 勾选 **启用 CORS**
-   - Access-Control-Allow-Origin：`*`
-   - Allow-Methods：`POST, OPTIONS`
-   - Allow-Headers：`Content-Type`
-5. 发布服务：点 **发布** → 发布环境选 `release`
-6. 复制 **API 网关访问路径**（格式：`https://service-xxx-xxxxxxxx.gz.apigw.tencentcs.com/release`）
+1. 函数详情页 → **函数URL** → **新建函数URL**
+2. 填写：
+   - 触发别名：**LATEST**
+   - 授权类型：**开放**
+   - 参数兼容：**启用**（关键！否则 error 145）
+   - CORS：**不启用**（代码自带 CORS 响应头）
+3. 创建后复制 **HTTPS 公网访问路径**（格式：`https://1253632363-xxx.ap-beijing.tencentscf.com`）
 
 ## 第五步：更新前端 API 地址
 
 1. 编辑 `pay/recover.html`
-2. 找到第 119 行附近的：
-   ```javascript
-   var API_BASE = 'https://your-api-gateway-url.apigw.tencentcs.com/release';
-   ```
-3. 替换为第四步获取的实际 API 网关地址
+2. 找到 `var API_BASE` 那一行，替换为第四步获取的函数 URL
+3. 同样更新 `docs/pay/recover.html`
 4. 推送到 GitHub Pages
 
 ## 第六步：测试
 
 ### 测试 1：正常激活（首次设备）
 ```
-POST https://service-xxx-xxxxxxxx.gz.apigw.tencentcs.com/release/activate
+POST https://1253632363-xxx.ap-beijing.tencentscf.com
 Content-Type: application/json
 
 {
