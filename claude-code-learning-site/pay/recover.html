@@ -113,8 +113,9 @@
   var notice = document.getElementById('device-notice');
 
   // ══════ API 配置 ══════
-  // 部署 SCF 后将下方地址替换为腾讯云 API 网关地址
-  var API_BASE = 'https://1253632363-j0gczbhy0g.ap-beijing.tencentscf.com';
+  // 部署 API 网关后将下方地址替换为实际网关域名
+  // 格式：https://service-xxx-xxxxxxxx.gz.apigw.tencentcs.com/release
+  var API_BASE = 'https://your-api-gateway-url.apigw.tencentcs.com/release';
 
   // Auto-format: CC-SXXX-YYYY-ZZZZ
   input.addEventListener('input', function () {
@@ -192,7 +193,7 @@
 
         // 显示剩余设备信息
         if (typeof result.remaining === 'number' && result.remaining >= 0) {
-          notice.innerHTML = '💡 该激活码可在 <b>' + (result.remaining + 1) + '</b> 台设备上使用（最多 3 台）。<br>激活码仅限本人使用，请勿分享给他人。';
+          notice.innerHTML = '💡 该激活码可在 <b>' + (result.remaining + 1) + '</b> 台设备上使用（最多 2 台）。<br>激活码仅限本人使用，请勿分享给他人。';
           notice.className = 'device-notice show';
         }
 
@@ -259,7 +260,7 @@
             orderMsg.className = 'msg success';
 
             if (typeof result.remaining === 'number' && result.remaining >= 0) {
-              notice.innerHTML = '💡 该激活码可在 <b>' + (result.remaining + 1) + '</b> 台设备上使用（最多 3 台）。<br>激活码仅限本人使用，请勿分享给他人。';
+              notice.innerHTML = '💡 该激活码可在 <b>' + (result.remaining + 1) + '</b> 台设备上使用（最多 2 台）。<br>激活码仅限本人使用，请勿分享给他人。';
               notice.className = 'device-notice show';
             }
 

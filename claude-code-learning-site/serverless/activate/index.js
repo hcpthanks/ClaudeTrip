@@ -1,8 +1,9 @@
 'use strict';
 
 /* ═══════════════════════════════════════════════════════
-   激活码云端校验 — 腾讯云 SCF
-   零依赖，纯 Node.js 内置模块，在线编辑即可
+   激活码云端校验 — 腾讯云 SCF + API 网关
+   每码 2 台设备，零依赖，纯 Node.js 内置模块
+   防止激活码分享：同设备可恢复，不同设备最多 2 台
    ═══════════════════════════════════════════════════════ */
 
 const https = require('https');
@@ -11,7 +12,7 @@ const crypto = require('crypto');
 // ══════ 配置 ══════
 const BUCKET = process.env.COS_BUCKET;
 const REGION = process.env.COS_REGION;
-const MAX_ACTIVATIONS = 3;
+const MAX_ACTIVATIONS = 2;
 const SECRET_SALT = 0xCC1E4;
 const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const COS_HOST = BUCKET + '.cos.' + REGION + '.myqcloud.com';
@@ -187,7 +188,7 @@ exports.main_handler = async function (event) {
         statusCode: 403, headers: headers,
         body: JSON.stringify({
           ok: false,
-          error: '该激活码已超过激活次数限制（' + entry.maxAllowed + '台设备）。如需更多设备，请联系客服 hcpthanks@163.com',
+          error: '该激活码已超过激活次数限制（' + entry.maxAllowed + '台设备）。如需解绑旧设备，请发邮件至 hcpthanks@163.com',
           count: entry.count, maxAllowed: entry.maxAllowed
         })
       };
