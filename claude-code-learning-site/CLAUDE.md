@@ -262,38 +262,42 @@ claude-code-learning-site/
 | `cc-activation-codes` | JSON 对象 | 激活码缓存（同浏览器，旧版兼容） |
 | `cc-code-counters` | JSON 对象 | 每课计数器（admin 本地） |
 
-### 云端激活校验（2026-06-08 新增）
+### 云端激活校验（2026-06-09 已部署 ✅）
 
-防止激活码被多人分享——每码最多 3 台设备。
+防止激活码被多人分享——每码最多 2 台设备。
 
 **架构：**
 ```
 recover.html → recovery.js verifyWithCloud()
   ├ 本地 verifyActivationCode() 校验格式
-  ├ fetch() → Cloudflare Worker → KV 存储
-  ├ < 3 设备 → 允许 → 写入 localStorage
-  └ ≥ 3 设备 → 拒绝，提示联系客服
+  ├ fetch() → 腾讯云 SCF Function URL → COS 存储（activations.json）
+  ├ 同设备 → 放行（不占名额）
+  ├ 第 2 台设备 → 放行（名额用完）
+  └ 第 3 台设备 → 拒绝，提示发邮件解绑
 ```
 
+**部署信息：**
+- SCF 函数：`cc-activation-verify`（Event 函数，Node.js 18，北京）
+- 函数 URL：`https://1253632363-hkdthg8jb2.ap-beijing.tencentscf.com`
+- COS 桶：`cc-activation-1253632363`（ap-beijing）
+- 运行角色：`SCF_COS_Access`（QcloudCOSFullAccess）
+- 环境变量：`COS_BUCKET` + `COS_REGION`
+
+**关键部署要点：**
+- ⭐ **参数兼容模式必须开启** — 不开 = error 145（6月8日全部失败的根因）
+- 函数 URL CORS 不开启（代码自带 CORS 响应头，表单校验太严）
+- API 网关产品已停服（2025年6月），用函数 URL 替代
+- 不要用 Web 函数，只用 Event 函数 + 在线编辑
+
 **文件：**
-- `serverless/cloudflare-worker.js` — Worker 代码（零依赖，~68行）
+- `serverless/activate/index.js` — SCF 函数代码（零依赖，~220行）
+- `serverless/SETUP.md` — 部署指南（COS → SCF → 函数 URL → 测试）
 - `assets/js/recovery.js` — 已加 verifyWithCloud() + getFingerprint()
 - `pay/recover.html` — 已加云端校验 UI（loading/成功/失败/设备提示）
-- `docs/pay/recover.html` — 同步副本
-
-**Cloudflare Worker 部署：** 需创建 KV namespace 绑定变量名 `DB`。API_BASE 填入 Worker URL 后即可生效。
+- `docs/pay/recover.html` — GitHub Pages 部署副本
+- `腾讯云SCF部署攻略-失败与成功对比.html` — 6月8日失败 vs 6月9日成功全记录
 
 **降级策略：** 云端不可达时自动降级为本地解锁，不阻塞已付费用户。
-
-### ⚠️ 不要重试 SCF
-
-腾讯云 SCF 部署已确认不可行（2026-06-08 反复验证）：
-- Event 函数 + Function URL → error 145
-- Web 函数 + scf_bootstrap → exec format error
-- 在线编辑不支持 Web 函数的 bash shebang
-- 本地上传 zip 包结构不兼容
-
-如需中国大陆服务端，用腾讯云其他产品（如 Lighthouse 轻量服务器跑 Node），不要用 SCF。
 
 ### Topic ID 映射
 
@@ -372,16 +376,16 @@ recover.html → recovery.js verifyWithCloud()
 - ✅ 防盗系统 — 全站接入
 - ✅ 个人微信收款码 + 邮箱 hcpthanks@163.com
 - ✅ 管理后台增强 — 邮箱自动补全 + Chart.js 数据概览 + 一键复制报表
-- 🔴 激活码云端校验 — recovery.js 客户端已就绪，服务端待部署（Cloudflare Worker）
+- ✅ 激活码云端校验 — 腾讯云 SCF + COS 已部署，每码绑定 2 台设备
 - ⬜ 进阶 4 个主题（待开发）
 - ⬜ 专家 3 个主题（待开发）
 - ⬜ quiz.js 测验题更新（匹配新课程内容）
 - ⏳ ICP 备案（等域名实名同步）
 - ⬜ 国内 CDN
 
-## 下一步计划（2026-06-08 更新）
+## 下一步计划（2026-06-09 更新）
 
-1. **部署 Cloudflare Worker** — 激活码云端校验（限制 3 台设备），代码在 `serverless/cloudflare-worker.js`
+1. **浏览器端到端测试** — 真实激活码 → recover.html → SCF 校验 → 解锁 + 跳转
 2. **真人测试支付流程** — 找真实用户扫码支付 → 发邮件 → 生成激活码 → 解锁
 3. **quiz.js 更新** — 测验题目匹配重写后的课程内容
 4. **进阶/专家课程** — 进阶 4 个 + 专家 3 个主题开发
