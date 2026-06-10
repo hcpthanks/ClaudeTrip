@@ -215,7 +215,7 @@ exports.main_handler = async function (event) {
     console.error('Activation error:', err.message || err);
     return {
       statusCode: 500, headers: headers,
-      body: JSON.stringify({ ok: false, error: '服务暂时不可用，请稍后重试。如持续失败请联系 hcpthanks@163.com', _dbg: (err.message || String(err)).substring(0, 300) })
+      body: JSON.stringify({ ok: false, error: '服务暂时不可用，请稍后重试。如持续失败请联系 hcpthanks@163.com' })
     };
   }
 };
