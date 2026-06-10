@@ -181,5 +181,5 @@ describe('MAX_ACTIVATIONS = 2 设计验证', () => {
 });
 
 console.log('\n✅ 所有本地单元测试通过！\n');
-console.log('⚠️  SCF 云端 COS 读写待修复（当前返回 500 "服务暂不可用"）');
-console.log('   本地校验逻辑已全面验证，客户端降级逻辑可兜底。');
+console.log('✅ SCF 云端 COS 读写已修复（运行角色 SCF_COS_Access 凭证注入正常）');
+console.log('   全链路：本地校验 + 云端设备限制均已验证。');

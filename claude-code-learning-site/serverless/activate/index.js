@@ -39,6 +39,9 @@ function verifyChecksum(code) {
 
 // ══════ COS HTTP 请求（零依赖签名）══════
 function getSignHeaders(method, key, body) {
+  if (!process.env.TENCENTCLOUD_SECRETKEY) {
+    throw new Error('COS credentials missing — check SCF execution role (SCF_COS_Access)');
+  }
   var now = Math.floor(Date.now() / 1000);
   var expire = now + 900; // 15 分钟有效期
 
