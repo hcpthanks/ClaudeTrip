@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="管理 Claude Code 的上下文窗口和 Token 消耗——省钱的关键技巧：什么时候清理、选哪个模型、怎么监控用量。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+<title>上下文与成本管理 — 进阶</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/paywall.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .save-box { background: rgba(63,185,80,0.08); border: 1px solid rgba(63,185,80,0.25); border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
+  .warn-box { background: rgba(210,153,29,0.08); border: 1px solid rgba(210,153,29,0.25); border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
+  table { margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('context-cost'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>💰 上下文与成本管理</h1>
+  <p class="subtitle">Claude Code 按用量收费。管好上下文，同样的活少花一半钱。</p>
+</header>
+
+<div class="container" role="main">
+
+<nav class="module-nav">
+  <a href="#what">① 上下文是什么</a>
+  <a href="#check">② 怎么看用了多少</a>
+  <a href="#save-context">③ 节省上下文的6个方法</a>
+  <a href="#model">④ 选对模型省大钱</a>
+  <a href="#checkpoint">⑤ Checkpoint防丢失</a>
+  <a href="#practice">⑥ 练习</a>
+  <a href="#cheatsheet">⑦ 速查卡</a>
+</nav>
+
+<!-- ─── ① ─── -->
+<section id="what">
+<h2>① 上下文是什么</h2>
+<div class="card" style="font-size:1.1em;text-align:center;padding:24px;">
+  想象你在跟一个助理聊天。<br>
+  上下文 = 助理能记住的<strong>最近说了什么</strong><br>
+  窗口满了 → 助理忘记前面说过的话 → 你又要重新说一遍
+</div>
+<p>Claude Code 的上下文窗口是 <strong>200K tokens</strong>（约等于 150,000 个中文字）。听起来很多，但如果你开了很多工具（MCP）、加载了很多文件，很快就满了。</p>
+<div class="warn-box">⚠️ MCP 插件开多了是上下文杀手。开了 20 个 MCP，200K 的窗口可能只剩 70K 给你用。</div>
+</section>
+
+<!-- ─── ② ─── -->
+<section id="check">
+<h2>② 怎么看用了多少</h2>
+<p>敲这个命令：</p>
+<div class="step-input"><code>/context-budget</code></div>
+<p>会显示：</p>
+<ul>
+  <li>总窗口大小：200K tokens</li>
+  <li>已用多少</li>
+  <li>还剩多少</li>
+  <li>什么在占用（对话、文件、工具）</li>
+</ul>
+<div class="tip-box">💡 每次感觉 Claude "变笨了"的时候，先敲 /context-budget 看看是不是上下文满了。</div>
+</section>
+
+<!-- ─── ③ ─── -->
+<section id="save-context">
+<h2>③ 节省上下文的 6 个方法</h2>
+<table>
+<tr><th>方法</th><th>怎么做</th><th>效果</th></tr>
+<tr><td>关掉不用的 MCP</td><td><code>/mcp</code> → 只保留 10 个以内</td><td>节省 30-50% 上下文</td></tr>
+<tr><td>打 Checkpoint</td><td>关键节点敲 <code>/checkpoint</code></td><td>防止丢失进度</td></tr>
+<tr><td>手动压缩</td><td>敲 <code>/compact</code> 触发压缩</td><td>腾出空间继续工作</td></tr>
+<tr><td>分叉对话</td><td><code>/fork</code> 并行处理不相关的任务</td><td>避免混在一起浪费 token</td></tr>
+<tr><td>新开对话</td><td>完全不相关的任务直接开新会话</td><td>从零开始，上下文干净</td></tr>
+<tr><td>精准引用文件</td><td>用 <code>@文件名</code> 而不是让 Claude 去搜</td><td>减少搜索消耗</td></tr>
+</table>
+</section>
+
+<!-- ─── ④ ─── -->
+<section id="model">
+<h2>④ 选对模型省大钱</h2>
+<p>不同模型价格差 10 倍以上。选对了，效果一样好但便宜很多：</p>
+<table>
+<tr><th>场景</th><th>推荐模型</th><th>原因</th></tr>
+<tr><td>简单问询、查文档</td><td><strong>Haiku</strong></td><td>便宜、快，简单活没必要用大炮</td></tr>
+<tr><td>日常开发、代码审查</td><td><strong>Sonnet</strong></td><td>性价比最高，90% 的任务都能胜任</td></tr>
+<tr><td>复杂架构、安全审查</td><td><strong>Opus</strong></td><td>推理最强，关键时刻才用</td></tr>
+</table>
+<div class="tip-box">💡 不确定该用哪个？敲 <code>/model-route 帮我分析这个需求该用哪个模型</code></div>
+<div class="save-box">🟢 省钱口诀：日常用 Sonnet，简单用 Haiku，搞不定了再上 Opus。</div>
+</section>
+
+<!-- ─── ⑤ ─── -->
+<section id="checkpoint">
+<h2>⑤ Checkpoint — 关键时刻存档</h2>
+<p>上下文满了 Claude 会"忘记"前面说过的话。在关键节点打 Checkpoint：</p>
+<div class="step-input"><code>/checkpoint</code></div>
+<p>什么时候打：</p>
+<ul>
+  <li>完成一个重要功能模块后</li>
+  <li>对话很长了（感觉 Claude 开始"失忆"之前）</li>
+  <li>要做一个大改动但不确定能不能成</li>
+</ul>
+<p>打 Checkpoint 后可以随时回退，不用从头再来。</p>
+</section>
+
+<!-- ─── ⑥ 练习 ─── -->
+<section id="practice">
+<h2>⑥ 练习</h2>
+<ol>
+  <li>敲 <code>/context-budget</code>，看看你当前用了多少上下文</li>
+  <li>敲 <code>/mcp</code>，关掉 3 个不常用的 MCP 插件</li>
+  <li>在一个关键节点敲 <code>/checkpoint</code> 存档</li>
+  <li>下次遇到简单问题，敲 <code>/model-route</code> 让它帮你选便宜的模型</li>
+</ol>
+</section>
+
+<!-- ─── ⑦ ─── -->
+<section id="cheatsheet">
+<h2>⑦ 速查卡</h2>
+<table>
+<tr><th>我想...</th><th>敲这个</th></tr>
+<tr><td>看用了多少上下文</td><td><code>/context-budget</code></td></tr>
+<tr><td>关掉不用的插件</td><td><code>/mcp</code></td></tr>
+<tr><td>压缩上下文腾空间</td><td><code>/compact</code></td></tr>
+<tr><td>存档防丢失</td><td><code>/checkpoint</code></td></tr>
+<tr><td>分叉并行处理</td><td><code>/fork</code></td></tr>
+<tr><td>分析该用哪个模型</td><td><code>/model-route</code></td></tr>
+</table>
+</section>
+
+<div style="text-align:center;margin:48px 0 24px;">
+  <a href="../index.html" class="btn">← 返回首页</a>
+</div>
+
+</div>
+
+<script src="../assets/js/site-config.js"></script>
+<script src="../assets/js/anti-theft.js"></script>
+</body>
+</html>

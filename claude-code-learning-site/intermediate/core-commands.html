@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="每天必用的7个核心命令：/plan /tdd /code-review /build-fix /verify /save-session /learn-eval，从会用变精通。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<title>核心命令精通 — 进阶</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/paywall.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .cmd-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin: 16px 0; }
+  .cmd-card .name { font-size: 1.15em; font-weight: 700; color: var(--accent); font-family: var(--font-mono); }
+  .cmd-card .what { color: var(--text); margin: 8px 0; }
+  .cmd-card .when { color: var(--text-muted); font-size: 0.85em; }
+  .tip-box { background: rgba(88,166,255,0.06); border: 1px solid rgba(88,166,255,0.2); border-radius: 8px; padding: 14px 18px; margin: 20px 0; font-size: 0.9em; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('core-commands'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>⚡ 核心命令精通</h1>
+  <p class="subtitle">这7个命令是你每天都会用到的。新手知道"有这个命令"，高手知道"什么时候用、跟什么组合用"。</p>
+</header>
+
+<div class="container" role="main">
+
+<nav class="module-nav">
+  <a href="#overview">① 总览</a>
+  <a href="#plan">② /plan</a>
+  <a href="#tdd">③ /tdd</a>
+  <a href="#review">④ /code-review</a>
+  <a href="#buildfix">⑤ /build-fix</a>
+  <a href="#verify">⑥ /verify</a>
+  <a href="#save">⑦ /save-session</a>
+  <a href="#learn">⑧ /learn-eval</a>
+  <a href="#combo">⑨ 组合技</a>
+</nav>
+
+<!-- ─── ① 总览 ─── -->
+<section id="overview">
+<h2>① 七个命令一张表</h2>
+<table>
+<tr><th>命令</th><th>做什么</th><th>什么时候用</th></tr>
+<tr><td><code>/plan</code></td><td>做事之前先计划</td><td>开始任何新任务之前</td></tr>
+<tr><td><code>/tdd</code></td><td>测试驱动开发</td><td>写新功能、修 Bug</td></tr>
+<tr><td><code>/code-review</code></td><td>代码审查</td><td>每次写完代码后</td></tr>
+<tr><td><code>/build-fix</code></td><td>自动修复构建错误</td><td>构建失败时</td></tr>
+<tr><td><code>/verify</code></td><td>完整验证流程</td><td>提交之前</td></tr>
+<tr><td><code>/save-session</code></td><td>保存当前会话</td><td>下班前、切换任务前</td></tr>
+<tr><td><code>/learn-eval</code></td><td>从对话中提取经验</td><td>完成一个重要任务后</td></tr>
+</table>
+<div class="tip-box">如果你是新手，这周只练这 7 个就够了。熟练之后再看其他命令。</div>
+</section>
+
+<!-- ─── ② /plan ─── -->
+<section id="plan">
+<h2>② /plan — 做事之前先想清楚</h2>
+<div class="cmd-card">
+  <div class="name">/plan</div>
+  <div class="what">开始任何任务前先做计划，确认后再写代码。不浪费 token。</div>
+  <div class="when">💡 场景：要加新功能、做重构、或者你自己还没想清楚要做什么的时候</div>
+</div>
+<p><strong>怎么用：</strong></p>
+<ol>
+  <li>告诉 Claude 你要做什么："我想给网站加一个搜索功能"</li>
+  <li>Claude 输出实现计划（分几步、涉及哪些文件）</li>
+  <li>你确认后 → Claude 才开始写代码</li>
+</ol>
+<div class="tip-box">💡 核心价值：防止 Claude 一上来就写代码然后写偏了。计划阶段不花钱（用的小模型），改计划比改代码快 10 倍。</div>
+</section>
+
+<!-- ─── ③ /tdd ─── -->
+<section id="tdd">
+<h2>③ /tdd — 先写测试，再写代码</h2>
+<div class="cmd-card">
+  <div class="name">/tdd</div>
+  <div class="what">测试驱动开发：先写测试→写代码→验证覆盖率≥80%</div>
+  <div class="when">💡 场景：写新功能、修 Bug、重构老代码</div>
+</div>
+<p><strong>三步走：</strong></p>
+<ol>
+  <li><strong>红（RED）</strong>：Claude 先写一个会失败的测试</li>
+  <li><strong>绿（GREEN）</strong>：写最少代码让测试通过</li>
+  <li><strong>重构（IMPROVE）</strong>：优化代码，保持测试通过</li>
+</ol>
+<div class="tip-box">💡 好处：先写测试等于先确定"什么叫做好了"。代码写完测试自动验证，不用手动测。</div>
+</section>
+
+<!-- ─── ④ /code-review ─── -->
+<section id="review">
+<h2>④ /code-review — 每写完代码都要审查</h2>
+<div class="cmd-card">
+  <div class="name">/code-review</div>
+  <div class="what">检查安全漏洞、代码质量、最佳实践、命名规范</div>
+  <div class="when">💡 场景：每次写完一段代码后，提交之前</div>
+</div>
+<p><strong>审查什么：</strong></p>
+<ul>
+  <li>安全漏洞（密码泄露、注入攻击）</li>
+  <li>代码质量（函数太长、嵌套太深）</li>
+  <li>性能问题（N+1 查询、没加分页）</li>
+  <li>测试覆盖（少了什么测试）</li>
+</ul>
+</section>
+
+<!-- ─── ⑤ /build-fix ─── -->
+<section id="buildfix">
+<h2>⑤ /build-fix — 构建挂了自动修</h2>
+<div class="cmd-card">
+  <div class="name">/build-fix</div>
+  <div class="what">自动检测项目类型，分析错误，增量修复构建问题</div>
+  <div class="when">💡 场景：npm build 报错、tsc 类型检查失败、import 找不到</div>
+</div>
+<p>不需要手动看报错，敲 <code>/build-fix</code> 然后让它自己修。修完一个验证一个，不会把其他东西弄坏。</p>
+</section>
+
+<!-- ─── ⑥ /verify ─── -->
+<section id="verify">
+<h2>⑥ /verify — 提交之前做一次全面检查</h2>
+<div class="cmd-card">
+  <div class="name">/verify</div>
+  <div class="what">完整验证流程：构建→Lint→测试→类型检查，一步跑完</div>
+  <div class="when">💡 场景：要提交代码之前、要合并 PR 之前</div>
+</div>
+<div class="tip-box">💡 把这个当成"出门前照镜子"——提交之前跑一遍，确保没有低级错误。</div>
+</section>
+
+<!-- ─── ⑦ /save-session ─── -->
+<section id="save">
+<h2>⑦ /save-session — 下班保存，明天继续</h2>
+<div class="cmd-card">
+  <div class="name">/save-session</div>
+  <div class="what">保存当前会话到文件，第二天用 /resume-session 无缝接着干</div>
+  <div class="when">💡 场景：下班了、要切到另一个任务、或者对话已经很长了想保存进度</div>
+</div>
+</section>
+
+<!-- ─── ⑧ /learn-eval ─── -->
+<section id="learn">
+<h2>⑧ /learn-eval — 让 AI 从你的对话里学东西</h2>
+<div class="cmd-card">
+  <div class="name">/learn-eval</div>
+  <div class="what">从当前对话中提取可复用的经验、模式、知识点，保存为记忆或技能</div>
+  <div class="when">💡 场景：完成一个重要任务后、发现一个新的好用的写法时</div>
+</div>
+<div class="tip-box">💡 越用越聪明：每次用 learn-eval 提取经验，下次 Claude 自动记得你的偏好。</div>
+</section>
+
+<!-- ─── ⑨ 组合技 ─── -->
+<section id="combo">
+<h2>⑨ 组合技 — 串起来用才厉害</h2>
+<p>单个命令只是工具，串起来才是工作流：</p>
+<div class="cmd-card">
+  <div class="name">标准开发流</div>
+  <div class="what">/plan → 确认 → /tdd → /code-review → /verify → /save-session</div>
+  <div class="when">每天早上打开电脑，走这个流程，一天的工作不跑偏。</div>
+</div>
+<div class="cmd-card">
+  <div class="name">快速修复流</div>
+  <div class="what">描述 Bug → Claude 分析 → /tdd（写复现测试）→ 修复 → /verify</div>
+  <div class="when">线上报 Bug，需要快速定位并修复。</div>
+</div>
+</section>
+
+<div style="text-align:center;margin:48px 0 24px;">
+  <a href="../index.html" class="btn">← 返回首页</a>
+</div>
+
+</div>
+
+<script src="../assets/js/site-config.js"></script>
+<script src="../assets/js/anti-theft.js"></script>
+</body>
+</html>

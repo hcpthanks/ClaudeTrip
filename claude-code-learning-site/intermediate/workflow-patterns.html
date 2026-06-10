@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="三种每日工作流模式：标准开发流、快速修复流、学习研究流。照着走，每天的工作不掉链子。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔄</text></svg>">
+<title>每日工作流实战 — 进阶</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/paywall.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 20px 0; padding: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .flow-step { text-align: center; flex: 1; min-width: 80px; }
+  .flow-step .cmd { font-family: var(--font-mono); font-size: 0.85em; color: var(--accent); font-weight: 700; }
+  .flow-step .desc { font-size: 0.8em; color: var(--text-muted); margin-top: 4px; }
+  .flow-arrow { color: var(--text-faint); font-size: 1.2em; font-weight: 700; }
+  @media (max-width: 600px) { .flow { flex-direction: column; } .flow-arrow { transform: rotate(90deg); } }
+  .mode-title { font-size: 1.2em; font-weight: 700; color: var(--text-high); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('workflow-patterns'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>🔄 每日工作流实战</h1>
+  <p class="subtitle">单个命令只是工具，串起来才是生产力。三种模式，覆盖你 90% 的工作场景。</p>
+</header>
+
+<div class="container" role="main">
+
+<nav class="module-nav">
+  <a href="#mode-a">① 标准开发流</a>
+  <a href="#mode-b">② 快速修复流</a>
+  <a href="#mode-c">③ 学习研究流</a>
+  <a href="#mode-d">④ 日常运维流</a>
+  <a href="#choose">⑤ 怎么选</a>
+  <a href="#practice">⑥ 练习</a>
+</nav>
+
+<!-- ─── ① 模式A ─── -->
+<section id="mode-a">
+<h2>① 模式 A：标准开发流（最推荐）</h2>
+<p>适用于：写新功能、做重构、任何需要"从零到完成"的任务。</p>
+<div class="flow">
+  <div class="flow-step"><div class="cmd">/plan</div><div class="desc">制定计划</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">确认方案</div><div class="desc">检查是否正确</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">/tdd</div><div class="desc">测试驱动开发</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">/code-review</div><div class="desc">代码审查</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">/verify</div><div class="desc">完整验证</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">/save-session</div><div class="desc">保存进度</div></div>
+</div>
+<p><strong>为什么这样走：</strong></p>
+<ul>
+  <li>先计划 → 不会跑偏</li>
+  <li>再 TDD → 有测试保护，改不坏</li>
+  <li>审查 → 抓低级错误</li>
+  <li>验证 → 确认能跑</li>
+  <li>保存 → 明天继续</li>
+</ul>
+<div class="tip-box">💡 早上打开电脑，敲 <code>/plan 我今天要做的事情</code>，然后顺着流程往下走。一天的工作不跑偏。</div>
+</section>
+
+<!-- ─── ② 模式B ─── -->
+<section id="mode-b">
+<h2>② 模式 B：快速修复流</h2>
+<p>适用于：线上报 Bug、用户说某个功能坏了、需要快速定位并修好。</p>
+<div class="flow">
+  <div class="flow-step"><div class="cmd">描述Bug</div><div class="desc">"点击登录没反应"</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">Claude分析</div><div class="desc">定位根因</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">/tdd</div><div class="desc">先写复现测试</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">修复代码</div><div class="desc">Claude 改代码</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">/verify</div><div class="desc">验证修复</div></div>
+</div>
+<div class="tip-box">💡 关键一步是先写复现测试——确保这个 Bug 以后不会再偷偷回来。</div>
+</section>
+
+<!-- ─── ③ 模式C ─── -->
+<section id="mode-c">
+<h2>③ 模式 C：学习研究流</h2>
+<p>适用于：学新技术、研究不熟悉的代码、想理解某个概念。</p>
+<div class="flow">
+  <div class="flow-step"><div class="cmd">问问题</div><div class="desc">"Rust所有权怎么理解？"</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">Claude讲解</div><div class="desc">带代码示例</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">动手练习</div><div class="desc">跟着写代码</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">/learn-eval</div><div class="desc">提取知识点</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">/evolve</div><div class="desc">进化成技能</div></div>
+</div>
+<div class="tip-box">💡 学完一定要用 /learn-eval 保存知识点。不然过两天全忘了，等于白学。</div>
+</section>
+
+<!-- ─── ④ 模式D ─── -->
+<section id="mode-d">
+<h2>④ 模式 D：日常运维流</h2>
+<p>适用于：安装依赖、查日志、切换分支、部署等日常操作。</p>
+<div class="flow">
+  <div class="flow-step"><div class="cmd">!命令</div><div class="desc">快速执行 shell</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">@文件名</div><div class="desc">快速定位文件</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">/docs 包名</div><div class="desc">查文档</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="cmd">/@git log</div><div class="desc">看提交历史</div></div>
+</div>
+<div class="tip-box">💡 <code>!</code> 开头直接跑 shell 命令，<code>@</code> 加文件名快速读文件。不需要每次都说"帮我执行..."。</div>
+</section>
+
+<!-- ─── ⑤ 怎么选 ─── -->
+<section id="choose">
+<h2>⑤ 怎么选</h2>
+<table>
+<tr><th>你遇到的情况</th><th>用哪个模式</th></tr>
+<tr><td>要加新功能</td><td>模式 A：标准开发流</td></tr>
+<tr><td>线上出 Bug 了</td><td>模式 B：快速修复流</td></tr>
+<tr><td>想学点新东西</td><td>模式 C：学习研究流</td></tr>
+<tr><td>日常杂活（装包/查日志/部署）</td><td>模式 D：日常运维流</td></tr>
+</table>
+</section>
+
+<!-- ─── ⑥ 练习 ─── -->
+<section id="practice">
+<h2>⑥ 练习</h2>
+<ol>
+  <li>找一个小功能，用<strong>模式 A</strong> 完整走一遍（/plan → /tdd → /code-review → /verify）</li>
+  <li>找一个以前修过的 Bug，用<strong>模式 B</strong> 的思路复盘（当时有没有先写复现测试？）</li>
+  <li>选一个你不懂的技术概念，用<strong>模式 C</strong> 学习，最后用 /learn-eval 保存</li>
+</ol>
+</section>
+
+<div style="text-align:center;margin:48px 0 24px;">
+  <a href="../index.html" class="btn">← 返回首页</a>
+</div>
+
+</div>
+
+<script src="../assets/js/site-config.js"></script>
+<script src="../assets/js/anti-theft.js"></script>
+</body>
+</html>

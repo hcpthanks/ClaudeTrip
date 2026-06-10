@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="21天 Claude Code 进阶计划：三周从会用变精通。每天一个任务，跟着勾就行。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
+<title>21天进阶计划 — 进阶</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/paywall.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .week-title { font-size: 1.3em; font-weight: 700; margin: 32px 0 12px; }
+  .week1 .week-title { color: var(--lv-beginner); }
+  .week2 .week-title { color: var(--lv-intermediate); }
+  .week3 .week-title { color: var(--lv-expert); }
+  .day-list { list-style: none; padding: 0; }
+  .day-list li { padding: 10px 14px; margin: 6px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; font-size: 0.95em; }
+  .day-list li input[type=checkbox] { margin-right: 10px; transform: scale(1.2); accent-color: var(--accent); }
+  .progress-box { background: linear-gradient(135deg, #1a202c 0%, var(--surface) 50%); border: 2px solid var(--accent); border-radius: var(--radius-lg); padding: 20px; text-align: center; margin: 24px 0; }
+  .progress-box .pct { font-size: 2.4em; font-weight: 800; color: var(--accent); }
+  .progress-box .bar-wrap { height: 8px; background: var(--bg); border-radius: 4px; margin-top: 12px; overflow: hidden; }
+  .progress-box .bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.4s; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('21-day-plan'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>📅 21 天进阶计划</h1>
+  <p class="subtitle">每天一个任务，三周从"会用"到"精通"。勾一个，离高手近一步。</p>
+</header>
+
+<div class="container" role="main">
+
+<nav class="module-nav">
+  <a href="#progress">📊 进度</a>
+  <a href="#week1">① 第一周</a>
+  <a href="#week2">② 第二周</a>
+  <a href="#week3">③ 第三周</a>
+  <a href="#tips">④ 怎么坚持</a>
+</nav>
+
+<!-- ─── 进度 ─── -->
+<section id="progress">
+<div class="progress-box">
+  <div style="color:var(--text-muted);margin-bottom:8px;">你的完成进度</div>
+  <div class="pct" id="progress-pct">0%</div>
+  <div class="bar-wrap"><div class="bar-fill" id="progress-bar" style="width:0%"></div></div>
+  <div style="color:var(--text-muted);font-size:0.82em;margin-top:8px;" id="progress-label">0/42 项完成</div>
+</div>
+</section>
+
+<!-- ─── 第一周 ─── -->
+<section id="week1" class="week1">
+<div class="week-title">🌱 第一周：基础入门（7天打牢基本功）</div>
+<ul class="day-list">
+  <li><input type="checkbox" onchange="updateProgress()"> 第1天：用 <code>/plan</code> 规划一个小功能，确认后再继续</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第1天：用 <code>/tdd</code> 完成测试驱动开发</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第2天：用 <code>/code-review</code> 审查自己写的代码</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第2天：用 <code>/build-fix</code> 修复一个构建错误</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第3天：用 <code>/verify</code> 做完整验证</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第3天：用 <code>/save-session</code> 保存会话，再用 <code>/resume-session</code> 恢复</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第4天：用 <code>/docs</code> 查 5 个不同库的文档</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第4天：用 <code>/refactor-clean</code> 清理一个模块的死代码</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第5天：练习所有键盘快捷键（Ctrl+U, Shift+Enter, Esc Esc 等）</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第5天：用 <code>/learn-eval</code> 从对话中提取经验</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第6天：用 <code>/context-budget</code> 检查上下文使用情况</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第6天：用 <code>/checkpoint</code> 在关键节点打标记</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第7天：完整走一遍"标准开发流"（参见工作流实战课程）</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第7天：用 <code>/pr</code> 创建第一个 PR</li>
+</ul>
+</section>
+
+<!-- ─── 第二周 ─── -->
+<section id="week2" class="week2">
+<div class="week-title">⚡ 第二周：进阶技能（7天学会高级功能）</div>
+<ul class="day-list">
+  <li><input type="checkbox" onchange="updateProgress()"> 第8天：用 <code>/code-review 42</code> 审查一个 GitHub PR</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第8天：用 <code>/security-scan</code> 做安全扫描</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第9天：用 <code>/multi-plan</code> 做多模型协作规划</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第9天：用 <code>/e2e</code> 写端到端测试</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第10天：用 <code>/evolve</code> 进化学习到的技能</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第10天：用 <code>/skill-create</code> 从 git 历史生成技能</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第11天：用 <code>/hookify</code> 创建自动化 Hook</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第11天：用 <code>/fork</code> 分叉对话并行处理</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第12天：用 <code>/model-route</code> 分析任务并选最优模型</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第12天：用 <code>/loop-start</code> 创建定时任务</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第13天：设置 tmux + Claude Code 工作环境</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第13天：用 <code>/project-init</code> 给一个新项目生成配置</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第14天：用 <code>/harness-audit</code> 审计配置可靠性</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第14天：用 <code>/quality-gate</code> 做质量门检查</li>
+</ul>
+</section>
+
+<!-- ─── 第三周 ─── -->
+<section id="week3" class="week3">
+<div class="week-title">🚀 第三周：高手之路（7天成为团队里最会用AI的人）</div>
+<ul class="day-list">
+  <li><input type="checkbox" onchange="updateProgress()"> 第15天：用 <code>/santa-loop</code> 做对抗双审（两个AI互相检查）</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第15天：用 <code>/multi-workflow</code> 做完整多模型开发</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第16天：用 git worktree 并行跑 3 个 Claude Code 实例</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第16天：用 <code>/instinct-status</code> 查看学习成果</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第17天：用 <code>/skill-health</code> 查看技能健康仪表板</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第17天：用 <code>/ecc-guide</code> 全面了解 ECC 生态</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第18天：用 <code>/sessions</code> 管理所有历史会话</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第18天：用 <code>/cost-report</code> 分析 Token 花费</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第19天：用 <code>/deep-research</code> 做深度调研</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第19天：用 <code>/gan-build</code> 做生成-评估循环开发</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第20天：用 <code>/prp-plan</code> 和 <code>/prp-implement</code> 走完整 PRP 工作流</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第20天：用 <code>/update-codemaps</code> 和 <code>/update-docs</code> 维护项目文档</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第21天：自由组合 5 个以上命令，完成一个复杂项目</li>
+  <li><input type="checkbox" onchange="updateProgress()"> 第21天：教会一个同事使用 Claude Code 🎉</li>
+</ul>
+</section>
+
+<!-- ─── 怎么坚持 ─── -->
+<section id="tips">
+<h2>④ 怎么坚持 21 天</h2>
+<ul>
+  <li><strong>每天只做 1-2 项</strong>——每项大约 10-15 分钟</li>
+  <li><strong>不要跳</strong>——前一周的基础必须打牢，后面才跟得上</li>
+  <li><strong>勾了才算</strong>——每做完一项立刻回来勾上，看见进度条涨有成就感</li>
+  <li><strong>忘了一天别放弃</strong>——第二天补上就行，不用从头来</li>
+</ul>
+<div class="tip-box">💡 21 天后，你每天敲的命令会形成肌肉记忆。就像学开车——一开始每个动作都要想，后来想都不用想。</div>
+</section>
+
+<div style="text-align:center;margin:48px 0 24px;">
+  <a href="../index.html" class="btn">← 返回首页</a>
+</div>
+
+</div>
+
+<script>
+function updateProgress() {
+  var all = document.querySelectorAll('.day-list input[type=checkbox]');
+  var done = document.querySelectorAll('.day-list input[type=checkbox]:checked');
+  var pct = all.length > 0 ? Math.round(done.length / all.length * 100) : 0;
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = done.length + '/' + all.length + ' 项完成';
+  localStorage.setItem('cc-21day-progress', JSON.stringify(Array.from(all).map(function(cb,i){ return cb.checked; })));
+}
+(function(){
+  var saved = JSON.parse(localStorage.getItem('cc-21day-progress') || '[]');
+  var all = document.querySelectorAll('.day-list input[type=checkbox]');
+  saved.forEach(function(v,i){ if(all[i]) all[i].checked = v; });
+  updateProgress();
+})();
+</script>
+
+<script src="../assets/js/site-config.js"></script>
+<script src="../assets/js/anti-theft.js"></script>
+</body>
+</html>
