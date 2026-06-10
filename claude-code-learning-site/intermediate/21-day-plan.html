@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="21天 Claude Code 进阶计划：三周从会用变精通。每天一个任务，跟着勾就行。">
+<meta name="description" content="21天 Claude Code 进阶计划——每一步都有详细教程，零基础跟着做就能变高手。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
 <title>21天进阶计划 — 进阶</title>
 <link rel="stylesheet" href="../assets/css/common.css">
@@ -16,8 +16,33 @@
   .week2 .week-title { color: var(--lv-intermediate); }
   .week3 .week-title { color: var(--lv-expert); }
   .day-list { list-style: none; padding: 0; }
-  .day-list li { padding: 10px 14px; margin: 6px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; font-size: 0.95em; }
-  .day-list li input[type=checkbox] { margin-right: 10px; transform: scale(1.2); accent-color: var(--accent); }
+  .day-list > li { margin: 10px 0; }
+  .day-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+  }
+  .day-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px; cursor: pointer; user-select: none;
+    transition: background 0.15s;
+  }
+  .day-header:hover { background: var(--surface-hover); }
+  .day-header input[type=checkbox] { transform: scale(1.3); accent-color: var(--accent); flex-shrink: 0; }
+  .day-header .day-label { flex: 1; font-size: 0.95em; }
+  .day-header .toggle-icon { color: var(--text-muted); font-size: 0.8em; transition: transform 0.25s; }
+  .day-header.open .toggle-icon { transform: rotate(90deg); }
+  .day-body { display: none; padding: 0 16px 16px 40px; border-top: 1px solid var(--border-light); }
+  .day-body.open { display: block; }
+  .day-body .step { margin: 12px 0; padding-left: 8px; border-left: 2px solid var(--accent-dim); }
+  .day-body .step .s-num { font-weight: 700; color: var(--accent); font-size: 0.85em; }
+  .day-body .step p { margin: 4px 0; }
+  .day-body .what-to-type {
+    background: #0d1117; border: 1px solid var(--accent-dim); border-radius: 6px;
+    padding: 10px 14px; margin: 8px 0; font-family: var(--font-mono); font-size: 0.9em; color: var(--accent);
+  }
+  .day-body .faq { margin-top: 12px; padding: 10px 14px; background: rgba(210,153,29,0.06); border: 1px solid rgba(210,153,29,0.2); border-radius: 6px; font-size: 0.85em; }
+  .day-body .faq .q { color: var(--orange); font-weight: 700; }
+  .day-body .faq .a { color: var(--text-muted); }
   .progress-box { background: linear-gradient(135deg, #1a202c 0%, var(--surface) 50%); border: 2px solid var(--accent); border-radius: var(--radius-lg); padding: 20px; text-align: center; margin: 24px 0; }
   .progress-box .pct { font-size: 2.4em; font-weight: 800; color: var(--accent); }
   .progress-box .bar-wrap { height: 8px; background: var(--bg); border-radius: 4px; margin-top: 12px; overflow: hidden; }
@@ -31,7 +56,7 @@
 
 <header class="hero" style="padding:48px 24px;">
   <h1>📅 21 天进阶计划</h1>
-  <p class="subtitle">每天一个任务，三周从"会用"到"精通"。勾一个，离高手近一步。</p>
+  <p class="subtitle">每个任务都写了详细步骤——打开电脑跟着做就行。勾一个，离高手近一步。</p>
 </header>
 
 <div class="container" role="main">
@@ -44,7 +69,7 @@
   <a href="#tips">④ 怎么坚持</a>
 </nav>
 
-<!-- ─── 进度 ─── -->
+<!-- ══════ 进度 ══════ -->
 <section id="progress">
 <div class="progress-box">
   <div style="color:var(--text-muted);margin-bottom:8px;">你的完成进度</div>
@@ -54,79 +79,465 @@
 </div>
 </section>
 
-<!-- ─── 第一周 ─── -->
+<!-- ══════ 第一周 ══════ -->
 <section id="week1" class="week1">
 <div class="week-title">🌱 第一周：基础入门（7天打牢基本功）</div>
+<p style="color:var(--text-muted);margin-bottom:16px;">💡 点击每个任务展开详细步骤。第一周不要求做什么大项目——把7个核心命令用顺手就行。</p>
+
 <ul class="day-list">
-  <li><input type="checkbox" onchange="updateProgress()"> 第1天：用 <code>/plan</code> 规划一个小功能，确认后再继续</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第1天：用 <code>/tdd</code> 完成测试驱动开发</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第2天：用 <code>/code-review</code> 审查自己写的代码</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第2天：用 <code>/build-fix</code> 修复一个构建错误</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第3天：用 <code>/verify</code> 做完整验证</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第3天：用 <code>/save-session</code> 保存会话，再用 <code>/resume-session</code> 恢复</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第4天：用 <code>/docs</code> 查 5 个不同库的文档</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第4天：用 <code>/refactor-clean</code> 清理一个模块的死代码</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第5天：练习所有键盘快捷键（Ctrl+U, Shift+Enter, Esc Esc 等）</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第5天：用 <code>/learn-eval</code> 从对话中提取经验</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第6天：用 <code>/context-budget</code> 检查上下文使用情况</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第6天：用 <code>/checkpoint</code> 在关键节点打标记</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第7天：完整走一遍"标准开发流"（参见工作流实战课程）</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第7天：用 <code>/pr</code> 创建第一个 PR</li>
+
+<!-- Day 1-1: /plan -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第1天：用 <code>/plan</code> 规划一个小功能，确认后再继续</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>学会在做事之前先让 AI 做计划。这能省你大量来回修改的时间。</p>
+    <div class="step"><span class="s-num">① 打开 Claude Code</span>
+      <p>按键盘左下角的 <strong>Win 键</strong>（四个方块那个）→ 输入 <code>powershell</code> → 回车。黑色窗口出来后输入 <code>claude</code> 回车。</p>
+      <p>（如果你还没安装 Claude Code，先回到预备课第3节"安装 Claude Code"）</p>
+    </div>
+    <div class="step"><span class="s-num">② 告诉 Claude 你要做什么</span>
+      <p>不用敲 /plan，直接说话就行。比如：</p>
+      <div class="what-to-type">我想给学习站首页加一个搜索框，让用户可以搜课程名称。帮我做个计划。</div>
+      <p>或者用你自己项目里的一个小需求。关键是——<strong>先不要让它写代码</strong>，只要计划。</p>
+    </div>
+    <div class="step"><span class="s-num">③ 看 Claude 的计划</span>
+      <p>Claude 会列出：涉及哪些文件、分几步、每步做什么。仔细看一遍。</p>
+    </div>
+    <div class="step"><span class="s-num">④ 确认或修改</span>
+      <p>如果计划没问题 → 回复 <strong>"好的，开始吧"</strong>。如果有想改的 → 直接说"第2步不用做，换一个方案"。</p>
+      <p>确认后 Claude 就会开始写代码。</p>
+    </div>
+    <div class="faq">
+      <p class="q">Q: 我不知道要做什么小功能怎么办？</p>
+      <p class="a">A: 随便找一个都行。比如"在网页上加一个回到顶部的按钮"、"把页面背景色调深一点"。目的不是做功能，是练 /plan 的流程。</p>
+      <p class="q">Q: Claude 的计划太复杂了？</p>
+      <p class="a">A: 直接说"太复杂了，简化一下，只做最核心的部分"。</p>
+    </div>
+  </div>
+</div></li>
+
+<!-- Day 1-2: /tdd -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第1天：用 <code>/tdd</code> 完成测试驱动开发</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>学会"先写测试再写代码"。养成这个习惯后，你的代码出 bug 的概率大幅降低。</p>
+    <div class="step"><span class="s-num">① 接着上面的 /plan 做</span>
+      <p>上一步你让 Claude 做了计划。现在告诉它：</p>
+      <div class="what-to-type">/tdd 按照刚才的计划，先写测试</div>
+    </div>
+    <div class="step"><span class="s-num">② 看 Claude 写测试</span>
+      <p>Claude 会先写一个测试文件（比如 <code>xxx.test.js</code>）。这个测试目前会失败——这是正常的（红色阶段）。</p>
+    </div>
+    <div class="step"><span class="s-num">③ Claude 写代码让测试通过</span>
+      <p>测试写完后，Claude 会自动写代码让测试变绿。你不用操作，看着就行。</p>
+    </div>
+    <div class="step"><span class="s-num">④ 测试通过后</span>
+      <p>如果 Claude 问你要不要重构，回答"好的"。重构就是让代码更整洁，但不改变功能。</p>
+    </div>
+    <div class="faq">
+      <p class="q">Q: 我的项目没有测试框架怎么办？</p>
+      <p class="a">A: Claude 会自动帮你装。它检测到项目没有测试工具会自动配好。</p>
+      <p class="q">Q: 测试一直失败？</p>
+      <p class="a">A: 把错误信息复制给 Claude，说"这个测试没通过，帮我看看为什么"。</p>
+    </div>
+  </div>
+</div></li>
+
+<!-- Day 2-1: /code-review -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第2天：用 <code>/code-review</code> 审查自己写的代码</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>学会让 AI 帮你检查代码。就像写完作业让同桌帮看一眼——但 AI 不会漏任何错误。</p>
+    <div class="step"><span class="s-num">① 打开你昨天改过的项目</span>
+      <p>打开 PowerShell → <code>cd 你的项目文件夹</code> → <code>claude</code></p>
+    </div>
+    <div class="step"><span class="s-num">② 敲审查命令</span>
+      <div class="what-to-type">/code-review</div>
+      <p>不需要指定文件——Claude 会自动检查你改动过的代码。</p>
+    </div>
+    <div class="step"><span class="s-num">③ 看审查结果</span>
+      <p>Claude 会列出发现的问题，分四个等级：</p>
+      <ul>
+        <li><strong>CRITICAL（严重）</strong>：安全漏洞，必须修</li>
+        <li><strong>HIGH（高）</strong>：Bug 或逻辑问题，应该修</li>
+        <li><strong>MEDIUM（中）</strong>：代码质量建议，建议修</li>
+        <li><strong>LOW（低）</strong>：小建议，可选</li>
+      </ul>
+    </div>
+    <div class="step"><span class="s-num">④ 让 Claude 修复</span>
+      <p>如果有问题，直接说：</p>
+      <div class="what-to-type">帮我把 CRITICAL 和 HIGH 的问题都修了</div>
+    </div>
+    <div class="faq">
+      <p class="q">Q: 我没有改动过的代码怎么办？</p>
+      <p class="a">A: 随便写几行代码再跑。哪怕故意写个 console.log 都行——审查会发现它。</p>
+    </div>
+  </div>
+</div></li>
+
+<!-- Day 2-2: /build-fix -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第2天：用 <code>/build-fix</code> 修复一个构建错误</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>构建报错不用慌，一条命令让 AI 帮你修。</p>
+    <div class="step"><span class="s-num">① 先尝试构建</span>
+      <p>在 Claude Code 里敲：</p>
+      <div class="what-to-type">!npm run build</div>
+      <p>（<code>!</code> 开头表示直接执行命令，不用 AI 思考。如果你的项目用的不是 npm，改成对应的命令，比如 <code>!pnpm build</code>）</p>
+    </div>
+    <div class="step"><span class="s-num">② 如果报错了（大概率会）</span>
+      <p>看到红色错误信息不用管——直接敲：</p>
+      <div class="what-to-type">/build-fix</div>
+    </div>
+    <div class="step"><span class="s-num">③ 让 Claude 自己修</span>
+      <p>Claude 会分析错误、改代码、再构建。一次修不好会自动继续。你喝口水等着就行。</p>
+    </div>
+    <div class="faq">
+      <p class="q">Q: 我的项目没有构建错误？</p>
+      <p class="a">A: 那太好了！说明你的代码质量不错。今天这个任务打个勾直接过。</p>
+    </div>
+  </div>
+</div></li>
+
+<!-- Day 3-1: /verify -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第3天：用 <code>/verify</code> 做完整验证</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>提交代码之前跑一遍全面检查——构建、测试、类型检查一步完成。</p>
+    <div class="step"><span class="s-num">① 打开你的项目</span>
+      <p>确保你有一些改动过的代码（前两天的就行）。</p>
+    </div>
+    <div class="step"><span class="s-num">② 敲验证命令</span>
+      <div class="what-to-type">/verify</div>
+    </div>
+    <div class="step"><span class="s-num">③ 等结果</span>
+      <p>Claude 会依次跑：类型检查 → Lint 检查 → 测试 → 构建。全部通过会告诉你"验证通过"。</p>
+      <p>如果有失败的，Claude 会自动尝试修复。</p>
+    </div>
+    <div class="faq">
+      <p class="q">Q: /verify 和 /build-fix 有什么区别？</p>
+      <p class="a">A: /build-fix 只修构建错误。/verify 是全面检查——构建、测试、代码风格、类型全部跑一遍。提交之前跑 /verify，平时修错用 /build-fix。</p>
+    </div>
+  </div>
+</div></li>
+
+<!-- Day 3-2: /save-session + /resume-session -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第3天：用 <code>/save-session</code> 保存会话，再用 <code>/resume-session</code> 恢复</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>学会"存档"和"读档"。就像打游戏——打到一半存个档，下次接着打。</p>
+    <div class="step"><span class="s-num">① 在对话中间保存</span>
+      <p>当你跟 Claude 聊到一半（比如刚做完一个重要功能），敲：</p>
+      <div class="what-to-type">/save-session</div>
+      <p>Claude 会生成一个会话文件，保存当前所有对话上下文。</p>
+    </div>
+    <div class="step"><span class="s-num">② 关掉 Claude Code</span>
+      <p>直接按 <code>Ctrl+C</code> 退出，或者把 PowerShell 窗口关掉。</p>
+    </div>
+    <div class="step"><span class="s-num">③ 重新打开，恢复对话</span>
+      <p>重新打开 PowerShell → <code>claude</code> → 然后敲：</p>
+      <div class="what-to-type">/resume-session</div>
+      <p>Claude 会列出最近的会话文件。选刚才那个 → 你的对话就回来了，跟没关过一样。</p>
+    </div>
+    <div class="faq">
+      <p class="q">Q: 为什么要保存会话？</p>
+      <p class="a">A: 两个原因：① 下班了明天继续；② 对话太长 Claude 开始"健忘"了，存一下重新开始更清爽。</p>
+    </div>
+  </div>
+</div></li>
+
+<!-- Day 4-1: /docs -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第4天：用 <code>/docs</code> 查文档</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>以后不用打开浏览器搜文档了。想知道什么库怎么用，直接在 Claude Code 里问。</p>
+    <div class="step"><span class="s-num">① 想一个你想了解的库或工具</span>
+      <p>比如想知道 React 某个功能怎么用、想查 Tailwind CSS 某个类的写法。</p>
+    </div>
+    <div class="step"><span class="s-num">② 敲文档命令</span>
+      <div class="what-to-type">/docs react useEffect 怎么用</div>
+      <p>把 <code>react useEffect 怎么用</code> 换成你想查的东西。格式是：<code>/docs 库名 问题</code></p>
+    </div>
+    <div class="step"><span class="s-num">③ 换 5 个不同的问题试试</span>
+      <p>比如：</p>
+      <ul>
+        <li><code>/docs tailwindcss 响应式布局</code></li>
+        <li><code>/docs express.js 路由怎么写</code></li>
+        <li><code>/docs git 撤销上一次提交</code></li>
+        <li><code>/docs markdown 表格语法</code></li>
+        <li><code>/docs node.js 读文件</code></li>
+      </ul>
+    </div>
+  </div>
+</div></li>
+
+<!-- Day 4-2: /refactor-clean -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第4天：用 <code>/refactor-clean</code> 清理死代码</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>学会清理"垃圾代码"——那些写了但从来没人用的函数、变量、文件。</p>
+    <div class="step"><span class="s-num">① 打开你的项目</span></div>
+    <div class="step"><span class="s-num">② 敲清理命令</span>
+      <div class="what-to-type">/refactor-clean</div>
+    </div>
+    <div class="step"><span class="s-num">③ 看 Claude 发现了什么</span>
+      <p>Claude 会列出项目里所有"可能没用"的代码：没被引用的函数、重复的代码块、没用的文件。</p>
+      <p>确认没问题 → 说"帮我清理掉"。</p>
+    </div>
+    <div class="faq">
+      <p class="q">Q: 万一删了有用的代码？</p>
+      <p class="a">A: 用 git 可以撤销。敲 <code>!git diff</code> 看改了什么，敲 <code>!git checkout .</code> 可以撤销所有改动。所以放心试。</p>
+    </div>
+  </div>
+</div></li>
+
+<!-- Day 5-1: keyboard shortcuts -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第5天：练习键盘快捷键</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>学 5 个最常用的快捷键。不用鼠标就能操作 Claude Code，效率直接翻倍。</p>
+    <table>
+      <tr><th>快捷键</th><th>做什么</th><th>什么时候用</th></tr>
+      <tr><td><code>Ctrl+U</code></td><td>清空输入框</td><td>想重新输入的时候</td></tr>
+      <tr><td><code>Shift+Enter</code></td><td>换行</td><td>想输入多行文字的时候（直接回车会发送）</td></tr>
+      <tr><td><code>Esc Esc</code></td><td>中断 AI</td><td>AI 在胡说八道或者写偏了，连按两下 Esc 让它停下</td></tr>
+      <tr><td><code>Ctrl+O</code></td><td>看 AI 的思考过程</td><td>想知道 AI 为什么做出这个决定</td></tr>
+      <tr><td><code>Ctrl+R</code></td><td>搜索历史命令</td><td>想找回之前输入过的一条命令</td></tr>
+    </table>
+    <div class="step"><span class="s-num">① 打开 Claude Code，每个快捷键按一遍试试</span></div>
+    <div class="step"><span class="s-num">② 今天用的时候，刻意不用鼠标，只用键盘</span></div>
+  </div>
+</div></li>
+
+<!-- Day 5-2: /learn-eval -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第5天：用 <code>/learn-eval</code> 从对话中提取经验</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>让 AI 记住你今天学到的东西。以后它会自动用这些经验。</p>
+    <div class="step"><span class="s-num">① 在你完成一个任务之后敲</span>
+      <div class="what-to-type">/learn-eval</div>
+    </div>
+    <div class="step"><span class="s-num">② Claude 会分析刚才的对话</span>
+      <p>它会提取：你用的什么命令、遇到了什么问题、用了什么解决方案。然后问你要不要保存为"记忆"。</p>
+    </div>
+    <div class="step"><span class="s-num">③ 回答"好的"</span>
+      <p>以后在新的对话里，Claude 会自动参考这些经验。</p>
+    </div>
+    <div class="faq">
+      <p class="q">Q: 这个和 /save-session 有什么区别？</p>
+      <p class="a">A: /save-session 保存的是"对话内容"（一次性的）。/learn-eval 保存的是"经验教训"（永久的，跨对话有效）。</p>
+    </div>
+  </div>
+</div></li>
+
+<!-- Day 6-1: /context-budget -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第6天：用 <code>/context-budget</code> 检查上下文使用情况</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>学会看"AI 还剩多少记忆空间"。满了它就会变笨。</p>
+    <div class="step"><span class="s-num">① 在跟 Claude 聊了一段时间后敲</span>
+      <div class="what-to-type">/context-budget</div>
+    </div>
+    <div class="step"><span class="s-num">② 看返回的信息</span>
+      <p>会显示：总共 200K tokens，已用 XX%，还剩 XX%。还会列出什么东西在占空间。</p>
+    </div>
+    <div class="step"><span class="s-num">③ 如果快满了（超过 80%）</span>
+      <p>有两个选择：</p>
+      <ul>
+        <li><strong>压缩</strong>：敲 <code>/compact</code>，让 AI 把对话"压缩"一下，保留关键信息</li>
+        <li><strong>新开对话</strong>：敲 <code>/save-session</code> 保存当前进度，然后新开一个 Claude Code 窗口继续</li>
+      </ul>
+    </div>
+    <div class="faq">
+      <p class="q">Q: 上下文满了会怎样？</p>
+      <p class="a">A: Claude 会"忘记"对话最前面说过的话。你可能需要重新说一遍要求。这就是为什么有时候 Claude 变笨了——不是它笨，是上下文满了。</p>
+    </div>
+  </div>
+</div></li>
+
+<!-- Day 6-2: /checkpoint -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第6天：用 <code>/checkpoint</code> 在关键节点打标记</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>学会"存档点"——关键时刻留个备份，做坏了可以回退。</p>
+    <div class="step"><span class="s-num">① 在重要操作之前敲</span>
+      <p>比如要做一个大改动、要删除一批文件、要重构一段复杂代码——在动手之前敲：</p>
+      <div class="what-to-type">/checkpoint</div>
+    </div>
+    <div class="step"><span class="s-num">② 取个好记的名字</span>
+      <p>Claude 会问你给这个检查点起什么名字。起个能看懂的名字，比如"重构之前的版本"、"加搜索功能之前"。</p>
+    </div>
+    <div class="step"><span class="s-num">③ 放心改</span>
+      <p>万一改坏了 → 告诉 Claude "回退到上一个 checkpoint" → 一切恢复原样。</p>
+    </div>
+    <div class="faq">
+      <p class="q">Q: 打的 checkpoint 能存多久？</p>
+      <p class="a">A: 在当前对话里一直有效。对话关了 checkpoint 就没了。所以这是"临时存档"，不是永久备份。</p>
+    </div>
+  </div>
+</div></li>
+
+<!-- Day 7-1: full workflow -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第7天：完整走一遍"标准开发流"</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>把前6天学的串起来，完整走一遍。这是你以后每天的标准操作流程。</p>
+    <div class="step"><span class="s-num">① 找一个小功能做</span>
+      <p>随便想一个就行。比如"给页面加一个夜间模式开关"、"把字体调大一点"。</p>
+    </div>
+    <div class="step"><span class="s-num">② 按顺序走这 6 步</span>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0;">
+        <p>1️⃣ <code>/plan 我想做XXX，帮我做计划</code></p>
+        <p>2️⃣ 确认计划 → <code>/tdd 按计划开始</code></p>
+        <p>3️⃣ 代码写完 → <code>/code-review</code></p>
+        <p>4️⃣ 如果有问题 → <code>/build-fix</code></p>
+        <p>5️⃣ 提交前 → <code>/verify</code></p>
+        <p>6️⃣ 完成 → <code>/save-session</code> 保存</p>
+      </div>
+    </div>
+    <div class="step"><span class="s-num">③ 感受一下</span>
+      <p>走完这 6 步，你刚完成了一次"零事故开发"——有计划、有测试、有审查、有验证。这就是专业开发者的工作方式。以后每次写代码都这么走。</p>
+    </div>
+  </div>
+</div></li>
+
+<!-- Day 7-2: /pr -->
+<li><div class="day-item">
+  <div class="day-header" onclick="toggleDay(this)">
+    <input type="checkbox" onchange="updateProgress();event.stopPropagation()">
+    <span class="day-label">第7天：用 <code>/pr</code> 创建第一个 PR</span>
+    <span class="toggle-icon">▶</span>
+  </div>
+  <div class="day-body">
+    <p><strong>目标：</strong>学会用一条命令把你的改动提交到 GitHub。</p>
+    <div class="step"><span class="s-num">① 确保你的改动已经提交</span>
+      <p>在 Claude Code 里敲 <code>!git status</code> 看一下有没有未提交的改动。</p>
+      <p>如果有 → 说"帮我把这些改动提交并推送"。</p>
+    </div>
+    <div class="step"><span class="s-num">② 创建 PR</span>
+      <div class="what-to-type">/pr</div>
+      <p>Claude 会自动分析你的改动 → 写 PR 描述 → 推送到 GitHub → 创建 Pull Request。</p>
+    </div>
+    <div class="step"><span class="s-num">③ 打开 GitHub 看看</span>
+      <p>Claude 会给你一个链接。打开看——那就是你的 Pull Request。别人可以在这里审查你的代码、提意见。</p>
+    </div>
+    <div class="faq">
+      <p class="q">Q: 我的项目没连 GitHub 怎么办？</p>
+      <p class="a">A: 那就先跳过这一步。或者告诉 Claude"帮我把这个项目推送到 GitHub"，它会一步步教你。</p>
+    </div>
+  </div>
+</div></li>
+
 </ul>
 </section>
 
-<!-- ─── 第二周 ─── -->
+<!-- ══════ 第二周 ══════ -->
 <section id="week2" class="week2">
 <div class="week-title">⚡ 第二周：进阶技能（7天学会高级功能）</div>
+<p style="color:var(--text-muted);margin-bottom:16px;">🛠️ 详细教程陆续更新中，先从第一周打好基础。</p>
 <ul class="day-list">
-  <li><input type="checkbox" onchange="updateProgress()"> 第8天：用 <code>/code-review 42</code> 审查一个 GitHub PR</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第8天：用 <code>/security-scan</code> 做安全扫描</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第9天：用 <code>/multi-plan</code> 做多模型协作规划</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第9天：用 <code>/e2e</code> 写端到端测试</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第10天：用 <code>/evolve</code> 进化学习到的技能</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第10天：用 <code>/skill-create</code> 从 git 历史生成技能</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第11天：用 <code>/hookify</code> 创建自动化 Hook</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第11天：用 <code>/fork</code> 分叉对话并行处理</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第12天：用 <code>/model-route</code> 分析任务并选最优模型</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第12天：用 <code>/loop-start</code> 创建定时任务</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第13天：设置 tmux + Claude Code 工作环境</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第13天：用 <code>/project-init</code> 给一个新项目生成配置</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第14天：用 <code>/harness-audit</code> 审计配置可靠性</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第14天：用 <code>/quality-gate</code> 做质量门检查</li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第8天：用 <code>/code-review 42</code> 审查一个 GitHub PR</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第8天：用 <code>/security-scan</code> 做安全扫描</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第9天：用 <code>/multi-plan</code> 做多模型协作规划</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第9天：用 <code>/e2e</code> 写端到端测试</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第10天：用 <code>/evolve</code> 进化学习到的技能</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第10天：用 <code>/skill-create</code> 从 git 历史生成技能</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第11天：用 <code>/hookify</code> 创建自动化 Hook</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第11天：用 <code>/fork</code> 分叉对话并行处理</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第12天：用 <code>/model-route</code> 分析任务并选最优模型</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第12天：用 <code>/loop-start</code> 创建定时任务</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第13天：设置 tmux + Claude Code 工作环境</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第13天：用 <code>/project-init</code> 给新项目生成配置</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第14天：用 <code>/harness-audit</code> 审计配置可靠性</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第14天：用 <code>/quality-gate</code> 做质量门检查</span></div></div></li>
 </ul>
 </section>
 
-<!-- ─── 第三周 ─── -->
+<!-- ══════ 第三周 ══════ -->
 <section id="week3" class="week3">
-<div class="week-title">🚀 第三周：高手之路（7天成为团队里最会用AI的人）</div>
+<div class="week-title">🚀 第三周：高手之路</div>
+<p style="color:var(--text-muted);margin-bottom:16px;">🛠️ 详细教程陆续更新中。</p>
 <ul class="day-list">
-  <li><input type="checkbox" onchange="updateProgress()"> 第15天：用 <code>/santa-loop</code> 做对抗双审（两个AI互相检查）</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第15天：用 <code>/multi-workflow</code> 做完整多模型开发</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第16天：用 git worktree 并行跑 3 个 Claude Code 实例</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第16天：用 <code>/instinct-status</code> 查看学习成果</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第17天：用 <code>/skill-health</code> 查看技能健康仪表板</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第17天：用 <code>/ecc-guide</code> 全面了解 ECC 生态</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第18天：用 <code>/sessions</code> 管理所有历史会话</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第18天：用 <code>/cost-report</code> 分析 Token 花费</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第19天：用 <code>/deep-research</code> 做深度调研</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第19天：用 <code>/gan-build</code> 做生成-评估循环开发</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第20天：用 <code>/prp-plan</code> 和 <code>/prp-implement</code> 走完整 PRP 工作流</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第20天：用 <code>/update-codemaps</code> 和 <code>/update-docs</code> 维护项目文档</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第21天：自由组合 5 个以上命令，完成一个复杂项目</li>
-  <li><input type="checkbox" onchange="updateProgress()"> 第21天：教会一个同事使用 Claude Code 🎉</li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第15天：用 <code>/santa-loop</code> 做对抗双审</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第15天：用 <code>/multi-workflow</code> 做多模型开发</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第16天：用 git worktree 并行跑 3 个 Claude Code</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第16天：用 <code>/instinct-status</code> 查看学习成果</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第17天：用 <code>/skill-health</code> 查看技能仪表板</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第17天：用 <code>/ecc-guide</code> 了解 ECC 生态</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第18天：用 <code>/sessions</code> 管理历史会话</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第18天：用 <code>/cost-report</code> 分析花费</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第19天：用 <code>/deep-research</code> 做深度调研</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第19天：用 <code>/gan-build</code> 做生成评估循环</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第20天：走完整 PRP 工作流</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第20天：用 /update-codemaps 维护文档</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第21天：自由组合 5+ 命令完成复杂项目</span></div></div></li>
+  <li><div class="day-item"><div class="day-header" style="cursor:default"><input type="checkbox" onchange="updateProgress()"><span class="day-label">第21天：教会一个同事使用 Claude Code 🎉</span></div></div></li>
 </ul>
 </section>
 
-<!-- ─── 怎么坚持 ─── -->
+<!-- ══════ 坚持 ══════ -->
 <section id="tips">
 <h2>④ 怎么坚持 21 天</h2>
 <ul>
   <li><strong>每天只做 1-2 项</strong>——每项大约 10-15 分钟</li>
-  <li><strong>不要跳</strong>——前一周的基础必须打牢，后面才跟得上</li>
-  <li><strong>勾了才算</strong>——每做完一项立刻回来勾上，看见进度条涨有成就感</li>
+  <li><strong>点开"📖 怎么做"跟着做</strong>——不需要动脑想，跟着步骤走就行</li>
+  <li><strong>不要跳</strong>——前一周必须打牢，后面才跟得上</li>
+  <li><strong>勾了才算</strong>——每做完一项立刻勾上，看进度条涨有成就感</li>
   <li><strong>忘了一天别放弃</strong>——第二天补上就行，不用从头来</li>
 </ul>
-<div class="tip-box">💡 21 天后，你每天敲的命令会形成肌肉记忆。就像学开车——一开始每个动作都要想，后来想都不用想。</div>
+<div class="tip-box">💡 21 天后，这些命令会形成肌肉记忆。就像学开车——一开始每个动作都要想，后来想都不用想。你不再是一个"会用电脑的人"，而是一个"能指挥 AI 干活的人"。</div>
 </section>
 
 <div style="text-align:center;margin:48px 0 24px;">
@@ -136,6 +547,12 @@
 </div>
 
 <script>
+/* ── Toggle day detail ── */
+function toggleDay(header) {
+  header.classList.toggle('open');
+  header.nextElementSibling.classList.toggle('open');
+}
+/* ── Progress tracking ── */
 function updateProgress() {
   var all = document.querySelectorAll('.day-list input[type=checkbox]');
   var done = document.querySelectorAll('.day-list input[type=checkbox]:checked');
