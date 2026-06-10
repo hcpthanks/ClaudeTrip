@@ -39,7 +39,7 @@
 
     // 新格式 v3：CC-SXXX-YYY-ZZZZ（15字符）
     var parts = code.match(
-      /^CC-([SA])([A-HJ-NP-Z2-9]{3})([A-HJ-NP-Z2-9]{3})-([A-HJ-NP-Z2-9]{4})$/
+      /^CC-([SA])([A-HJ-NP-Z2-9]{3})([A-HJ-NP-Z2-9]{4})-([A-HJ-NP-Z2-9]{4})$/
     );
     if (!parts) {
       // 兼容旧格式 v2：CC-SBT-TJBZL（12字符）
