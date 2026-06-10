@@ -131,6 +131,36 @@ function renderNav(activeId) {
     '      <a href="../index.html#beginner"'   + (section === 'beginner'   ? ' class="active"' : '') + '>入门</a>\n' +
     '    </div>\n' +
     '    <a href="../pay/pay.html" class="nav-cta">升级</a>\n' +
+    '    <button class="nav-toggle" id="nav-toggle" aria-label="菜单">\n' +
+    '      <span></span><span></span><span></span>\n' +
+    '    </button>\n' +
     '  </div>\n' +
-    '</nav>';
+    '  <div class="mobile-menu" id="mobile-menu">\n' +
+    '    <a href="../index.html">🏠 首页</a>\n' +
+    '    <a href="../index.html#pre-basics">🖥️ 预备课</a>\n' +
+    '    <a href="../index.html#applied">💼 应用课</a>\n' +
+    '    <a href="../index.html#beginner">🌱 入门</a>\n' +
+    '    <a href="../pay/pay.html" class="mobile-cta">⚡ 升级</a>\n' +
+    '  </div>\n' +
+  '</nav>';
 }
+
+/* ══════ Mobile Menu Toggle ══════ */
+(function () {
+  var toggle = document.getElementById("nav-toggle");
+  var menu = document.getElementById("mobile-menu");
+  if (!toggle || !menu) return;
+  toggle.addEventListener("click", function () {
+    var open = menu.classList.toggle("open");
+    toggle.classList.toggle("open");
+    document.body.style.overflow = open ? "hidden" : "";
+  });
+  // Close on link click
+  menu.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      menu.classList.remove("open");
+      toggle.classList.remove("open");
+      document.body.style.overflow = "";
+    });
+  });
+})();
