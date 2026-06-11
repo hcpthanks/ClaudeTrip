@@ -144,13 +144,26 @@ exports.main_handler = async function (event) {
   var headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type'
   };
 
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers: headers, body: '' };
   }
+
+  // ── 路由：/check-access — 付费墙背景校验 ──
+  var path = (event.path || '/').replace(/\/+$/, '');
+  if (path === '/check-access') {
+    return handleCheckAccess(event, headers);
+  }
+
+  // ── 默认：/activate 流程 ──
+  return handleActivate(event, headers);
+};
+
+/* ══════ /activate — 激活码校验 + 设备登记（已有逻辑）══════ */
+async function handleActivate(event, headers) {
 
   try {
     var body = typeof event.body === 'string' ? JSON.parse(event.body) : (event.body || {});
@@ -221,4 +234,59 @@ exports.main_handler = async function (event) {
       body: JSON.stringify({ ok: false, error: '服务暂时不可用，请稍后重试。如持续失败请联系 hcpthanks@163.com' })
     };
   }
-};
+}
+
+/* ══════ /check-access — 付费墙背景校验（GET 或 POST）══════ */
+async function handleCheckAccess(event, headers) {
+  try {
+    // 支持 GET query 参数和 POST body
+    var fingerprint = '';
+    if (event.httpMethod === 'GET') {
+      fingerprint = (event.queryStringParameters || {}).fp || '';
+    } else {
+      var body = typeof event.body === 'string' ? JSON.parse(event.body) : (event.body || {});
+      fingerprint = (body.fingerprint || '').substring(0, 64);
+    }
+
+    if (!fingerprint) {
+      return { statusCode: 400, headers: headers, body: JSON.stringify({ ok: false, error: '请提供设备指纹' }) };
+    }
+
+    // 读 COS 中所有激活记录
+    var records = await cosGet();
+    var codes = Object.keys(records);
+    var foundAll = false;
+    var foundSingle = [];
+
+    for (var i = 0; i < codes.length; i++) {
+      var entry = records[codes[i]];
+      if (!entry || !entry.devices) continue;
+      for (var j = 0; j < entry.devices.length; j++) {
+        if (entry.devices[j].fp === fingerprint) {
+          if (entry.type === 'all') {
+            foundAll = true;
+            break;
+          } else {
+            foundSingle.push(codes[i]);
+          }
+        }
+      }
+      if (foundAll) break;
+    }
+
+    if (foundAll) {
+      return { statusCode: 200, headers: headers, body: JSON.stringify({ ok: true, hasAccess: true, type: 'all' }) };
+    }
+
+    if (foundSingle.length > 0) {
+      return { statusCode: 200, headers: headers, body: JSON.stringify({ ok: true, hasAccess: true, type: 'single', topics: foundSingle }) };
+    }
+
+    return { statusCode: 200, headers: headers, body: JSON.stringify({ ok: true, hasAccess: false }) };
+
+  } catch (err) {
+    console.error('CheckAccess error:', err.message || err);
+    // 后台校验失败 → 返回无法确认，前端降级信任 localStorage
+    return { statusCode: 200, headers: headers, body: JSON.stringify({ ok: true, hasAccess: 'unknown' }) };
+  }
+}

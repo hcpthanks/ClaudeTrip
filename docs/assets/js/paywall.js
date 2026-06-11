@@ -159,8 +159,53 @@ function checkAccessParams() {
   }
 }
 
+// ── Device Fingerprint（与 recovery.js 同算法，SCF 端匹配用）──
+function getDeviceFingerprint() {
+  var data = [
+    screen.width, screen.height, screen.colorDepth,
+    navigator.language,
+    new Date().getTimezoneOffset(),
+    navigator.hardwareConcurrency || 0,
+    navigator.platform || '',
+    (navigator.userAgent || '').substring(0, 120)
+  ].join('|');
+  var hash = 0;
+  for (var i = 0; i < data.length; i++) {
+    hash = ((hash << 5) - hash) + data.charCodeAt(i);
+    hash = hash | 0;
+  }
+  return Math.abs(hash).toString(36);
+}
+
+// ── Cloud Verification：背景校验 localStorage 解锁是否真实 ──
+function cloudVerify() {
+  if (!hasAllAccess() && getUnlockedTopics().length === 0) return; // 没解锁，不用验
+
+  var fp = getDeviceFingerprint();
+  var scfUrl = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.scfVerifyUrl)
+    ? window.CC_SITE_CONFIG.scfVerifyUrl
+    : 'https://1253632363-hkdthg8jb2.ap-beijing.tencentscf.com';
+  var url = scfUrl.replace(/\/+$/, '') + '/check-access?fp=' + encodeURIComponent(fp);
+
+  fetch(url, { method: 'GET', signal: AbortSignal.timeout(5000) })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (data.hasAccess === false) {
+        // 云端无记录 → 清除 localStorage 解锁 → 重新锁定
+        console.log('[paywall] 云端校验未通过，锁定内容');
+        localStorage.removeItem(LS_ALL_ACCESS);
+        localStorage.removeItem(LS_UNLOCKED);
+        location.reload();
+      }
+      // hasAccess === true 或 'unknown'（网络异常）→ 保持解锁，不打扰
+    })
+    .catch(function () {
+      // 网络不通 → 信任 localStorage，不阻断（fail-open）
+    });
+}
+
 // ── Init ──
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
   checkAccessParams();
   // Auto-init paywall for any page with .paywall-container
   var container = document.querySelector('.paywall-container');
@@ -168,4 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
     var topicId = container.dataset.topic;
     if (topicId) renderPaywall(topicId);
   }
+  // 背景云端校验（已解锁用户验证是否有真实激活记录）
+  cloudVerify();
 });
