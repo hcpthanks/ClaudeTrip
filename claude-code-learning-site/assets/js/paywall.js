@@ -162,4 +162,10 @@ function checkAccessParams() {
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
   checkAccessParams();
+  // Auto-init paywall for any page with .paywall-container
+  var container = document.querySelector('.paywall-container');
+  if (container) {
+    var topicId = container.dataset.topic;
+    if (topicId) renderPaywall(topicId);
+  }
 });

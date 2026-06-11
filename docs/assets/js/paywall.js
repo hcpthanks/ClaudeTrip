@@ -2,6 +2,51 @@
    付费墙逻辑 — localStorage 解锁状态管理
    ═══════════════════════════════════════════════════════ */
 
+/* ══════ 内联防盗锁 — anti-theft.js 被删后仍有支付保护 ══════ */
+(function () {
+  'use strict';
+  // 如果 anti-theft.js 已正常加载，无需重复
+  if (window.getPaymentUrl && window.showHijackWarning) return;
+
+  var CFG = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.allowedDomains)
+    ? window.CC_SITE_CONFIG
+    : {
+        allowedDomains: ['hcpthanks.github.io', 'hcpthanks.com', 'www.hcpthanks.com', 'localhost', '127.0.0.1'],
+        officialPayUrl: 'https://www.hcpthanks.com/pay/pay.html'
+      };
+  var DOMAINS = CFG.allowedDomains;
+  var PAY_URL = CFG.officialPayUrl;
+  var host = (window.location.hostname || '').toLowerCase();
+
+  function isOfficial() {
+    for (var i = 0; i < DOMAINS.length; i++) {
+      if (host === DOMAINS[i] || host.endsWith('.' + DOMAINS[i])) return true;
+    }
+    return host === '';
+  }
+
+  // 支付 URL 劫持降级
+  window.getPaymentUrl = window.getPaymentUrl || function (plan, topicId) {
+    if (isOfficial()) {
+      return '../pay/pay.html?plan=' + encodeURIComponent(plan) +
+        (topicId ? '&topic=' + encodeURIComponent(topicId) : '');
+    }
+    var url = PAY_URL + '?plan=' + encodeURIComponent(plan);
+    if (topicId) url += '&topic=' + encodeURIComponent(topicId);
+    url += '&ref=' + encodeURIComponent(host) + '&hijacked=1';
+    return url;
+  };
+
+  // 支付弹窗降级
+  window.showHijackWarning = window.showHijackWarning || function (callback) {
+    if (isOfficial()) { if (callback) callback(); return; }
+    if (confirm('⚠️ 当前访问的网站（' + host + '）非官方站点。\n\n支付将直接付给原作者 hcpthanks.com。\n是否继续？') && callback) callback();
+  };
+
+  if (!isOfficial()) console.log('[paywall内联防护] anti-theft.js 缺失，已启用备用支付保护');
+})();
+/* ════════════════════════════════════════════════════════════ */
+
 const LS_UNLOCKED = 'cc-learn-unlocked';
 const LS_ALL_ACCESS = 'cc-learn-all-access';
 
@@ -117,4 +162,10 @@ function checkAccessParams() {
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
   checkAccessParams();
+  // Auto-init paywall for any page with .paywall-container
+  var container = document.querySelector('.paywall-container');
+  if (container) {
+    var topicId = container.dataset.topic;
+    if (topicId) renderPaywall(topicId);
+  }
 });
