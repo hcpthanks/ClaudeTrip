@@ -1,0 +1,36 @@
+<!--
+  ══════════════════════════════════════════════════════
+  方案A-3：右下角浮动按钮
+  使用方法：复制下面整段 HTML，粘贴到 </body> 前面
+  ══════════════════════════════════════════════════════
+-->
+<style>
+  .hcpthanks-float {
+    position:fixed;bottom:24px;right:24px;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:12px 18px;
+    background:#161b22;border:1px solid #30363d;border-radius:30px;
+    text-decoration:none;font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+    box-shadow:0 4px 20px rgba(0,0,0,0.4);
+    transition:transform 0.2s,box-shadow 0.2s;
+    animation:hcpthanks-bounce 2s ease-in-out 3;
+  }
+  .hcpthanks-float:hover {
+    transform:translateY(-3px);box-shadow:0 8px 30px rgba(88,166,255,0.25);
+  }
+  @keyframes hcpthanks-bounce {
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-8px)}
+  }
+  .hcpthanks-float .icon{font-size:1.5em}
+  .hcpthanks-float .text{font-size:0.82em;font-weight:700;color:#e6edf3}
+  .hcpthanks-float .arrow{color:#58a6ff;font-size:0.9em}
+  @media(max-width:600px){
+    .hcpthanks-float{padding:10px 14px;bottom:16px;right:16px}
+    .hcpthanks-float .text{font-size:0.75em}
+  }
+</style>
+<a href="https://www.hcpthanks.com" target="_blank" rel="noopener" class="hcpthanks-float">
+  <span class="icon">🔥</span>
+  <span class="text">AI 帮你干活 · 免费学</span>
+  <span class="arrow">→</span>
+</a>
