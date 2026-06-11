@@ -242,7 +242,13 @@ async function handleCheckAccess(event, headers) {
     // 支持 GET query 参数和 POST body
     var fingerprint = '';
     if (event.httpMethod === 'GET') {
-      fingerprint = (event.queryStringParameters || {}).fp || '';
+      // SCF 函数 URL 可能把 query 放在 queryString（原始字符串）或 queryStringParameters（对象）
+      var qs = event.queryString || '';
+      if (!qs && event.queryStringParameters) {
+        qs = Object.keys(event.queryStringParameters).map(function(k){return k+'='+event.queryStringParameters[k];}).join('&');
+      }
+      fingerprint = (qs.match(/[?&]fp=([^&]*)/) || [,''])[1];
+      fingerprint = decodeURIComponent(fingerprint);
     } else {
       var body = typeof event.body === 'string' ? JSON.parse(event.body) : (event.body || {});
       fingerprint = (body.fingerprint || '').substring(0, 64);
