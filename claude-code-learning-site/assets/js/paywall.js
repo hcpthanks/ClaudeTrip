@@ -185,9 +185,14 @@ function cloudVerify() {
   var scfUrl = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.scfVerifyUrl)
     ? window.CC_SITE_CONFIG.scfVerifyUrl
     : 'https://1253632363-hkdthg8jb2.ap-beijing.tencentscf.com';
-  var url = scfUrl.replace(/\/+$/, '') + '/check-access?fp=' + encodeURIComponent(fp);
+  var url = scfUrl.replace(/\/+$/, '') + '/check-access';
 
-  fetch(url, { method: 'GET', signal: AbortSignal.timeout(5000) })
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fingerprint: fp }),
+    signal: AbortSignal.timeout(5000)
+  })
     .then(function (r) { return r.json(); })
     .then(function (data) {
       if (data.hasAccess === false) {
