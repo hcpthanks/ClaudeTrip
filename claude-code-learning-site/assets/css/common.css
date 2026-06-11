@@ -448,7 +448,19 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   position: absolute; top: 0; left: 0;
   width: 100%; height: 100%; border: 0;
 }
-/* 隐藏 B站播放器顶部标题栏 */
+/* ══════ B站视频嵌入规范 ══════
+   所有 B站视频必须同时满足：
+   1. .video-no-title — CSS 裁掉顶部标题栏
+   2. sandbox="allow-scripts allow-same-origin" — 禁止跳转/弹窗到 B站
+   模板：
+   <div class="video-wrap video-no-title">
+     <div class="video-16x9">
+       <iframe src="//player.bilibili.com/player.html?bvid=BV号"
+               sandbox="allow-scripts allow-same-origin" allowfullscreen>
+       </iframe>
+     </div>
+   </div>
+   ═══════════════════════════════════════ */
 .video-no-title .video-16x9 { padding-bottom: 63%; }
 .video-no-title .video-16x9 iframe { top: -9%; height: 118%; }
 /* 本地 mp4 控件美化 */
