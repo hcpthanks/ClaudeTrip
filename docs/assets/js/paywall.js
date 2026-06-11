@@ -142,23 +142,6 @@ function renderPaywall(topicId) {
   });
 }
 
-// ── Check access params on page load ──
-function checkAccessParams() {
-  const params = new URLSearchParams(window.location.search);
-  const unlocked = params.get('unlocked');
-  const topic = params.get('topic');
-
-  if (unlocked === 'all') {
-    unlockAllAccess();
-    window.history.replaceState({}, '', window.location.pathname);
-    location.reload();
-  } else if (unlocked === 'single' && topic) {
-    unlockTopic(topic);
-    window.history.replaceState({}, '', window.location.pathname);
-    location.reload();
-  }
-}
-
 // ── Device Fingerprint（与 recovery.js 同算法，SCF 端匹配用）──
 function getDeviceFingerprint() {
   var data = [
@@ -211,7 +194,6 @@ function cloudVerify() {
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded', function () {
-  checkAccessParams();
   // Auto-init paywall for any page with .paywall-container
   var container = document.querySelector('.paywall-container');
   if (container) {

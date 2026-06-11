@@ -92,6 +92,8 @@ if (!isAll) {
 // 客户端不再生成激活码（generateActivationCode 已从全局移除）
 var urlCode = params.get('code');
 var actCode = urlCode || '请联系作者 hcpthanks@163.com 获取激活码';
+// HTML 转义防 XSS
+var safeCode = actCode.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
 // 将服务端激活码也缓存到 localStorage（方便 recovery.js 查询）
 if (urlCode) {
@@ -107,8 +109,8 @@ document.getElementById('success-card').innerHTML =
   '<div style="background:var(--bg);border:2px solid var(--orange);border-radius:12px;padding:24px;margin:20px 0;">' +
     '<p style="font-size:0.95em;font-weight:700;color:var(--orange);margin-bottom:4px;">⚠️ 请立即保存你的激活码</p>' +
     '<p style="font-size:0.78em;color:var(--text-muted);margin-bottom:16px;">此码仅显示一次，丢失后需联系客服手动恢复</p>' +
-    '<p style="font-family:var(--font-mono);font-size:1.6em;font-weight:800;color:var(--text-high);letter-spacing:0.06em;word-break:break-all;margin-bottom:12px;">' + actCode + '</p>' +
-    '<button onclick="var c=\'' + actCode + '\';navigator.clipboard.writeText(c).then(function(){this.textContent=\'✅ 已复制\'}.bind(this));" style="padding:10px 28px;border:none;background:var(--green);color:#000;border-radius:8px;cursor:pointer;font-size:0.9em;font-weight:700;">📋 一键复制激活码</button>' +
+    '<p style="font-family:var(--font-mono);font-size:1.6em;font-weight:800;color:var(--text-high);letter-spacing:0.06em;word-break:break-all;margin-bottom:12px;">' + safeCode + '</p>' +
+    '<button id="copy-act-code" data-code="' + safeCode + '" style="padding:10px 28px;border:none;background:var(--green);color:#000;border-radius:8px;cursor:pointer;font-size:0.9em;font-weight:700;">📋 一键复制激活码</button>' +
     '<div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);text-align:left;font-size:0.82em;color:var(--text-muted);line-height:1.8;">' +
       '<p style="font-weight:700;color:var(--text);margin-bottom:6px;">💾 建议保存方式（选一种即可）：</p>' +
       '<p>· 截图此页面，存到手机相册</p>' +
@@ -123,6 +125,17 @@ document.getElementById('success-card').innerHTML =
   '</ol></div>' +
   '<a href="' + btnHref + '" class="btn btn-primary" style="font-size:1em;padding:12px 36px;">' + btnText + '</a>' +
   (isAll ? '' : '<p style="margin-top:16px;"><a href="pay.html?plan=all" style="color:var(--purple);font-size:0.9em;">💜 还是 ¥99 永久解锁更划算 →</a></p>');
+
+  // 复制按钮事件（安全绑定，避免内联 onclick XSS）
+  var copyBtn = document.getElementById('copy-act-code');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function () {
+      var code = this.getAttribute('data-code');
+      navigator.clipboard.writeText(code).then(function () {
+        copyBtn.textContent = '✅ 已复制';
+      });
+    });
+  }
 </script>
 <script src="../assets/js/common.js"></script>
 <script src="../assets/js/site-config.js"></script>

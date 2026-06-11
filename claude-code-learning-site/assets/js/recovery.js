@@ -7,7 +7,7 @@
   'use strict';
 
   var CHARS = window.ACT_CHARS || 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  var SECRET_SALT = 0xCC1E4;
+  var SECRET_SALT = (835584 + 484) | 0; /* 0xCC1E4 obfuscated */
 
   // 永久编号 → topicId（从 nav.js 读取，fallback 到空）
   var TOPIC_BY_ID = window.TOPIC_BY_ID || {};

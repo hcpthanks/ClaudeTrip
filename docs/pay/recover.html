@@ -214,7 +214,8 @@
         log.push('云端校验: FAIL — ' + (result.error || ''));
         debug.textContent = log.join('\n');
 
-        msg.innerHTML = '❌ ' + (result.error || '激活失败').replace(/\n/g, '<br>');
+        var errText = (result.error || '激活失败').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        msg.innerHTML = '❌ ' + errText.replace(/\n/g, '<br>');
         msg.className = 'msg error';
       }
     });
