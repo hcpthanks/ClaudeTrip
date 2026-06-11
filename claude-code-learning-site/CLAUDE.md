@@ -303,6 +303,31 @@ recover.html → recovery.js verifyWithCloud()
 
 **降级策略：** 云端不可达时自动降级为本地解锁，不阻塞已付费用户。
 
+### 付费墙云端校验（2026-06-11 已部署 ✅）
+
+防止 F12 修改 localStorage 绕过付费墙。
+
+**架构：**
+```
+课程页 → paywall.js renderPaywall()
+  ├ localStorage 显示已解锁 → 渲染内容
+  ├ 同时 cloudVerify() POST → SCF /check-access
+  ├ 云端返回 hasAccess:true → 安静通过
+  ├ 云端返回 hasAccess:false → 清 localStorage → 刷新 → 付费墙重新锁定
+  └ 云端不可达 → 信任 localStorage（fail-open，不阻断已付费用户）
+```
+
+**SCF 路由（同一函数 `cc-activation-verify`）：**
+| 路径 | 方法 | 用途 |
+|------|------|------|
+| `/activate` | POST | 激活码校验 + 设备登记（已有） |
+| `/check-access` | POST | 查 COS 中是否存有此设备指纹（新增） |
+
+**关键文件：**
+- `assets/js/paywall.js` — renderPaywall() auto-init（第 219 行）+ cloudVerify()（第 181 行）
+- `assets/js/site-config.js` — scfVerifyUrl 配置
+- `serverless/activate/index.js` — handleCheckAccess()（~50 行）
+
 ### Topic ID 映射
 
 | ID | 永久编号 | 页面 | 中文名 |
@@ -324,8 +349,12 @@ recover.html → recovery.js verifyWithCloud()
 | `convo` | 15 | conversation-skills.html | 让AI听懂你的话 |
 | `init` | 16 | project-init.html | 第一次让AI帮你做事 |
 | `workflow` | 17 | daily-workflow.html | 每天都能用的AI场景 |
+| `core-commands` | 18 | core-commands.html | 核心命令精通 |
+| `context-cost` | 19 | context-cost.html | 上下文与成本管理 |
+| `workflow-patterns` | 20 | workflow-patterns.html | 每日工作流实战 |
+| `21-day-plan` | 21 | 21-day-plan.html | 21天进阶计划 |
 
-添加新课程：在 `nav.js` 的 `TOPIC_IDS` 加一行 `新ID: 18`，`TOPIC_BY_ID` 自动同步。已有激活码不受影响。
+添加新课程：在 `nav.js` 的 `TOPIC_IDS` 加一行 `新ID: 22`，`TOPIC_BY_ID` 自动同步。已有激活码不受影响。
 
 ## 考核与递进解锁系统
 
@@ -385,19 +414,24 @@ recover.html → recovery.js verifyWithCloud()
 - ✅ 首页文案改版（2026-06-10：面向老王，H1"不用写代码/不用学英语/AI帮你干活"，口号"让每个人都能用AI"）
 - ✅ 移动端响应式适配（2026-06-10：hamburger 菜单 + badge 滚动 + 480px 断点）
 - ✅ 视频播放组件（2026-06-10：B站嵌入 + 本地mp4，common.css .video-wrap/.video-16x9）
+- ✅ 进阶课程付费墙（2026-06-11：4个页面全内容付费，无免费预览，hero标题保留）
+- ✅ nav.js 全站修复（2026-06-11：进阶topic注册18-21、intermediate目录路由、hamburger DOMContentLoaded绑定）
+- ✅ 付费墙按钮修复（2026-06-11：paywall.js auto-init renderPaywall，之前全站只有shortcuts.html手动调用）
+- ✅ 付费墙云端校验（2026-06-11：SCF /check-access + paywall.js cloudVerify POST 背景验证，防F12绕过）
+- ✅ 进阶课测验题（2026-06-11：quiz.js 新增 4 个 topic 各 5 题+手写内容，共 20 题）
 - ⬜ 21天计划第二、三周详细教程（目前只有清单，第一周已完成）
 - ⬜ 专家课程（待开发）
-- ⬜ quiz.js 测验题更新（匹配新课程内容）
+- ⬜ quiz.js 测验题更新（匹配新课程内容——入门/应用课的老王向重写后题目尚未更新）
 - ⏳ ICP 备案（等域名实名同步）
 - ⬜ 国内 CDN
 
-## 下一步计划（2026-06-10 更新）
+## 下一步计划（2026-06-11 更新）
 
-1. **B站视频录制** — 注册账号 → 录第一节课"安装 Claude Code" → 嵌入课程页测试
-2. **21天计划第二、三周** — 按第一周模式补全剩余 28 个任务的详细教程
-3. **浏览器端到端测试** — 真实激活码 → recover.html → SCF 校验 → 解锁 + 跳转
-4. **真人测试支付流程** — 找真实用户扫码支付 → 发邮件 → 生成激活码 → 解锁
-5. **quiz.js 更新** — 测验题目匹配重写后的课程内容
+1. **浏览器实测验证** — 打开进阶页面确认付费墙遮罩/按钮跳转/云端校验回弹
+2. **B站视频录制** — 注册账号 → 录第一节课"安装 Claude Code" → 嵌入课程页测试
+3. **21天计划第二、三周** — 按第一周模式补全剩余 28 个任务的详细教程
+4. **浏览器端到端测试** — 真实激活码 → recover.html → SCF 校验 → 解锁 + 跳转
+5. **quiz.js 更新** — 入门/应用课测验题目匹配老王向重写后的课程内容
 
 ## 开发注意事项
 
