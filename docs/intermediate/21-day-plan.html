@@ -70,6 +70,9 @@
 </nav>
 
 <!-- ══════ 进度 ══════ -->
+<div class="paywall-container" data-topic="21-day-plan">
+<div class="paywall-content">
+
 <section id="progress">
 <div class="progress-box">
   <div style="color:var(--text-muted);margin-bottom:8px;">你的完成进度</div>
@@ -540,6 +543,30 @@
 <div class="tip-box">💡 21 天后，这些命令会形成肌肉记忆。就像学开车——一开始每个动作都要想，后来想都不用想。你不再是一个"会用电脑的人"，而是一个"能指挥 AI 干活的人"。</div>
 </section>
 
+</div><!-- .paywall-content -->
+<div class="paywall-fade"></div>
+<div class="paywall-card">
+  <div class="lock-icon">🔒</div>
+  <h3>以下内容需付费解锁</h3>
+  <div class="locked-modules">21天任务清单 · 详细教程 · 进度追踪 · 测验</div>
+  <div class="paywall-actions">
+    <button class="paywall-btn paywall-btn-single">
+      <span class="price">¥5</span>
+      <span class="price-label">解锁本页全部内容</span>
+    </button>
+    <button class="paywall-btn paywall-btn-all">
+      <span class="price">¥99</span>
+      <span class="price-label">永久解锁全站 · 含进阶专家</span>
+    </button>
+  </div>
+</div>
+</div><!-- .paywall-container -->
+
+<!-- ══════ ⑩ 考核 ══════ -->
+<section class="quiz-section" data-topic="21-day-plan">
+  <div id="quiz-container"></div>
+</section>
+
 <div style="text-align:center;margin:48px 0 24px;">
   <a href="../index.html" class="btn">← 返回首页</a>
 </div>
@@ -570,6 +597,9 @@ function updateProgress() {
 })();
 </script>
 
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/paywall.js"></script>
+<script src="../assets/js/common.js"></script>
 <script src="../assets/js/site-config.js"></script>
 <script src="../assets/js/anti-theft.js"></script>
 </body>
