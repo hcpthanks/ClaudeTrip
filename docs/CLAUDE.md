@@ -62,8 +62,19 @@ claude-code-learning-site/
 │   ├── conversation-skills.html # ④ 让AI听懂你的话
 │   ├── project-init.html       # ⑤ 第一次让AI帮你做事
 │   └── daily-workflow.html     # ⑥ 每天都能用的AI场景
-├── intermediate/               # 进阶课程（待建）
+├── intermediate/               # 进阶课程（4个主题，2026-06-10 上线）
+│   ├── core-commands.html      # ① 核心命令精通（7个每天必用的命令）
+│   ├── context-cost.html       # ② 上下文与成本管理（省钱关键）
+│   ├── workflow-patterns.html  # ③ 每日工作流实战（4种模式）
+│   └── 21-day-plan.html        # ④ 21天进阶计划（第一周详细教程）
 ├── expert/                     # 专家课程（待建）
+├── embed/                      # 外部网站嵌入集成（2026-06-12 新建）
+│   ├── README.html             #   三种方案使用说明（含预览+复制按钮）
+│   ├── card-banner.html        #   方案A-1：横条推荐卡片
+│   ├── card-square.html        #   方案A-2：方块推荐卡片
+│   ├── card-float.html         #   方案A-3：右下角浮动按钮
+│   ├── iframe-content.html     #   方案B：iframe 嵌入内容页
+│   └── widget.js               #   方案C：JS Widget（一行 script 自动渲染）
 └── pay/
     ├── pay.html                # 支付页（sim/real 双模式，¥1强制/¥5单页/¥99全站）
     ├── success.html            # 支付成功页（显示激活码，服务端码优先）
@@ -262,6 +273,68 @@ claude-code-learning-site/
 | `cc-activation-codes` | JSON 对象 | 激活码缓存（同浏览器，旧版兼容） |
 | `cc-code-counters` | JSON 对象 | 每课计数器（admin 本地） |
 
+### 云端激活校验（2026-06-09 已部署 ✅）
+
+防止激活码被多人分享——每码最多 2 台设备。
+
+**架构：**
+```
+recover.html → recovery.js verifyWithCloud()
+  ├ 本地 verifyActivationCode() 校验格式
+  ├ fetch() → 腾讯云 SCF Function URL → COS 存储（activations.json）
+  ├ 同设备 → 放行（不占名额）
+  ├ 第 2 台设备 → 放行（名额用完）
+  └ 第 3 台设备 → 拒绝，提示发邮件解绑
+```
+
+**部署信息：**
+- SCF 函数：`cc-activation-verify`（Event 函数，Node.js 18，北京）
+- 函数 URL：`https://1253632363-hkdthg8jb2.ap-beijing.tencentscf.com`
+- COS 桶：`cc-activation-1253632363`（ap-beijing）
+- 运行角色：`SCF_COS_Access`（QcloudCOSFullAccess）
+- 环境变量：`COS_BUCKET` + `COS_REGION`
+
+**关键部署要点：**
+- ⭐ **参数兼容模式必须开启** — 不开 = error 145（6月8日全部失败的根因）
+- 函数 URL CORS 不开启（代码自带 CORS 响应头，表单校验太严）
+- API 网关产品已停服（2025年6月），用函数 URL 替代
+- 不要用 Web 函数，只用 Event 函数 + 在线编辑
+
+**文件：**
+- `serverless/activate/index.js` — SCF 函数代码（零依赖，~220行）
+- `serverless/SETUP.md` — 部署指南（COS → SCF → 函数 URL → 测试）
+- `assets/js/recovery.js` — 已加 verifyWithCloud() + getFingerprint()
+- `pay/recover.html` — 已加云端校验 UI（loading/成功/失败/设备提示）
+- `docs/pay/recover.html` — GitHub Pages 部署副本
+- `腾讯云SCF部署攻略-失败与成功对比.html` — 6月8日失败 vs 6月9日成功全记录
+
+**降级策略：** 云端不可达时自动降级为本地解锁，不阻塞已付费用户。
+
+### 付费墙云端校验（2026-06-11 已部署 ✅）
+
+防止 F12 修改 localStorage 绕过付费墙。
+
+**架构：**
+```
+课程页 → paywall.js renderPaywall()
+  ├ localStorage 显示已解锁 → 渲染内容
+  ├ 同时 cloudVerify() POST → SCF /check-access
+  ├ 云端返回 hasAccess:true → 安静通过
+  ├ 云端返回 hasAccess:false → 清 localStorage → 刷新 → 付费墙重新锁定
+  └ 云端不可达 → 信任 localStorage（fail-open，不阻断已付费用户）
+```
+
+**SCF 路由（同一函数 `cc-activation-verify`）：**
+| 路径 | 方法 | 用途 |
+|------|------|------|
+| `/activate` | POST | 激活码校验 + 设备登记（已有） |
+| `/check-access` | POST | 查 COS 中是否存有此设备指纹（新增） |
+
+**关键文件：**
+- `assets/js/paywall.js` — renderPaywall() auto-init（第 219 行）+ cloudVerify()（第 181 行）
+- `assets/js/site-config.js` — scfVerifyUrl 配置
+- `serverless/activate/index.js` — handleCheckAccess()（~50 行）
+
 ### Topic ID 映射
 
 | ID | 永久编号 | 页面 | 中文名 |
@@ -283,8 +356,12 @@ claude-code-learning-site/
 | `convo` | 15 | conversation-skills.html | 让AI听懂你的话 |
 | `init` | 16 | project-init.html | 第一次让AI帮你做事 |
 | `workflow` | 17 | daily-workflow.html | 每天都能用的AI场景 |
+| `core-commands` | 18 | core-commands.html | 核心命令精通 |
+| `context-cost` | 19 | context-cost.html | 上下文与成本管理 |
+| `workflow-patterns` | 20 | workflow-patterns.html | 每日工作流实战 |
+| `21-day-plan` | 21 | 21-day-plan.html | 21天进阶计划 |
 
-添加新课程：在 `nav.js` 的 `TOPIC_IDS` 加一行 `新ID: 18`，`TOPIC_BY_ID` 自动同步。已有激活码不受影响。
+添加新课程：在 `nav.js` 的 `TOPIC_IDS` 加一行 `新ID: 22`，`TOPIC_BY_ID` 自动同步。已有激活码不受影响。
 
 ## 考核与递进解锁系统
 
@@ -335,21 +412,43 @@ claude-code-learning-site/
 - ✅ 付费墙提前到④步（①-③免费预览）
 - ✅ 付费页精简（仅¥99，130行）
 - ✅ 导航简化（移除17个主题链接，分区高亮+滚动跟踪）
-- ✅ 独立域名上线 — https://www.hcpthanks.com/
+- ✅ 独立域名上线 + SSL — https://www.hcpthanks.com/（Enforce HTTPS 已开启）
 - ✅ 防盗系统 — 全站接入
 - ✅ 个人微信收款码 + 邮箱 hcpthanks@163.com
-- ⬜ 进阶 4 个主题（待开发）
-- ⬜ 专家 3 个主题（待开发）
-- ⬜ quiz.js 测验题更新（匹配新课程内容）
+- ✅ 管理后台增强 — 邮箱自动补全 + Chart.js 数据概览 + 一键复制报表
+- ✅ 激活码云端校验 — 腾讯云 SCF + COS 已部署，每码绑定 2 台设备
+- ✅ 进阶 4 个主题完成（2026-06-10 上线：核心命令/上下文成本/工作流实战/21天计划）
+- ✅ 首页文案改版（2026-06-10：面向老王，H1"不用写代码/不用学英语/AI帮你干活"，口号"让每个人都能用AI"）
+- ✅ 移动端响应式适配（2026-06-10：hamburger 菜单 + badge 滚动 + 480px 断点）
+- ✅ 视频播放组件（2026-06-10：B站嵌入 + 本地mp4，common.css .video-wrap/.video-16x9）
+- ✅ 进阶课程付费墙（2026-06-11：4个页面全内容付费，无免费预览，hero标题保留）
+- ✅ nav.js 全站修复（2026-06-11：进阶topic注册18-21、intermediate目录路由、hamburger DOMContentLoaded绑定）
+- ✅ 付费墙按钮修复（2026-06-11：paywall.js auto-init renderPaywall，之前全站只有shortcuts.html手动调用）
+- ✅ 付费墙云端校验（2026-06-11：SCF /check-access + paywall.js cloudVerify POST 背景验证，防F12绕过）
+- ✅ 进阶课测验题（2026-06-11：quiz.js 新增 4 个 topic 各 5 题+手写内容，共 20 题）
+- ✅ 安全审计 + 6项修复（2026-06-11：删除URL绕过、XSS修复、SALT隐藏、admin加固）
+- ✅ 收款码安全提示（2026-06-11：支付页加"收款方：程爱芝"核对，防二维码替换钓鱼）
+- ✅ B站视频嵌入（2026-06-11：BV1NiEi6FEdt → 2026-06-12 更换为 BV1YUEz6mEMj 首页"作者分享"板块）
+- ✅ 作者分享位置调整（2026-06-12：视频板块从首页底层移至 Hero 下方、预备课前方）
+- ✅ 网站嵌入集成（2026-06-12：embed/ 文件夹，三种方案——静态卡片/iframe/JS Widget + README 使用说明）
+- ✅ Git代理配置（2026-06-11：v2rayN SOCKS5 127.0.0.1:10808）
+- ✅ 建站操作手册·简易版（2026-06-12：E:\WorkBuddy\CLAW\建站操作手册-简易版.html + PDF）
+- ✅ 学习站建设方法论三合一文档（2026-06-12：进度表+对话法+技术指南，HTML+PDF）
+- ✅ 可复用技能蓝图（2026-06-12：content-site-blueprint，全局 skill + project-skill-fuyong 三格式）
+- ⬜ 21天计划第二、三周详细教程（目前只有清单，第一周已完成）
+- ⬜ 专家课程（待开发）
+- ⬜ quiz.js 测验题更新（匹配新课程内容——入门/应用课的老王向重写后题目尚未更新）
 - ⏳ ICP 备案（等域名实名同步）
 - ⬜ 国内 CDN
 
-## 下一步计划（2026-06-08 更新）
+## 下一步计划（2026-06-12 更新）
 
-1. **真人测试支付流程** — 找真实用户扫码支付 → 发邮件 → 生成激活码 → 解锁
-2. **quiz.js 更新** — 测验题目匹配重写后的课程内容
-3. **进阶/专家课程** — 进阶 4 个 + 专家 3 个主题开发
-4. **ICP 备案提交** — 域名实名同步完成后提交
+1. **B站引流** — 视频简介+评论区置顶加网站链接，从B站带流量
+2. **SCF function.zip 部署** — 腾讯云控制台上传最新的 function.zip（SALT已改为计算表达式）
+3. **浏览器实测验证** — 进阶页付费墙遮罩/按钮跳转/云端校验回弹
+4. **21天计划第二、三周** — 补全剩余28个任务的详细教程
+5. **B站视频录制** — 续录其他课程视频（安装/核心命令等）
+6. **嵌入集成实测** — 外部网站测试三种嵌入方案（card/iframe/widget），验证 widget.js 跨域兼容性
 
 ## 开发注意事项
 
