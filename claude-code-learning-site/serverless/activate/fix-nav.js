@@ -28,7 +28,7 @@ var newHTML =
   "    '      <a href=\"../index.html#applied\"'    + (section === 'applied'    ? ' class=\"active\"' : '') + '>应用课</a>\\n' +\n" +
   "    '      <a href=\"../index.html#beginner\"'   + (section === 'beginner'   ? ' class=\"active\"' : '') + '>入门</a>\\n' +\n" +
   "    '    </div>\\n' +\n" +
-  "    '    <a href=\"../pay/pay.html\" class=\"nav-cta\">升级</a>\\n' +\n" +
+  "    '    <a href=\"../pay/pay.html\" class=\"nav-cta\">支付</a>\\n' +\n" +
   "    '    <button class=\"nav-toggle\" id=\"nav-toggle\" aria-label=\"菜单\">\\n' +\n" +
   "    '      <span></span><span></span><span></span>\\n' +\n" +
   "    '    </button>\\n' +\n" +
@@ -38,7 +38,7 @@ var newHTML =
   "    '    <a href=\"../index.html#pre-basics\">🖥️ 预备课</a>\\n' +\n" +
   "    '    <a href=\"../index.html#applied\">💼 应用课</a>\\n' +\n" +
   "    '    <a href=\"../index.html#beginner\">🌱 入门</a>\\n' +\n" +
-  "    '    <a href=\"../pay/pay.html\" class=\"mobile-cta\">⚡ 升级</a>\\n' +\n" +
+  "    '    <a href=\"../pay/pay.html\" class=\"mobile-cta\">⚡ 支付</a>\\n' +\n" +
   "    '  </div>\\n' +\n" +
   "  '</nav>';";
 
