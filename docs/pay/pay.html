@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Claude Code 学习站 — 永久解锁全部课程，一次购买，持续更新。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
-<title>永久解锁 — Claude Code 学习站</title>
+<title>升级解锁 — Claude Code 学习站</title>
 <link rel="stylesheet" href="../assets/css/common.css">
 <style>
   .pay-page { min-height: calc(100vh - 56px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
@@ -17,6 +17,7 @@
   }
   .pay-card h1 { font-size: 1.8em; margin-bottom: 6px; }
   .pay-card .sub { color: var(--text-muted); margin-bottom: 28px; font-size: 0.95em; }
+  .pay-card .topic-name { color: var(--accent); font-weight: 700; }
 
   .course-summary {
     text-align: left; margin-bottom: 28px;
@@ -41,6 +42,23 @@
   .qr-placeholder img { display: block; border-radius: 4px; }
   .qr-placeholder .qr-text { color: #333; font-size: 0.9em; font-weight: 600; }
   .qr-placeholder .qr-hint { color: #999; font-size: 0.78em; margin-top: 6px; }
+
+  /* ── Plan tabs ── */
+  .plan-tabs { display: flex; gap: 0; margin-bottom: 24px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+  .plan-tab { flex: 1; padding: 12px 16px; cursor: pointer; background: var(--bg); color: var(--text-muted); font-size: 0.9em; font-weight: 600; border: none; transition: all var(--duration-fast); text-align: center; }
+  .plan-tab.active { background: var(--accent-dim); color: var(--accent); }
+  .plan-tab:hover:not(.active) { background: var(--surface-hover); }
+
+  /* ── Recovery section ── */
+  .recover-section {
+    margin-top: 24px; padding: 20px 24px;
+    background: rgba(88,166,255,0.06); border: 1px solid rgba(88,166,255,0.25);
+    border-radius: var(--radius-lg); text-align: center;
+  }
+  .recover-section h3 { font-size: 1em; margin-bottom: 8px; color: var(--accent); }
+  .recover-section p { font-size: 0.85em; color: var(--text-muted); margin-bottom: 14px; }
+  .recover-section .btn-recover { padding: 10px 28px; background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: var(--radius); font-size: 0.92em; font-weight: 600; cursor: pointer; transition: all var(--duration-fast); }
+  .recover-section .btn-recover:hover { background: var(--accent); color: #000; }
 
   @media (max-width: 768px) {
     .pay-card { padding: 28px 20px; }
@@ -76,39 +94,15 @@
   </div>
   <div class="pay-container">
 
-    <div class="pay-card">
-      <h1>⭐ 永久解锁全站</h1>
-      <p class="sub">一次购买，永久有效 · 内容持续更新</p>
+    <div class="pay-card" id="pay-card">
+      <!-- filled by JS -->
+    </div>
 
-      <div class="course-summary">
-        <ul>
-          <li>预备课 7 节 — 永久免费 · 无需付费</li>
-          <li>应用课 4 节 + 入门课 6 节 — 全部解锁</li>
-          <li>进阶课 + 专家课 — 含未来全部更新</li>
-          <li>邮件答疑支持 · 激活码换机可恢复</li>
-        </ul>
-      </div>
-
-      <div class="price-block">
-        <div class="amount"><span class="yen">¥</span>99</div>
-        <div class="note">永久有效，持续更新</div>
-      </div>
-
-      <div class="qr-placeholder">
-        <img src="../assets/images/wechat-pay-qr.png" alt="微信扫码支付" style="width:200px;height:auto;display:block;margin:0 auto;border-radius:4px;">
-        <div class="qr-text" style="margin-top:10px;">微信扫码支付 ¥99</div>
-        <div style="margin-top:12px;padding:10px 14px;background:#fff3cd;border:2px solid #ffc107;border-radius:6px;text-align:center;">
-          <p style="margin:0;font-size:0.92em;font-weight:700;color:#856404;">⚠️ 收款方：程爱芝</p>
-          <p style="margin:4px 0 0;font-size:0.82em;color:#856404;">请核对收款人姓名正确后再付款，其他收款人皆无效</p>
-        </div>
-        <div class="qr-hint">支付后发送账单详情页截图领取激活码</div>
-      </div>
-
-      <div style="margin-top:16px;padding:14px 18px;background:rgba(210,153,29,0.08);border:1px solid var(--orange);border-radius:var(--radius);text-align:center;">
-        <p style="margin:0;font-weight:600;">📧 支付后发送账单详情页截图至</p>
-        <p style="margin:3px 0 0;font-size:1.05em;"><a href="mailto:hcpthanks@163.com?subject=Claude Code 学习站 ¥99 激活码申请" style="color:var(--accent);">hcpthanks@163.com</a></p>
-        <p style="margin:3px 0 0;font-size:0.78em;color:var(--text-muted);">微信→钱包→账单→点开这笔付款→截图（含商户单号）</p>
-      </div>
+    <!-- 激活码恢复入口 -->
+    <div class="recover-section" id="recover">
+      <h3>🔑 已有激活码？</h3>
+      <p>如果你已经购买过，输入激活码即可恢复课程，无需再次付费。</p>
+      <button class="btn-recover" onclick="location.href='recover.html'">输入激活码验证 →</button>
     </div>
 
     <p style="max-width:580px;margin:16px auto;text-align:center;color:var(--text-faint);font-size:0.8em;">
@@ -122,6 +116,7 @@
   <p><a href="../index.html">← 返回首页</a></p>
 </footer>
 
+<script src="../assets/js/nav.js"></script>
 <script src="../assets/js/site-config.js"></script>
 <script src="../assets/js/anti-theft.js"></script>
 <script>
@@ -137,6 +132,129 @@
     var banner = document.getElementById('domain-warning');
     if (banner) { banner.style.display = 'block'; document.getElementById('dw-domain').textContent = host; }
   }
+})();
+</script>
+<script>
+// ══════ Dynamic pay page — reads ?plan= and ?topic= ══════
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var plan = params.get('plan') || 'all';
+  var topicId = params.get('topic') || '';
+
+  // Guard: single plan without topic is invalid
+  if (plan === 'single' && !topicId) {
+    document.getElementById('pay-card').innerHTML =
+      '<h1>缺少参数</h1>' +
+      '<p style="color:var(--text-muted);margin:20px 0;">请从课程页面重新进入支付页面。</p>' +
+      '<p><a href="../index.html" style="color:var(--accent);">← 返回首页</a></p>';
+    return;
+  }
+
+  // Guard: free topics should not show a pay page
+  var FREE_TOPICS = ['pc-basics','open-ps','install-cc','first-chat','file-basics','troubleshoot','deepseek'];
+  if (plan === 'single' && FREE_TOPICS.indexOf(topicId) >= 0) {
+    document.getElementById('pay-card').innerHTML =
+      '<h1>✅ 该课程免费</h1>' +
+      '<p style="color:var(--text-muted);margin:20px 0;">「' + escHtml(topicId) + '」属于预备课，无需付费即可学习。</p>' +
+      '<p><a href="../index.html" style="color:var(--accent);">← 返回首页</a></p>';
+    document.getElementById('recover').style.display = 'none';
+    return;
+  }
+
+  // Topic registry (mirrors nav.js)
+  var TOPIC_NAMES = (window.TOPIC_NAMES || {});
+  var topicName = TOPIC_NAMES[topicId] || '';
+
+  var isAll = (plan === 'all');
+  var price = isAll ? '99' : '5';
+  var title = isAll ? '⭐ 永久解锁全站' : '📖 解锁本页内容';
+  var subtitle = isAll
+    ? '一次购买，永久有效 · 内容持续更新'
+    : ('正在解锁：<span class="topic-name">' + escHtml(topicName) + '</span>');
+
+  var summaryItems = isAll
+    ? [
+        '预备课 7 节 — 永久免费 · 无需付费',
+        '应用课 4 节 + 入门课 6 节 — 全部解锁',
+        '进阶课 + 专家课 — 含未来全部更新',
+        '邮件答疑支持 · 激活码换机可恢复'
+      ]
+    : [
+        '永久解锁「<b>' + escHtml(topicName) + '</b>」完整内容',
+        '含 ④-⑨ 付费模块 + 速查卡 + 总结',
+        '激活码换机可恢复 · 重装浏览器不丢失',
+        '考虑 ¥99 全站永久更划算 → <a href="pay.html?plan=all" style="color:var(--purple);">点此切换</a>'
+      ];
+
+  // Build mail subject with machine-readable topic id (for copy button)
+  var mailSubject = isAll
+    ? 'Claude Code 学习站 ¥99 全站永久解锁 激活码申请'
+    : 'Claude Code 学习站 ¥5 [topic:' + topicId + '] ' + topicName + ' 激活码申请';
+
+  // Also show single-plan option card when viewing all-access page
+  var singleLink = '';
+  if (isAll && topicName) {
+    singleLink = '<p style="margin-top:16px;font-size:0.88em;"><a href="pay.html?plan=single&amp;topic=' + encodeURIComponent(topicId) + '" style="color:var(--accent);">📖 只想解锁「' + escHtml(topicName) + '」？¥5 单页 →</a></p>';
+  }
+
+  document.getElementById('pay-card').innerHTML =
+    '<h1>' + title + '</h1>' +
+    '<p class="sub">' + subtitle + '</p>' +
+
+    '<div class="course-summary"><ul>' +
+      summaryItems.map(function(s) { return '<li>' + s + '</li>'; }).join('') +
+    '</ul></div>' +
+
+    '<div class="price-block">' +
+      '<div class="amount"><span class="yen">¥</span>' + price + '</div>' +
+      '<div class="note">' + (isAll ? '永久有效，持续更新' : '单页解锁，永久有效') + '</div>' +
+    '</div>' +
+
+    '<div class="qr-placeholder">' +
+      '<img src="../assets/images/wechat-pay-qr.png" alt="微信扫码支付" style="width:200px;height:auto;display:block;margin:0 auto;border-radius:4px;">' +
+      '<div class="qr-text" style="margin-top:10px;">微信扫码支付 ¥' + price + '</div>' +
+      '<div style="margin-top:12px;padding:10px 14px;background:#fff3cd;border:2px solid #ffc107;border-radius:6px;text-align:center;">' +
+        '<p style="margin:0;font-size:0.92em;font-weight:700;color:#856404;">⚠️ 收款方：程爱芝</p>' +
+        '<p style="margin:4px 0 0;font-size:0.82em;color:#856404;">请核对收款人姓名正确后再付款，其他收款人皆无效</p>' +
+      '</div>' +
+      '<div class="qr-hint">支付后发送账单详情页截图领取激活码</div>' +
+    '</div>' +
+
+    '<div style="margin-top:16px;padding:14px 18px;background:rgba(210,153,29,0.08);border:1px solid var(--orange);border-radius:var(--radius);text-align:center;">' +
+      '<p style="margin:0;font-weight:600;">📧 发送支付截图到这个邮箱</p>' +
+      '<p style="margin:3px 0 8px;font-size:1.05em;font-weight:700;color:var(--text-high);">hcpthanks@163.com</p>' +
+      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' +
+        '<button class="btn-copy-email" onclick="copyEmail()" style="padding:8px 18px;background:var(--accent);color:#000;border:none;border-radius:6px;cursor:pointer;font-size:0.85em;font-weight:600;">📋 复制邮箱地址</button>' +
+        '<button class="btn-copy-email" onclick="copySubject()" style="padding:8px 18px;background:rgba(88,166,255,0.15);color:var(--accent);border:1px solid rgba(88,166,255,0.3);border-radius:6px;cursor:pointer;font-size:0.85em;font-weight:600;">✉️ 复制邮件主题</button>' +
+      '</div>' +
+      '<p style="margin:8px 0 0;font-size:0.76em;color:var(--text-muted);">复制后去你的QQ邮箱/163邮箱粘贴发送 · 微信→钱包→账单→截图（含商户单号）</p>' +
+    '</div>' +
+    singleLink;
+
+  // Scroll to recover section if URL has #recover
+  if (window.location.hash === '#recover') {
+    document.getElementById('recover').scrollIntoView();
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  var SUBJECT = mailSubject;
+
+  window.copyEmail = function() {
+    navigator.clipboard.writeText('hcpthanks@163.com').then(function() {
+      var btns = document.querySelectorAll('.btn-copy-email');
+      if (btns[0]) { btns[0].textContent = '✅ 已复制'; setTimeout(function(){ btns[0].textContent = '📋 复制邮箱地址'; }, 2000); }
+    });
+  };
+
+  window.copySubject = function() {
+    navigator.clipboard.writeText(SUBJECT).then(function() {
+      var btns = document.querySelectorAll('.btn-copy-email');
+      if (btns[1]) { btns[1].textContent = '✅ 已复制'; setTimeout(function(){ btns[1].textContent = '✉️ 复制邮件主题'; }, 2000); }
+    });
+  };
 })();
 </script>
 </body>
