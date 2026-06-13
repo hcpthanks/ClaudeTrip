@@ -129,13 +129,16 @@ function renderPaywall(topicId) {
         });
       }
 
-      // Inject recovery link
+      // Inject recovery link — more prominent with separator
       var card = container.querySelector('.paywall-card');
       if (card && !card.querySelector('.paywall-recover-link')) {
-        var link = document.createElement('p');
+        var sep = document.createElement('div');
+        sep.style.cssText = 'margin:16px 0 12px;border-top:1px solid var(--border);';
+        card.appendChild(sep);
+        var link = document.createElement('div');
         link.className = 'paywall-recover-link';
-        link.style.cssText = 'margin-top:14px;font-size:0.82em;';
-        link.innerHTML = '<a href="../pay/recover.html" style="color:var(--text-muted);">🔑 已有激活码？点此恢复 →</a>';
+        link.style.cssText = 'margin-top:0;';
+        link.innerHTML = '<a href="../pay/recover.html" style="display:inline-block;padding:8px 18px;background:rgba(88,166,255,0.1);border:1px solid rgba(88,166,255,0.3);border-radius:6px;color:var(--accent);font-size:0.9em;font-weight:600;text-decoration:none;">🔑 已有激活码？点此恢复</a>';
         card.appendChild(link);
       }
     }

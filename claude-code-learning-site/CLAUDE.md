@@ -431,7 +431,6 @@ recover.html → recovery.js verifyWithCloud()
 - ✅ B站视频嵌入（2026-06-11：BV1NiEi6FEdt → 2026-06-12 更换为 BV1YUEz6mEMj 首页"作者分享"板块）
 - ✅ 作者分享位置调整（2026-06-12：视频板块从首页底层移至 Hero 下方、预备课前方）
 - ✅ 网站嵌入集成（2026-06-12：embed/ 文件夹，三种方案——静态卡片/iframe/JS Widget + README 使用说明）
-- ✅ Git代理配置（2026-06-11：v2rayN SOCKS5 127.0.0.1:10808）
 - ✅ 建站操作手册·简易版（2026-06-12：E:\WorkBuddy\CLAW\建站操作手册-简易版.html + PDF）
 - ✅ 学习站建设方法论三合一文档（2026-06-12：进度表+对话法+技术指南，HTML+PDF）
 - ✅ 可复用技能蓝图（2026-06-12：content-site-blueprint，全局 skill + project-skill-fuyong 三格式）
