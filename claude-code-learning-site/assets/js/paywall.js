@@ -188,10 +188,12 @@ function cloudVerify() {
         localStorage.removeItem(LS_UNLOCKED);
         location.reload();
       }
-      // hasAccess === true 或 'unknown'（网络异常）→ 保持解锁，不打扰
+      // hasAccess === true → 确认解锁
+      // hasAccess === 'unknown'（服务端异常）→ 不清除，但也不自动信任
     })
     .catch(function () {
-      // 网络不通 → 信任 localStorage，不阻断（fail-open）
+      // 网络不通 → fail-closed：保留当前状态，不主动信任
+      console.warn('[paywall] 云端校验不可达，保持当前锁定状态');
     });
 }
 

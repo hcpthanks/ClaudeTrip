@@ -23,11 +23,15 @@ function verifyChecksum(code) {
 
 export default {
   async fetch(request, env) {
+    const ALLOWED_ORIGINS = ['https://www.hcpthanks.com', 'https://hcpthanks.github.io', 'https://hcpthanks.com'];
+    const origin = request.headers.get('Origin') || '';
+    const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
     const headers = {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': allowedOrigin,
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Vary': 'Origin'
     };
 
     if (request.method === 'OPTIONS') return new Response('', { status: 200, headers });

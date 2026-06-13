@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://*.tencentscf.com; frame-ancestors 'none'; base-uri 'self';">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="支付成功！Claude Code 学习站进阶和专家课程已解锁。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
@@ -76,16 +77,6 @@ var btnHref = isAll ? '../index.html' : (
     return window.topicPagePath ? window.topicPagePath(t) : '../index.html';
   })()
 );
-
-// Apply unlock for single-page purchases (all-access already set in pay.html)
-if (!isAll) {
-  var topicToUnlock = params.get('topic') || '';
-  var topics = JSON.parse(localStorage.getItem('cc-learn-unlocked') || '[]');
-  if (topicToUnlock && topics.indexOf(topicToUnlock) === -1) {
-    topics.push(topicToUnlock);
-    localStorage.setItem('cc-learn-unlocked', JSON.stringify(topics));
-  }
-}
 
 // 激活码：仅由服务端生成（通过 URL code 参数传入）
 // 客户端不再生成激活码（generateActivationCode 已从全局移除）

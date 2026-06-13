@@ -141,11 +141,15 @@ function cosPut(data) {
 
 // ══════ 主处理 ══════
 exports.main_handler = async function (event) {
+  var ALLOWED_ORIGINS = ['https://www.hcpthanks.com', 'https://hcpthanks.github.io', 'https://hcpthanks.com'];
+  var origin = (event.headers || {}).origin || (event.headers || {}).Origin || '';
+  var isAllowed = ALLOWED_ORIGINS.indexOf(origin) >= 0;
   var headers = {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': isAllowed ? origin : ALLOWED_ORIGINS[0],
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Vary': 'Origin'
   };
 
   if (event.httpMethod === 'OPTIONS') {
