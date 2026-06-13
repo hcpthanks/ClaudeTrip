@@ -28,3 +28,12 @@ build/
 
 # Logs
 *.log
+
+# Sub-projects (managed independently with their own .git)
+claude-code-learning-site/
+biaohe/
+
+# Temp / custom
+test-results/
+node_modules/
+package-lock.json
