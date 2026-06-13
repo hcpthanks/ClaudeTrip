@@ -437,7 +437,7 @@ recover.html → recovery.js verifyWithCloud()
 - ✅ 导航栏激活码入口（2026-06-13：nav.js 桌面+移动端加"🔑 激活码"链接，全站可见）
 - ✅ 支付页邮箱改为复制按钮（2026-06-13：pay.html mailto链接替换为"复制邮箱地址"+"复制邮件主题"按钮，适配国内用户无邮件客户端）
 - ✅ 支付页去掉订单号找回（2026-06-13：recover.html 移除"通过订单号找回"功能，场景极少且不适合老王画像）
-- ⬜ 首页仍需加激活码入口（index.html 导航栏是手写的，没用 nav.js，缺激活码链接）
+- ✅ 3个阻塞问题修复（2026-06-13：首页激活码入口 + recover.html 路由修复 deepseek/intermediate + index.html 加载 nav.js）
 - ⬜ quiz.js 测验题更新（匹配新课程内容——入门/应用课的老王向重写后题目尚未更新）
 - ⏳ ICP 备案（等域名实名同步）
 - ⬜ 国内 CDN
