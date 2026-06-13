@@ -434,13 +434,31 @@ recover.html → recovery.js verifyWithCloud()
 - ✅ 建站操作手册·简易版（2026-06-12：E:\WorkBuddy\CLAW\建站操作手册-简易版.html + PDF）
 - ✅ 学习站建设方法论三合一文档（2026-06-12：进度表+对话法+技术指南，HTML+PDF）
 - ✅ 可复用技能蓝图（2026-06-12：content-site-blueprint，全局 skill + project-skill-fuyong 三格式）
-- ⬜ 21天计划第二、三周详细教程（目前只有清单，第一周已完成）
-- ⬜ 专家课程（待开发）
+- ✅ 导航栏激活码入口（2026-06-13：nav.js 桌面+移动端加"🔑 激活码"链接，全站可见）
+- ✅ 支付页邮箱改为复制按钮（2026-06-13：pay.html mailto链接替换为"复制邮箱地址"+"复制邮件主题"按钮，适配国内用户无邮件客户端）
+- ✅ 支付页去掉订单号找回（2026-06-13：recover.html 移除"通过订单号找回"功能，场景极少且不适合老王画像）
+- ⬜ 首页仍需加激活码入口（index.html 导航栏是手写的，没用 nav.js，缺激活码链接）
 - ⬜ quiz.js 测验题更新（匹配新课程内容——入门/应用课的老王向重写后题目尚未更新）
 - ⏳ ICP 备案（等域名实名同步）
 - ⬜ 国内 CDN
 
-## 下一步计划（2026-06-12 更新）
+## 已发现待修复问题（2026-06-13 全站审计）
+
+| 严重度 | 问题 | 位置 |
+|--------|------|------|
+| 🔴 BLOCKER | 首页无激活码入口 — index.html 手写导航，缺 🔑 激活码链接 | index.html |
+| 🔴 BLOCKER | recover.html 路由错误 — deepseek(索引6)被错误路由到applied/，且不支持intermediate/ | recover.html:124 |
+| 🔴 BLOCKER | index.html 引用 window.TOPIC_ORDER 但未加载 nav.js | index.html |
+| 🟡 HIGH | index.html 导航栏与 nav.js 各写一套，改一处漏一处 | index.html |
+| 🟡 HIGH | recover.html 调试日志暴露给用户 | recover.html:79 |
+| 🟡 MEDIUM | anti-theft.js DevTools检测在官方域名也运行 | anti-theft.js |
+| 🟡 MEDIUM | 防盗代码在 paywall.js/quiz.js 重复3份 | paywall.js, quiz.js |
+| 🟡 MEDIUM | 预备课7页缺 common.js（无复制按钮/平滑滚动） | pre-basics/*.html |
+| 🟡 MEDIUM | 进阶课4页零免费预览，客户打开即付费墙 | intermediate/*.html |
+| 🟡 MEDIUM | shortcuts.html 基础命令（/clear /exit）锁在付费墙后 | shortcuts.html |
+| 🟡 MEDIUM | 首页"专家"板块（MCP/工作流引擎）对老王无意义 | index.html |
+
+## 下一步计划（2026-06-13 更新）
 
 1. **B站引流** — 视频简介+评论区置顶加网站链接，从B站带流量
 2. **SCF function.zip 部署** — 腾讯云控制台上传最新的 function.zip（SALT已改为计算表达式）
