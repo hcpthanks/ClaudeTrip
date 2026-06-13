@@ -121,7 +121,7 @@
     var page = (window.TOPIC_PAGES || {})[topicId];
     if (page) {
       var idx = (window.TOPIC_ORDER || []).indexOf(topicId);
-      var dir = idx < 6 ? 'pre-basics' : idx < 10 ? 'applied' : 'beginner';
+      var dir = idx < 7 ? 'pre-basics' : idx < 11 ? 'applied' : idx < 17 ? 'beginner' : 'intermediate';
       window.location.href = '../' + dir + '/' + page;
     } else {
       window.location.href = '../index.html';
