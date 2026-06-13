@@ -461,11 +461,25 @@ recover.html → recovery.js verifyWithCloud()
 ## 下一步计划（2026-06-13 更新）
 
 1. **B站引流** — 视频简介+评论区置顶加网站链接，从B站带流量
-2. **SCF function.zip 部署** — 腾讯云控制台上传最新的 function.zip（SALT已改为计算表达式）
-3. **浏览器实测验证** — 进阶页付费墙遮罩/按钮跳转/云端校验回弹
+2. **SCF function.zip 部署** — 腾讯云控制台上传最新的 function.zip（CORS 白名单 + SALT 已改为计算表达式）
+3. **SCF 在线函数 CORS 更新** — 当前本地源码已收紧为白名单，需重新部署到腾讯云
 4. **21天计划第二、三周** — 补全剩余28个任务的详细教程
 5. **B站视频录制** — 续录其他课程视频（安装/核心命令等）
 6. **嵌入集成实测** — 外部网站测试三种嵌入方案（card/iframe/widget），验证 widget.js 跨域兼容性
+
+## 双目录同步规则（最高优先级）
+
+> `claude-code-learning-site/` 和 `docs/` 的**重叠文件**必须双向同步，每次 commit 包含两个目录。
+> `docs/` 仅保留静态站点文件。后端代码、配置、admin 绝不进入 `docs/`。
+> 详见 memory: [[dual-directory-sync-rule]]
+
+## 安全规则（最高优先级）
+
+> 1. 客户端激活码校验仅做格式正则，salt + checksum 由 SCF 服务端判定
+> 2. 所有网络校验 fail-closed：云端不可达 = 不放行
+> 3. CSP meta 标签所有支付相关页面必须存在
+> 4. 推荐任何方案必须同时列出正向效果和反向副作用（尤其是影响线上服务的操作）
+> 详见 memory: [[dual-directory-sync-rule]], [[github-pages-private-pitfall]]
 
 ## 开发注意事项
 
