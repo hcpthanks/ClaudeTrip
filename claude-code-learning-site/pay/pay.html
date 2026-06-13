@@ -186,17 +186,10 @@
         '考虑 ¥99 全站永久更划算 → <a href="pay.html?plan=all" style="color:var(--purple);">点此切换</a>'
       ];
 
-  // Build mailto with machine-readable topic id
-  var mailSubject, mailBody;
-  if (isAll) {
-    mailSubject = 'Claude Code 学习站 ¥99 全站永久解锁 激活码申请';
-    mailBody = '你好，我已支付 ¥99 全站永久解锁。%0D%0A%0D%0A支付截图见附件。%0D%0A%0D%0A请发送激活码，谢谢！';
-  } else {
-    mailSubject = 'Claude Code 学习站 ¥5 [topic:' + topicId + '] ' + topicName + ' 激活码申请';
-    mailBody = '你好，我已支付 ¥5 解锁「' + topicName + '」。%0D%0A%0D%0A支付截图见附件。%0D%0A%0D%0A请发送激活码，谢谢！';
-  }
-
-  var mailHref = 'mailto:hcpthanks@163.com?subject=' + encodeURIComponent(mailSubject) + '&body=' + mailBody;
+  // Build mail subject with machine-readable topic id (for copy button)
+  var mailSubject = isAll
+    ? 'Claude Code 学习站 ¥99 全站永久解锁 激活码申请'
+    : 'Claude Code 学习站 ¥5 [topic:' + topicId + '] ' + topicName + ' 激活码申请';
 
   // Also show single-plan option card when viewing all-access page
   var singleLink = '';
@@ -228,9 +221,13 @@
     '</div>' +
 
     '<div style="margin-top:16px;padding:14px 18px;background:rgba(210,153,29,0.08);border:1px solid var(--orange);border-radius:var(--radius);text-align:center;">' +
-      '<p style="margin:0;font-weight:600;">📧 支付后发送账单详情页截图至</p>' +
-      '<p style="margin:3px 0 0;font-size:1.05em;"><a href="' + mailHref + '" style="color:var(--accent);">hcpthanks@163.com</a></p>' +
-      '<p style="margin:3px 0 0;font-size:0.78em;color:var(--text-muted);">微信→钱包→账单→点开这笔付款→截图（含商户单号）</p>' +
+      '<p style="margin:0;font-weight:600;">📧 发送支付截图到这个邮箱</p>' +
+      '<p style="margin:3px 0 8px;font-size:1.05em;font-weight:700;color:var(--text-high);">hcpthanks@163.com</p>' +
+      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' +
+        '<button class="btn-copy-email" onclick="copyEmail()" style="padding:8px 18px;background:var(--accent);color:#000;border:none;border-radius:6px;cursor:pointer;font-size:0.85em;font-weight:600;">📋 复制邮箱地址</button>' +
+        '<button class="btn-copy-email" onclick="copySubject()" style="padding:8px 18px;background:rgba(88,166,255,0.15);color:var(--accent);border:1px solid rgba(88,166,255,0.3);border-radius:6px;cursor:pointer;font-size:0.85em;font-weight:600;">✉️ 复制邮件主题</button>' +
+      '</div>' +
+      '<p style="margin:8px 0 0;font-size:0.76em;color:var(--text-muted);">复制后去你的QQ邮箱/163邮箱粘贴发送 · 微信→钱包→账单→截图（含商户单号）</p>' +
     '</div>' +
     singleLink;
 
@@ -242,6 +239,22 @@
   function escHtml(s) {
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
+
+  var SUBJECT = mailSubject;
+
+  window.copyEmail = function() {
+    navigator.clipboard.writeText('hcpthanks@163.com').then(function() {
+      var btns = document.querySelectorAll('.btn-copy-email');
+      if (btns[0]) { btns[0].textContent = '✅ 已复制'; setTimeout(function(){ btns[0].textContent = '📋 复制邮箱地址'; }, 2000); }
+    });
+  };
+
+  window.copySubject = function() {
+    navigator.clipboard.writeText(SUBJECT).then(function() {
+      var btns = document.querySelectorAll('.btn-copy-email');
+      if (btns[1]) { btns[1].textContent = '✅ 已复制'; setTimeout(function(){ btns[1].textContent = '✉️ 复制邮件主题'; }, 2000); }
+    });
+  };
 })();
 </script>
 </body>
