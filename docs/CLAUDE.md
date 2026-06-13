@@ -482,7 +482,7 @@ recover.html → recovery.js verifyWithCloud()
   - 防盗域名白名单集中在 `site-config.js`，新增域名只改一个文件
 - **支付后端**：
   - `wechat-pay.js` 的 `TOPIC_ORDER` 必须与 `nav.js` 完全一致
-  - `wechat-pay.js` 的激活码算法（CHARS/SALT/computeCheck）必须与 `recovery.js` 同步
+  - `wechat-pay.js` 的激活码算法（CHARS/SALT/computeCheck）为服务端专用，客户端 `recovery.js` 仅做格式校验
   - 改价格只需改 `api/create-order.js` 的 `PLAN_PRICES` 和 `pay.html` 的 `price` 计算
   - API 用 Vercel Functions 部署，本地调试需 `vercel dev`
   - 绝对不要在 API 文件中使用 `console.log`
