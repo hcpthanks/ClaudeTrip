@@ -1,0 +1,51 @@
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "PROXY_MANAGED",
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:15721",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-haiku-4-5",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL_NAME": "deepseek-v4-flash",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-8[1M]",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL_NAME": "deepseek-v4-pro",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4-6[1M]",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL_NAME": "deepseek-v4-pro",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "deepseek-v4-flash"
+  },
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.hcpthanks.com)",
+      "Read(//e/WorkBuddy/CLAW/claude-code-learning-site/**)",
+      "Read(//c/Users/Administrator/.claude/**)",
+      "Bash(git -c credential.helper= *)",
+      "Bash(node --check *)",
+      "Bash(start \"\" *)",
+      "Bash(cp *)",
+      "Bash(mkdir -p *)",
+      "Bash(sed *)"
+    ],
+    "additionalDirectories": [
+      "e:\\WorkBuddy\\CLAW\\claude-code-learning-site\\.claude"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"var d='';process.stdin.on('data',function(c){d+=c});process.stdin.on('end',function(){var j=JSON.parse(d);var cmd=j.tool_input.command;if(!/credential\\.helper/.test(cmd)){j.tool_input.command=cmd.replace(/^git\\s+push\\b/,'git -c credential.helper= push')}console.log(JSON.stringify(j))})\"",
+            "if": "Bash(git push*)"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node ~/.claude/statusline.js",
+    "padding": 0
+  },
+  "skipWorkflowUsageWarning": true
+}

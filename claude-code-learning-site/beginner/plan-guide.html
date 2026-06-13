@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="学会在做事之前先想清楚——万能三步法让你的AI帮手一次做对，不用反复修改。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+<title>做事之前先想清楚 — 入门</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/paywall.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .formula-card {
+    background: linear-gradient(135deg, #1a202c 0%, var(--surface) 50%);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    text-align: center;
+    margin: 20px 0;
+  }
+  .formula-card .big { font-size: 1.4em; font-weight: 800; color: var(--accent); letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('plan'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>📋 做事之前先想清楚</h1>
+  <p class="subtitle">你交代小工干活之前，是不是要先想清楚让他干什么？对AI也一样——想清楚了再说，它一次就做对。</p>
+</header>
+
+<div class="container" role="main">
+
+<nav class="module-nav">
+  <a href="#core">① 为什么要先想清楚</a>
+  <a href="#modes">② 万能三步法</a>
+  <a href="#scenarios">③ 糊涂 vs 清楚</a>
+  <a href="#good-bad">④ /plan 怎么用</a>
+  <a href="#workflow">⑤ 实战例子</a>
+  <a href="#first-use">⑥ 第一次用它做计划</a>
+  <a href="#practice">⑦ 练习</a>
+  <a href="#quick">⑧ 快速掌握</a>
+  <a href="#cheatsheet">⑨ 总结</a>
+</nav>
+
+<!-- ─── ① ─── -->
+<section id="core">
+  <h2>① 为什么要先想清楚</h2>
+
+  <div class="card">
+    <h3>一句话</h3>
+    <p style="font-size:1.15em;font-weight:700;color:var(--accent);">
+      AI 不是你肚里的蛔虫——你不说清楚，它就只能瞎猜。想清楚了再说，它一次就做对，省得反复改。
+    </p>
+  </div>
+
+  <div class="analogy-card" style="background: linear-gradient(135deg, #1a2e2e 0%, var(--surface) 50%); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-xl); margin: var(--space-lg) 0;">
+    <h3 style="color: var(--cyan);">🏪 好比交代小工干活</h3>
+    <p style="line-height:1.8;">
+      你对店里的小工说<strong>"去，干点活"</strong>——他肯定蒙了，不知道该干啥。<br><br>
+      但你说<strong>"把门口那箱啤酒搬到冰箱里，摆整齐，过期的挑出来扔掉"</strong>——他就知道怎么干了。<br><br>
+      跟 AI 说话，<strong>一模一样</strong>。
+    </p>
+  </div>
+
+  <div class="info">
+    <strong>你可能会想：</strong>"我说得再清楚，它不还是AI吗？" 是的，但说清楚和不説清楚，结果差十倍。多花30秒想清楚，省掉来回改的10分钟。
+  </div>
+</section>
+
+<!-- ─── ② ─── -->
+<section id="modes">
+  <h2>② 万能三步法</h2>
+
+  <p style="margin-bottom:16px;">每次跟AI说话之前，用这三步想一遍。熟练了之后10秒就能想好。</p>
+
+  <div class="formula-card">
+    <div class="big">我是谁 → 我要什么 → 要什么样的</div>
+  </div>
+
+  <div class="topic-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;">
+    <div class="topic-card" style="border-left:3px solid var(--accent);">
+      <h3>1️⃣ 我是谁</h3>
+      <p style="font-size:0.88em;">你的身份、你的生意。让AI知道它是在帮谁干活。<br><br><em>"我是开五金店的"<br>"我是卖茶叶的"<br>"我是做服装批发的"</em></p>
+    </div>
+    <div class="topic-card" style="border-left:3px solid var(--accent);">
+      <h3>2️⃣ 我要什么</h3>
+      <p style="font-size:0.88em;">具体要做什么事。越具体越好。<br><br><em>"帮我写一段朋友圈文案"<br>"帮我回这个客户的消息"<br>"帮我算这个月的利润"</em></p>
+    </div>
+    <div class="topic-card" style="border-left:3px solid var(--accent);">
+      <h3>3️⃣ 要什么样的</h3>
+      <p style="font-size:0.88em;">长度、语气、格式、特别要求。<br><br><em>"口语化、80字"<br>"客气但不卑微"<br>"做个表格，清楚点"</em></p>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>💡 这个三步法不是只给AI用的——</strong>你交代任何事都用得上。交代员工、写通知、跟供应商谈价格，想清楚这三点，说话就利索了。
+  </div>
+</section>
+
+<!-- ─── ③ ─── -->
+<section id="scenarios">
+  <h2>③ 糊涂版 vs 清楚版</h2>
+
+  <p style="margin-bottom:16px;">看几个真实的对比。左边是糊涂版（AI会做错），右边是用三步法改过的（AI一遍就做对）。</p>
+
+  <div class="comparison-row">
+    <div class="card">
+      <h4 class="bad">❌ 糊涂版</h4>
+      <p style="color:var(--red);margin:8px 0;">"帮我写个文案"</p>
+      <p style="color:var(--text-muted);font-size:0.82em;">AI不知道你卖什么、卖给谁、什么风格——写出来多半不能用。</p>
+    </div>
+    <div class="card">
+      <h4 class="good">✅ 三步法版</h4>
+      <p style="color:var(--green);margin:8px 0;">"我是开五金店的（①），帮我写一段朋友圈文案介绍刚到的新螺丝刀套装（②）。要口语化、80字、让人看了想买（③）。"</p>
+    </div>
+  </div>
+
+  <div class="comparison-row">
+    <div class="card">
+      <h4 class="bad">❌ 糊涂版</h4>
+      <p style="color:var(--red);margin:8px 0;">"帮我回一下这个客户"</p>
+      <p style="color:var(--text-muted);font-size:0.82em;">没说客户说了什么、你要什么态度——AI只能乱编。</p>
+    </div>
+    <div class="card">
+      <h4 class="good">✅ 三步法版</h4>
+      <p style="color:var(--green);margin:8px 0;">"我是开网店的（①），帮我回一个客户消息，他说快递三天没到很生气要退款（②）。先道歉，解释是天气原因，最后给他补5块钱优惠券。口语化（③）。"</p>
+    </div>
+  </div>
+
+  <div class="comparison-row">
+    <div class="card">
+      <h4 class="bad">❌ 糊涂版</h4>
+      <p style="color:var(--red);margin:8px 0;">"帮我做一个促销方案"</p>
+    </div>
+    <div class="card">
+      <h4 class="good">✅ 三步法版</h4>
+      <p style="color:var(--green);margin:8px 0;">"我是开小超市的（①），国庆快到了帮我策划一个促销活动（②）。主要卖零食和饮料，预算500块，活动搞三天。给我几个方案让我选（③）。"</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 付费墙 ══════ -->
+<div class="paywall-container" data-topic="plan">
+  <div class="paywall-content">
+
+<!-- ─── ④ ─── -->
+<section id="good-bad">
+  <h2>④ /plan 命令怎么用</h2>
+
+  <p style="margin-bottom:16px;">三步法适合简单的事。但有些事比较复杂——比如"帮我策划一周的朋友圈内容"。这种时候用 <code>/plan</code> 命令，让AI先帮你理清思路。</p>
+
+  <div class="card">
+    <h3>/plan 做了什么</h3>
+    <p style="line-height:1.8;">
+      你输入 <code>/plan 你想做的事</code>，AI不会马上动手——它会<strong>先列一个计划给你看</strong>。你觉得可以，它再做。你觉得不对，改完计划再让它做。<br><br>
+      就像你让小工干一件复杂活——先让他说说打算怎么干，你点头了他再动手。省得干了一半发现不对。
+    </p>
+  </div>
+
+  <div class="info">
+    <strong>/plan 不是什么高级功能——</strong>它就是"AI先列计划给你确认"而已。不是只有程序员才能用。你策划促销活动、整理仓库、安排一周工作，都能用它。
+  </div>
+</section>
+
+<!-- ─── ⑤ ─── -->
+<section id="workflow">
+  <h2>⑤ 实战例子</h2>
+
+  <div class="card" style="margin-bottom:16px;">
+    <h3>📱 例子1：策划一周朋友圈</h3>
+    <p style="color:var(--text-muted);margin-bottom:8px;">在 Claude Code 里输入：</p>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;font-size:0.95em;">
+      /plan 我是卖茶叶的，帮我策划一周的朋友圈内容。周一到周日每天一条，要有产品介绍、客户反馈、茶叶知识、促销信息。不要太硬广，让人看了觉得有用。
+    </div>
+    <p style="color:var(--text-muted);margin-top:8px;">AI 会先列出7天的主题、每天发什么、大概的文案方向——你确认了它再一条条写。</p>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <h3>📊 例子2：整理客户信息</h3>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;font-size:0.95em;">
+      /plan 我是做服装批发的，手上有50多个客户的联系方式、拿货记录、欠款情况，散落在微信聊天和本子上。帮我想一个整理方案，让这些信息以后好查。
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📦 例子3：规划促销活动</h3>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;font-size:0.95em;">
+      /plan 我开了一家小超市，下个月店庆一周年。帮我策划一个店庆活动：做什么促销、怎么通知老客户、需要准备什么东西、预算大概多少。预算是1000块。
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:16px;">
+    <strong>💡 看出来了吗：</strong>这三个例子，没有一个是跟写代码有关系的。全部是你做生意用得上的。/plan 就是一个"让AI帮你把想法整理成步骤"的工具。
+  </div>
+</section>
+
+<!-- ─── ⑥ ─── -->
+<section id="first-use">
+  <h2>⑥ 第一次用它做计划</h2>
+
+  <p style="margin-bottom:16px;">现在就试一个。挑一个跟你生意相关的，照着做。</p>
+
+  <div class="card">
+    <h3>📋 跟做步骤</h3>
+    <div style="padding:12px 0;">
+      <p><strong>1.</strong> 打开 PowerShell → 输入 <code>claude</code> → 回车</p>
+      <p><strong>2.</strong> 输入 <code>/plan</code> 后面跟上你想做的事。从下面选一个，或者自己想一个：</p>
+    </div>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;margin:8px 0;font-size:0.9em;">
+      <p style="margin:4px 0;">• /plan 帮我规划一周的朋友圈内容，我是卖___的</p>
+      <p style="margin:4px 0;">• /plan 帮我整理店里的库存，以后好管理</p>
+      <p style="margin:4px 0;">• /plan 帮我策划下个月的促销活动</p>
+    </div>
+    <div style="padding:12px 0;">
+      <p><strong>3.</strong> 看看AI列的计划——觉得OK就说"可以，开始做"</p>
+      <p><strong>4.</strong> 觉得不对就说"第三点改一下""加一个XX""第一步不要"</p>
+    </div>
+  </div>
+
+  <div class="info">
+    <strong>别怕改：</strong>计划不是合同。你随时可以改、随时可以重来。AI不会嫌你烦，改一百次它都照做。
+  </div>
+</section>
+
+<!-- ─── ⑦ ─── -->
+<section id="practice">
+  <h2>⑦ 动手试试</h2>
+  <p style="margin-bottom:16px;">用 /plan 试做下面这些事。每个都跟生意有关，挑一个你最近正好需要的。</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">
+    <div class="card">
+      <h3>📱 朋友圈规划</h3>
+      <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.88em;margin-top:8px;">
+        /plan 帮我规划一周的朋友圈内容。我是卖水果的，想要有产品图、客户好评、水果知识、特价信息。不要太广告。
+      </div>
+    </div>
+    <div class="card">
+      <h3>📊 客户管理</h3>
+      <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.88em;margin-top:8px;">
+        /plan 我是做批发生意的，有30多个老客户。帮我想一个方法，记录每个客户的拿货习惯和欠款情况，以后翻起来方便。
+      </div>
+    </div>
+    <div class="card">
+      <h3>🎯 促销策划</h3>
+      <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.88em;margin-top:8px;">
+        /plan 我是开小超市的，中秋节快到了。帮我策划中秋促销：礼品组合、定价、宣传文案、怎么通知老客户。预算1000。
+      </div>
+    </div>
+    <div class="card">
+      <h3>📋 日常工作安排</h3>
+      <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.88em;margin-top:8px;">
+        /plan 帮我规划每天的固定工作流程。我是开店的，每天要理货、回客户消息、发朋友圈、记账、补货。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑧ ─── -->
+<section id="quick">
+  <h2>⑧ 快速掌握清单</h2>
+
+  <div class="card">
+    <table>
+      <tr><th>情况</th><th>怎么做</th></tr>
+      <tr><td>简单的事（写个文案、回个消息）</td><td>直接用三步法：我是谁+我要什么+要什么样的</td></tr>
+      <tr><td>复杂的事（策划活动、整理信息）</td><td>用 /plan 先列计划，确认再动手</td></tr>
+      <tr><td>AI列的计划不对</td><td>直接说哪里不对、要怎么改，AI会调整</td></tr>
+      <tr><td>不知道从哪开始</td><td>用 /plan 把想法说出来，让AI帮你理</td></tr>
+      <tr><td>怕AI跑偏</td><td>用 /plan，它先列计划给你看，不会乱跑</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ─── ⑨ ─── -->
+<section id="summary" class="summary-section">
+  <h2>⑨ 总结：最常用 & 最易错</h2>
+
+  <div class="card">
+    <h3>🎯 记住这三点</h3>
+    <div style="padding:8px 0;">
+      <p>✅ <strong>三步法万能</strong>——我是谁+我要什么+要什么样的。任何事都先用这个想一遍。</p>
+      <p>✅ <strong>复杂事用 /plan</strong>——让AI先列计划给你看，确认了再让它做。</p>
+      <p>✅ <strong>不满意就改计划</strong>——计划不是合同，随时改。AI不会嫌烦。</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h3>⚠️ 别犯这三个错</h3>
+    <div style="padding:8px 0;">
+      <p>❌ <strong>觉得 /plan 是给程序员用的</strong>——你策划活动、安排工作、整理信息，全都能用它。</p>
+      <p>❌ <strong>说了第一步不说后两步</strong>——"我是开店的（①）"完了就不说了。AI还是不知道你要什么。</p>
+      <p>❌ <strong>计划要完美了才动手</strong>——不用。大概对就行，边做边改。</p>
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:16px;">
+    <strong>🔑 今天就用一次：</strong>打开 Claude Code，输入 <code>/plan</code> 加上你最近想做的一件事。不管结果怎么样——先迈出第一步。
+  </div>
+</section>
+
+  </div><!-- .paywall-content -->
+  <div class="paywall-fade"></div>
+  <div class="paywall-card">
+    <div class="lock-icon">🔒</div>
+    <h3>以下内容需付费解锁</h3>
+    <div class="locked-modules">④ /plan 怎么用 · ⑤ 实战例子 · ⑥ 第一次用它做计划 · ⑦ 练习 · ⑧ 快速掌握 · ⑨ 总结</div>
+    <div class="paywall-actions">
+      <button class="paywall-btn paywall-btn-single">
+        <span class="price">¥5</span>
+        <span class="price-label">解锁本页全部内容</span>
+      </button>
+      <button class="paywall-btn paywall-btn-all">
+        <span class="price">¥99</span>
+        <span class="price-label">永久解锁全站 · 含进阶专家</span>
+      </button>
+    </div>
+  </div>
+</div><!-- .paywall-container -->
+
+</div><!-- .container -->
+
+<footer class="site-footer">
+  <p><a href="../index.html">← 返回首页</a></p>
+</footer>
+
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/paywall.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/site-config.js"></script>
+<script src="../assets/js/anti-theft.js"></script>
+</body>
+</html>

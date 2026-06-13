@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="零基础了解 Claude Code：你电脑里的免费帮手，能帮你写文案、回消息、算账。打开就能用。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+<title>认识 Claude Code — 入门</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/paywall.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .analogy-card {
+    background: linear-gradient(135deg, #1a2e2e 0%, var(--surface) 50%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin: var(--space-lg) 0;
+  }
+  .analogy-card h3 { color: var(--cyan); }
+  .see-it { font-size: 1.1em; line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('intro'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>🤖 认识 Claude Code</h1>
+  <p class="subtitle">你电脑里多了一个聪明帮手——不用学编程，不用懂英语，打开就能用。</p>
+</header>
+
+<div class="container" role="main">
+
+<nav class="module-nav">
+  <a href="#core">① 它能帮你做什么</a>
+  <a href="#modes">② 看看具体例子</a>
+  <a href="#scenarios">③ 怎么打开它</a>
+  <a href="#good-bad">④ 跟网页AI有什么不同</a>
+  <a href="#workflow">⑤ 怎么跟它说话</a>
+  <a href="#first-use">⑥ 第一次用它</a>
+  <a href="#practice">⑦ 练习</a>
+  <a href="#quick">⑧ 快速掌握</a>
+  <a href="#cheatsheet">⑨ 总结</a>
+</nav>
+
+<!-- ─── ① ─── -->
+<section id="core">
+  <h2>① 它能帮你做什么</h2>
+
+  <div class="card">
+    <h3>一句话说清楚</h3>
+    <p style="font-size:1.2em;font-weight:700;color:var(--accent);">
+      Claude Code 就是装在你电脑里的一个免费帮手——你打字告诉它要做什么，它帮你做。
+    </p>
+  </div>
+
+  <div class="analogy-card">
+    <h3>🏪 好比你在店里请了个小工</h3>
+    <p style="line-height:1.8;">
+      你开了一家店。以前所有事都自己干——写宣传单、回客户消息、算账、整理清单。<br><br>
+      现在你请了个小工。你跟他说：<strong>"帮我写一段朋友圈卖货文案"</strong>——他就写了。<br>
+      你跟他说：<strong>"帮我算这个月赚了多少"</strong>——他就算出来了。<br>
+      你跟他说：<strong>"帮我回这条客户消息"</strong>——他帮你拟好回复。<br><br>
+      这个小工不要工资、不吃饭、一天24小时都在。他就是 Claude Code。
+    </p>
+  </div>
+
+  <div class="info">
+    <strong>别怕：</strong>它不是真人，不会偷你东西、不会骗你钱。它只是你电脑里的一个程序——跟你手机里的计算器一样，只不过它更聪明。
+  </div>
+</section>
+
+<!-- ─── ② ─── -->
+<section id="modes">
+  <h2>② 看看具体例子</h2>
+
+  <div class="card" style="margin-bottom:16px;">
+    <h3>📱 例子1：写朋友圈卖货文案</h3>
+    <p style="color:var(--text-muted);margin-bottom:8px;">你对 Claude Code 说：</p>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;font-size:0.95em;">
+      "我是开五金店的，帮我写一段朋友圈文案，介绍刚到的新款螺丝刀套装。要口语化、80字左右、让人看了想买。"
+    </div>
+    <p style="color:var(--text-muted);margin-top:12px;">它就会给你写出一段能直接发朋友圈的文案。</p>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <h3>💬 例子2：回客户消息</h3>
+    <p style="color:var(--text-muted);margin-bottom:8px;">客户说快递三天没到很生气要退款——你不知道怎么回。你对 Claude Code 说：</p>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;font-size:0.95em;">
+      "我是开网店的，有个客户说快递三天没到要退款。帮我写一个回复，先道歉，再解释快递慢是天气原因，最后给他补偿5块钱优惠券。"
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🧮 例子3：帮你算账</h3>
+    <p style="color:var(--text-muted);margin-bottom:8px;">月底了想知道赚了多少。你对 Claude Code 说：</p>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;font-size:0.95em;">
+      "我是开五金店的。帮我算这个月赚了多少：进货8600，卖货14200，房租2500，水电380。"
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:16px;">
+    <strong>💡 注意看这三个例子的共同点：</strong>都说了"我是谁"+"我要什么"+"要什么样的"。就像你交代小工干活一样——说清楚了，做出来的东西才合用。
+  </div>
+</section>
+
+<!-- ─── ③ ─── -->
+<section id="scenarios">
+  <h2>③ 怎么打开它</h2>
+
+  <div class="card">
+    <h3>就两步（别怕，跟着做就行）</h3>
+
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="font-weight:700;margin-bottom:6px;">第1步：打开 PowerShell</p>
+      <p style="color:var(--text-muted);font-size:0.9em;">右键点屏幕左下角的开始按钮 → 点"Windows PowerShell"<br>
+      或者直接按键盘上的 <kbd style="background:var(--surface);border:1px solid var(--border);padding:2px 8px;border-radius:4px;">Win键</kbd> 然后打字 <code>powershell</code> 回车</p>
+    </div>
+
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="font-weight:700;margin-bottom:6px;">第2步：输入 claude 然后按回车</p>
+      <p style="color:var(--text-muted);font-size:0.9em;">出来一个黑窗口不要怕——直接打字 <code>claude</code> 然后回车就行了</p>
+    </div>
+  </div>
+
+  <figure class="screenshot" style="margin-top:20px;">
+    <div class="screenshot-frame">
+      <div class="terminal-screenshot">
+        <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+        <div class="term-body">
+          <div style="color:var(--text-muted);margin-bottom:4px;">—— 打开后长这样，不用怕 ——</div>
+          <div><span class="term-prompt">PS C:\Users\老王&gt;</span> <span class="term-cmd">claude</span></div>
+          <div style="margin-top:6px;color:var(--green);">🤖 Claude: 你好！我是 Claude。</div>
+          <div style="color:#c0c0c0;">有什么我可以帮你的？</div>
+          <div style="margin-top:8px;padding-top:6px;border-top:1px dashed #333;"></div>
+          <div style="color:var(--text-muted);">—— 现在你可以直接打字跟它说话了 ——</div>
+          <div><span style="color:var(--accent);">帮我写一段朋友圈卖货文案</span></div>
+          <div><span class="term-cursor"></span></div>
+          <div class="term-note">👆 黑窗口 = PowerShell，别怕，它不会咬你。敲 claude 回车就行。</div>
+        </div>
+      </div>
+    </div>
+    <figcaption>👆 打开后看到这个画面就对了——现在你可以打字跟它说话</figcaption>
+  </figure>
+
+  <div class="info">
+    <strong>⚠️ 第一次用之前：</strong>如果你还没装过 Claude Code，需要先装一下。预备课里"安装 Claude Code"这一节手把手教过，忘记的话回去看一眼——跟着做就行，5分钟装好。
+  </div>
+</section>
+
+<!-- ══════ 付费墙 ══════ -->
+<div class="paywall-container" data-topic="intro">
+  <div class="paywall-content">
+
+<!-- ─── ④ ─── -->
+<section id="good-bad">
+  <h2>④ 跟网页上的 AI 有什么不一样</h2>
+
+  <p style="margin-bottom:16px;">你可能用过手机上的 AI——比如豆包、Kimi、文心一言。Claude Code 跟它们有什么不同？</p>
+
+  <table>
+    <tr><th></th><th>手机上的 AI</th><th class="good">Claude Code</th></tr>
+    <tr><td>在哪用</td><td>手机浏览器或 App</td><td class="good">你电脑里</td></tr>
+    <tr><td>能看你的文件吗</td><td>不能</td><td class="good">能——你让它看哪个文件就看哪个</td></tr>
+    <tr><td>能帮你整理东西吗</td><td>不能</td><td class="good">能——比如整理文件夹、重命名图片</td></tr>
+    <tr><td>能记住上次对话吗</td><td>有些能，有些不能</td><td class="good">能——可以接着上次继续说</td></tr>
+    <tr><td>要钱吗</td><td>有些要、有些不要</td><td class="good">基础功能免费</td></tr>
+  </table>
+
+  <div class="analogy-card">
+    <h3>🏪 打个比方</h3>
+    <p>手机上的 AI 就像打电话问一个远程专家——他看不到你店里什么情况。<br><br>
+    Claude Code 就像你店里的小工——他就在你店里，能看到你的货架、你的账本，帮你干活。</p>
+  </div>
+
+  <div class="info">
+    <strong>最大的好处：</strong>Claude Code 在你电脑里，能读你电脑上的文件。你让它"帮我把桌面上的报价单改成表格"，它就能做到。手机上的 AI 做不到。
+  </div>
+</section>
+
+<!-- ─── ⑤ ─── -->
+<section id="workflow">
+  <h2>⑤ 怎么跟它说话</h2>
+
+  <p style="margin-bottom:16px;">跟 Claude Code 说话，不需要学什么特殊格式。就像你发微信一样——打你想说的话，回车发送。</p>
+
+  <div class="card">
+    <h3>记住三点就够了</h3>
+    <div class="topic-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:12px 0;">
+      <div class="topic-card" style="border-left:3px solid var(--accent);">
+        <h3>🗣️ 说人话</h3>
+        <p style="font-size:0.88em;">不用学什么"提示词""指令"。你会怎么交代小工干活，就怎么跟它说。</p>
+      </div>
+      <div class="topic-card" style="border-left:3px solid var(--accent);">
+        <h3>📋 说清楚</h3>
+        <p style="font-size:0.88em;">你是谁 + 要做什么 + 要什么样的。说清楚了，出来的结果才对。</p>
+      </div>
+      <div class="topic-card" style="border-left:3px solid var(--accent);">
+        <h3>🔄 不满意就改</h3>
+        <p style="font-size:0.88em;">它写出来的东西你不满意？直接说"短一点""口语化一点""加上价格"。它会照着改。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison-row" style="margin-top:16px;">
+    <div class="card">
+      <h4 class="bad">❌ 太模糊</h4>
+      <p style="color:var(--red);">"帮我写个文案"</p>
+      <p style="color:var(--text-muted);font-size:0.82em;margin-top:6px;">它不知道你是谁、卖什么、写给谁看——写出来的东西可能完全不对。</p>
+    </div>
+    <div class="card">
+      <h4 class="good">✅ 说清楚</h4>
+      <p style="color:var(--green);">"我是开五金店的，帮我写一段朋友圈文案，介绍刚到的新款螺丝刀套装。要口语化、80字左右、让人看了想买。"</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑥ ─── -->
+<section id="first-use">
+  <h2>⑥ 第一次用它——跟我做一遍</h2>
+
+  <p style="margin-bottom:16px;">现在就试试。跟着下面的步骤，不超过3分钟。</p>
+
+  <div class="card">
+    <h3>📋 一步步来</h3>
+    <div style="padding:12px 0;">
+      <p><strong>1.</strong> 打开 PowerShell（右键开始按钮→Windows PowerShell）</p>
+      <p><strong>2.</strong> 输入 <code>claude</code> 然后回车</p>
+      <p><strong>3.</strong> 等它出现 "有什么我可以帮你的？"</p>
+      <p><strong>4.</strong> 复制下面这句，粘贴进去，回车：</p>
+    </div>
+    <div style="background:var(--bg);padding:14px;border-radius:8px;margin:8px 0;font-size:0.95em;">
+      帮我写一段朋友圈文案。我是卖茶叶的，新到了一批龙井，想发朋友圈告诉老客户。要求：口语化、50字左右、让人看了想来买。
+    </div>
+    <p><strong>5.</strong> 看看它写出来什么。满意的话复制到微信发出去。</p>
+    <p><strong>6.</strong> 不满意？接着说："短一点"、"加上价格"、"再写一版"。它会改。</p>
+  </div>
+
+  <div class="tip">
+    <strong>💡 第一次用不用怕：</strong>它不会弄坏你的电脑。它就是打字跟你聊天而已——跟你聊微信一样。你说错了重新说就行，它不生气。
+  </div>
+</section>
+
+<!-- ─── ⑦ ─── -->
+<section id="practice">
+  <h2>⑦ 动手试试</h2>
+  <p style="margin-bottom:16px;">打开 Claude Code，试试下面这几件事。每件都是你做生意用得到的。</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">
+    <div class="card">
+      <h3>📱 试1：写文案</h3>
+      <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.88em;margin-top:8px;">
+        "帮我写一段朋友圈文案。我是卖水果的，今天到的芒果特别甜。要口语化、60字、让人流口水。"
+      </div>
+    </div>
+    <div class="card">
+      <h3>💬 试2：回消息</h3>
+      <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.88em;margin-top:8px;">
+        "帮我回一条客户消息。客户说上次买的货有两个坏的。我先道歉，然后说下次送他两个。口语化。"
+      </div>
+    </div>
+    <div class="card">
+      <h3>🧮 试3：算账</h3>
+      <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.88em;margin-top:8px;">
+        "帮我算账。这个月进货4800，卖货9100，房租2000，水电450，两个员工工资各3000。赚了还是亏了？"
+      </div>
+    </div>
+    <div class="card">
+      <h3>📋 试4：做清单</h3>
+      <div style="background:var(--bg);padding:12px;border-radius:6px;font-size:0.88em;margin-top:8px;">
+        "帮我列一个明天要做的事情清单。我是开小超市的，明天进货、理货、跟一个供应商谈价格、给老客户发优惠信息。"
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑧ ─── -->
+<section id="quick">
+  <h2>⑧ 快速掌握清单</h2>
+
+  <div class="card">
+    <table>
+      <tr><th>你要做什么</th><th>怎么跟它说（模板）</th></tr>
+      <tr><td>写朋友圈文案</td><td>"帮我写一段朋友圈文案。我是卖___的。要口语化、___字左右。"</td></tr>
+      <tr><td>回客户消息</td><td>"帮我回一条客户消息。客户说___。我要表达___。口语化。"</td></tr>
+      <tr><td>算账</td><td>"帮我算账。这个月：进货___，卖货___，开支___。赚了多少？"</td></tr>
+      <tr><td>写通知/公告</td><td>"帮我写一个通知。内容是___。要正式一点/口语化一点。"</td></tr>
+      <tr><td>改文字</td><td>"帮我把这段话改得___一点：[粘贴你的文字]"</td></tr>
+      <tr><td>整理信息</td><td>"帮我把下面这些整理成表格：[粘贴你的内容]"</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ─── ⑨ ─── -->
+<section id="summary" class="summary-section">
+  <h2>⑨ 总结：最常用 & 最易错</h2>
+
+  <div class="card">
+    <h3>🎯 记住这三点</h3>
+    <div style="padding:8px 0;">
+      <p>✅ <strong>它就是你店里的小工</strong>——你怎么交代小工干活，就怎么跟它说。</p>
+      <p>✅ <strong>说清楚最重要</strong>——你是谁 + 要做什么 + 要什么样的。说清楚了，它就做对。</p>
+      <p>✅ <strong>不满意就让它改</strong>——它不是一次性的，说"短一点""换个语气"就行。</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h3>⚠️ 别犯这三个错</h3>
+    <div style="padding:8px 0;">
+      <p>❌ <strong>说的太模糊</strong>——"帮我写个东西"这种话说出来，它只能瞎猜。</p>
+      <p>❌ <strong>怕它弄坏电脑</strong>——它就是聊天，不会删你文件、不会搞坏电脑。</p>
+      <p>❌ <strong>用一次就放弃</strong>——前几次可能不习惯，多用几次就顺手了。跟学骑自行车一样。</p>
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:16px;">
+    <strong>🔑 最重要的：</strong>现在就去打开 Claude Code，跟它说第一句话。不管是什么——"帮我写一段文案"、"帮我算个账"、"今天天气怎么样"。走出第一步，你就已经超过99%还在观望的人了。
+  </div>
+</section>
+
+  </div><!-- .paywall-content -->
+  <div class="paywall-fade"></div>
+  <div class="paywall-card">
+    <div class="lock-icon">🔒</div>
+    <h3>以下内容需付费解锁</h3>
+    <div class="locked-modules">④ 跟网页AI有什么不同 · ⑤ 怎么跟它说话 · ⑥ 第一次用它 · ⑦ 练习 · ⑧ 快速掌握 · ⑨ 总结</div>
+    <div class="paywall-actions">
+      <button class="paywall-btn paywall-btn-single">
+        <span class="price">¥5</span>
+        <span class="price-label">解锁本页全部内容</span>
+      </button>
+      <button class="paywall-btn paywall-btn-all">
+        <span class="price">¥99</span>
+        <span class="price-label">永久解锁全站 · 含进阶专家</span>
+      </button>
+    </div>
+  </div>
+</div><!-- .paywall-container -->
+
+</div><!-- .container -->
+
+<footer class="site-footer">
+  <p><a href="../index.html">← 返回首页</a></p>
+</footer>
+
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/paywall.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/site-config.js"></script>
+<script src="../assets/js/anti-theft.js"></script>
+</body>
+</html>

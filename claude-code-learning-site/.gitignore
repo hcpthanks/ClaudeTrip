@@ -1,0 +1,46 @@
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+
+# Test results
+test-results/
+playwright-report/
+
+# Claude Code
+.claude/plans/
+.claude/session-data/
+.claude/sessions/
+.claude/session-env/
+.claude/file-history/
+.claude/cache/
+.claude/backups/
+.claude/ide/
+.claude/tasks/
+.claude/shell-snapshots/
+.claude/telemetry/
+.claude/.last-*
+
+# Serverless
+serverless/activate/node_modules/
+serverless/activate/package-lock.json
+
+# Screenshots
+serverless/activate/screenshots/

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="零基础学电脑：认识桌面、开始菜单、任务栏、文件和文件夹。如果你还不太会用电脑，从这里开始。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖥️</text></svg>">
+<title>认识你的电脑 — 预备课</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .analogy-card {
+    background: linear-gradient(135deg, #1a2e2e 0%, var(--surface) 50%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin: var(--space-lg) 0;
+  }
+  .analogy-card h3 { color: var(--cyan); }
+  /* Desktop illustration variants */
+  .win-desktop.pc-basics-desktop { min-height: 220px; }
+  .win-desktop.pc-basics-desktop .desktop-icons { padding: 40px 24px 60px; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('pc-basics'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>🖥️ 认识你的电脑</h1>
+  <p class="subtitle">不用怕——电脑没有你想的那么复杂。这节课教你认识屏幕上最常见的几样东西。</p>
+</header>
+
+<div class="container" role="main">
+
+<nav class="module-nav">
+  <a href="#why">① 这个能帮你做什么</a>
+  <a href="#walkthrough">② 一步一步来</a>
+  <a href="#review">③ 再看一遍</a>
+  <a href="#pitfalls">④ 常见坑</a>
+  <a href="#practice">⑤ 做一遍</a>
+  <a href="#cheatsheet">⑥ 速查卡</a>
+  <a href="#learned">⑦ 学到了什么</a>
+</nav>
+
+<!-- ─── ① ─── -->
+<section id="why">
+  <h2>① 这个能帮你做什么</h2>
+  <div class="card" style="font-size:1.15em;font-weight:700;color:var(--accent);text-align:center;padding:28px;">
+    学完这节课，你能叫出电脑屏幕上每样东西的名字。<br>
+    以后别人跟你说"点开始菜单"、"打开文件夹"，你不会再愣住。
+  </div>
+  <div class="analogy-card">
+    <h3>🏠 把电脑想象成一个房间</h3>
+    <table>
+      <tr><th style="width:30%">电脑上的东西</th><th style="width:35%">相当于…</th><th>说明</th></tr>
+      <tr><td><strong>桌面</strong></td><td>你房间的地板</td><td>放着你最常用的东西，一开机就能看到</td></tr>
+      <tr><td><strong>开始菜单</strong></td><td>房间里的抽屉柜</td><td>所有东西都从这里找，点一下就能翻</td></tr>
+      <tr><td><strong>文件夹</strong></td><td>真实的文件夹/抽屉</td><td>把相关的文件放在一起，不乱</td></tr>
+      <tr><td><strong>文件</strong></td><td>一张纸</td><td>写的东西存在这里——照片、文档、表格都是"文件"</td></tr>
+      <tr><td><strong>窗口</strong></td><td>你正在看的那一页</td><td>每打开一个程序，就会有一个"窗口"弹出来</td></tr>
+    </table>
+  </div>
+  <div class="info">
+    <strong>别担心：</strong>这些东西你每天都在用——只是不知道它们叫什么名字。学完这课你就全知道了。
+  </div>
+</section>
+
+<!-- ─── ② 一步一步来 ─── -->
+<section id="walkthrough">
+  <h2>② 一步一步来：认识你的屏幕</h2>
+  <p style="color:var(--text-muted);margin-bottom:24px;">下面有 6 个小步骤。每步一张图 + 一句话。慢慢来，不着急。</p>
+
+  <ol class="step-list">
+
+    <!-- Step 1: Desktop -->
+    <li class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>这是你的"桌面"</h3>
+        <div class="step-action">你现在盯着看的这一整片画面，就是桌面</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="win-desktop pc-basics-desktop">
+              <div class="desktop-icons">
+                <div class="desk-icon"><span class="icon-img">📁</span>文档</div>
+                <div class="desk-icon"><span class="icon-img">🖼️</span>图片</div>
+                <div class="desk-icon"><span class="icon-img">🌐</span>浏览器</div>
+                <div class="desk-icon"><span class="icon-img">🗑️</span>回收站</div>
+              </div>
+              <div class="win-taskbar">
+                <div class="tb-start">⊞</div>
+                <div class="tb-search">在此键入以搜索</div>
+                <div class="tb-time">15:42</div>
+              </div>
+              <div class="annotate-box" style="top:5%;left:5%;width:90%;height:70%;" data-label="桌面"></div>
+            </div>
+          </div>
+          <figcaption>👆 蓝色背景的整片区域就是桌面。上面这些小图标叫"快捷方式"——双击它们能打开对应的东西。</figcaption>
+        </figure>
+        <div class="checkpoint"><p>你现在盯着屏幕看的这一整片，就是你的桌面。上面有小图标吗？</p></div>
+      </div>
+    </li>
+
+    <!-- Step 2: Taskbar -->
+    <li class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>屏幕最下面这一条叫"任务栏"</h3>
+        <div class="step-action">看屏幕最下面——有一条横着的长条</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame" style="background:#1a1a2e;border-radius:0;padding:20px 0 8px;">
+            <div class="win-taskbar" style="position:static;border-radius:0;height:44px;">
+              <div class="tb-start">⊞</div>
+              <div class="tb-search">🔍 在此键入以搜索</div>
+              <div style="color:#fff;font-size:0.7em;white-space:nowrap;">📁 📄 🌐</div>
+              <div class="tb-time" style="margin-left:12px;">🔊 🌐 15:42<br><span style="font-size:0.7em;">2025/1/15</span></div>
+            </div>
+            <div class="annotate-box" style="top:20px;left:0;width:100%;height:44px;" data-label="任务栏"></div>
+          </div>
+          <figcaption>👆 屏幕最下面这一条深色的横条就是任务栏。左边有开始菜单图标，中间有搜索框，右边有时间。</figcaption>
+        </figure>
+        <div class="checkpoint"><p>你的屏幕最下面有一条横着的长条吗？上面有搜索框和时间吗？</p></div>
+      </div>
+    </li>
+
+    <!-- Step 3: Start Menu -->
+    <li class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>左下角那个小窗户图标——开始菜单</h3>
+        <div class="step-action">任务栏最左边，有一个四个小方块组成的图标</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame" style="background:#1a1a2e;padding:8px 12px;border-radius:0;">
+            <div style="display:flex;align-items:center;gap:12px;font-family:var(--font-sans);">
+              <span style="font-size:1.5em;color:#58a6ff;border:2px solid var(--lv-prebasics);border-radius:4px;padding:2px 8px;animation:annotate-pulse 2s ease-in-out infinite;">⊞</span>
+              <span class="annotate-arrow" style="position:static;display:inline-block;"></span>
+              <span style="color:var(--lv-prebasics);font-weight:700;font-size:0.9em;">← 就是这个图标！</span>
+            </div>
+          </div>
+          <figcaption>👆 任务栏最左边的四个小方块图标。点一下它，会弹出一个大菜单——里面有你电脑上装的所有程序。</figcaption>
+        </figure>
+        <div class="checkpoint"><p><strong>现在试试：</strong>用鼠标左键点一下左下角那个图标，看是不是弹出了一个菜单？</p></div>
+      </div>
+    </li>
+
+    <!-- Step 4: File vs Folder -->
+    <li class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>"文件"和"文件夹"的区别</h3>
+        <div class="step-action">一个像纸，一个像抽屉——长得很不一样</div>
+        <div class="img-compare">
+          <div class="img-compare-item">
+            <div class="win-window">
+              <div class="win-titlebar"><div class="win-btns"><span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span></div>文档</div>
+              <div class="win-body" style="text-align:center;padding:32px;">
+                <div style="font-size:3em;margin-bottom:8px;">📄</div>
+                <p style="font-weight:700;color:#333;">报告.docx</p>
+                <p style="font-size:0.8em;">文件 = 一张"纸"，里面存着内容</p>
+              </div>
+            </div>
+            <div class="label">📄 这是"文件"——里面存着具体内容</div>
+          </div>
+          <div class="img-compare-item">
+            <div class="win-window">
+              <div class="win-titlebar"><div class="win-btns"><span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span></div>文件夹</div>
+              <div class="win-body" style="text-align:center;padding:32px;">
+                <div style="font-size:3em;margin-bottom:8px;">📁</div>
+                <p style="font-weight:700;color:#333;">我的文档</p>
+                <p style="font-size:0.8em;">文件夹 = 一个"抽屉"，里面放文件</p>
+              </div>
+            </div>
+            <div class="label">📁 这是"文件夹"——用来收纳文件</div>
+          </div>
+        </div>
+        <div class="info"><strong>最简单的记法：</strong>文件夹 = 超市的购物袋，文件 = 袋子里的每一样东西。文件夹本身不装内容，只是把文件收纳在一起。</div>
+        <div class="checkpoint"><p>你的桌面上有没有黄色的文件夹图标？有的话，那就是文件夹。</p></div>
+      </div>
+    </li>
+
+    <!-- Step 5: Open a folder -->
+    <li class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h3>怎么打开一个文件夹</h3>
+        <div class="step-action">用鼠标左键，对着文件夹图标"快速点两下"</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="win-desktop pc-basics-desktop" style="position:relative;">
+              <div class="desktop-icons" style="padding:30px 24px 70px;">
+                <div class="desk-icon highlight"><span class="icon-img">📁</span><span style="border:2px dashed var(--lv-prebasics);border-radius:4px;padding:1px 6px;">双击！</span></div>
+                <div class="desk-icon" style="opacity:0.5;"><span class="icon-img">📄</span>文档</div>
+                <div class="desk-icon" style="opacity:0.5;"><span class="icon-img">🖼️</span>图片</div>
+                <div class="desk-icon" style="opacity:0.5;"><span class="icon-img">🌐</span>浏览器</div>
+              </div>
+              <div class="annotate-arrow" style="top:55%;left:8%;"></div>
+              <div class="annotate-box" style="top:15%;left:3%;width:22%;height:25%;" data-label="快速点两下!"></div>
+              <div class="win-taskbar"><div class="tb-start">⊞</div><div class="tb-search">在此键入以搜索</div><div class="tb-time">15:42</div></div>
+              <!-- Popup window showing opened folder -->
+              <div style="position:absolute;top:25%;right:10%;width:45%;background:#fff;border:1px solid #999;border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,0.5);z-index:10;overflow:hidden;">
+                <div class="win-titlebar" style="font-size:0.7em;"><div class="win-btns"><span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span></div>📁 我的文档</div>
+                <div style="padding:12px;color:#333;font-size:0.75em;">📄 简历.docx<br>📊 报表.xlsx<br>🖼️ 照片.jpg</div>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 快速连点两下鼠标左键（这个动作叫"双击"）。点一下是"选中"（变蓝），快速点两下才是"打开"。</figcaption>
+        </figure>
+        <div class="checkpoint"><p><strong>现在试试：</strong>在桌面上找一个文件夹图标，快速点两下。是不是弹出了一个新窗口？</p></div>
+      </div>
+    </li>
+
+    <!-- Step 6: Window controls -->
+    <li class="step-item">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h3>"窗口"是什么——右上角三个按钮</h3>
+        <div class="step-action">每打开一个东西，右上角都有三个小按钮</div>
+        <figure class="screenshot">
+          <div class="screenshot-frame">
+            <div class="win-window" style="max-width:450px;">
+              <div class="win-titlebar">
+                <div class="win-btns"><span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span></div>
+                📁 我的文档
+                <div style="margin-left:auto;display:flex;gap:4px;">
+                  <span class="win-btn min" style="border:2px solid var(--red);"></span>
+                  <span class="win-btn max" style="border:2px solid var(--orange);"></span>
+                  <span class="win-btn close" style="border:2px solid var(--red);"></span>
+                </div>
+              </div>
+              <div class="win-body" style="text-align:center;padding:28px;">
+                <div style="display:flex;justify-content:flex-end;gap:12px;margin-bottom:16px;">
+                  <span style="font-size:0.7em;color:var(--red);">← <strong>—</strong> 藏起来</span>
+                  <span style="font-size:0.7em;color:var(--orange);">← <strong>□</strong> 放大/缩小</span>
+                  <span style="font-size:0.7em;color:var(--red);">← <strong>✕</strong> 关掉</span>
+                </div>
+                <p>窗口的内容区域</p>
+              </div>
+            </div>
+          </div>
+          <figcaption>👆 三个按钮从左到右：<strong>—</strong> 藏到任务栏、<strong>□</strong> 放大/缩小、<strong>✕</strong> 关掉</figcaption>
+        </figure>
+        <div class="warn"><strong>别怕点错：</strong>点 ✕ 只是关掉这个窗口，不会删掉任何东西。你的文件还是好好的在电脑里。</div>
+      </div>
+    </li>
+
+  </ol>
+
+  <div class="celebration">
+    <span class="celebration-emoji">🎉</span>
+    <h3>你做到了！你已经认识了电脑屏幕上最重要的 6 样东西</h3>
+    <p>桌面、任务栏、开始菜单、文件、文件夹、窗口——你现在能叫出它们的名字了。</p>
+  </div>
+</section>
+
+<!-- ─── ③ 再看一遍 ─── -->
+<section id="review">
+  <h2>③ 再看一遍：完整流程回放</h2>
+  <p style="color:var(--text-muted);margin-bottom:20px;">快速回看一遍刚才学的内容：</p>
+  <div class="smart-placeholder">
+    <div class="ph-header"><div class="ph-dot"></div> 完整演示流程图</div>
+    <div class="ph-body">
+      <div class="ph-preview">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;font-size:0.9em;">
+          <span style="background:var(--surface);padding:8px 14px;border-radius:20px;">🖥️ 桌面</span>
+          <span style="color:var(--text-muted);">→</span>
+          <span style="background:var(--surface);padding:8px 14px;border-radius:20px;">📏 任务栏</span>
+          <span style="color:var(--text-muted);">→</span>
+          <span style="background:var(--surface);padding:8px 14px;border-radius:20px;">⊞ 开始菜单</span>
+          <span style="color:var(--text-muted);">→</span>
+          <span style="background:var(--surface);padding:8px 14px;border-radius:20px;">📁 双击文件夹</span>
+          <span style="color:var(--text-muted);">→</span>
+          <span style="background:var(--surface);padding:8px 14px;border-radius:20px;">✕ 关闭窗口</span>
+        </div>
+      </div>
+      <p class="ph-note">💡 跟着这个顺序在自己电脑上操作一遍——动手做一次胜过看十遍</p>
+    </div>
+  </div>
+  <div class="try-again"><strong>💡 建议：</strong>看完之后，自己照着做一遍。动手做比光看要记得牢 10 倍。</div>
+</section>
+
+<!-- ─── ④ 常见坑 ─── -->
+<section id="pitfalls">
+  <h2>④ 最容易搞混的 3 件事</h2>
+  <div class="pitfall">
+    <div class="pitfall-title">坑 1：分不清"单击"和"双击"</div>
+    <p style="color:var(--text-muted);">单击（点一下）= 选中，东西变蓝。双击（快速点两下）= 打开，弹出新窗口。</p>
+    <div class="pitfall-fix">如果点了没反应——试试点快一点。两下之间的间隔要很短（不到半秒）。</div>
+  </div>
+  <div class="pitfall">
+    <div class="pitfall-title">坑 2：以为关了窗口就是删了东西</div>
+    <p style="color:var(--text-muted);">点 ✕ 只是把这个窗口关掉，就像合上一本书。书还在，下次打开还能看。</p>
+    <div class="pitfall-fix">想再打开？找到那个文件夹图标，再双击一次就行。</div>
+  </div>
+  <div class="pitfall">
+    <div class="pitfall-title">坑 3：找不到刚才打开的东西去哪了</div>
+    <p style="color:var(--text-muted);">打开的窗口可能被其他窗口挡住了，或者缩到了任务栏上。</p>
+    <div class="pitfall-fix">看屏幕最下面——任务栏上是不是有个亮着的小横条？点它一下，窗口就回来了。</div>
+  </div>
+</section>
+
+<!-- ─── ⑤ 做一遍 ─── -->
+<section id="practice">
+  <h2>⑤ 做一遍：动手练习</h2>
+  <div class="practice-box">
+    <h3>你的练习任务</h3>
+    <div class="practice-task">
+      1. 指一指：你的桌面在哪里？任务栏在哪？开始菜单图标在哪？<br>
+      2. 在桌面上找一个文件夹，双击打开它<br>
+      3. 看看里面有什么文件<br>
+      4. 点右上角的 ✕ 把它关掉<br>
+      5. 再双击一次打开它（这次你知道了——它没有被删掉）
+    </div>
+    <p class="practice-hint">💡 做完了吗？如果 5 步都做到了，你已经比 90% 的电脑新手厉害了。</p>
+  </div>
+</section>
+
+<!-- ─── ⑥ 速查卡 ─── -->
+<section id="cheatsheet">
+  <h2>⑥ 速查卡：打印或截图保存</h2>
+  <div class="cheat-sheet">
+    <h2>🖥️ 电脑屏幕速查卡</h2>
+    <table style="color:#000;">
+      <tr><th style="color:#000;">你看到的东西</th><th style="color:#000;">叫什么名字</th><th style="color:#000;">怎么用</th></tr>
+      <tr><td>一整片画面</td><td><strong>桌面</strong></td><td>放常用东西的地方</td></tr>
+      <tr><td>屏幕最下面一条</td><td><strong>任务栏</strong></td><td>看时间、切换窗口</td></tr>
+      <tr><td>左下角四个方块图标</td><td><strong>开始菜单</strong></td><td>找电脑里所有东西</td></tr>
+      <tr><td>黄色夹子图标</td><td><strong>文件夹</strong></td><td>双击打开，里面放文件</td></tr>
+      <tr><td>照片、文档、表格等</td><td><strong>文件</strong></td><td>双击用对应程序打开</td></tr>
+      <tr><td>右上角 ✕ 按钮</td><td><strong>关闭按钮</strong></td><td>关掉窗口 ≠ 删掉东西</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ─── ⑦ 学到了什么 ─── -->
+<section id="learned">
+  <h2>⑦ 检查一下：你学会了吗？</h2>
+  <p style="color:var(--text-muted);margin-bottom:16px;">一条一条在心里确认——能做到的打勾：</p>
+  <ul class="learned-list">
+    <li>我能指出桌面在哪里，任务栏在哪里</li>
+    <li>我能找到左下角的开始菜单图标</li>
+    <li>我能区分文件和文件夹（文件夹是黄色的夹子图标）</li>
+    <li>我能双击打开一个文件夹，看到里面的东西</li>
+    <li>我能认出窗口右上角的三个按钮（— □ ✕）</li>
+    <li>我知道关掉窗口 ≠ 删掉东西</li>
+  </ul>
+  <div class="try-again" style="margin-top:32px;">
+    <strong>🤔 有不会的吗？</strong> 翻回去看看那一步的示意图，再照着做一次。多练两次就会了。<br>
+    <span style="font-size:0.85em;color:var(--text-muted);">下一课：<a href="open-powershell.html">第一次打开 PowerShell →</a></span>
+  </div>
+</section>
+
+<section class="quiz-section" data-topic="pc-basics">
+  <div id="quiz-container"></div>
+</section>
+
+</div>
+
+<footer class="site-footer">
+  <p>Claude Code 学习站 · 预备课 · 零基础也能学会</p>
+  <p style="margin-top:4px;"><a href="../index.html">返回首页</a></p>
+</footer>
+
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/site-config.js"></script>
+<script src="../assets/js/anti-theft.js"></script>
+</body>
+</html>

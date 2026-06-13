@@ -1,0 +1,4 @@
+- [Claude Code Learning Site Project Diary](claude-code-learning-site-project-diary.md) — 项目日记：每会话的进度、决策、产出、下一步
+- [Learning Site Technical Facts](learning-site-technical-facts.md) — 关键数据速查：域名/部署/激活码/定价/密码/Git
+- [Learning Site Paying User Persona](learning-site-paying-user-persona.md) — 付费用户画像：40+岁个体户、零基础、Windows
+- [Docs Sync Required](docs-sync-required.md) — 每次改完代码必须同步 docs/ 目录

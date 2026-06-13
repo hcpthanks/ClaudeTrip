@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="手把手教你用 Claude Code 写朋友圈卖货文案——从打开 PowerShell 到拿到可用的文案，每一步都有截图。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>">
+<title>让 AI 帮你写文案 — 应用课</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<link rel="stylesheet" href="../assets/css/paywall.css">
+<link rel="stylesheet" href="../assets/css/quiz.css">
+<style>
+  .module-nav { position: sticky; top: 64px; z-index: 50; }
+  .step-demo { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-lg); margin: var(--space-md) 0; }
+  .step-demo h3 { color: var(--lv-applied); }
+  .ai-output { background: #1a2a1e; border: 1px solid var(--green); border-radius: var(--radius); padding: 16px; margin: 12px 0; color: var(--green); font-size: 0.95em; line-height: 1.7; }
+  .fix-demo { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin: 10px 0; }
+  .fix-demo .fix-label { font-size: 0.75em; color: var(--orange); text-transform: uppercase; letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+
+<script src="../assets/js/nav.js"></script>
+<script>document.write(renderNav('ai-writing'));</script>
+
+<header class="hero" style="padding:48px 24px;">
+  <h1>💼 动手：让 AI 帮你写朋友圈卖货文案</h1>
+  <p class="subtitle">从打开 PowerShell 到拿到能发的文案——全程跟着做，不超过5分钟</p>
+</header>
+
+<div class="container" role="main">
+
+<nav class="module-nav">
+  <a href="#core">① 今天的目标</a>
+  <a href="#modes">② 一步一步来</a>
+  <a href="#scenarios">③ 改到满意</a>
+  <a href="#good-bad">④ 改文案万能话术</a>
+  <a href="#workflow">⑤ 完整流程</a>
+  <a href="#practice">⑥ 练习</a>
+  <a href="#quick">⑦ 快速掌握</a>
+  <a href="#cheatsheet">⑧ 速查卡</a>
+  <a href="#summary">⑨ 总结</a>
+</nav>
+
+<!-- ─── ① ─── -->
+<section id="core">
+  <h2>① 今天你就能学会的事</h2>
+  <div class="card" style="font-size:1.15em;font-weight:700;color:var(--accent);text-align:center;padding:28px;">
+    用 AI 帮你写一段能直接发朋友圈的卖货文案。<br>
+    全程不超过 5 分钟，跟着做就行。
+  </div>
+  <div class="analogy-card" style="background:linear-gradient(135deg, #1a2a2e 0%, var(--surface) 50%);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-xl);margin:var(--space-lg) 0;">
+    <h3 style="color:var(--lv-applied);">✍️ 想象你雇了一个文案写手</h3>
+    <p>你告诉他：卖什么、卖给谁、什么风格。他写好给你看。不满意？让他改。改到满意为止。</p>
+    <p style="color:var(--text-muted);margin-top:8px;">AI 就是这个写手——但不要工资，30秒出稿，改多少次都不烦。</p>
+  </div>
+</section>
+
+<!-- ─── ② ─── -->
+<section id="modes">
+  <h2>② 一步一步来：从零到拿到文案</h2>
+
+  <div class="step-demo">
+    <h3>第1步：打开 PowerShell</h3>
+    <p>预备课学过了——搜索框输入 powershell，点图标。</p>
+    <figure class="screenshot"><div class="screenshot-frame"><div class="terminal-screenshot"><div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div><div class="term-body"><div><span class="term-prompt">PS C:\Users\老王></span> <span class="term-cursor"></span></div></div></div></div></figure>
+    <div class="step-action" style="margin-top:10px;color:var(--green);">✅ 你应该看到：一个蓝色（或黑色）的窗口，里面有个闪烁的光标</div>
+  </div>
+
+  <div class="step-demo">
+    <h3>第2步：输入 claude 启动 AI</h3>
+    <p>在闪烁的光标旁边打字：<code>claude</code>，然后按回车。</p>
+    <figure class="screenshot"><div class="screenshot-frame"><div class="terminal-screenshot"><div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div><div class="term-body"><div><span class="term-prompt">PS C:\Users\老王></span> <span class="term-cmd">claude</span></div><div style="margin-top:4px;color:#c0c0c0;">启动 Claude Code...</div><div style="color:var(--green);margin-top:4px;">🤖 Claude: 你好！有什么我可以帮你的？</div><div><span class="term-cursor"></span></div></div></div></div></figure>
+    <div class="step-action" style="margin-top:10px;color:var(--green);">✅ 你应该看到：AI 跟你打招呼了！说明启动成功</div>
+  </div>
+
+  <div class="step-demo">
+    <h3>第3步：把需求发过去</h3>
+    <p>用上节课学的三句话公式，打字发过去。</p>
+    <figure class="screenshot"><div class="screenshot-frame"><div class="terminal-screenshot"><div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div><div class="term-body"><div style="color:var(--text-muted);margin-bottom:4px;">🤖 Claude: 你好！有什么我可以帮你的？</div><div><span class="term-prompt">></span> <span style="color:#c0c0c0;">我是卖茶叶的，帮我写一段朋友圈文案介绍新到的龙井，要口语化、80字左右、让人看了想买</span></div></div></div></div></figure>
+  </div>
+
+  <div class="step-demo">
+    <h3>第4步：看 AI 写的文案</h3>
+    <div class="ai-output">
+      🍵 刚到的新茶！今年春天的龙井，芽头嫩、茶汤清、回甘甜。<br>
+      泡一杯满屋都是茶香——这才是春天的味道。<br>
+      数量不多，卖完等下年。想尝鲜的私我，给你留一罐。<br>
+      #明前龙井 #新茶到店 #手慢无
+    </div>
+    <div class="step-action" style="margin-top:10px;color:var(--green);">✅ 你看看——是不是可以直接发了？不满意的话，看下一步。</div>
+  </div>
+</section>
+
+<!-- ─── ③ ─── -->
+<section id="scenarios">
+  <h2>③ 不满意？让它改</h2>
+  <p style="color:var(--text-muted);margin-bottom:16px;">AI 写的第一版不一定完美——这很正常。告诉它哪里不行，它帮你改。</p>
+
+  <div class="fix-demo">
+    <div class="fix-label">第1次修改</div>
+    <p><strong>你说：</strong>"太像广告了，改成更日常、更像朋友分享的"</p>
+    <div class="ai-output">
+      今天泡了杯新到的龙井，真的香！🍵<br>
+      热水的蒸汽一上来，满屋子都是茶的味道。<br>
+      朋友来店里喝了一杯，直接说"给我留两罐"。<br>
+      今年的春茶就这么点，想要的说一声，我先帮你留着。
+    </div>
+  </div>
+
+  <div class="fix-demo">
+    <div class="fix-label">第2次修改</div>
+    <p><strong>你说：</strong>"太长了，缩到50字以内，加个表情"</p>
+    <div class="ai-output">
+      🍵 新龙井到店！泡一杯满屋茶香，朋友喝了直接说"给我留两罐"。量不多，想要的私我～
+    </div>
+  </div>
+
+  <div class="info"><strong>改多少次都行。</strong>AI 不会烦，不会嫌你啰嗦。改到你觉得"嗯，这个不错"为止。</div>
+</section><!-- ══════ 付费墙 ══════ -->
+<div class="paywall-container" data-topic="ai-writing">
+  <div class="paywall-content">
+
+
+
+<!-- ─── ④ ─── -->
+<section id="good-bad">
+  <h2>④ 改文案的万能话术</h2>
+  <p style="color:var(--text-muted);margin-bottom:16px;">收藏下面这些话，每次改文案直接用：</p>
+  <table>
+    <tr><th>你觉得不满意的地方</th><th>就这样跟 AI 说</th></tr>
+    <tr><td>太官方了、像广告</td><td>"改成更日常的，像朋友聊天那样"</td></tr>
+    <tr><td>太长了</td><td>"太长了，缩到50字以内"</td></tr>
+    <tr><td>不带劲、不吸引人</td><td>"加一个吸引人的开头，让人想往下看"</td></tr>
+    <tr><td>不像我说话的风格</td><td>"太正式了，改成更口语化，像我平时说话那样"</td></tr>
+    <tr><td>没有号召力</td><td>"结尾加一句让人想马上买的，比如'数量不多'或'手慢无'"</td></tr>
+    <tr><td>没有表情/emoji</td><td>"加几个相关的表情符号，看起来更活泼"</td></tr>
+    <tr><td>想换个方向</td><td>"换一种风格，这次走____路线"（温馨/搞笑/文艺/直接）</td></tr>
+  </table>
+</section>
+
+<!-- ─── ⑤ ─── -->
+<section id="workflow">
+  <h2>⑤ 完整流程回顾</h2>
+  <div class="workflow" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:16px 0;overflow-x:auto;">
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:100px;">
+      <div class="wf-cmd" style="font-weight:700;color:var(--lv-applied);">打开 PS</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:100px;">
+      <div class="wf-cmd" style="font-weight:700;color:var(--lv-applied);">启动 AI</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:100px;">
+      <div class="wf-cmd" style="font-weight:700;color:var(--lv-applied);">三句话需求</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:100px;">
+      <div class="wf-cmd" style="font-weight:700;color:var(--lv-applied);">看结果</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:100px;">
+      <div class="wf-cmd" style="font-weight:700;color:var(--lv-applied);">改到满意</div>
+    </div>
+    <span style="color:var(--text-muted);">→</span>
+    <div class="wf-step" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;white-space:nowrap;min-width:100px;">
+      <div class="wf-cmd" style="font-weight:700;color:var(--green);">发朋友圈！</div>
+    </div>
+  </div>
+  <div class="tip">从打开 PowerShell 到发出朋友圈，全程不超过 5 分钟。第一次可能慢一点——第二第三次就快了。</div>
+</section>
+
+
+<section id="practice">
+  <h2>⑥ 动手练习</h2>
+  <p style="margin-bottom:16px;">打开 Claude Code，试试写你自己的文案 👇</p>
+  <div class="card" style="background:var(--bg);border:1px dashed var(--lv-applied);padding:24px;">
+    <p style="font-family:var(--font-mono);line-height:2;color:var(--text-muted);">
+      <strong style="color:var(--lv-applied);">任务：</strong>用 AI 写一段你真实需要的文案<br><br>
+      1. 想好你要卖什么：__________<br>
+      2. 想好风格：__________<br>
+      3. 想好字数：__________<br>
+      4. 打开 PowerShell → claude → 发过去<br>
+      5. 看结果 → 不满意就改 → 改到满意
+    </p>
+  </div>
+</section>
+
+<section id="quick">
+  <h2>⑦ 快速掌握清单</h2>
+  <div class="card">
+    <ol style="padding-left:20px;line-height:2.2;">
+      <li><input type="checkbox">打开 PowerShell（搜索框输入 powershell）</li>
+      <li><input type="checkbox">输入 claude 启动 AI</li>
+      <li><input type="checkbox">用三句话公式把你的需求发过去</li>
+      <li><input type="checkbox">看 AI 写的文案，不满意就改</li>
+      <li><input type="checkbox">改到满意，复制出来，发朋友圈！</li>
+    </ol>
+  </div>
+</section>
+
+<section id="cheatsheet">
+  <h2>⑧ 速查卡</h2>
+  <div class="cheat-sheet">
+    <h2 style="font-size:1.2em;">写文案完整模板</h2>
+    <table style="color:#111;">
+      <tr><th style="color:#555;">复制这个改一下</th></tr>
+      <tr><td style="font-family:var(--font-mono);">我是卖<span style="background:#ffe082;">【你的商品】</span>的，帮我写一段朋友圈文案介绍<span style="background:#ffe082;">【具体产品】</span>，要<span style="background:#ffe082;">【口语化/温馨/搞笑】</span>、<span style="background:#ffe082;">【50/80/100】</span>字左右、让人看了想买</td></tr>
+    </table>
+    <p style="font-size:0.8em;margin-top:12px;color:#555;">💡 把黄色部分换成你自己的内容，发给AI</p>
+  </div>
+</section>
+
+<section id="summary" class="summary-section">
+  <h2>⑨ 总结</h2>
+  <div class="summary-grid">
+    <div class="scene">
+      <h3>🎯 记住</h3>
+      <ul>
+        <li><strong>打开 PS → 输入 claude → 发需求 → 看结果 → 改到满意</strong></li>
+        <li><strong>AI 写的第一版就是草稿</strong> — 不满意很正常，让它改</li>
+        <li><strong>改文案有万能话术</strong> — "口语一点""短一点""加表情"</li>
+      </ul>
+    </div>
+    <div class="mistake">
+      <h3>⚠️ 别犯</h3>
+      <ul>
+        <li><strong>AI 写的直接发</strong> — 看一眼，改一改，加上你自己的味道</li>
+        <li><strong>改了一次还不行就放弃了</strong> — 继续让它改，改到满意为止</li>
+        <li><strong>怕"我不会写文案"</strong> — 你不需要会写文案，你只需要会告诉AI你要什么</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+  </div><!-- .paywall-content -->
+  <div class="paywall-fade"></div>
+  <div class="paywall-card">
+    <div class="lock-icon">🔒</div>
+    <h3>以下内容需付费解锁</h3>
+    <div class="locked-modules">④ 改文案话术 · ⑤ 完整流程 · ⑥ 练习 · ⑦ 快速掌握 · ⑧ 速查卡 · ⑨ 总结</div>
+    <div class="paywall-actions">
+      <button class="paywall-btn paywall-btn-single">
+        <span class="price">¥5</span>
+        <span class="price-label">解锁本页全部内容</span>
+      </button>
+      <button class="paywall-btn paywall-btn-all">
+        <span class="price">¥99</span>
+        <span class="price-label">永久解锁全站 · 含进阶专家</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<section class="quiz-section" data-topic="ai-writing">
+  <div id="quiz-container"></div>
+</section>
+
+</div>
+
+<footer class="site-footer">
+  <p><a href="../index.html">← 返回首页</a></p>
+</footer>
+
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/paywall.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/site-config.js"></script>
+<script src="../assets/js/anti-theft.js"></script>
+</body>
+</html>
