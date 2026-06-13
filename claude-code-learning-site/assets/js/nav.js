@@ -139,6 +139,7 @@ function renderNav(activeId) {
     '      <a href="../index.html#beginner"'   + (section === 'beginner'   ? ' class="active"' : '') + '>入门</a>\n' +
     '      <a href="../index.html#intermediate"' + (section === 'intermediate' ? ' class="active"' : '') + '>进阶</a>\n' +
     '    </div>\n' +
+    '    <a href="../pay/recover.html" class="nav-recover">🔑 激活码</a>\n' +
     '    <a href="../pay/pay.html" class="nav-cta">升级</a>\n' +
     '    <button class="nav-toggle" id="nav-toggle" aria-label="菜单">\n' +
     '      <span></span><span></span><span></span>\n' +
@@ -150,7 +151,9 @@ function renderNav(activeId) {
     '    <a href="../index.html#applied">💼 应用课</a>\n' +
     '    <a href="../index.html#beginner">🌱 入门</a>\n' +
     '    <a href="../index.html#intermediate">⚡ 进阶</a>\n' +
+    '    <a href="../pay/recover.html">🔑 激活码</a>\n' +
     '    <a href="../pay/pay.html" class="mobile-cta">⚡ 升级</a>\n' +
+    '    <a href="../pay/recover.html">🔑 激活码</a>\n' +
     '  </div>\n' +
   '</nav>';
 }
