@@ -1,8 +1,8 @@
 const { defineConfig } = require('@playwright/test');
 
 module.exports = defineConfig({
-  testDir: './serverless/activate',
-  testMatch: 'responsive-test.js',
+  testDir: '.',
+  testMatch: ['tests/pre-basics-integrity.spec.js', 'tests/payment-security.spec.js', 'serverless/activate/responsive-test.js'],
   timeout: 30000,
   use: {
     headless: true,
