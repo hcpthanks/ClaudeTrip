@@ -42,7 +42,7 @@ const PAGE_TITLES = {
   'first-chat': '第一次跟 AI 对话',
   'file-basics': '文件与文件夹基础',
   'troubleshoot': '遇到错误怎么办',
-  'deepseek': { title: '让 Claude Code 在国内也能用', h1: '让 Claude Code 在国内也能用' }
+  'deepseek': { title: '国内免魔法使用 Claude Code', h1: '国内免魔法使用 Claude Code' }
 };
 
 // Helper: get expected title text for a topic
