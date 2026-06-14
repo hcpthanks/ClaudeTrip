@@ -217,17 +217,17 @@
     },
     deepseek: {
       handwritingContent: [
-        'Agent产品 = "壳" + "大脑"：Claude Code是壳（负责干活），DeepSeek是大脑（负责思考）',
-        '用Workbuddy装Node.js/Git/Claude Code：说人话"帮我安装XXX"，它帮你执行',
-        'ccswitch = 模型转换器，DeepSeek API Key = 钥匙，模型名要改成 deepseek-v4-flash[1m]',
-        'VS Code + Claude Code插件 = 可视化驾驶舱，CLAUDE.md = AI的员工档案，权限模式 = 安全锁'
+        'Claude Code是车壳，DeepSeek是发动机——车壳负责干活，发动机负责思考',
+        '去 chat.deepseek.com 注册 → API开放平台 → API Keys → 创建Key → 立刻复制保存',
+        '装ccswitch：npm install -g ccswitch → 填API Key → 改模型名为 deepseek-v4-flash[1m]',
+        '验证成功：问"你是什么模型？" → 回答提到DeepSeek → 搞定！'
       ],
       questions: [
-        { q: 'Claude Code 是"壳"，那"大脑"（大模型）可以是哪个？',
-          opts: ['只能是 Claude', 'DeepSeek 或其他大模型都可以', '只能是 ChatGPT', '不需要大模型'],
-          ans: 1 },
-        { q: 'API Key 创建后，关掉弹窗之前必须做什么？',
-          opts: ['截图发朋友圈', '马上复制保存到记事本——关了再也看不到了', '不用管它', '拍照留念'],
+        { q: 'Claude Code 和 DeepSeek 的关系是什么？',
+          opts: ['Claude Code是车壳（负责干活），DeepSeek是发动机（负责思考）', '它们是同一个东西', 'DeepSeek是车壳，Claude Code是发动机', '没有关系'],
+          ans: 0 },
+        { q: 'DeepSeek 的 API Key 创建后，关掉弹窗之前必须做什么？',
+          opts: ['截图发朋友圈', '马上复制保存到记事本——关了再也看不到了', '拍照留念', '不用管它'],
           ans: 1 },
         { q: 'ccswitch 里 DeepSeek 的模型名应该改成什么？',
           opts: ['DeepSeek-V3.2', 'claude-opus-4-8', 'deepseek-v4-flash[1m]', 'gpt-4o'],
@@ -235,8 +235,8 @@
         { q: '怎么验证 DeepSeek 已经接入成功了？',
           opts: ['看桌面有没有新图标', '问 AI "你是什么模型？"，回答提到 DeepSeek', '重启电脑', '检查网速'],
           ans: 1 },
-        { q: 'CLAUDE.md 文件的作用是什么？',
-          opts: ['只是装饰文件', '告诉 AI 你的习惯和偏好——就像一份员工档案', '存密码用的', '写日记用的'],
+        { q: 'API Key 提示"余额不足"怎么办？',
+          opts: ['重新安装 Claude Code', '去 DeepSeek API 平台充值（充10块够用几个月）', '换一台电脑', '不用管，等几天就好了'],
           ans: 1 }
       ]
     },

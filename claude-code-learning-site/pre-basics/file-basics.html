@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="理解文件路径是什么、怎么用 cd 命令切换文件夹、怎么用 ls 查看文件。用快递地址比喻路径，零基础也能懂。">
+<meta name="description" content="理解文件路径是什么、怎么用 cd 命令切换文件夹、怎么用 ls 查看文件。Windows 10 零基础也能懂。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📁</text></svg>">
 <title>文件与文件夹基础 — 预备课</title>
 <link rel="stylesheet" href="../assets/css/common.css">
@@ -19,13 +19,13 @@
 
 <header class="hero" style="padding:48px 24px;">
   <h1>📁 文件与文件夹基础</h1>
-  <p class="subtitle">学会在电脑里"找路"——知道文件在哪，Claude Code 才能帮你干活</p>
+  <p class="subtitle">学会在电脑里"找路"——知道文件在哪，Claude Code 才能帮你干活<br><span style="font-size:0.85em;color:var(--lv-prebasics);">Windows 10 系统，命令简单。</span></p>
 </header>
 
 <div class="container" role="main">
 
 <div class="prereq-badge">
-  📖 先修课：<a href="computer-basics.html">认识你的电脑</a>（你需要知道什么是文件和文件夹）
+  📖 先修课：<a href="computer-basics.html">认识你的电脑</a> + <a href="open-powershell.html">打开命令行</a>（你需要知道什么是文件夹，以及怎么打开命令行）
 </div>
 
 <nav class="module-nav">
@@ -47,15 +47,14 @@
   </div>
 
   <div class="analogy-card" style="background:linear-gradient(135deg, #1a2e2e 0%, var(--surface) 50%);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-xl);margin:var(--space-lg) 0;">
-    <h3 style="color:var(--cyan);">📦 快递地址 vs 文件路径</h3>
+    <h3 style="color:var(--cyan);">🔧 用老王的五金店来理解路径</h3>
     <table>
-      <tr><th style="width:35%">快递地址</th><th>文件路径</th></tr>
-      <tr><td>中国 / 广东省 / 深圳市 / 南山区 / XX路 / 3号楼 / 502室</td>
-      <td>C: / Users / 你的名字 / Desktop / 工作文档 / 报告.docx</td></tr>
+      <tr><th style="width:35%">在店里找货</th><th>在电脑里找文件</th></tr>
+      <tr><td>五金店 → A区 → 第3排 → 第2层 → 螺丝刀</td>
+      <td>C:\Users\老王\Desktop\进货单.xlsx</td></tr>
     </table>
     <p style="color:var(--text-muted);margin-top:12px;font-size:0.9em;">
-      一样的道理——从大到小，一层一层定位。每一层用 <strong>\</strong>（反斜杠）隔开。<br>
-      C: 是你的硬盘，Users 是"用户"文件夹，"你的名字"是你电脑的账户名……
+      一样的道理——从大到小，一层一层定位。Windows 用 <strong>\</strong>（反斜杠）。就像你在店里找货：先走到A区，再找第3排，再看第2层——路径就是这条路线。
     </p>
   </div>
 
@@ -67,7 +66,7 @@
 <!-- ─── ② ─── -->
 <section id="walkthrough">
   <h2>② 一步一步来：学会三个命令</h2>
-  <p style="color:var(--text-muted);margin-bottom:24px;">今天只学三个命令，但它们是所有操作的基础。</p>
+  <p style="color:var(--text-muted);margin-bottom:24px;">今天只学三个命令，但它们是所有操作的基础。<br><span style="font-size:0.78em;color:var(--text-faint);">💡 示意图仅供参考。</span></p>
 
   <div class="card" style="margin-bottom:24px;text-align:center;">
     <table>
@@ -83,22 +82,25 @@
       <div class="step-num">1</div>
       <div class="step-body">
         <h3>先看看你在哪里：输入 pwd</h3>
-        <div class="step-action">打开 PowerShell，输入 pwd，按回车</div>
+        <div class="step-action">打开命令行（PowerShell），输入 pwd，按回车</div>
         <figure class="screenshot">
           <div class="screenshot-frame">
-            <div class="terminal-screenshot">
-              <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
-              <div class="term-body">
-                <div><span class="term-prompt">PS C:\Users\张三&gt;</span> <span class="term-cmd">pwd</span></div>
-                <div style="margin-top:6px;"><span class="term-highlight">C:\Users\张三</span></div>
-                <div class="term-note">📍 这行告诉你：你现在在 C 盘 → Users 文件夹 → 张三 文件夹里</div>
+            <div class="platform-col">
+              <div class="platform-label win">⊞ Windows — PowerShell</div>
+              <div class="terminal-screenshot">
+                <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+                <div class="term-body">
+                  <div><span class="term-prompt">PS C:\Users\老王&gt;</span> <span class="term-cmd">pwd</span></div>
+                  <div style="margin-top:6px;"><span class="term-highlight">C:\Users\张三</span></div>
+                  <div class="term-note">📍 你现在在 C 盘 → Users 文件夹 → 张三 文件夹里</div>
+                </div>
               </div>
             </div>
           </div>
           <figcaption>👆 pwd 告诉你当前在哪个文件夹。就像手机地图上的"你在这里"蓝点。</figcaption>
         </figure>
         <div class="checkpoint">
-          <p>你看到的路径是什么？通常是 <code>C:\Users\你的名字</code>——这是你的"用户文件夹"，PowerShell 默认从这里开始。</p>
+          <p>你看到的路径是什么？通常是 <code>C:\Users\你的名字</code>。</p>
         </div>
       </div>
     </li>
@@ -110,25 +112,28 @@
         <div class="step-action">输入 ls，按回车</div>
         <figure class="screenshot">
           <div class="screenshot-frame">
-            <div class="terminal-screenshot">
-              <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
-              <div class="term-body">
-                <div><span class="term-prompt">PS C:\Users\张三&gt;</span> <span class="term-cmd">ls</span></div>
-                <div style="margin-top:6px;line-height:1.8;">
-                  <span class="term-highlight">Desktop</span><br>
-                  <span class="term-highlight">Documents</span><br>
-                  Downloads<br>
-                  Pictures<br>
-                  Videos
+            <div class="platform-col">
+              <div class="platform-label win">⊞ Windows — PowerShell</div>
+              <div class="terminal-screenshot">
+                <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+                <div class="term-body">
+                  <div><span class="term-prompt">PS C:\Users\老王&gt;</span> <span class="term-cmd">ls</span></div>
+                  <div style="margin-top:6px;line-height:1.8;">
+                    <span class="term-highlight">Desktop</span><br>
+                    <span class="term-highlight">Documents</span><br>
+                    Downloads<br>
+                    Pictures<br>
+                    Videos
+                  </div>
+                  <div class="term-note">📋 看到了这个文件夹里所有的东西</div>
                 </div>
-                <div class="term-note">📋 黄色高亮的是文件夹，你可以 cd 进去</div>
               </div>
             </div>
           </div>
           <figcaption>👆 ls 就像打开一个抽屉看一眼里面有什么——但它只是"看"，不会改变任何东西。</figcaption>
         </figure>
         <div class="checkpoint">
-          <p>你看到 Desktop（桌面）、Documents（文档）、Downloads（下载）这些名字了吗？它们都是文件夹。</p>
+          <p>你看到 Desktop、Documents、Downloads 这些名字了吗？它们都是文件夹。</p>
         </div>
       </div>
     </li>
@@ -137,23 +142,26 @@
       <div class="step-num">3</div>
       <div class="step-body">
         <h3>进入桌面文件夹：cd Desktop</h3>
-        <div class="step-action">输入 cd Desktop，按回车。然后再输入 pwd 确认你进来了。</div>
+        <div class="step-action">输入 cd Desktop，按回车。然后再输入 pwd 确认你进来了</div>
         <figure class="screenshot">
           <div class="screenshot-frame">
-            <div class="terminal-screenshot">
-              <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
-              <div class="term-body">
-                <div><span class="term-prompt">PS C:\Users\张三&gt;</span> <span class="term-cmd">cd Desktop</span></div>
-                <div style="margin-top:4px;"><span class="term-prompt">PS C:\Users\张三\Desktop&gt;</span> <span class="term-cmd">pwd</span></div>
-                <div style="margin-top:6px;"><span class="term-highlight">C:\Users\张三\Desktop</span></div>
-                <div class="term-note">🚶 注意路径变了！从 C:\Users\张三 → C:\Users\张三\Desktop</div>
+            <div class="platform-col">
+              <div class="platform-label win">⊞ Windows — PowerShell</div>
+              <div class="terminal-screenshot">
+                <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+                <div class="term-body">
+                  <div><span class="term-prompt">PS C:\Users\老王&gt;</span> <span class="term-cmd">cd Desktop</span></div>
+                  <div style="margin-top:4px;"><span class="term-prompt">PS C:\Users\张三\Desktop&gt;</span> <span class="term-cmd">pwd</span></div>
+                  <div style="margin-top:6px;"><span class="term-highlight">C:\Users\张三\Desktop</span></div>
+                  <div class="term-note">🚶 路径变了！从 C:\Users\张三 进到了 Desktop</div>
+                </div>
               </div>
             </div>
           </div>
           <figcaption>👆 cd Desktop 的意思是"进入 Desktop（桌面）文件夹"。就像你从走廊走进了"桌面"这个房间。</figcaption>
         </figure>
         <div class="checkpoint">
-          <p>路径变了吗？现在应该是 <code>C:\Users\你的名字\Desktop</code>。</p>
+          <p>路径变了吗？应该是 <code>C:\Users\你的名字\Desktop</code>。</p>
         </div>
       </div>
     </li>
@@ -165,17 +173,20 @@
         <div class="step-action">现在你在桌面文件夹里了，输入 ls 看看桌面上有什么文件</div>
         <figure class="screenshot">
           <div class="screenshot-frame">
-            <div class="terminal-screenshot">
-              <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
-              <div class="term-body">
-                <div><span class="term-prompt">PS C:\Users\张三\Desktop&gt;</span> <span class="term-cmd">ls</span></div>
-                <div style="margin-top:6px;line-height:1.8;">
-                  📄 简历.docx<br>
-                  📊 项目计划.xlsx<br>
-                  📁 工作文档<br>
-                  🖼️ 照片.png
+            <div class="platform-col">
+              <div class="platform-label win">⊞ Windows — PowerShell</div>
+              <div class="terminal-screenshot">
+                <div class="term-titlebar"><span class="term-title">Windows PowerShell</span><span class="term-btns"><span class="term-btn min">─</span><span class="term-btn max">□</span><span class="term-btn close">×</span></span></div>
+                <div class="term-body">
+                  <div><span class="term-prompt">PS C:\Users\张三\Desktop&gt;</span> <span class="term-cmd">ls</span></div>
+                  <div style="margin-top:6px;line-height:1.8;">
+                    📄 进货单.xlsx<br>
+                    📊 库存表.xlsx<br>
+                    📝 客户名单.docx<br>
+                    📁 店里的单据
+                  </div>
+                  <div class="term-note">🖥️ 这些就是桌面上能看到的所有文件和文件夹</div>
                 </div>
-                <div class="term-note">🖥️ 这些就是桌面上能看到的所有文件和文件夹</div>
               </div>
             </div>
           </div>
@@ -192,7 +203,7 @@
         <div class="code-block">cd ..</div>
         <p style="margin-top:8px;font-size:0.9em;color:var(--text-muted);">两个点 .. = 上一层。cd .. = 回到上一级文件夹。</p>
         <div class="checkpoint">
-          <p>输入 <code>pwd</code> 确认你回来了——应该又回到 <code>C:\Users\你的名字</code> 了。</p>
+          <p>输入 <code>pwd</code> 确认你回来了——应该回到 <code>C:\Users\你的名字</code>。</p>
         </div>
       </div>
     </li>
@@ -223,7 +234,7 @@
             <span style="background:var(--surface);padding:6px 10px;border-radius:16px;">⬆️ cd ..</span>
           </div>
         </div>
-        <p class="ph-note">💡 在 PowerShell 里照着敲一遍——pwd、ls、cd 是你最常用的三个命令</p>
+        <p class="ph-note">💡 在命令行里照着敲一遍。</p>
       </div>
     </div>
   </div>
@@ -234,8 +245,8 @@
   <h2>④ 最容易遇到的 3 个问题</h2>
   <div class="pitfall">
     <div class="pitfall-title">坑 1：cd 一个文件夹说"找不到路径"</div>
-    <p style="color:var(--text-muted);">最常见的原因：文件夹名字拼错了，或者中间有空格。</p>
-    <div class="pitfall-fix">先用 <code>ls</code> 看看当前文件夹里到底有什么——文件夹名必须完全一样（包括大小写）。如果名字里有空格（比如 "My Documents"），用引号包起来：<code>cd "My Documents"</code>。</div>
+    <p style="color:var(--text-muted);">最常见的原因：文件夹名字拼错了，或者中间有空格。cd错地方了就像在店里走错了货架——</p>
+    <div class="pitfall-fix">先用 <code>ls</code> 看看当前文件夹里到底有什么——文件夹名必须完全一样。如果名字里有空格，用引号包起来：<code>cd "My Documents"</code>。想退回来？输入 <code>cd ..</code> 就行——不会丢东西，就像从走错的货架退回来。</div>
   </div>
   <div class="pitfall">
     <div class="pitfall-title">坑 2：不知道自己在哪里了</div>
@@ -244,8 +255,8 @@
   </div>
   <div class="pitfall">
     <div class="pitfall-title">坑 3：路径太长看不懂</div>
-    <p style="color:var(--text-muted);">像 C:\Users\名字\Documents\Projects\2024\notes.txt 这种。</p>
-    <div class="pitfall-fix">从右往左读：最后的 notes.txt 是文件名，2024 是它所在的文件夹，Projects 是 2024 的上一层……一层一层往上推。</div>
+    <p style="color:var(--text-muted);">像 C:\Users\名字\Documents\Projects\notes.txt。</p>
+    <div class="pitfall-fix">从右往左读：最后的 notes.txt 是文件名，Projects 是它所在的文件夹……一层一层往上推。</div>
   </div>
 </section>
 
@@ -255,7 +266,7 @@
   <div class="practice-box">
     <h3>你的练习任务</h3>
     <div class="practice-task">
-      1. 打开 PowerShell，输入 <code>pwd</code>——看看你在哪<br>
+      1. 打开命令行，输入 <code>pwd</code>——看看你在哪<br>
       2. 输入 <code>ls</code>——看看这里有什么<br>
       3. <code>cd Desktop</code>——进入桌面<br>
       4. <code>ls</code>——看看桌面上有什么<br>
@@ -274,11 +285,10 @@
     <h2>📁 文件路径速查卡</h2>
     <table style="color:#000;">
       <tr><th style="color:#000;">命令</th><th style="color:#000;">作用</th><th style="color:#000;">例子</th></tr>
-      <tr><td><code>pwd</code></td><td>显示当前文件夹</td><td><code>C:\Users\张三</code></td></tr>
-      <tr><td><code>ls</code></td><td>列出文件夹里的内容</td><td>Desktop, Documents, ...</td></tr>
+      <tr><td><code>pwd</code></td><td>显示当前文件夹</td><td><code>C:\Users\老王</code></td></tr>
+      <tr><td><code>ls</code></td><td>列出文件夹里的内容</td><td>Desktop, Documents...</td></tr>
       <tr><td><code>cd 文件夹名</code></td><td>进入那个文件夹</td><td><code>cd Desktop</code></td></tr>
-      <tr><td><code>cd ..</code></td><td>回到上一级</td><td>从 Desktop 回到 Users</td></tr>
-      <tr><td><code>cd \</code></td><td>回到最顶层（C:\）</td><td>直接跳回根目录</td></tr>
+      <tr><td><code>cd ..</code></td><td>回到上一级</td><td>从 Desktop 回 Users</td></tr>
     </table>
   </div>
 </section>
@@ -292,9 +302,10 @@
     <li>我能用 pwd 查看自己在哪个文件夹</li>
     <li>我能用 ls 查看文件夹里有什么</li>
     <li>我能用 cd 进入文件夹，用 cd .. 退出</li>
+    <li>我知道 Windows 路径用 \，命令很简单</li>
   </ul>
   <div class="try-again" style="margin-top:32px;">
-    <strong>🤔 还没记住？</strong> 正常——这三个命令需要反复用才能记住。每次打开 PowerShell 的时候都先打一遍 pwd + ls。<br>
+    <strong>🤔 还没记住？</strong> 正常——这三个命令需要反复用才能记住。每次打开命令行的时候都先打一遍 pwd + ls。<br>
     <span style="font-size:0.85em;color:var(--text-muted);">下一课：<a href="when-things-go-wrong.html">遇到错误怎么办 →</a></span>
   </div>
 </section>
@@ -313,5 +324,6 @@
 <script src="../assets/js/quiz.js"></script>
 <script src="../assets/js/site-config.js"></script>
 <script src="../assets/js/anti-theft.js"></script>
+<script src="../assets/js/common.js"></script>
 </body>
 </html>

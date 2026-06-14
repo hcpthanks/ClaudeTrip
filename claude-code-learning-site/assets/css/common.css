@@ -967,6 +967,25 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   border-radius: 4px; font-size: 0.88em; color: #333; margin: 4px;
 }
 
+/* ── macOS components removed (Windows-only site) ── */
+
+/* ── Platform comparison grid (simplified, single-column) ── */
+.platform-compare {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 12px 0;
+}
+.platform-compare .platform-col {
+  text-align: center;
+  min-width: 0;
+}
+.platform-col .platform-label {
+  font-size: 0.75em; font-weight: 700; margin-bottom: 8px;
+  padding: 3px 12px; border-radius: 12px; display: inline-block;
+}
+.platform-col .platform-label.win { background: #1a3a6e; color: #58a6ff; }
+
 /* ── Smart Placeholder (upgraded from img-placeholder) ── */
 .smart-placeholder {
   background: #0d1117;

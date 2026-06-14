@@ -438,7 +438,17 @@ recover.html → recovery.js verifyWithCloud()
 - ✅ 支付页邮箱改为复制按钮（2026-06-13：pay.html mailto链接替换为"复制邮箱地址"+"复制邮件主题"按钮，适配国内用户无邮件客户端）
 - ✅ 支付页去掉订单号找回（2026-06-13：recover.html 移除"通过订单号找回"功能，场景极少且不适合老王画像）
 - ✅ 3个阻塞问题修复（2026-06-13：首页激活码入口 + recover.html 路由修复 deepseek/intermediate + index.html 加载 nav.js）
-- ⬜ quiz.js 测验题更新（匹配新课程内容——入门/应用课的老王向重写后题目尚未更新）
+- ✅ CSP frame-src 修复（2026-06-13：从 `'none'` 改为放行 `bilibili.com` `xigua.com` `v.qq.com`，修复首页 B站视频不显示）
+- ✅ B站 HTML5 移动端播放器切换（2026-06-13：`player.bilibili.com` → `www.bilibili.com/blackboard/html5mobileplayer.html`，修复移动端空白）
+- ✅ 视频添加操作手册（2026-06-13：E:\WorkBuddy\CLAW\学习站视频添加完全操作手册.html，三方案+7步流程+6类排查）
+- ✅ 视频模块知识提取（2026-06-13：learn-eval → `bilibili-html5-mobile-embed` skill + `content-site-blueprint` Module 8 追加）
+- ✅ 支付页邮件主题审查（2026-06-13：确认 plan/topic 参数 → mailSubject 逻辑正确，`[topic:xxx]` 机器可检索）
+- ✅ 预备课 Win/Mac 双平台改造（2026-06-13：7页全部加 Mac 对照，CSS 新增 ~150行 Mac 组件体系）
+- ✅ 预备课质量审计（2026-06-13：7页从零术语/口语化/安全感/可操作性/简洁度/连贯性/老王相关性 7维度评分，平均 49/70）
+- ⬜ 预备课内容提质 — Phase 1 老王注入+安全感+术语净化（计划：parallel-whistling-sphinx）
+- ⬜ 预备课内容提质 — Phase 2 deepseek-setup 根本性重写（14步→5步，删除重复安装内容）
+- ⬜ 预备课内容提质 — Phase 3 对标打磨（以 when-things-go-wrong 59分为标杆改造其他6页）
+- ⬜ quiz.js 测验题更新（配套 deepseek-setup 重写后内容）
 - ⏳ ICP 备案（等域名实名同步）
 - ⬜ 国内 CDN
 
@@ -446,9 +456,9 @@ recover.html → recovery.js verifyWithCloud()
 
 | 严重度 | 问题 | 位置 |
 |--------|------|------|
-| 🔴 BLOCKER | 首页无激活码入口 — index.html 手写导航，缺 🔑 激活码链接 | index.html |
-| 🔴 BLOCKER | recover.html 路由错误 — deepseek(索引6)被错误路由到applied/，且不支持intermediate/ | recover.html:124 |
-| 🔴 BLOCKER | index.html 引用 window.TOPIC_ORDER 但未加载 nav.js | index.html |
+| ✅ 已修复 | 首页无激活码入口 — index.html 手写导航，缺 🔑 激活码链接（已于2026-06-13修复） | index.html |
+| ✅ 已修复 | recover.html 路由错误 — deepseek(索引6)被错误路由到applied/，且不支持intermediate/（已于2026-06-13修复） | recover.html:124 |
+| ✅ 已修复 | index.html 引用 window.TOPIC_ORDER 但未加载 nav.js（已于2026-06-13修复） | index.html |
 | 🟡 HIGH | index.html 导航栏与 nav.js 各写一套，改一处漏一处 | index.html |
 | 🟡 HIGH | recover.html 调试日志暴露给用户 | recover.html:79 |
 | 🟡 MEDIUM | anti-theft.js DevTools检测在官方域名也运行 | anti-theft.js |
@@ -460,11 +470,11 @@ recover.html → recovery.js verifyWithCloud()
 
 ## 下一步计划（2026-06-13 更新）
 
-1. **B站引流** — 视频简介+评论区置顶加网站链接，从B站带流量
-2. **SCF function.zip 部署** — 腾讯云控制台上传最新的 function.zip（CORS 白名单 + SALT 已改为计算表达式）
-3. **SCF 在线函数 CORS 更新** — 当前本地源码已收紧为白名单，需重新部署到腾讯云
+1. **预备课内容提质（Phase 1-3）** — 见计划文件 `C:\Users\Administrator\.claude\plans\parallel-whistling-sphinx.md`：老王注入+安全感+术语净化 → deepseek重写 → 对标打磨
+2. **B站引流** — 视频简介+评论区置顶加网站链接，从B站带流量
+3. **SCF function.zip 部署** — 腾讯云控制台上传最新的 function.zip（CORS 白名单 + SALT 已改为计算表达式）
 4. **21天计划第二、三周** — 补全剩余28个任务的详细教程
-5. **B站视频录制** — 续录其他课程视频（安装/核心命令等）
+5. **B站视频录制** — 续录其他课程视频（安装/核心命令等），用操作手册添加
 6. **嵌入集成实测** — 外部网站测试三种嵌入方案（card/iframe/widget），验证 widget.js 跨域兼容性
 
 ## 双目录同步规则（最高优先级）
