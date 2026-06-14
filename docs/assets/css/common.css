@@ -944,17 +944,25 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   border-bottom: 1px solid #ddd;
   background: #f0f0f0;
   user-select: none;
+  justify-content: space-between;
 }
 .win-window .win-titlebar .win-btns {
-  display: flex; gap: 6px; margin-right: 8px;
+  display: flex; gap: 2px; order: 2;
 }
 .win-window .win-titlebar .win-btn {
-  width: 12px; height: 12px; border-radius: 50%;
-  border: 1px solid rgba(0,0,0,0.15);
+  width: 28px; height: 20px; border-radius: 0;
+  border: 1px solid #999;
+  background: #e1e1e1;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 8px; color: #333; font-family: 'Segoe UI', sans-serif;
 }
-.win-window .win-titlebar .win-btn.min  { background: #ffbd2e; }
-.win-window .win-titlebar .win-btn.max  { background: #27c93f; }
-.win-window .win-titlebar .win-btn.close { background: #ff5f56; }
+.win-window .win-titlebar .win-btn.min  { background: #e1e1e1; }
+.win-window .win-titlebar .win-btn.min::after  { content: '─'; font-size: 10px; }
+.win-window .win-titlebar .win-btn.max  { background: #e1e1e1; }
+.win-window .win-titlebar .win-btn.max::after  { content: '□'; font-size: 8px; }
+.win-window .win-titlebar .win-btn.close { background: #e1e1e1; }
+.win-window .win-titlebar .win-btn.close::after { content: '✕'; font-size: 8px; }
+.win-window .win-titlebar .win-btn.close:hover { background: #e81123; color: #fff; border-color: #e81123; }
 .win-window .win-body {
   padding: 20px; color: #333;
   font-family: var(--font-sans);
