@@ -42,8 +42,8 @@
     return { type: 'single', topicId: topicId };
   };
 
-  /* ── Apply ── */
-  window.applyActivationCode = function (result) {
+  /* ── Apply（私有，仅 verifyWithCloud 内部调用）── */
+  function applyActivationCode(result) {
     if (!result) return false;
     if (result.type === 'all') {
       localStorage.setItem('cc-learn-all-access', 'true');
@@ -57,39 +57,9 @@
     return true;
   };
 
-  /* ── Device Fingerprint（Canvas 稳定 hash）── */
+  /* ── Device Fingerprint — 使用 nav.js 统一函数 ── */
   function getFingerprint() {
-    var chars = [];
-    try {
-      var canvas = document.createElement('canvas');
-      canvas.width = 200; canvas.height = 50;
-      var ctx = canvas.getContext('2d');
-      ctx.textBaseline = 'top';
-      ctx.font = '14px "Arial"';
-      ctx.fillStyle = '#f60';
-      ctx.fillRect(0, 0, 200, 50);
-      ctx.fillStyle = '#069';
-      ctx.fillText('Claude Code Learning Site ♥ 学习站', 2, 17);
-      ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
-      ctx.fillText('Claude Code Learning Site ♥ 学习站', 4, 19);
-      var data = canvas.toDataURL();
-      // 取 data URL 的后半段作为指纹输入
-      chars.push(data.substring(data.length - 200));
-    } catch (e) {
-      chars.push('no-canvas');
-    }
-    // 补充不可变特征
-    chars.push(navigator.language || '');
-    chars.push(new Date().getTimezoneOffset().toString());
-    chars.push((navigator.hardwareConcurrency || 0).toString());
-
-    var str = chars.join('|');
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
-      hash = ((hash << 5) - hash) + str.charCodeAt(i);
-      hash = hash | 0;
-    }
-    return Math.abs(hash).toString(36);
+    return (window.getDeviceFingerprint && window.getDeviceFingerprint()) || 'fp-unknown';
   }
 
   /* ── Cloud Verify：本地格式预检 + 服务端判定（fail-closed）── */
@@ -113,8 +83,8 @@
     .then(function (resp) { return resp.json(); })
     .then(function (data) {
       if (data.ok) {
-        // 服务端通过 → 本地解锁
-        window.applyActivationCode(localResult);
+        // 服务端通过 → 本地解锁（调用私有 applyActivationCode）
+        applyActivationCode(localResult);
         callback({
           ok: true,
           type: localResult.type,

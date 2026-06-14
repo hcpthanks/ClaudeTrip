@@ -76,6 +76,41 @@ var APP_DIR = 'applied/';
 var BEG_DIR = 'beginner/';
 var INT_DIR = 'intermediate/';
 
+/* ══════ Device Fingerprint (Canvas-based, shared across all pages) ══════
+   统一设备指纹 — recovery.js 激活时 + paywall.js cloudVerify 均使用此函数
+   Canvas 渲染 + 稳定浏览器特征 → DJB2 hash → base-36 */
+window.getDeviceFingerprint = function () {
+  var chars = [];
+  try {
+    var canvas = document.createElement('canvas');
+    canvas.width = 200; canvas.height = 50;
+    var ctx = canvas.getContext('2d');
+    ctx.textBaseline = 'top';
+    ctx.font = '14px "Arial"';
+    ctx.fillStyle = '#f60';
+    ctx.fillRect(0, 0, 200, 50);
+    ctx.fillStyle = '#069';
+    ctx.fillText('Claude Code Learning Site ♥ 学习站', 2, 17);
+    ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+    ctx.fillText('Claude Code Learning Site ♥ 学习站', 4, 19);
+    var data = canvas.toDataURL();
+    chars.push(data.substring(data.length - 200));
+  } catch (e) {
+    chars.push('no-canvas');
+  }
+  chars.push(navigator.language || '');
+  chars.push(new Date().getTimezoneOffset().toString());
+  chars.push((navigator.hardwareConcurrency || 0).toString());
+
+  var str = chars.join('|');
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash = hash | 0;
+  }
+  return Math.abs(hash).toString(36);
+};
+
 /* ══════ Module Nav Scroll Tracking ══════ */
 (function () {
   var nav = document.querySelector('.module-nav');

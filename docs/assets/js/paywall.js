@@ -145,66 +145,108 @@ function renderPaywall(topicId) {
   });
 }
 
-// ── Device Fingerprint（与 recovery.js 同算法，SCF 端匹配用）──
-function getDeviceFingerprint() {
-  var data = [
-    screen.width, screen.height, screen.colorDepth,
-    navigator.language,
-    new Date().getTimezoneOffset(),
-    navigator.hardwareConcurrency || 0,
-    navigator.platform || '',
-    (navigator.userAgent || '').substring(0, 120)
-  ].join('|');
-  var hash = 0;
-  for (var i = 0; i < data.length; i++) {
-    hash = ((hash << 5) - hash) + data.charCodeAt(i);
-    hash = hash | 0;
-  }
-  return Math.abs(hash).toString(36);
+// ── Device Fingerprint — delegates to nav.js shared Canvas fingerprint ──
+function getLocalFingerprint() {
+  return (window.getDeviceFingerprint && window.getDeviceFingerprint()) || 'fp-unknown';
 }
 
-// ── Cloud Verification：背景校验 localStorage 解锁是否真实 ──
+// ── Cloud Verification：阻塞式校验 localStorage 解锁是否真实 ──
+// 返回 Promise：{ hasAccess: true|false|'unknown' }
+// 先验后渲，关闭时序漏洞
 function cloudVerify() {
-  if (!hasAllAccess() && getUnlockedTopics().length === 0) return; // 没解锁，不用验
+  if (!hasAllAccess() && getUnlockedTopics().length === 0) {
+    // 没解锁，无需验证
+    return Promise.resolve({ hasAccess: true });
+  }
 
-  var fp = getDeviceFingerprint();
+  var fp = getLocalFingerprint();
   var scfUrl = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.scfVerifyUrl)
     ? window.CC_SITE_CONFIG.scfVerifyUrl
     : 'https://1253632363-hkdthg8jb2.ap-beijing.tencentscf.com';
   var url = scfUrl.replace(/\/+$/, '') + '/check-access';
 
-  fetch(url, {
+  return fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ fingerprint: fp }),
-    signal: AbortSignal.timeout(5000)
+    signal: AbortSignal.timeout(3000)
   })
     .then(function (r) { return r.json(); })
     .then(function (data) {
       if (data.hasAccess === false) {
-        // 云端无记录 → 清除 localStorage 解锁 → 重新锁定
-        console.log('[paywall] 云端校验未通过，锁定内容');
-        localStorage.removeItem(LS_ALL_ACCESS);
-        localStorage.removeItem(LS_UNLOCKED);
-        location.reload();
+        // 云端无匹配 → 尝试用缓存激活码重新注册（过渡：指纹算法刚统一）
+        var savedCodes = getSavedActivationCodes();
+        if (savedCodes.length > 0) {
+          return reRegisterFingerprint(savedCodes, fp).then(function (reRegOk) {
+            if (reRegOk) return { hasAccess: true };
+            // 重注册失败 → 清理
+            cleanupAndReload();
+            return { hasAccess: false };
+          });
+        }
+        // 无缓存激活码 → 清理
+        cleanupAndReload();
+        return { hasAccess: false };
       }
-      // hasAccess === true → 确认解锁
-      // hasAccess === 'unknown'（服务端异常）→ 不清除，但也不自动信任
+      // hasAccess === true 或 hasAccess === 'unknown' → 保留当前状态
+      return { hasAccess: true };
     })
     .catch(function () {
-      // 网络不通 → fail-closed：保留当前状态，不主动信任
-      console.warn('[paywall] 云端校验不可达，保持当前锁定状态');
+      // 网络不通 → fail-open：信任 localStorage，保护付费用户
+      console.warn('[paywall] 云端校验不可达，信任本地解锁状态');
+      return { hasAccess: true };
     });
+}
+
+// ── 辅助：从 localStorage 读取缓存的激活码 ──
+function getSavedActivationCodes() {
+  try {
+    var saved = JSON.parse(localStorage.getItem('cc-activation-codes') || '{}');
+    return Object.keys(saved);
+  } catch (e) {
+    return [];
+  }
+}
+
+// ── 辅助：用缓存激活码重新向 SCF 注册新指纹（指纹算法迁移过渡）──
+function reRegisterFingerprint(codes, fingerprint) {
+  var scfUrl = (window.CC_SITE_CONFIG && window.CC_SITE_CONFIG.scfVerifyUrl)
+    ? window.CC_SITE_CONFIG.scfVerifyUrl.replace(/\/+$/, '')
+    : 'https://1253632363-hkdthg8jb2.ap-beijing.tencentscf.com';
+  var url = scfUrl + '/activate';
+
+  var attempts = codes.map(function (code) {
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code, fingerprint: fingerprint }),
+      signal: AbortSignal.timeout(3000)
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) { return data.ok === true; })
+      .catch(function () { return false; });
+  });
+
+  return Promise.all(attempts).then(function (results) {
+    return results.some(function (r) { return r === true; });
+  });
+}
+
+// ── 辅助：清除解锁状态并重新锁定 ──
+function cleanupAndReload() {
+  localStorage.removeItem(LS_ALL_ACCESS);
+  localStorage.removeItem(LS_UNLOCKED);
+  location.reload();
 }
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded', function () {
-  // Auto-init paywall for any page with .paywall-container
-  var container = document.querySelector('.paywall-container');
-  if (container) {
-    var topicId = container.dataset.topic;
-    if (topicId) renderPaywall(topicId);
-  }
-  // 背景云端校验（已解锁用户验证是否有真实激活记录）
-  cloudVerify();
+  // 先验后渲：先云端校验，再渲染付费墙
+  cloudVerify().then(function () {
+    var container = document.querySelector('.paywall-container');
+    if (container) {
+      var topicId = container.dataset.topic;
+      if (topicId) renderPaywall(topicId);
+    }
+  });
 });

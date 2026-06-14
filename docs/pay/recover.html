@@ -135,9 +135,9 @@
     msg.textContent = '';
     notice.className = 'device-notice';
 
-    // ── Debug log ──
+    // ── Debug log（生产环境关闭，调试时取消注释）──
     var debug = document.getElementById('debug-log');
-    debug.style.display = 'block';
+    // debug.style.display = 'block';  // HIGH: 调试日志不暴露给用户
     var log = [];
     log.push('输入码  : "' + code + '" (长度=' + code.length + ')');
 
