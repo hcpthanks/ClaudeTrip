@@ -180,7 +180,7 @@
   </div>
   <div class="video-wrap" style="max-width:720px;margin:0 auto;">
     <div class="video-16x9">
-      <iframe src="//www.bilibili.com/blackboard/html5mobileplayer.html?bvid=BV1YUEz6mEMj&page=1"
+      <iframe src="//www.bilibili.com/blackboard/html5mobileplayer.html?bvid=BV1M8JM6WEYq&page=1"
               scrolling="no" frameborder="no" allowfullscreen>
       </iframe>
     </div>
@@ -489,7 +489,6 @@
 <!-- ══════════ FOOTER ══════════ -->
 <footer class="site-footer">
   <p>AI 帮你干活 · 让每个人都能用 AI</p>
-  <p style="margin-top:6px; font-size:0.9em;">内容持续更新中 · 有问题？在 GitHub 提 Issue</p>
 </footer>
 
 <script src="assets/js/nav.js"></script>
@@ -522,8 +521,8 @@
       return;
     }
 
-    // Applied + Beginner: apply progress-based locking
-    if (isTopicUnlockedByProgress(topicId)) {
+    // Applied + Beginner + Intermediate: full access OR progress-based locking
+    if (localStorage.getItem('cc-learn-all-access') === 'true' || isTopicUnlockedByProgress(topicId)) {
       if (quizState[topicId] && quizState[topicId].passed) {
         card.classList.add('has-passed');
         var badge2 = document.createElement('span');

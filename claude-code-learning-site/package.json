@@ -10,11 +10,16 @@
     "test:security:unit": "node tests/payment-security.test.js",
     "test:security:all": "node tests/payment-security.test.js && npx playwright test tests/payment-security.spec.js",
     "test:unit": "node tests/activation-code.test.js",
-    "test:all": "node tests/activation-code.test.js && npx playwright test tests/pre-basics-integrity.spec.js",
+    "test:homepage": "npx vitest run tests/homepage-all-access.test.js",
+    "test:all": "node tests/activation-code.test.js && npx vitest run tests/homepage-all-access.test.js && npx playwright test tests/pre-basics-integrity.spec.js",
     "test:report": "npx playwright test tests/pre-basics-integrity.spec.js --reporter=html"
   },
   "dependencies": {
     "@playwright/test": "^1.60.0",
     "@supabase/supabase-js": "^2.45.0"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "vitest": "^4.1.8"
   }
 }

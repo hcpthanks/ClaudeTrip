@@ -445,10 +445,15 @@ recover.html → recovery.js verifyWithCloud()
 - ✅ 支付页邮件主题审查（2026-06-13：确认 plan/topic 参数 → mailSubject 逻辑正确，`[topic:xxx]` 机器可检索）
 - ✅ 预备课 Win/Mac 双平台改造（2026-06-13：7页全部加 Mac 对照，CSS 新增 ~150行 Mac 组件体系）
 - ✅ 预备课质量审计（2026-06-13：7页从零术语/口语化/安全感/可操作性/简洁度/连贯性/老王相关性 7维度评分，平均 49/70）
-- ⬜ 预备课内容提质 — Phase 1 老王注入+安全感+术语净化（计划：parallel-whistling-sphinx）
-- ⬜ 预备课内容提质 — Phase 2 deepseek-setup 根本性重写（14步→5步，删除重复安装内容）
-- ⬜ 预备课内容提质 — Phase 3 对标打磨（以 when-things-go-wrong 59分为标杆改造其他6页）
-- ⬜ quiz.js 测验题更新（配套 deepseek-setup 重写后内容）
+- ✅ 预备课全面重写（2026-06-14）：Windows 10 纯血版，删除所有 Mac 内容（Mac 引用归零），注入老王五金店人设
+- ✅ deepseek-setup 第7课还原为完整4阶段12步教程（2026-06-14）：Workbuddy安装 → 验证 → ccswitch+DeepSeek → VS Code，21张真实截图
+- ✅ 第一课 CSS 窗口按钮修复（2026-06-14）：从 macOS 三色圆点改为 Windows 10 方形按钮
+- ✅ 删除 Mac 平台支持（2026-06-14）：common.css ~110行 Mac CSS 删除，7页全部 Mac 内容剥离
+- ✅ 支付系统安全修复（2026-06-14）：3 CRITICAL + 2 HIGH 漏洞修复，新增 2 个测试套件 87 个测试
+- ✅ 测试安全网（2026-06-14）：4 套测试全部通过（activation-code 75 + payment-security-unit 51 + pre-basics-integrity-E2E 146 + payment-security-E2E 36 = 308/308）
+- ✅ Canvas 统一设备指纹（2026-06-14）：nav.js 单一来源，recovery.js + paywall.js 均委托调用
+- ✅ window.applyActivationCode 私有化（2026-06-14）：改为 IIFE 内部函数，仅 verifyWithCloud 可调用
+- ✅ cloudVerify 改为阻塞式 Promise（2026-06-14）：先验后渲，关闭时序漏洞
 - ⏳ ICP 备案（等域名实名同步）
 - ⬜ 国内 CDN
 
@@ -460,17 +465,17 @@ recover.html → recovery.js verifyWithCloud()
 | ✅ 已修复 | recover.html 路由错误 — deepseek(索引6)被错误路由到applied/，且不支持intermediate/（已于2026-06-13修复） | recover.html:124 |
 | ✅ 已修复 | index.html 引用 window.TOPIC_ORDER 但未加载 nav.js（已于2026-06-13修复） | index.html |
 | 🟡 HIGH | index.html 导航栏与 nav.js 各写一套，改一处漏一处 | index.html |
-| 🟡 HIGH | recover.html 调试日志暴露给用户 | recover.html:79 |
+| ✅ 已修复 | recover.html 调试日志暴露给用户（已于2026-06-14修复） | recover.html:79 |
 | 🟡 MEDIUM | anti-theft.js DevTools检测在官方域名也运行 | anti-theft.js |
 | 🟡 MEDIUM | 防盗代码在 paywall.js/quiz.js 重复3份 | paywall.js, quiz.js |
-| 🟡 MEDIUM | 预备课7页缺 common.js（无复制按钮/平滑滚动） | pre-basics/*.html |
+| ✅ 已修复 | 预备课7页缺 common.js（已于2026-06-14添加） | pre-basics/*.html |
 | 🟡 MEDIUM | 进阶课4页零免费预览，客户打开即付费墙 | intermediate/*.html |
 | 🟡 MEDIUM | shortcuts.html 基础命令（/clear /exit）锁在付费墙后 | shortcuts.html |
 | 🟡 MEDIUM | 首页"专家"板块（MCP/工作流引擎）对老王无意义 | index.html |
 
-## 下一步计划（2026-06-13 更新）
+## 下一步计划（2026-06-14 更新）
 
-1. **预备课内容提质（Phase 1-3）** — 见计划文件 `C:\Users\Administrator\.claude\plans\parallel-whistling-sphinx.md`：老王注入+安全感+术语净化 → deepseek重写 → 对标打磨
+1. ~~**预备课内容提质（Phase 1-3）**~~ ✅ 已完成（2026-06-14：Windows 10 纯血版重写 + 老王五金店人设 + deepseek-setup 4阶段12步 + 第一课 CSS 修复）
 2. **B站引流** — 视频简介+评论区置顶加网站链接，从B站带流量
 3. **SCF function.zip 部署** — 腾讯云控制台上传最新的 function.zip（CORS 白名单 + SALT 已改为计算表达式）
 4. **21天计划第二、三周** — 补全剩余28个任务的详细教程
