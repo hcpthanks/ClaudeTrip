@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.tencentscf.com; frame-src https://www.bilibili.com https://player.bilibili.com; frame-ancestors 'self' https://hcpthanks.github.io; base-uri 'self';">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 视频工厂 — 文案→配音→字幕→视频，一键生成。Agnes AI + TTS 三引擎 + Claude Code 全自动调度。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>AI 视频工厂 — Claude Code 学习站</title>
+<link rel="stylesheet" href="../../assets/css/common.css">
+<style>
+  .page-hero { padding: 64px 24px 40px; text-align: center; }
+  .page-hero h1 { font-size: 2em; margin-bottom: 8px; }
+  .page-hero .desc { color: var(--text-muted); font-size: 1em; max-width: 600px; margin: 0 auto; }
+
+  /* Demo */
+  .demo-section { margin: var(--space-section) 0; }
+  .demo-preview {
+    background: linear-gradient(135deg, #1a1a2e 0%, #161b22 50%, #1a1625 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 48px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .demo-preview .preview-icon { font-size: 4em; display: block; margin-bottom: 12px; }
+  .demo-preview .preview-label { color: var(--text-muted); font-size: 0.9em; }
+  .demo-preview .preview-hint {
+    position: absolute; bottom: 16px; right: 20px;
+    font-size: 0.72em; color: var(--text-faint);
+  }
+
+  /* Why section */
+  .why-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 40px 32px;
+    margin-bottom: var(--space-section);
+  }
+  .why-box h2 { border: none; padding: 0; margin: 0 0 20px 0; }
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 28px;
+  }
+  .compare-col { padding: 20px; border-radius: var(--radius); }
+  .compare-col.manual { background: #1a1a1a; border: 1px solid var(--border); }
+  .compare-col.auto { background: var(--accent-dim); border: 1px solid rgba(88, 166, 255, 0.3); }
+  .compare-col h4 { margin: 0 0 8px 0; font-size: 0.95em; }
+  .compare-col ul { margin: 0; padding: 0; list-style: none; }
+  .compare-col li { font-size: 0.86em; color: var(--text-muted); padding: 4px 0; }
+  .compare-col.auto li { color: var(--text); }
+
+  /* Step guide */
+  .step-list { counter-reset: step; margin-bottom: var(--space-section); }
+  .step-item { counter-increment: step; display: flex; gap: 18px; margin-bottom: 20px; align-items: flex-start; }
+  .step-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--accent-dim); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.9em; flex-shrink: 0;
+  }
+  .step-body h4 { margin: 0 0 4px 0; font-size: 0.95em; color: var(--text-high); }
+  .step-body p { margin: 0; font-size: 0.84em; color: var(--text-muted); line-height: 1.6; }
+  .step-body code {
+    background: var(--bg); padding: 2px 8px; border-radius: 4px;
+    font-family: var(--font-mono); font-size: 0.88em; color: var(--accent);
+  }
+
+  /* Tech table */
+  .tech-table { width: 100%; border-collapse: collapse; margin-bottom: var(--space-section); }
+  .tech-table th, .tech-table td {
+    text-align: left; padding: 10px 16px; font-size: 0.86em;
+    border-bottom: 1px solid var(--border);
+  }
+  .tech-table th { color: var(--text-muted); font-weight: 600; font-size: 0.78em; text-transform: uppercase; }
+  .tech-table td { color: var(--text); }
+  .tech-table td code { color: var(--accent); }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: var(--space-section);
+  }
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .feature-card .fc-icon { font-size: 1.3em; margin-bottom: 10px; }
+  .feature-card h4 { font-size: 0.95em; margin: 0 0 6px 0; color: var(--text-high); }
+  .feature-card p { font-size: 0.84em; color: var(--text-muted); margin: 0; line-height: 1.6; }
+
+  /* Case study */
+  .case-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    margin-bottom: var(--space-section);
+  }
+  .case-box h3 { margin: 0 0 12px 0; }
+
+  .tech-stack {
+    display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 40px;
+    justify-content: center;
+  }
+  .tech-tag {
+    padding: 6px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 0.82em;
+    color: var(--text);
+  }
+
+  @media (max-width: 768px) {
+    .compare-grid { grid-template-columns: 1fr; }
+    .feature-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="../../index.html" class="logo">Claude Code<span>学习站</span></a>
+    <div class="nav-links" role="navigation" aria-label="页面导航">
+      <a href="../../index.html">🏠 首页</a>
+      <a href="../index.html">🚀 项目</a>
+      <a href="../../index.html#learn">📚 学习</a>
+      <a href="../../tools/">🛠️ 工具</a>
+    </div>
+    <a href="../../pay/recover.html" class="nav-recover">🔑 激活码</a>
+    <a href="../../pay/pay.html" class="nav-cta">💰 支付</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="../../index.html">🏠 首页</a>
+    <a href="../index.html">🚀 项目</a>
+    <a href="../../index.html#learn">📚 学习</a>
+    <a href="../../tools/">🛠️ 工具</a>
+    <a href="../../pay/recover.html">🔑 激活码</a>
+    <a href="../../pay/pay.html" class="mobile-cta">💰 支付</a>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <h1>🎬 AI 视频工厂</h1>
+  <p class="desc">输入一句文案，Claude Code 自动调度 Agnes AI + TTS，几分钟出一条完整视频。</p>
+  <img src="../../assets/images/projects/ai-video-factory-cover.png"
+       alt="AI 视频工厂封面" class="hero-cover"
+       style="max-width:100%;height:auto;border-radius:var(--radius-xl);margin-top:32px;border:1px solid var(--border);">
+</header>
+
+<main class="container" role="main">
+
+  <!-- ① 效果展示 -->
+  <section class="demo-section">
+    <div class="section-header">
+      <h2>🎥 效果展示</h2>
+    </div>
+    <div class="demo-preview">
+      <video src="../../assets/images/projects/ai-video-factory-demo.mp4"
+             controls muted loop playsinline
+             style="max-width:100%;height:auto;border-radius:var(--radius-lg);"
+             poster="../../assets/images/projects/ai-video-factory-pipeline.png">
+      </video>
+      <span class="preview-hint">Agnes Video 生成演示 · 1088×832 · 5秒</span>
+    </div>
+  </section>
+
+  <!-- ② 为什么做这个 — 不是卖工具，是卖调度 -->
+  <section>
+    <div class="section-header">
+      <h2>💡 为什么做这个</h2>
+    </div>
+    <div class="why-box">
+      <p style="color:var(--text); font-size:1em; line-height:1.8;">
+        Agnes AI 的三个模型<strong>全部免费</strong>。edge-tts 免费。CosyVoice2 和 Qwen3-TTS 开源免费。<br>
+        但没有人手动打开 5 个工具、一个一个操作。<strong>你要的是输入文案、拿到视频。</strong>
+      </p>
+      <div class="compare-grid">
+        <div class="compare-col manual">
+          <h4>❌ 手动操作</h4>
+          <ul>
+            <li>打开 Agnes 生图/生视频</li>
+            <li>打开 edge-tts 配音</li>
+            <li>手动对齐字幕时间轴</li>
+            <li>打开剪辑软件合成</li>
+            <li>每个工具学一遍</li>
+          </ul>
+        </div>
+        <div class="compare-col auto">
+          <h4>✅ Claude Code 调度</h4>
+          <ul>
+            <li>输入一句文案</li>
+            <li>Claude 自动调用 Agnes API</li>
+            <li>自动选 TTS 引擎配音</li>
+            <li>自动生成 SRT 字幕对齐</li>
+            <li>一条命令出 MP4</li>
+          </ul>
+        </div>
+      </div>
+      <p style="color:var(--accent); margin-top:24px; font-weight:700;">
+        👉 价值不在工具本身——在于 Claude Code 帮你把免费工具串成流水线。
+      </p>
+    </div>
+  </section>
+
+  <!-- ③ 一步一步搭建 -->
+  <section>
+    <div class="section-header">
+      <h2>🧱 一步一步搭建</h2>
+      <p class="section-desc">用 Claude Code 从零搭起视频工厂。全程不需要你写一行代码。</p>
+    </div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>告诉 Claude 你要做什么</h4>
+          <p>打开 Claude Code，输入需求："我要一个视频生成工具，输入文案自动生成带配音字幕的 MP4"。Claude 会用 <code>/plan</code> 帮你制定方案。</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>配置 MCP 接入 Agnes AI</h4>
+          <p>在 <code>.mcp.json</code> 里注册 Agnes 三个模型。Claude 帮你生成配置，你只需要填入免费 API Key。</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>选 TTS 引擎、装模型</h4>
+          <p>edge-tts 云端免费直接能用；CosyVoice2（~5.3GB 本地）或 Qwen3-TTS（~2.4GB 本地）音质更好。Claude 帮你装好。</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>跑通第一条视频</h4>
+          <p>终端输入：<code>python generate.py -t "你的文案" -o output.mp4</code> 。几分钟后拿到带配音+字幕的完整视频。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ④ 技术细节 -->
+  <section>
+    <div class="section-header">
+      <h2>🔧 技术细节</h2>
+      <p class="section-desc">真实参数，不藏着掖着</p>
+    </div>
+    <table class="tech-table">
+      <tr><th>组件</th><th>选项 / 参数</th><th>说明</th></tr>
+      <tr><td>Agnes Chat</td><td><code>agnes-2.0-flash</code></td><td>1M 上下文 · 65K 输出 · 写文案/生成 Prompt</td></tr>
+      <tr><td>Agnes Image</td><td><code>1024x1024</code> / <code>1792x1024</code></td><td>~5 秒出图 · 项目封面/视频画面</td></tr>
+      <tr><td>Agnes Video</td><td><code>num_frames = 8n+1</code></td><td>121(5秒) / 241(10秒) / 441(18秒)，帧率 24</td></tr>
+      <tr><td>edge-tts</td><td>8 种中文语音</td><td>云端免费 · xiaoxiao/yunxi/yunyang 等</td></tr>
+      <tr><td>CosyVoice2</td><td>~5.3GB 本地 · zero-shot</td><td>一条参考音频即可克隆音色</td></tr>
+      <tr><td>Qwen3-TTS</td><td>~2.4GB 本地 · 9 种音色</td><td>vivian/serena/uncle_fu 等</td></tr>
+      <tr><td>合成</td><td>FFmpeg</td><td>画面+配音+字幕→MP4，H.264 编码</td></tr>
+    </table>
+  </section>
+
+  <!-- ⑤ 实战案例 -->
+  <section>
+    <div class="section-header">
+      <h2>📱 实战案例</h2>
+    </div>
+    <div class="case-box">
+      <h3>🎬 15 秒抖音知识类短视频</h3>
+      <p style="color:var(--text-muted); line-height:1.8;">
+        <strong>输入文案：</strong>"Claude Code 有个 /plan 命令，做任何事之前先规划，确认后再执行。这样不会浪费钱，也不会做错方向。"<br><br>
+        <strong>流程：</strong><br>
+        ① Claude 解析文案 → 拆成 5 句字幕<br>
+        ② Agnes Video 生成 15 秒画面（361 帧，<code>num_frames = 8×45+1 = 361</code>）<br>
+        ③ edge-tts xiaoxiao 配音 → 生成 SRT 字幕<br>
+        ④ FFmpeg 合成 → 15 秒 MP4（1088×832，约 3MB）<br><br>
+        <strong>结果：</strong>从输入文案到可发抖音的视频，不到 3 分钟。<strong>全程不需要打开任何设计软件。</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- 核心功能卡片 -->
+  <section>
+    <div class="section-header">
+      <h2>✨ 核心功能</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="fc-icon">🎨</div>
+        <h4>AI 画面生成</h4>
+        <p>Agnes AI 图片/视频模型，根据文案自动生成匹配画面</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">🎙️</div>
+        <h4>三引擎配音</h4>
+        <p>edge-tts 云端免费 / CosyVoice2 本地 zero-shot / Qwen3-TTS 多音色</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">📝</div>
+        <h4>同步字幕</h4>
+        <p>自动生成 SRT 字幕，语音与字幕逐句对齐</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">🤖</div>
+        <h4>全自动调度</h4>
+        <p>输入文案，Claude Code 自动调度 Agnes + TTS + FFmpeg，全程无需动手</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 技术栈 -->
+  <section>
+    <div class="section-header">
+      <h2>🛠️ 技术栈</h2>
+      <p class="section-desc">全部通过 Claude Code MCP 集成</p>
+    </div>
+    <div class="tech-stack">
+      <span class="tech-tag">Agnes AI Chat</span>
+      <span class="tech-tag">Agnes AI Image</span>
+      <span class="tech-tag">Agnes AI Video</span>
+      <span class="tech-tag">edge-tts</span>
+      <span class="tech-tag">CosyVoice2</span>
+      <span class="tech-tag">Qwen3-TTS</span>
+      <span class="tech-tag">Python</span>
+      <span class="tech-tag">FFmpeg</span>
+      <span class="tech-tag">Claude Code MCP</span>
+    </div>
+  </section>
+
+  <!-- ⑥ 付费墙 -->
+  <section style="text-align:center; margin: var(--space-section) 0;">
+    <div class="premium-teaser" style="margin-top:0;">
+      <div class="premium-badge">📦 拿源码</div>
+      <h2>完整脚本 + 配置模板</h2>
+      <p class="teaser-desc">拿到 <code>generate.py</code> 完整源码 + MCP 配置模板 + TTS 引擎安装指南。复制到你的项目就能用。</p>
+      <div style="font-size:2em;font-weight:800;color:var(--purple);margin-bottom:16px;">¥99</div>
+      <a href="../../pay/pay.html" class="btn btn-primary" style="font-size:1em; padding:14px 40px; background:var(--purple); border-color:var(--purple);">
+        解锁全部项目 →
+      </a>
+      <p style="color:var(--text-faint); font-size:0.78em; margin-top:16px;">
+        也可以先从 <a href="../../pre-basics/computer-basics.html" style="color:var(--accent);">预备课</a> 或 <a href="../../beginner/claude-intro.html" style="color:var(--accent);">入门课</a> 开始学 Claude Code 基础
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>AI 帮你干活 · 让每个人都能用 AI</p>
+</footer>
+
+<script src="../../assets/js/common.js"></script>
+<script src="../../assets/js/site-config.js"></script>
+<script src="../../assets/js/anti-theft.js"></script>
+<script>
+(function () {
+  var toggle = document.getElementById("nav-toggle");
+  var menu = document.getElementById("mobile-menu");
+  if (!toggle || !menu) return;
+  toggle.addEventListener("click", function () {
+    var open = menu.classList.toggle("open");
+    toggle.classList.toggle("open");
+    document.body.style.overflow = open ? "hidden" : "";
+  });
+  menu.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      menu.classList.remove("open");
+      toggle.classList.remove("open");
+      document.body.style.overflow = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

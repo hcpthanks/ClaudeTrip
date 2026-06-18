@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.tencentscf.com; frame-ancestors 'self' https://hcpthanks.github.io; base-uri 'self';">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code 学习路线 — 从开机开始教，一步一步跟着点，和刷抖音一样简单。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>学习路线 — AI 帮你干活</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<style>
+  .page-hero { padding: 64px 24px 40px; text-align: center; }
+  .page-hero h1 { font-size: 2em; margin-bottom: 8px; }
+  .page-hero .desc { color: var(--text-muted); font-size: 1em; max-width: 500px; margin: 0 auto; }
+
+  .level-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-bottom: var(--space-section); }
+  .level-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .level-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(88, 166, 255, 0.08); color: var(--text); }
+  .level-card .lc-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .level-card .lc-icon {
+    width: 42px; height: 42px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2em; flex-shrink: 0;
+  }
+  .lc-icon.lv-prebasics { background: var(--lv-prebasics-bg); color: var(--lv-prebasics); }
+  .lc-icon.lv-applied { background: var(--lv-applied-bg); color: var(--lv-applied); }
+  .lc-icon.lv-beginner { background: var(--lv-beginner-bg); color: var(--lv-beginner); }
+  .lc-icon.lv-intermediate { background: var(--lv-intermediate-bg); color: var(--lv-intermediate); }
+  .lc-icon.lv-expert { background: var(--lv-expert-bg); color: var(--lv-expert); }
+  .level-card .lc-head h3 { font-size: 1.05em; margin: 0; color: var(--text-high); }
+  .level-card p { font-size: 0.86em; color: var(--text-muted); margin: 0; line-height: 1.6; }
+  .level-card .lc-count { font-size: 0.78em; color: var(--text-faint); margin-top: 10px; display: block; }
+
+  @media (max-width: 600px) { .level-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">Claude Code<span>学习站</span></a>
+    <div class="nav-links" role="navigation" aria-label="页面导航">
+      <a href="../index.html">🏠 首页</a>
+      <a href="../projects/">🚀 项目</a>
+      <a href="index.html" class="active">📚 学习</a>
+      <a href="../tools/">🛠️ 工具</a>
+    </div>
+    <a href="../pay/recover.html" class="nav-recover">🔑 激活码</a>
+    <a href="../pay/pay.html" class="nav-cta">💰 支付</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="../index.html">🏠 首页</a>
+    <a href="../projects/">🚀 项目</a>
+    <a href="index.html">📚 学习</a>
+    <a href="../tools/">🛠️ 工具</a>
+    <a href="../pay/recover.html">🔑 激活码</a>
+    <a href="../pay/pay.html" class="mobile-cta">💰 支付</a>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <h1>📚 学习路线</h1>
+  <p class="desc">从开机开始教，一步一步跟着点。预备课全部免费。</p>
+</header>
+
+<main class="container" role="main">
+
+  <div class="level-grid">
+
+    <a href="../pre-basics/computer-basics.html" class="level-card">
+      <div class="lc-head">
+        <div class="lc-icon lv-prebasics">🖥️</div>
+        <h3>预备课 · 电脑基础</h3>
+      </div>
+      <p>如果你还不太会用电脑，从这里开始。打开 PowerShell、安装 Claude Code、第一次跟 AI 对话。</p>
+      <span class="lc-count">7 节课 · 全部免费</span>
+    </a>
+
+    <a href="../applied/ai-for-business.html" class="level-card">
+      <div class="lc-head">
+        <div class="lc-icon lv-applied">💼</div>
+        <h3>应用课 · AI 帮生意</h3>
+      </div>
+      <p>写文案、回消息、算账、管客户 — 每节课都是你生意上的真实场景。</p>
+      <span class="lc-count">4 节课 · 前三步免费试读</span>
+    </a>
+
+    <a href="../beginner/claude-intro.html" class="level-card">
+      <div class="lc-head">
+        <div class="lc-icon lv-beginner">🌱</div>
+        <h3>入门 · 基础操作</h3>
+      </div>
+      <p>认识 Claude Code、快捷键、对话技巧、项目初始化、日常工作流。</p>
+      <span class="lc-count">6 节课 · 前三步免费试读</span>
+    </a>
+
+    <a href="../intermediate/core-commands.html" class="level-card">
+      <div class="lc-head">
+        <div class="lc-icon lv-intermediate">⚡</div>
+        <h3>进阶 · 效率翻倍</h3>
+      </div>
+      <p>核心命令精通、上下文与成本管理、工作流模式、21天进阶计划。</p>
+      <span class="lc-count">4 节课 · 前三步免费试读</span>
+    </a>
+
+    <div class="level-card" style="opacity:0.5; pointer-events:none;">
+      <div class="lc-head">
+        <div class="lc-icon lv-expert">🚀</div>
+        <h3>专家 · 自定义一切</h3>
+      </div>
+      <p>MCP 服务器开发、工作流引擎、自定义代理 — 扩展 Claude Code 的边界。</p>
+      <span class="lc-count">即将上线</span>
+    </div>
+
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>AI 帮你干活 · 让每个人都能用 AI</p>
+</footer>
+
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/site-config.js"></script>
+<script src="../assets/js/anti-theft.js"></script>
+<script>
+(function () {
+  var toggle = document.getElementById("nav-toggle");
+  var menu = document.getElementById("mobile-menu");
+  if (!toggle || !menu) return;
+  toggle.addEventListener("click", function () {
+    var open = menu.classList.toggle("open");
+    toggle.classList.toggle("open");
+    document.body.style.overflow = open ? "hidden" : "";
+  });
+  menu.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      menu.classList.remove("open");
+      toggle.classList.remove("open");
+      document.body.style.overflow = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>
