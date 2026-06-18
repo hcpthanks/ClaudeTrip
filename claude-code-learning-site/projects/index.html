@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.tencentscf.com; frame-ancestors 'self' https://hcpthanks.github.io; base-uri 'self';">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code 学习站 — 精选项目。用 Claude Code + AI 从头搭建的实战项目。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>项目 — AI 帮你干活</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<style>
+  .page-hero { padding: 64px 24px 40px; text-align: center; }
+  .page-hero h1 { font-size: 2em; margin-bottom: 8px; }
+  .page-hero .desc { color: var(--text-muted); font-size: 1em; max-width: 500px; margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">Claude Code<span>学习站</span></a>
+    <div class="nav-links" role="navigation" aria-label="页面导航">
+      <a href="../index.html">🏠 首页</a>
+      <a href="index.html" class="active">🚀 项目</a>
+      <a href="../index.html#learn">📚 学习</a>
+      <a href="../tools/">🛠️ 工具</a>
+    </div>
+    <a href="../pay/recover.html" class="nav-recover">🔑 激活码</a>
+    <a href="../pay/pay.html" class="nav-cta">💰 支付</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="../index.html">🏠 首页</a>
+    <a href="index.html">🚀 项目</a>
+    <a href="../index.html#learn">📚 学习</a>
+    <a href="../tools/">🛠️ 工具</a>
+    <a href="../pay/recover.html">🔑 激活码</a>
+    <a href="../pay/pay.html" class="mobile-cta">💰 支付</a>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <h1>🚀 精选项目</h1>
+  <p class="desc">每个项目都用 Claude Code + AI 从头搭建。看效果、拿源码、跟着学。</p>
+</header>
+
+<main class="container" role="main">
+
+  <div class="section-header">
+    <h2>已上线</h2>
+  </div>
+
+  <div class="project-grid">
+
+    <a href="ai-video-factory/" class="project-card">
+      <div class="project-visual">
+        <span class="visual-icon">🎬</span>
+</div>
+      <div class="project-info">
+        <h3>🎬 AI 视频工厂</h3>
+        <p>文案 → 配音 → 字幕 → 视频，一键生成。Agnes AI 生成画面 + TTS 配音字幕 + 剪映合成</p>
+        <span class="project-tech">Agnes AI · TTS 三引擎 · Claude Code</span>
+</div>
+    </a>
+
+    <!-- 即将上线 -->
+    <div class="project-card coming-soon">
+      <div class="project-visual">
+        <span class="visual-icon">📊</span>
+        <span class="visual-tag coming">即将上线</span>
+      </div>
+      <div class="project-info">
+        <h3>📊 智能交易看板</h3>
+        <p>TradingView MCP 实时数据 · 多时间框架分析 · 策略回测 · 预警自动化</p>
+        <span class="project-tech">TradingView MCP · Claude Code · Pine Script</span>
+        <span class="project-badge coming">即将上线</span>
+      </div>
+    </div>
+
+    <div class="project-card coming-soon">
+      <div class="project-visual">
+        <span class="visual-icon">✍️</span>
+        <span class="visual-tag coming">即将上线</span>
+      </div>
+      <div class="project-info">
+        <h3>✍️ 内容创作引擎</h3>
+        <p>AI 写文案 · 自动排版 · 多平台分发 · 数据追踪，一人搞定全部内容</p>
+        <span class="project-tech">Agnes Chat · Claude Code · 自动化工作流</span>
+        <span class="project-badge coming">即将上线</span>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>AI 帮你干活 · 让每个人都能用 AI</p>
+</footer>
+
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/site-config.js"></script>
+<script src="../assets/js/anti-theft.js"></script>
+<script>
+(function () {
+  var toggle = document.getElementById("nav-toggle");
+  var menu = document.getElementById("mobile-menu");
+  if (!toggle || !menu) return;
+  toggle.addEventListener("click", function () {
+    var open = menu.classList.toggle("open");
+    toggle.classList.toggle("open");
+    document.body.style.overflow = open ? "hidden" : "";
+  });
+  menu.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      menu.classList.remove("open");
+      toggle.classList.remove("open");
+      document.body.style.overflow = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

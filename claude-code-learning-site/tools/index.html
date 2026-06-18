@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.tencentscf.com; frame-ancestors 'self' https://hcpthanks.github.io; base-uri 'self';">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code 学习站 — 免费在线工具。AI 对话 · 图片生成 · 视频生成，不用安装即可体验。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>免费工具 — AI 帮你干活</title>
+<link rel="stylesheet" href="../assets/css/common.css">
+<style>
+  .page-hero { padding: 64px 24px 40px; text-align: center; }
+  .page-hero h1 { font-size: 2em; margin-bottom: 8px; }
+  .page-hero .desc { color: var(--text-muted); font-size: 1em; max-width: 500px; margin: 0 auto; }
+
+  .tool-grid-full {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: var(--space-section);
+  }
+  .tool-card-full {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 36px 32px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .tool-card-full:hover {
+    border-color: var(--accent);
+    box-shadow: 0 6px 28px rgba(88, 166, 255, 0.12);
+    transform: translateY(-2px);
+    color: var(--text);
+  }
+  .tool-card-full .tool-big-icon { font-size: 3em; display: block; margin-bottom: 16px; }
+  .tool-card-full h3 { font-size: 1.15em; margin: 0 0 8px 0; color: var(--text-high); }
+  .tool-card-full p { font-size: 0.86em; color: var(--text-muted); margin: 0; line-height: 1.6; }
+  .tool-card-full .tool-status {
+    display: inline-block; margin-top: 14px; padding: 3px 12px;
+    border-radius: 12px; font-size: 0.75em; font-weight: 700;
+  }
+  .tool-status.free {
+    background: var(--green-dim); color: var(--green);
+  }
+  .tool-card-full.coming-soon { opacity: 0.5; pointer-events: none; }
+
+  @media (max-width: 600px) { .tool-grid-full { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">Claude Code<span>学习站</span></a>
+    <div class="nav-links" role="navigation" aria-label="页面导航">
+      <a href="../index.html">🏠 首页</a>
+      <a href="../projects/">🚀 项目</a>
+      <a href="../index.html#learn">📚 学习</a>
+      <a href="index.html" class="active">🛠️ 工具</a>
+    </div>
+    <a href="../pay/recover.html" class="nav-recover">🔑 激活码</a>
+    <a href="../pay/pay.html" class="nav-cta">💰 支付</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="../index.html">🏠 首页</a>
+    <a href="../projects/">🚀 项目</a>
+    <a href="../index.html#learn">📚 学习</a>
+    <a href="index.html">🛠️ 工具</a>
+    <a href="../pay/recover.html">🔑 激活码</a>
+    <a href="../pay/pay.html" class="mobile-cta">💰 支付</a>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <h1>🛠️ 免费在线工具</h1>
+  <p class="desc">AI 对话 · 图片生成 · 视频生成，不用安装即可体验全部功能。</p>
+</header>
+
+<main class="container" role="main">
+
+  <div class="tool-grid-full">
+
+    <a href="ai-chat/" class="tool-card-full">
+      <span class="tool-big-icon">💬</span>
+      <h3>AI 对话</h3>
+      <p>Agnes 2.0 Flash 模型 · 1M 上下文窗口 · 65K 输出 · 编程写作问答全能</p>
+      <span class="tool-status free">免费使用</span>
+    </a>
+
+    <a href="ai-image/" class="tool-card-full">
+      <span class="tool-big-icon">🎨</span>
+      <h3>AI 生图</h3>
+      <p>Agnes Image 2.0 Flash · 文生图 · 约 5 秒出图 · 高信息密度</p>
+      <span class="tool-status free">免费使用</span>
+    </a>
+
+    <a href="ai-video/" class="tool-card-full">
+      <span class="tool-big-icon">🎥</span>
+      <h3>AI 视频</h3>
+      <p>Agnes Video 2.0 · 文生视频 · 原生音画同出 · 约 2-3 分钟生成</p>
+      <span class="tool-status free">免费使用</span>
+    </a>
+
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>AI 帮你干活 · 让每个人都能用 AI</p>
+</footer>
+
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/site-config.js"></script>
+<script src="../assets/js/anti-theft.js"></script>
+<script>
+(function () {
+  var toggle = document.getElementById("nav-toggle");
+  var menu = document.getElementById("mobile-menu");
+  if (!toggle || !menu) return;
+  toggle.addEventListener("click", function () {
+    var open = menu.classList.toggle("open");
+    toggle.classList.toggle("open");
+    document.body.style.overflow = open ? "hidden" : "";
+  });
+  menu.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      menu.classList.remove("open");
+      toggle.classList.remove("open");
+      document.body.style.overflow = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

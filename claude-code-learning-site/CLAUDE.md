@@ -1,33 +1,66 @@
 # Claude Code 学习站
 
-纯静态 HTML/CSS/JS 构建的 Claude Code 互动学习网站，面向国内用户。
+纯静态 HTML/CSS/JS 构建的 Claude Code 学习 + 项目展示网站，面向国内用户。
+
+> 架构重构 2026-06-18：从纯学习站升级为"项目展示 + 学习路线 + 在线工具"三层结构。
 
 ## 技术栈
 
 - 纯静态 HTML + CSS + JS，无框架、无构建工具
 - 暗色主题（GitHub-dark 风格）
 - localStorage 做解锁状态 + 激活码跨设备恢复
-- 无需后端、无需数据库、无需登录
+- 无需后端、无需数据库、无需登录（支付用 Vercel Functions + Supabase）
 
 ## 文件结构
 
 ```
 claude-code-learning-site/
-├── index.html                  # 首页（五级路线 + 6预备课 + 4应用课 + 6入门卡片）
+├── index.html                  # 首页（作者分享 + 精选项目 + 学习路线 + 免费工具 + 付费升级）
 ├── CLAUDE.md                   # 本文件
-├── package.json                # Vercel Functions 依赖（supabase-js）
+├── package.json                # Vercel Functions + Vitest + Playwright
 ├── vercel.json                 # Vercel 部署配置（Node.js 20.x）
 ├── .env.example                # 环境变量模板（微信支付 + Supabase）
 ├── supabase-schema.sql         # 数据库 schema（orders + activation_codes）
 ├── assets/
 │   ├── css/
-│   │   ├── common.css          # 全局样式（设计令牌、布局、组件、插图）
+│   │   ├── common.css          # 全局样式（设计令牌、布局、组件、项目卡片、学习卡片）
 │   │   ├── paywall.css         # 付费墙样式
 │   │   └── quiz.css            # 考核系统样式
 │   ├── js/
-│   │   ├── common.js           # 公共脚本（复制按钮、导航高亮、滚动监听）
-│   │   ├── nav.js              # 共享导航栏（一处修改全站生效）
-│   │   ├── site-config.js      # 站点配置（域名白名单、官方链接，改域名只改此文件）
+│   │   ├── common.js           # 公共脚本
+│   │   ├── nav.js              # 共享导航栏 + TOPIC 注册
+│   │   ├── site-config.js      # 站点配置（域名白名单、支付 URL）
+│   │   ├── anti-theft.js       # 防盗保护
+│   │   ├── paywall.js          # 付费墙逻辑
+│   │   ├── recovery.js         # 激活码系统
+│   │   └── quiz.js             # 考核系统
+│   └── images/
+│       ├── projects/           # 项目配图/视频（Agnes AI 生成，待替换为真实素材）
+│       ├── screenshots/        # 静态截图（PNG，1280×720）
+│       └── gifs/               # 操作演示（MP4，10-30秒）
+├── projects/                   # 🚀 精选项目展示（2026-06-18 新建）
+│   ├── index.html              #   项目列表页
+│   ├── ai-video-factory/       #   AI 视频工厂 — Agnes+TTS 全自动视频生成
+│   ├── trading-dashboard/      #   智能交易看板（即将上线）
+│   └── content-engine/         #   内容创作引擎（即将上线）
+├── learn/                      # 📚 学习路线总览（2026-06-18 新建，为未来内容预留）
+│   └── index.html
+├── tools/                      # 🛠️ 免费在线工具（2026-06-18 新建）
+│   ├── index.html              #   工具列表页
+│   ├── ai-chat/                #   AI 对话（待实现）
+│   ├── ai-image/               #   AI 生图（待实现）
+│   └── ai-video/               #   AI 视频（待实现）
+├── pre-basics/                 # 预备课（7 模块简化模板，始终免费）
+├── applied/                    # 应用课（AI 帮你做生意）
+├── beginner/                   # 入门课程（6个主题）
+├── intermediate/               # 进阶课程（4个主题）
+├── expert/                     # 专家课程（待建）
+├── embed/                      # 外部网站嵌入集成（卡片/banner/widget）
+├── api/                        # Vercel Serverless Functions（支付后端）
+├── lib/
+│   └── wechat-pay.js           # 微信支付工具库
+├── pay/                        # 支付/激活码页面
+├── tests/                      # Vitest + Playwright 测试
 │   │   ├── anti-theft.js       # 防盗保护（域名锁、支付劫持、DevTools检测、DOM投毒）
 │   │   ├── paywall.js          # 付费墙逻辑（含内联防盗降级，localStorage + 渲染）
 │   │   ├── recovery.js         # 激活码系统（生成 + 校验，含 checksum 自验证）
