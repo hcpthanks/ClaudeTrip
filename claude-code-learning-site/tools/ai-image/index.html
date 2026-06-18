@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.tencentscf.com; frame-ancestors 'self' https://hcpthanks.github.io; base-uri 'self';">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 生图工具 — Agnes Image 2.0 Flash，~5 秒出图，支持中英文，免费使用">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>🎨 AI 生图 — 免费工具</title>
+<link rel="stylesheet" href="../../assets/css/common.css">
+<style>
+  .page-hero { padding: 64px 24px 40px; text-align: center; }
+  .page-hero h1 { font-size: 2em; margin-bottom: 8px; }
+  .page-hero .desc { color: var(--text-muted); font-size: 1em; max-width: 600px; margin: 0 auto; }
+
+  .section { margin: 40px 0 48px; }
+  .section h2 { font-size: 1.3em; margin-bottom: 16px; }
+  .section h3 { font-size: 1.05em; margin: 24px 0 8px; color: var(--text-muted); }
+  .section p, .section li { color: var(--text-muted); line-height: 1.75; }
+
+  pre { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 16px 20px; overflow-x: auto; font-size: .85em; line-height: 1.6; }
+  code { font-family: SFMono-Regular, Consolas, 'Liberation Mono', monospace; font-size: .9em; }
+
+  .params-table { width: 100%; border-collapse: collapse; font-size: .88em; margin: 12px 0 24px; }
+  .params-table th { text-align: left; padding: 8px 12px; background: #161b22; border: 1px solid #30363d; font-weight: 600; }
+  .params-table td { padding: 8px 12px; border: 1px solid #30363d; color: var(--text-muted); }
+  .params-table td:first-child { font-family: monospace; color: #79c0ff; white-space: nowrap; }
+
+  .btn-back { display: inline-block; margin-top: 24px; padding: 10px 20px; background: #21262d; border: 1px solid #30363d; border-radius: 8px; color: var(--text-muted); text-decoration: none; font-size: .88em; }
+  .btn-back:hover { background: #30363d; }
+  .badge { display: inline-block; padding: 2px 8px; background: rgba(63,185,80,.15); color: #3fb950; border-radius: 12px; font-size: .78em; font-weight: 600; margin-left: 6px; }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="../../index.html" class="logo">Claude Code<span>学习站</span></a>
+    <div class="nav-links">
+      <a href="../../index.html">🏠 首页</a>
+      <a href="../../projects/">🚀 项目</a>
+      <a href="../../index.html#learn">📚 学习</a>
+      <a href="../index.html">🛠️ 工具</a>
+    </div>
+    <a href="../../pay/recover.html" class="nav-recover">🔑 激活码</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="菜单"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <h1>🎨 AI 生图</h1>
+  <p class="desc">Agnes Image 2.0 Flash — 文生图 · ~5 秒出图 · 高信息密度</p>
+</header>
+
+<main class="container" role="main">
+
+  <div class="section">
+    <h2>模型信息</h2>
+    <table class="params-table">
+      <tr><td>模型名称</td><td>agnes-image-2.0-flash</td></tr>
+      <tr><td>生成速度</td><td>约 5 秒</td></tr>
+      <tr><td>支持语言</td><td>中文 / 英文提示词</td></tr>
+      <tr><td>特点</td><td>高信息密度，适合教程配图、封面、示意图</td></tr>
+      <tr><td>费用</td><td><span class="badge">免费</span></td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>支持尺寸</h2>
+    <table class="params-table">
+      <tr><td>1024x1024</td><td>正方形，默认尺寸。适合头像、图标、社交媒体帖子</td></tr>
+      <tr><td>1792x1024</td><td>横版宽屏。适合视频封面、Banner、博客头图</td></tr>
+      <tr><td>1024x1792</td><td>竖版。适合手机壁纸、海报、小红书封面</td></tr>
+      <tr><td>512x512</td><td>小尺寸。快速预览、批量生成、头像</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>参数说明</h2>
+    <table class="params-table">
+      <tr><td>prompt</td><td>图片描述（必填），支持中英文</td></tr>
+      <tr><td>size</td><td>图片尺寸：1024x1024 / 1792x1024 / 1024x1792 / 512x512</td></tr>
+      <tr><td>n</td><td>生成数量，默认 1</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>在 Claude Code 中使用</h2>
+    <pre><code># 基础用法
+"帮我用 Agnes Image 生成一张图片：一只橘猫坐在电脑前写代码"
+
+# 指定尺寸
+"生成一张 1792x1024 的横版图片：未来城市的日出景象，赛博朋克风格"
+
+# 指定风格和细节
+"生成一张竖版海报（1024x1792）：标题'AI 帮你干活'，
+深色背景，霓虹紫色调，科技感，适合网站首页 Hero"</code></pre>
+  </div>
+
+  <div class="section">
+    <h2>实战示例</h2>
+
+    <h3>教程配图</h3>
+    <pre><code>帮我生成一张教程封面图（1792x1024）：
+主题：Claude Code 从零入门
+风格：暗色背景 + 紫色渐变 + 代码元素
+文字区域留白（方便后期加标题）
+适合 B 站视频封面</code></pre>
+
+    <h3>产品示意图</h3>
+    <pre><code>生成一张流程图风格图片（1024x1024）：
+展示"文案 → 配音 → 字幕 → 视频"的自动化流程
+使用箭头连接 4 个步骤
+每个步骤配一个 icon
+配色：深蓝 + 白色线条</code></pre>
+
+    <h3>批量生成</h3>
+    <pre><code>用 n=4 一次性生成 4 张 512x512 的 AI 头像变体：
+赛博朋克风格的女性角色头像，霓虹灯背景</code></pre>
+  </div>
+
+  <a href="../index.html" class="btn-back">← 返回工具列表</a>
+
+</main>
+
+<footer class="site-footer">
+  <p>AI 帮你干活 · 让每个人都能用 AI</p>
+</footer>
+
+<script src="../../assets/js/common.js"></script>
+<script src="../../assets/js/site-config.js"></script>
+<script src="../../assets/js/anti-theft.js"></script>
+</body>
+</html>

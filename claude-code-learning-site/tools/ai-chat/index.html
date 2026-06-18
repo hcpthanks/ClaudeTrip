@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.tencentscf.com; frame-ancestors 'self' https://hcpthanks.github.io; base-uri 'self';">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 对话工具 — Agnes 2.0 Flash，1M 上下文，OpenAI 兼容，免费使用">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>💬 AI 对话 — 免费工具</title>
+<link rel="stylesheet" href="../../assets/css/common.css">
+<style>
+  .page-hero { padding: 64px 24px 40px; text-align: center; }
+  .page-hero h1 { font-size: 2em; margin-bottom: 8px; }
+  .page-hero .desc { color: var(--text-muted); font-size: 1em; max-width: 600px; margin: 0 auto; }
+
+  .section { margin: 40px 0 48px; }
+  .section h2 { font-size: 1.3em; margin-bottom: 16px; }
+  .section h3 { font-size: 1.05em; margin: 24px 0 8px; color: var(--text-muted); }
+  .section p, .section li { color: var(--text-muted); line-height: 1.75; }
+
+  pre { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 16px 20px; overflow-x: auto; font-size: .85em; line-height: 1.6; }
+  code { font-family: SFMono-Regular, Consolas, 'Liberation Mono', monospace; font-size: .9em; }
+  pre code { background: none; padding: 0; }
+
+  .params-table { width: 100%; border-collapse: collapse; font-size: .88em; margin: 12px 0 24px; }
+  .params-table th { text-align: left; padding: 8px 12px; background: #161b22; border: 1px solid #30363d; font-weight: 600; }
+  .params-table td { padding: 8px 12px; border: 1px solid #30363d; color: var(--text-muted); }
+  .params-table td:first-child { font-family: monospace; color: #79c0ff; white-space: nowrap; }
+
+  .btn-back { display: inline-block; margin-top: 24px; padding: 10px 20px; background: #21262d; border: 1px solid #30363d; border-radius: 8px; color: var(--text-muted); text-decoration: none; font-size: .88em; }
+  .btn-back:hover { background: #30363d; }
+
+  .badge { display: inline-block; padding: 2px 8px; background: rgba(63,185,80,.15); color: #3fb950; border-radius: 12px; font-size: .78em; font-weight: 600; margin-left: 6px; }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="../../index.html" class="logo">Claude Code<span>学习站</span></a>
+    <div class="nav-links">
+      <a href="../../index.html">🏠 首页</a>
+      <a href="../../projects/">🚀 项目</a>
+      <a href="../../index.html#learn">📚 学习</a>
+      <a href="../index.html">🛠️ 工具</a>
+    </div>
+    <a href="../../pay/recover.html" class="nav-recover">🔑 激活码</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="菜单"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <h1>💬 AI 对话</h1>
+  <p class="desc">Agnes 2.0 Flash — 1M 上下文窗口 · 65K 输出 · OpenAI 兼容</p>
+</header>
+
+<main class="container" role="main">
+
+  <div class="section">
+    <h2>模型信息</h2>
+    <table class="params-table">
+      <tr><td>模型名称</td><td>agnes-2.0-flash</td></tr>
+      <tr><td>上下文窗口</td><td>1,000,000 tokens（1M）</td></tr>
+      <tr><td>最大输出</td><td>65,536 tokens</td></tr>
+      <tr><td>格式</td><td>OpenAI 兼容</td></tr>
+      <tr><td>费用</td><td><span class="badge">免费</span></td></tr>
+      <tr><td>Base URL</td><td><code>https://apihub.agnes-ai.com/v1</code></td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>适用场景</h2>
+    <ul>
+      <li>编程辅助 — 写代码、Debug、Code Review</li>
+      <li>写作润色 — 文章、报告、翻译、摘要</li>
+      <li>Agent 工作流 — 结合 Claude Code 调度多步任务</li>
+      <li>长文档处理 — 1M 上下文，一次塞进整本书</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>参数说明</h2>
+    <table class="params-table">
+      <tr><td>prompt</td><td>用户消息（必填）</td></tr>
+      <tr><td>system</td><td>系统提示词（可选），定义角色和行为</td></tr>
+      <tr><td>max_tokens</td><td>最大输出 token 数，最高 65536</td></tr>
+      <tr><td>temperature</td><td>创造性控制，0-2，默认 0.7。越低越确定，越高越随机</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>在 Claude Code 中使用</h2>
+    <pre><code># 直接对话
+直接用中文提问即可，Claude Code 通过 MCP 工具调用 Agnes Chat
+
+# 也可以指定系统提示词
+"帮我用 Agnes Chat 翻译这篇文档，system prompt 设为'你是专业翻译'"
+
+# 调整创造性
+"用 temperature=0.3 帮我写一段严谨的技术文档"</code></pre>
+  </div>
+
+  <div class="section">
+    <h2>实战示例</h2>
+
+    <h3>代码生成</h3>
+    <pre><code>帮我用 Python 写一个 Flask API，实现用户注册登录功能：
+- 用 SQLite 数据库
+- 密码 bcrypt 加密
+- JWT token 认证
+- 包含完整的错误处理</code></pre>
+
+    <h3>长文分析</h3>
+    <pre><code>把这篇 5 万字的论文贴进去，让它：
+1. 用 500 字总结核心观点
+2. 列出 3 个主要贡献
+3. 指出 2 个潜在缺陷
+4. 用表格对比同类研究</code></pre>
+  </div>
+
+  <a href="../index.html" class="btn-back">← 返回工具列表</a>
+
+</main>
+
+<footer class="site-footer">
+  <p>AI 帮你干活 · 让每个人都能用 AI</p>
+</footer>
+
+<script src="../../assets/js/common.js"></script>
+<script src="../../assets/js/site-config.js"></script>
+<script src="../../assets/js/anti-theft.js"></script>
+</body>
+</html>

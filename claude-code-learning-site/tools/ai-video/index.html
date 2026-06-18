@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.tencentscf.com; frame-ancestors 'self' https://hcpthanks.github.io; base-uri 'self';">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 视频生成工具 — Agnes Video v2.0，文生视频，音画同出，支持中英文语音，免费使用">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<title>🎥 AI 视频 — 免费工具</title>
+<link rel="stylesheet" href="../../assets/css/common.css">
+<style>
+  .page-hero { padding: 64px 24px 40px; text-align: center; }
+  .page-hero h1 { font-size: 2em; margin-bottom: 8px; }
+  .page-hero .desc { color: var(--text-muted); font-size: 1em; max-width: 600px; margin: 0 auto; }
+
+  .section { margin: 40px 0 48px; }
+  .section h2 { font-size: 1.3em; margin-bottom: 16px; }
+  .section h3 { font-size: 1.05em; margin: 24px 0 8px; color: var(--text-muted); }
+  .section p, .section li { color: var(--text-muted); line-height: 1.75; }
+
+  pre { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 16px 20px; overflow-x: auto; font-size: .85em; line-height: 1.6; }
+  code { font-family: SFMono-Regular, Consolas, 'Liberation Mono', monospace; font-size: .9em; }
+
+  .params-table { width: 100%; border-collapse: collapse; font-size: .88em; margin: 12px 0 24px; }
+  .params-table th { text-align: left; padding: 8px 12px; background: #161b22; border: 1px solid #30363d; font-weight: 600; }
+  .params-table td { padding: 8px 12px; border: 1px solid #30363d; color: var(--text-muted); }
+  .params-table td:first-child { font-family: monospace; color: #79c0ff; white-space: nowrap; }
+
+  .btn-back { display: inline-block; margin-top: 24px; padding: 10px 20px; background: #21262d; border: 1px solid #30363d; border-radius: 8px; color: var(--text-muted); text-decoration: none; font-size: .88em; }
+  .btn-back:hover { background: #30363d; }
+  .badge { display: inline-block; padding: 2px 8px; background: rgba(63,185,80,.15); color: #3fb950; border-radius: 12px; font-size: .78em; font-weight: 600; margin-left: 6px; }
+
+  .warning { background: rgba(210,153,34,.1); border: 1px solid rgba(210,153,34,.3); border-radius: 8px; padding: 12px 16px; font-size: .88em; color: var(--text-muted); margin: 16px 0; }
+  .warning strong { color: #d29922; }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="../../index.html" class="logo">Claude Code<span>学习站</span></a>
+    <div class="nav-links">
+      <a href="../../index.html">🏠 首页</a>
+      <a href="../../projects/">🚀 项目</a>
+      <a href="../../index.html#learn">📚 学习</a>
+      <a href="../index.html">🛠️ 工具</a>
+    </div>
+    <a href="../../pay/recover.html" class="nav-recover">🔑 激活码</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="菜单"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <h1>🎥 AI 视频</h1>
+  <p class="desc">Agnes Video v2.0 — 文生视频 · 音画同出 · 原生中英文语音</p>
+</header>
+
+<main class="container" role="main">
+
+  <div class="section">
+    <h2>模型信息</h2>
+    <table class="params-table">
+      <tr><td>模型名称</td><td>agnes-video-v2.0</td></tr>
+      <tr><td>生成方式</td><td>异步生成，需轮询等待</td></tr>
+      <tr><td>生成时间</td><td>约 2-3 分钟</td></tr>
+      <tr><td>特色</td><td>音画同出 — 画面和语音同步生成，无需后期配音</td></tr>
+      <tr><td>语音支持</td><td>中文 / 英文，原生语音合成</td></tr>
+      <tr><td>费用</td><td><span class="badge">免费</span></td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>帧数与时长对照</h2>
+    <div class="warning"><strong>⚠️ 关键规则：</strong>帧数必须满足 <code>8n+1</code> 公式（即除以 8 余 1）。例如：121、241、361、441...</div>
+    <table class="params-table">
+      <tr><td>121 帧</td><td>约 5 秒（24fps）<span class="badge">推荐入门</span></td></tr>
+      <tr><td>241 帧</td><td>约 10 秒（24fps）<span class="badge">常用</span></td></tr>
+      <tr><td>361 帧</td><td>约 15 秒（24fps）<span class="badge">实战验证</span></td></tr>
+      <tr><td>441 帧</td><td>约 18 秒（24fps）</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>参数说明</h2>
+    <table class="params-table">
+      <tr><td>prompt</td><td>视频描述（必填），支持中英文</td></tr>
+      <tr><td>num_frames</td><td>帧数，必须满足 8n+1。默认 121（~5秒）</td></tr>
+      <tr><td>frame_rate</td><td>帧率，默认 24</td></tr>
+      <tr><td>width</td><td>视频宽度，默认 1152</td></tr>
+      <tr><td>height</td><td>视频高度，默认 768</td></tr>
+      <tr><td>negative_prompt</td><td>负面提示词（可选），排除不想要的内容</td></tr>
+      <tr><td>seed</td><td>随机种子（可选），相同 seed 可复现结果</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>在 Claude Code 中使用</h2>
+    <pre><code># 基础用法
+"帮我用 Agnes Video 生成一个 5 秒视频：海浪拍打礁石的慢动作"
+
+# 指定帧数和分辨率
+"生成一个 15 秒视频（361 帧），1152x768：
+城市夜景延时摄影，车流灯光流动"
+
+# 带负面提示词
+"生成视频：森林中的阳光透过树叶（num_frames=241）
+negative_prompt: 模糊、噪点、人物"
+
+# 带 seed 复现
+"用 seed=42 生成视频：一只金毛犬在草地上奔跑"</code></pre>
+  </div>
+
+  <div class="section">
+    <h2>实战示例</h2>
+
+    <h3>知识类短视频素材</h3>
+    <pre><code>生成一个 10 秒视频（241 帧，1088x832）：
+科技感抽象背景，蓝色和紫色粒子流动，
+适合用作 B 站知识类视频的 B-roll 素材</code></pre>
+
+    <h3>产品演示</h3>
+    <pre><code>生成 15 秒视频（361 帧）：
+展示一个 AI 工具的工作流程动画——
+文字输入 → 处理中（旋转齿轮）→ 输出结果
+深色主题，霓虹绿色点缀</code></pre>
+
+    <h3>配合流程</h3>
+    <pre><code># Agnes Video 生成画面 + TTS 配音字幕 + 剪映合成
+# 这就是 AI 视频工厂项目的核心流程
+
+1. 用 Agnes Video 生成视频素材（这个页面）
+2. 用 TTS 工具生成配音 + 字幕（/tts-video skill）
+3. 剪映中合成，微调时间轴</code></pre>
+  </div>
+
+  <a href="../index.html" class="btn-back">← 返回工具列表</a>
+
+</main>
+
+<footer class="site-footer">
+  <p>AI 帮你干活 · 让每个人都能用 AI</p>
+</footer>
+
+<script src="../../assets/js/common.js"></script>
+<script src="../../assets/js/site-config.js"></script>
+<script src="../../assets/js/anti-theft.js"></script>
+</body>
+</html>
