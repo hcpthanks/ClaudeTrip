@@ -4,7 +4,7 @@
 
 工作台项目，包含多个子项目/站点，以及 AI 工具集成。
 
-## 重要功能（2026-06-16）
+## 重要功能（2026-06-17）
 
 ### 🤖 Agnes AI 全模态集成
 
@@ -26,7 +26,22 @@
 **视频参数**: num_frames 必须满足 8n+1（121/241/361/441）
 **首次实战**: 2026-06-16 成功生成 15 秒视频（361帧，1088×832，2.9MB）
 
-**备注**: 这是 Claude Code 之前做不到的能力——现在能直接在对话中生成视频。
+### 🔊 TTS 视频工具（三引擎：配音+字幕）
+
+将文案一键转为带中文配音 + 同步字幕的 MP4 视频。
+
+| 引擎 | 类型 | 命令 | 音色 |
+|------|------|------|------|
+| edge-tts (默认) | 云端 | `--engine edgetts -v <语音>` | 8种 (xiaoxiao/yunxi等) |
+| CosyVoice2 | 本地 5.3GB | `--engine cosyvoice2` | 1种 (zero-shot) |
+| Qwen3-TTS | 本地 2.4GB | `--engine qwen3tts --qwen3-speaker vivian` | 9种 |
+
+- **命令**: `python .claude/tools/tts-video/generate.py -t "<文案>" -o <输出.mp4> --engine <引擎>`
+- **Skill**: `/tts-video` 或直接描述需求
+- **与 Agnes 配合**: Agnes 出画面 + TTS 出配音字幕 + 剪映合成
+- **指南**: `AI视频生产线使用指南.html`
+- **模型目录**: `.claude/models/CosyVoice2-0.5B/` + `.claude/models/Qwen3-TTS-12Hz-0.6B-CustomVoice/`
+- **ChatTTS 放弃**: numba/llvmlite Win10崩溃 + 模型格式不兼容 (.pt vs .safetensors)
 
 ## 子项目
 
