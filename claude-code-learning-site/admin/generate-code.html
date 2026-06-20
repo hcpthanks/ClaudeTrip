@@ -148,7 +148,7 @@
           <label>类型</label>
           <select id="gen-type" onchange="onTypeChange()">
             <option value="single">S 码 · 单主题 ¥5</option>
-            <option value="all">A 码 · 全站 ¥99</option>
+            <option value="all">A 码 · ¥699永久</option>
           </select>
         </div>
         <div class="field" style="flex:0 0 200px;" id="topic-col">
@@ -473,7 +473,7 @@ function onSubjectPaste() {
     }
   }
 
-  showSubjectInfo('warn', '⚠️ 未能自动识别主题，请手动从下拉框选择。如果是 ¥99 全站可直接选择 A 码。');
+  showSubjectInfo('warn', '⚠️ 未能自动识别主题，请手动从下拉框选择。如果是 ¥699 永久或 ¥399/3年 可直接选择对应码。');
 }
 
 function selectTopic(topicId) {
@@ -616,8 +616,8 @@ function doGenerate() {
     '2. 输入上方激活码\n' +
     '3. 即可解锁「' + topicName + '」\n\n' +
     (type === 'all'
-      ? '全站 17 个主题永久解锁，后续更新永久免费。\n\n'
-      : '仅解锁这一个主题的付费内容。如需全站解锁（¥99），访问：\n' +
+      ? '全站 17 个主题永久解锁（¥699），或 3年使用期限（¥399）。\n\n'
+      : '仅解锁这一个主题的付费内容。如需全站解锁（¥399/3年 或 ¥699永久），访问：\n' +
         'https://www.hcpthanks.com/pay/pay.html?plan=all\n\n') +
     '激活码已发送到你的邮箱，随时可查，永不丢失。\n' +
     '如有问题，回复此邮件即可。\n\n' +
@@ -844,7 +844,7 @@ function renderStats(days) {
     '</div>' +
     '<div class="stat-card">' +
       '<div class="num purple">' + stats.totalA + '</div>' +
-      '<div class="label">A码 · 全站 ¥99</div>' +
+      '<div class="label">A码 · ¥699永久</div>' +
     '</div>' +
     '<div class="stat-card">' +
       '<div class="num" style="color:#d2991d;">' + stats.totalS + '</div>' +
@@ -871,7 +871,7 @@ function renderCharts(stats) {
   _charts.pie = new Chart(pieCtx, {
     type: 'doughnut',
     data: {
-      labels: ['A码 · 全站 ¥99', 'S码 · 单主题 ¥5'],
+      labels: ['A码 · ¥699永久', 'S码 · 单主题 ¥5'],
       datasets: [{
         data: [stats.totalA, stats.totalS],
         backgroundColor: ['rgba(163,113,247,0.6)', 'rgba(210,153,29,0.6)'],
@@ -984,7 +984,7 @@ function copyReport() {
     '📊 本月概览（近30天）\n' +
     '  总收入：¥' + monthStats.revenue.toLocaleString() + '\n' +
     '  总笔数：' + monthStats.total + '\n' +
-    '  A码（全站 ¥99）：' + monthStats.totalA + ' 张\n' +
+    '  A码（¥699永久）：' + monthStats.totalA + ' 张\n' +
     '  S码（单主题 ¥5）：' + monthStats.totalS + ' 张\n\n' +
     '📈 近7天趋势\n' +
     '  收入：¥' + weekStats.revenue.toLocaleString() + '\n' +

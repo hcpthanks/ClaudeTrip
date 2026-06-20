@@ -109,7 +109,7 @@ claude-code-learning-site/
 │   ├── iframe-content.html     #   方案B：iframe 嵌入内容页
 │   └── widget.js               #   方案C：JS Widget（一行 script 自动渲染）
 └── pay/
-    ├── pay.html                # 支付页（sim/real 双模式，¥1强制/¥5单页/¥99全站）
+    ├── pay.html                # 支付页（sim/real 双模式，¥5单页/¥399三年/¥699永久）
     ├── success.html            # 支付成功页（显示激活码，服务端码优先）
     └── recover.html            # 激活码恢复页
 ```
@@ -272,10 +272,10 @@ claude-code-learning-site/
 
 | plan | 价格 | 说明 |
 |------|------|------|
-| `all` | ¥99 | 全站永久解锁，之后不再看到任何付费墙 |
+| `all` | ¥399/3年 或 ¥699永久 | 全站解锁，之后不再看到任何付费墙 |
 | `single` | ¥5 | 单主题解锁（⑥-⑨付费模块）|
 
-注：¥1 强制解锁已于 2026-06-08 移除。¥99 用户自动绕过全部付费墙。
+注：¥1 强制解锁已于 2026-06-08 移除。¥399/3年 或 ¥699永久 用户自动绕过全部付费墙。
 
 ### 激活码格式 v3（2026-06-08 重构）
 
@@ -301,7 +301,7 @@ claude-code-learning-site/
 
 | Key | 类型 | 说明 |
 |-----|------|------|
-| `cc-learn-all-access` | `"true"` / 不存在 | 全站永久解锁 |
+| `cc-learn-all-access` | `"true"` / 不存在 | 全站解锁 |
 | `cc-learn-unlocked` | JSON 数组 | 单页解锁的 topic ID 列表 |
 | `cc-activation-codes` | JSON 对象 | 激活码缓存（同浏览器，旧版兼容） |
 | `cc-code-counters` | JSON 对象 | 每课计数器（admin 本地） |
@@ -443,7 +443,7 @@ recover.html → recovery.js verifyWithCloud()
 - ✅ 入门 6 个主题完成（2026-06-08 全面重写为老王向：零编程术语，生意场景）
 - ✅ 激活码 v3 永久编号系统（16字符，29,791课+92万/课，10年100万人够用）
 - ✅ 付费墙提前到④步（①-③免费预览）
-- ✅ 付费页精简（仅¥99，130行）
+- ✅ 付费页精简（仅¥399/3年 或 ¥699永久，130行）
 - ✅ 导航简化（移除17个主题链接，分区高亮+滚动跟踪）
 - ✅ 独立域名上线 + SSL — https://www.hcpthanks.com/（Enforce HTTPS 已开启）
 - ✅ 防盗系统 — 全站接入

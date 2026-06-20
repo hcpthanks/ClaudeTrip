@@ -69,7 +69,7 @@ var msg = isAll
   : '本页剩余内容已解锁。<br>刷新页面即可查看全部内容。';
 var steps = isAll
   ? ['有问题发邮件至 hcpthanks@163.com','从"进阶 · 多代理编排"开始学习','课程内容更新时会第一时间通知你']
-  : ['返回刚才的页面继续学习','也可以从首页浏览其他课程','考虑 ¥99 永久解锁全站更划算'];
+  : ['返回刚才的页面继续学习','也可以从首页浏览其他课程','考虑 ¥399/3年 或 ¥699 永久更划算'];
 var btnText = isAll ? '开始学习 →' : '返回继续学习 →';
 var btnHref = isAll ? '../index.html' : (
   (function() {
@@ -118,7 +118,7 @@ document.getElementById('success-card').innerHTML =
     steps.map(function(s){return '<li>'+s+'</li>';}).join('') +
   '</ol></div>' +
   '<a href="' + btnHref + '" class="btn btn-primary" style="font-size:1em;padding:12px 36px;">' + btnText + '</a>' +
-  (isAll ? '' : '<p style="margin-top:16px;"><a href="pay.html?plan=all" style="color:var(--purple);font-size:0.9em;">💜 还是 ¥99 永久解锁更划算 →</a></p>');
+  (isAll ? '' : '<p style="margin-top:16px;"><a href="pay.html?plan=pro" style="color:var(--purple);font-size:0.9em;">💜 ¥399/3年 解锁全站 →</a> &nbsp; <a href="pay.html?plan=all" style="color:var(--purple);font-size:0.9em;">💜 ¥699 永久 →</a></p>');
 
   // 复制按钮事件（安全绑定，避免内联 onclick XSS）
   var copyBtn = document.getElementById('copy-act-code');

@@ -179,7 +179,7 @@ describe('Phase 2: AI Video Factory — Paywall Integration', () => {
   test('has paywall section for source code + config', () => {
     const body = doc.body.textContent;
     const hasPaywall = !!doc.querySelector('.premium-teaser') ||
-      body.includes('¥99') || body.includes('解锁') || body.includes('付费');
+      body.includes('¥399') || body.includes('¥699') || body.includes('解锁') || body.includes('付费');
     expect(hasPaywall).toBe(true);
   });
 

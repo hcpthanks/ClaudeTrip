@@ -13,7 +13,8 @@ const supabase = createClient(
 
 // 价格表（单位：分）— 服务端强制，防客户端篡改
 const PLAN_PRICES = {
-  all: 9900,    // ¥99
+  all: 69900,   // ¥699 永久
+  pro: 39900,   // ¥399 3年
   single: 500,  // ¥5
 };
 
@@ -44,7 +45,8 @@ module.exports = async function handler(req, res) {
 
     // 生成商品描述
     const descriptions = {
-      all: 'Claude Code 学习站 — 全站永久解锁',
+      all: 'Claude Code 学习站 — ¥699 全站永久解锁',
+      pro: 'Claude Code 学习站 — ¥399 全站3年解锁',
       single: 'Claude Code 学习站 — 单课解锁',
     };
     const description = descriptions[plan] || 'Claude Code 学习课程';

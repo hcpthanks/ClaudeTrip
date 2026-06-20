@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://*.tencentscf.com; frame-ancestors 'none'; base-uri 'self';">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Claude Code 学习站 — 永久解锁全部课程，一次购买，持续更新。">
+<meta name="description" content="Claude Code 学习站 — ¥399/3年 或 ¥699 永久解锁全部课程。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
 <title>升级解锁 — Claude Code 学习站</title>
 <link rel="stylesheet" href="../assets/css/common.css">
@@ -107,7 +107,7 @@
     </div>
 
     <p style="max-width:580px;margin:16px auto;text-align:center;color:var(--text-faint);font-size:0.8em;">
-      ✅ 永久有效 · 🔐 激活码保存在邮箱随时可查
+      ✅ ¥399/3年或¥699永久
     </p>
 
   </div>
@@ -167,35 +167,53 @@
   var topicName = TOPIC_NAMES[topicId] || '';
 
   var isAll = (plan === 'all');
-  var price = isAll ? '99' : '5';
-  var title = isAll ? '⭐ 永久解锁全站' : '📖 解锁本页内容';
+  var isPro = (plan === 'pro');
+  // all=¥699永久, pro=¥399/3年, single=¥5
+  var price = isAll ? '699' : (isPro ? '399' : '5');
+  var priceLabel = isAll ? '永久有效 · 持续更新' : (isPro ? '3年使用期限 · 持续更新' : '单页解锁，永久有效');
+  var title = isAll ? '⭐ 永久解锁全站' : (isPro ? '🌟 3年解锁全站' : '📖 解锁本页内容');
   var subtitle = isAll
     ? '一次购买，永久有效 · 内容持续更新'
-    : ('正在解锁：<span class="topic-name">' + escHtml(topicName) + '</span>');
+    : (isPro
+      ? '3年使用期限 · 内容持续更新'
+      : ('正在解锁：<span class="topic-name">' + escHtml(topicName) + '</span>'));
 
   var summaryItems = isAll
     ? [
         '预备课 7 节 — 永久免费 · 无需付费',
         '应用课 4 节 + 入门课 6 节 — 全部解锁',
         '进阶课 + 专家课 — 含未来全部更新',
-        '邮件答疑支持 · 激活码换机可恢复'
+        '终身永久有效 · 邮件答疑支持'
       ]
-    : [
-        '永久解锁「<b>' + escHtml(topicName) + '</b>」完整内容',
-        '含 ④-⑨ 付费模块 + 速查卡 + 总结',
-        '激活码换机可恢复 · 重装浏览器不丢失',
-        '考虑 ¥99 全站永久更划算 → <a href="pay.html?plan=all" style="color:var(--purple);">点此切换</a>'
-      ];
+    : (isPro
+      ? [
+          '预备课 7 节 — 永久免费 · 无需付费',
+          '应用课 4 节 + 入门课 6 节 — 全部解锁',
+          '进阶课 + 专家课 — 含未来全部更新',
+          '3年使用期限 · 邮件答疑支持'
+        ]
+      : [
+          '永久解锁「<b>' + escHtml(topicName) + '</b>」完整内容',
+          '含 ④-⑨ 付费模块 + 速查卡 + 总结',
+          '激活码换机可恢复 · 重装浏览器不丢失',
+          '考虑 ¥399 解锁全站更划算 → <a href="pay.html?plan=pro" style="color:var(--purple);">点此切换</a>'
+        ]);
 
   // Build mail subject with machine-readable topic id (for copy button)
   var mailSubject = isAll
-    ? 'Claude Code 学习站 ¥99 全站永久解锁 激活码申请'
-    : 'Claude Code 学习站 ¥5 [topic:' + topicId + '] ' + topicName + ' 激活码申请';
+    ? 'Claude Code 学习站 ¥699 全站永久解锁 激活码申请'
+    : (isPro
+      ? 'Claude Code 学习站 ¥399 全站3年解锁 激活码申请'
+      : 'Claude Code 学习站 ¥5 [topic:' + topicId + '] ' + topicName + ' 激活码申请');
 
-  // Also show single-plan option card when viewing all-access page
-  var singleLink = '';
-  if (isAll && topicName) {
-    singleLink = '<p style="margin-top:16px;font-size:0.88em;"><a href="pay.html?plan=single&amp;topic=' + encodeURIComponent(topicId) + '" style="color:var(--accent);">📖 只想解锁「' + escHtml(topicName) + '」？¥5 单页 →</a></p>';
+  // Plan switching links
+  var planLinks = '';
+  if (isAll) {
+    planLinks = '<p style="margin-top:16px;font-size:0.88em;"><a href="pay.html?plan=pro" style="color:var(--accent);">🌟 ¥399/3年 全站解锁 →</a></p>';
+  } else if (isPro) {
+    planLinks = '<p style="margin-top:16px;font-size:0.88em;"><a href="pay.html?plan=all" style="color:var(--purple);">⭐ ¥699 永久解锁更划算 →</a></p>';
+  } else if (topicName) {
+    planLinks = '<p style="margin-top:16px;font-size:0.88em;"><a href="pay.html?plan=pro" style="color:var(--accent);">🌟 ¥399/3年 解锁全站 →</a>&nbsp;&nbsp;<a href="pay.html?plan=all" style="color:var(--purple);">⭐ ¥699 永久 →</a></p>';
   }
 
   document.getElementById('pay-card').innerHTML =
@@ -208,7 +226,7 @@
 
     '<div class="price-block">' +
       '<div class="amount"><span class="yen">¥</span>' + price + '</div>' +
-      '<div class="note">' + (isAll ? '永久有效，持续更新' : '单页解锁，永久有效') + '</div>' +
+      '<div class="note">' + priceLabel + '</div>' +
     '</div>' +
 
     '<div class="qr-placeholder">' +
@@ -230,7 +248,7 @@
       '</div>' +
       '<p style="margin:8px 0 0;font-size:0.76em;color:var(--text-muted);">复制后去你的QQ邮箱/163邮箱粘贴发送 · 微信→钱包→账单→截图（含商户单号）</p>' +
     '</div>' +
-    singleLink;
+    planLinks;
 
   // Scroll to recover section if URL has #recover
   if (window.location.hash === '#recover') {
