@@ -202,13 +202,30 @@ async def _video(client: httpx.AsyncClient, args: dict) -> list[TextContent]:
         status = status_data.get("status", "")
 
         if status == "completed" or status == "succeeded":
-            video_url = status_data.get("url") or status_data.get("video_url", "")
+            # 尝试多个可能的视频 URL 字段名（Agnes API 返回值不稳定）
+            video_url = (
+                status_data.get("url")
+                or status_data.get("video_url")
+                or status_data.get("result_url")
+                or status_data.get("download_url")
+                or status_data.get("output_url")
+                or ""
+            )
+            # 如果是 remixed_from_video_id（ID 而非 URL），尝试拼接
+            if not video_url:
+                remixed_id = status_data.get("remixed_from_video_id", "")
+                if remixed_id:
+                    video_url = f"https://apihub.agnes-ai.com/v1/videos/{remixed_id}/download"
+
             result_lines = [
                 f"✅ 视频生成完成！",
-                f"- **视频 URL**: {video_url}",
+                f"- **视频 URL**: {video_url or '(未找到，请查看下方原始响应)'}",
                 f"- **任务 ID**: {task_id}",
                 f"- **耗时**: {attempt * 5} 秒",
             ]
+            # 如果没找到 URL，附加完整响应用于调试
+            if not video_url:
+                result_lines.append(f"- **原始响应**: ```json\n{json.dumps(status_data, ensure_ascii=False, indent=2)}\n```")
             return [TextContent(type="text", text="\n".join(result_lines))]
 
         elif status == "failed" or status == "error":

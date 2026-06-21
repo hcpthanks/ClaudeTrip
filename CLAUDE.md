@@ -93,6 +93,16 @@ Edge root 启动器被强杀后损坏为 RuntimeBroker 存根（v8.9.8.9），�
 - **关键文件**：`docs/about.html`（228行）+ `docs/index.html`（+14行）+ `docs/assets/js/nav.js`（+2行）
 - **备注**：项目展示可替换（当前4个：学习站/AI视频工厂/交易看板/嵌入系统）
 
+### 🎬 SceneFab Skill — AI 影视解说视频生成器（2026-06-21）
+
+将视频自动变成带 AI 解说配音 + 字幕的成品 MP4。
+- **Skill**: `.claude/skills/scenefab/SKILL.md`（322行）
+- **源码**: `E:\WorkBuddy\scenefab\scene-fab-2.1.1`
+- **流水线**: 视频 → FFmpeg抽帧 → Qwen3.7分镜 → DeepSeek解说词 → EdgeTTS配音 → ASS字幕合成
+- **三引擎**: Qwen3.7(Vision) + DeepSeek(解说) + EdgeTTS(配音)
+- **短剧模式**: 批量处理 25-50 集，支持 7 种解说风格
+- **待解决**: 分镜提示词需优化（当前用测试彩条无意义），需真实视频素材测试
+
 ### 🎬 AI 视频工厂规则更新
 
 - `generate_simple_video.py` — 修复中文编码（`--text` → `--file`）
