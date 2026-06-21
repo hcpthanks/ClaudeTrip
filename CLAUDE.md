@@ -54,3 +54,44 @@
 
 - 主分支: main
 - Push: `git -c credential.helper= push origin main`
+
+## 重要修复（2026-06-21）
+
+### 🔧 Edge 浏览器永久修复
+
+Edge root 启动器被强杀后损坏为 RuntimeBroker 存根（v8.9.8.9），导致进程有但窗口不出现。
+已建立三层防护，详见 `~/.claude/skills/learned/edge-browser-fix-corrupted-launcher/SKILL.md`。
+
+| 层级 | 机制 | 路径/位置 |
+|------|------|----------|
+| ① | 删除开机自启注册表 | `HKCU\...\Run\MicrosoftEdgeAutoLaunch_*`（已删） |
+| ② | 组策略禁用后台运行 | `HKLM\SOFTWARE\Policies\Microsoft\Edge\BackgroundModeEnabled=0` |
+| ③ | 登录自动修复计划任务 | `EdgeAutoRepair` → `~/.claude/scripts/edge-auto-repair.ps1` |
+
+### 🛡️ 会话监管哨兵
+
+`~/.claude/rules/ecc/common/session-supervisor.md` — 每次启动自动加载，检测 6 类异常：
+重复重试 / 质量回退 / 静默换方案 / 耗时异常 / 隐形循环 / 长时间无反馈
+
+### 🧭 命令顾问 (Command Advisor)
+
+`~/.claude/rules/ecc/common/command-advisor.md` — 每次启动自动加载，在关键阶段主动推荐合适的命令：
+写完代码→/code-review / 涉及安全→/security-review / 任务完成→/clear / 长时间工作→/save-session
+与哨兵互补：哨兵喊停，顾问指路。
+
+### 🧑‍💻 个人主页（关于作者）— 2026-06-21 上线
+
+- **线上**：https://www.hcpthanks.com/about
+- **首页入口**：Hero 下方作者卡片 + 导航栏"关于作者"链接
+- **内容**：5大板块（个人简介/工作方法论/能力技能/项目作品/联系方式）
+- **定位**："AI创业研究员" — 先行者叙事，3阶段方法论
+- **头像**：抖音 @AI创业研究员 (GuoBaYa9917)，`docs/assets/images/avatar.jpg`
+- **设计规格书**：`docs/superpowers/specs/2026-06-21-about-author-page-design.md`
+- **关键文件**：`docs/about.html`（228行）+ `docs/index.html`（+14行）+ `docs/assets/js/nav.js`（+2行）
+- **备注**：项目展示可替换（当前4个：学习站/AI视频工厂/交易看板/嵌入系统）
+
+### 🎬 AI 视频工厂规则更新
+
+- `generate_simple_video.py` — 修复中文编码（`--text` → `--file`）
+- `ai-video-factory` skill — SOP 加"只生成一次，绝不自动重试"
+- `autoresearch` skill — Safety Invariants 加"启动前确认 + 禁止静默循环"
