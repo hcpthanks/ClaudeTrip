@@ -73,11 +73,14 @@ Edge root 启动器被强杀后损坏为 RuntimeBroker 存根（v8.9.8.9），�
 `~/.claude/rules/ecc/common/session-supervisor.md` — 每次启动自动加载，检测 6 类异常：
 重复重试 / 质量回退 / 静默换方案 / 耗时异常 / 隐形循环 / 长时间无反馈
 
-### 🧭 命令顾问 (Command Advisor)
+### 🧭 命令顾问 v2 (Command Advisor)
 
-`~/.claude/rules/ecc/common/command-advisor.md` — 每次启动自动加载，在关键阶段主动推荐合适的命令：
-写完代码→/code-review / 涉及安全→/security-review / 任务完成→/clear / 长时间工作→/save-session
-与哨兵互补：哨兵喊停，顾问指路。
+`~/.claude/rules/ecc/common/command-advisor.md` — 每次启动自动加载，3 支柱架构：
+- **🧭 项目感知**：启动时读 CLAUDE.md + task_plan.md + memory，基于项目实际规则推荐
+- **🔒 收尾门禁**：/clear 前强制检查 commit/push/CLAUDE.md更新/双目录同步/保存会话/学习卡
+- **🧠 学习闭环**：设计追问 + 过程留痕 + 学习总结 + HTML 学习卡自动生成
+- 与哨兵互补：哨兵喊停，顾问指路。task_plan.md 模板已联动升级（+检查清单+门禁+学习目标）
+- 核心教训见 skill：`rule-design-project-awareness`（自动化规则必须有项目感知，不能依赖静态模板）
 
 ### 🧑‍💻 个人主页（关于作者）— 2026-06-21 上线
 
