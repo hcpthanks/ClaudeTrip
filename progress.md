@@ -32,7 +32,23 @@
 ### 阶段 5：验证与交付
 - **状态：** complete
 - 执行的操作：
-  - Commit + Push 到 GitHub
+  - Commit + Push 到 GitHub (ba9ea20)
+
+### 阶段 6：命令顾问 v2 重构 + 学习闭环
+- **状态：** complete
+- 执行的操作：
+  - 根因分析：顾问 v1 静态模板导致推荐不准
+  - 重写 command-advisor.md（3 支柱架构）
+  - 升级 task_plan.md 模板（+检查清单+门禁+学习目标）
+  - 创建 project-learning-card.html 模板（复盘教学用）
+  - learn-eval 提取核心教训 → rule-design-project-awareness skill
+- 创建/修改的文件：
+  - ~/.claude/rules/ecc/common/command-advisor.md (重写)
+  - ~/.claude/rules/ecc/zh/command-advisor.md (同步)
+  - ~/.claude/skills/planning-with-files-zh/templates/task_plan.md (升级)
+  - ~/.claude/skills/planning-with-files-zh/templates/project-learning-card.html (新增)
+  - ~/.claude/skills/learned/rule-design-project-awareness/SKILL.md (新增)
+  - CLAUDE.md (更新)
 - Commit: ba9ea20 — feat: 个人主页（关于作者）
 
 ## 交付清单
