@@ -180,10 +180,10 @@ URL: `about.html`（部署到 `docs/about.html` + `claude-code-learning-site/abo
 
 | # | 事项 | 状态 |
 |---|------|------|
-| 1 | 你的名字（显示在页面上） | ⬜ 待填 |
-| 2 | 头像（图片/emoji/首字母？） | ⬜ 待选 |
-| 3 | 微信号（联系方式板块） | ⬜ 待填 |
-| 4 | GitHub 用户名 | ⬜ 待填 |
+| 1 | 你的名字（显示在页面上） | ✅ AI创业研究员 |
+| 2 | 头像（抖音头像） | ⬜ 待获取 |
+| 3 | 邮箱 | ✅ hcpthanks@163.com |
+| 4 | GitHub | ✅ github.com/hcpthanks |
 
 ## 八、后续扩展
 
