@@ -4,6 +4,24 @@
 
 工作台项目，包含多个子项目/站点，以及 AI 工具集成。
 
+### 🖥️ 开发机硬件
+
+| 组件 | 型号 | 备注 |
+|------|------|------|
+| GPU | AMD Radeon RX 580 2048SP (4GB) | 驱动 Adrenalin 2019 → 需更新到 26.5.2 |
+| 显示器 | Philips 345B1CR | 34" 曲面超宽, 3440×1440@100Hz, DP连接 |
+| 用户视力 | 1400度近视 | DPI缩放用200%, 不能低于150% |
+| OS | Windows 10 Pro 19045 | |
+
+**显示设置**（2026-06-22 优化后）：3440×1440 @ 100Hz, DPI 200%（有效1720×720）
+**优化脚本**：`E:\tmp\amd_optimize.ps1`（切换分辨率+关VSR），`E:\tmp\amd_diag.ps1`（完整诊断）
+
+### ⚠️ Bash→PowerShell 转义铁律
+
+**在 Bash 工具中执行 PowerShell 代码的唯一可靠方式**：写 .ps1 文件 → `-File` 执行。
+绝不要在 `-Command` 中直写含 `$_` / `foreach` / `Where-Object` / `%` 的 PowerShell 代码。
+详见 memory：[[bash-powershell-escape-rule]]
+
 ## 重要功能（2026-06-17）
 
 ### 🤖 Agnes AI 全模态集成
