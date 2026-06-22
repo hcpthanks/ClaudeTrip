@@ -22,6 +22,16 @@
 绝不要在 `-Command` 中直写含 `$_` / `foreach` / `Where-Object` / `%` 的 PowerShell 代码。
 详见 memory：[[bash-powershell-escape-rule]]
 
+### ⚠️ 规则被动加载陷阱（2026-06-22 根因分析）
+
+**规则在 system prompt 里 ≠ 模型会按规则执行。**
+哨兵/命令顾问/学习闭环三条核心规则曾全部同时失效，根因是：
+1. 规则是"被动文本"不是"硬中断"——混在 1万+ tokens 里被"看了但没做"
+2. 任务模式跳过元认知——请求越像工具调用（"帮我X"），模型越倾向直接做X
+3. 没有强制执行点——可在关键操作点加 Hook 作为双重保障
+
+详见 memory：[[rules-passive-loading-trap]] + skill：`learned/rules-passive-loading-trap`
+
 ## 重要功能（2026-06-17）
 
 ### 🤖 Agnes AI 全模态集成
