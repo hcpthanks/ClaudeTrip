@@ -2,11 +2,23 @@
   "mcpServers": {
     "agnes-ai": {
       "command": "python",
-      "args": ["E:\\WorkBuddy\\CLAW\\agents\\agnes-mcp\\server.py"],
+      "args": [
+        "E:\\WorkBuddy\\CLAW\\agents\\agnes-mcp\\server.py"
+      ],
       "env": {
         "AGNES_API_KEY": "sk-eLoemyGvfmA071rCCQQaSCxHfpUPLuSo0F4g2R5tiFJHHLtc"
       },
       "description": "Agnes AI 全模态 API — 文本对话(agnes-2.0-flash)、图片生成(agnes-image-2.0-flash)、视频生成(agnes-video-v2.0)，三者全免费"
+    },
+    "framepack": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "framepack",
+        "mcp"
+      ]
     }
   }
 }
