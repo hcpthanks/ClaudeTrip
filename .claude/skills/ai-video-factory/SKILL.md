@@ -2,13 +2,13 @@
 name: ai-video-factory
 description: |
   全自动视频生产线 — **唯一视频制作入口**。三轨制：极速轨（百炼TTS+渐变背景→1-3分钟出品）、品质轨（Agnes Image底图 + HyperFrames文字动效叠加→高质量成品）、解说轨（scenefab→影视解说）。
-  当你需要"做视频"时使用。不要再直接调用 hyperframes/faceless-explainer/general-video/storyboard-prompter — 那些是本 skill 的内部引擎。
+  当你需要"做视频"时使用。不要再直接调用 hyperframes/faceless-explainer/general-video — 那些是本 skill 的内部引擎。
 ---
 
 # AI 视频工厂 v3.5 — 三轨路由
 
 > **核心原则：ai-video-factory 是"做视频"的唯一入口。分析用户意图后分流到三个轨道之一。**
-> 内部引擎（hyperframes/faceless-explainer/general-video/storyboard-prompter）不再直接暴露给用户。
+> 内部引擎（hyperframes/faceless-explainer/general-video）不再直接暴露给用户。
 > **v3.5 (2026-06-29)：借鉴 OpenMontage final_review.schema.json + delivery_promise.py — 质量门禁升级至9项（+视觉抽检+幻灯片风险+类型承诺）。新增视频类型承诺：防止品质轨偷偷降级。**
 
 ## 🗺️ 三轨路由（最先看！）
@@ -28,7 +28,7 @@ ai-video-factory（唯一入口，分析意图）
   │  └─ 🎨 品质轨：Agnes Image底图 → HyperFrames文字动效叠加
   │     耗时：10-30分钟 | 依赖：Node 22+ + Chrome headless + ffmpeg + Agnes MCP
   │     触发词："品质视频""精美视频""品牌视频""动效视频""有设计感""好看一点"
-  │     管线：storyboard-prompter(底图素材工厂) → HyperFrames(文字层叠加) → FFmpeg(合成)
+  │     管线：底图素材工厂 → HyperFrames(文字层叠加) → FFmpeg(合成)
   │     中文配音：百炼 DashScope qwen3-tts-flash（DASHSCOPE_API_KEY 已配置 ✅）
   │
   ├─ 意图：影视解说（已有视频素材）
@@ -37,7 +37,7 @@ ai-video-factory（唯一入口，分析意图）
   │     触发词："影视解说""短剧解说""给这个视频做解说""AI解说"
   │     状态：🟢 API Keys 已配置（百炼 + DeepSeek）
   │
-  └─ 辅助：AI 画面生成（storyboard-prompter → 底图素材工厂）
+  └─ 辅助：AI 画面生成（底图素材工厂）
        Agnes Image 生成高质量底图 → HyperFrames 叠加文字/数据/图表动效
 
 📋 三轨降级标准速查（v3.5 新增）
@@ -67,7 +67,7 @@ ai-video-factory（唯一入口，分析意图）
 | **触发词** | "做视频""生成视频" | "品质视频""精美视频"等 | "影视解说""短剧解说" |
 | **耗时** | 2-5 分钟 | 10-30 分钟 | 5-15 分钟 |
 | **画面** | 深蓝渐变背景 + 标题 + 字幕 | Agnes Image AI底图 + HyperFrames动效叠加 | 原视频 + AI 解说叠加 |
-| **引擎** | 百炼 DashScope(TTS) → generate_simple_video.py(FFmpeg合成) | storyboard-prompter(底图工厂) → HyperFrames(文字层) → FFmpeg合成 | Qwen3.7 + DeepSeek + EdgeTTS |
+| **引擎** | 百炼 DashScope(TTS) → generate.py(FFmpeg合成) | 底图素材工厂 → HyperFrames(文字层) → FFmpeg合成 | Qwen3.7 + DeepSeek + EdgeTTS |
 | **依赖** | Python + FFmpeg + dashscope | Node.js 22+ + FFmpeg + npx hyperframes + Agnes MCP | QWEN_API_KEY + DEEPSEEK_API_KEY |
 | **适合** | 快速试稿、内部沟通 | 对外发布、品牌视频 | 影视解说、短剧解说 |
 | **状态** | 🟢 可用 | 🟢 可用（v3.5降级规则统一） | 🟢 API Keys 已配置 |
@@ -124,19 +124,19 @@ CRITICAL 项任一 FAIL → 脚本返回 exit code 2。
 
 ```bash
 # 最简单：百炼自动配音 + 渐变背景 + 字幕
-python ~/.claude/tools/tts-video/generate_simple_video.py 文案.txt
+python ~/.claude/tools/tts-video/generate.py 文案.txt
 
 # 带大标题
-python ~/.claude/tools/tts-video/generate_simple_video.py 文案.txt --title "标题"
+python ~/.claude/tools/tts-video/generate.py 文案.txt --title "标题"
 
 # 换音色
-python ~/.claude/tools/tts-video/generate_simple_video.py 文案.txt --voice longxiaochun
+python ~/.claude/tools/tts-video/generate.py 文案.txt --voice longxiaochun
 
 # 用已有音频（HyperFrames 生成）
-python ~/.claude/tools/tts-video/generate_simple_video.py 文案.txt --audio audio.mp3 --title "标题"
+python ~/.claude/tools/tts-video/generate.py 文案.txt --audio audio.mp3 --title "标题"
 
 # 完整参数
-python ~/.claude/tools/tts-video/generate_simple_video.py 文案.txt \
+python ~/.claude/tools/tts-video/generate.py 文案.txt \
   --title "标题" --voice Cherry --end-screen --bg-color 0x1A1A2E
 ```
 
@@ -156,7 +156,7 @@ python ~/.claude/tools/tts-video/generate_simple_video.py 文案.txt \
    - 参考风格：抖音知识类短视频节奏
 
 2. 🎬 出片
-   python ~/.claude/tools/tts-video/generate_simple_video.py 文案.txt
+   python ~/.claude/tools/tts-video/generate.py 文案.txt
    - 百炼 TTS 自动配音 → 渐变背景 → 标题 → 字幕 → 自动质检
    - 不选声音/背景/字幕参数，用默认值
 
@@ -226,7 +226,7 @@ python ~/.claude/tools/tts-video/generate_simple_video.py 文案.txt \
 
 #### 降级规则（强制 — 含底层桥接说明）
 
-> **桥接实现**：品质轨降级为极速轨时，调用 `generate_simple_video.py` 重新合成。
+> **桥接实现**：品质轨降级为极速轨时，调用 `generate.py` 重新合成。
 > 输入：原文案 .txt + 已生成的音频文件（百炼配音保留）→ 输出纯色渐变+字幕版 MP4。
 > 配音不重新生成。
 
@@ -234,7 +234,7 @@ python ~/.claude/tools/tts-video/generate_simple_video.py 文案.txt \
 ┌─ Layer 1 底图失败
 │  └─ 全部失败 → 降为 teacher_explainer (纯色渐变背景)
 │     告知："AI底图全部生成失败，是否降为基础画面？"
-│     实现：generate_simple_video.py 文案.txt --audio tts_audio.wav
+│     实现：generate.py 文案.txt --audio tts_audio.wav
 │     保留：百炼配音 → 直接喂给 FFmpeg 合成，画面降级
 │
 │  └─ 部分失败 → 失败段用纯色背景，成功段保留底图
@@ -243,7 +243,7 @@ python ~/.claude/tools/tts-video/generate_simple_video.py 文案.txt \
 ├─ Layer 2 动效失败
 │  └─ → 降为极速轨 (FFmpeg drawtext 字幕)
 │     告知："HyperFrames渲染失败，是否降为字幕版？"
-│     实现：generate_simple_video.py 文案.txt --audio tts_audio.wav|audio_meta.json
+│     实现：generate.py 文案.txt --audio tts_audio.wav|audio_meta.json
 │     保留：百炼配音，丢弃 HyperFrames HTML/GSAP 动效层
 │
 ├─ Layer 3 合成失败  
@@ -281,7 +281,7 @@ python ~/.claude/tools/tts-video/generate_simple_video.py 文案.txt \
   ↓
 ┌─────────────────── 并行阶段 ───────────────────┐
 │                                                    │
-│  storyboard-prompter                      tts-video │
+│  底图素材工厂                              tts-video │
 │  ├─ Step 0-3: 风格/情绪/视觉模板/底图数量           │
 │  ├─ Step 4a: Agnes Image 并行生成底图              │
 │  │   └─ N段 × M张/段 → video_scenes/<id>/frame_*.png│
@@ -310,7 +310,7 @@ FFmpeg 合成：HyperFrames 渲染流 + 配音 + 字幕 → MP4
 │  Layer 2: 转场/滤镜层           │  ← HyperFrames (CSS transitions)
 │  淡入淡出 · 色彩渐变 · 遮罩      │
 ├─────────────────────────────────┤
-│  Layer 1: AI 底图背景层         │  ← Agnes Image (storyboard-prompter)
+│  Layer 1: AI 底图背景层         │  ← Agnes Image (底图素材工厂)
 │  风格化场景 · 情绪画面 · 氛围    │
 └─────────────────────────────────┘
 ```
@@ -410,9 +410,9 @@ Layer 3 文字层：100% 的信息载体，对比度 ≥4.5:1
 
 ### 工作流概览
 
-品质轨核心引擎是 **faceless-explainer** + **storyboard-prompter** 的分层协作：
+品质轨核心引擎是 **faceless-explainer**+ 底图素材工厂 的分层协作：
 
-1. **storyboard-prompter** 负责 Layer 1：选风格 → 生成 prompt → Agnes Image 出图 → 写入素材包
+1. **底图素材工厂** 负责 Layer 1：选风格 → 生成 prompt → Agnes Image 出图 → 写入素材包
 2. **faceless-explainer** 负责 Layer 2+3：读 global_meta.json → HyperFrames 编排 → 渲染
 
 **必须先通过以上 6 条标准检查，再开始生成。** 完整工作流见 faceless-explainer SKILL.md 的 Phase 表。
@@ -448,7 +448,7 @@ Layer 3 文字层：100% 的信息载体，对比度 ≥4.5:1
 
 1. 读文案 → 确认 brief → 等待用户回复
 2. 用户说"go" → 并行启动两条线：
-   ├─ storyboard-prompter → Agnes Image 底图生成（Layer 1）
+   ├─ Agnes Image 底图生成（Layer 1）
    └─ 百炼 DashScope qwen3-tts-flash → TTS 中文配音
 
 3. 两条线汇合后 → HyperFrames 文字动效叠加（Layer 2+3）
@@ -496,9 +496,9 @@ npx hyperframes init videos/<project-name> --non-interactive --skip-skills --exa
 品质轨 TTS 统一用**百炼 DashScope qwen3-tts-flash**（`DASHSCOPE_API_KEY` 已配置 ✅）。与极速轨共用同一引擎，保证音质一致。
 
 ```bash
-# 品质轨配音 — 在 generate_simple_video.py 中自动调用百炼
+# 品质轨配音 — 在 generate.py 中自动调用百炼
 # 如需独立生成音频，也可以用：
-python ~/.claude/tools/tts-video/generate_simple_video.py 文案.txt --output audio_only
+python ~/.claude/tools/tts-video/generate.py 文案.txt --output audio_only
 ```
 
 > **备选方案**：HyperFrames audio.mjs 支持 Kokoro(本地免费英文)、ElevenLabs(云端付费)、HeyGen(云端付费)。中文品质轨如果需要特殊音色，再考虑 HeyGen。
@@ -529,7 +529,7 @@ ai-video-factory (唯一用户入口)
   │   └─ tts-video (三引擎 TTS 配音)
   │
   ├─ 🎨 品质轨引擎（v3.2 分层模型）
-  │   ├─ Layer 1: storyboard-prompter → Agnes Image (底图素材工厂)
+  │   ├─ Layer 1: Agnes Image (底图素材工厂)
   │   │   └─ 11种视觉风格 × 5维度模板 × 多镜头/段
   │   ├─ Layer 2+3: faceless-explainer → HyperFrames (文字动效叠加)
   │   │   ├─ hyperframes-cli (脚手架、lint、inspect、render)
@@ -543,7 +543,7 @@ ai-video-factory (唯一用户入口)
          状态: 🟢 API Keys 已配置
 ```
 
-> **v3.1→v3.2 核心变更：** storyboard-prompter 从"降级为可选辅助"恢复为"Layer 1 底图素材工厂"。
+> **v3.1→v3.2 核心变更：** 底图素材工厂 从"降级为可选辅助"恢复为"Layer 1 底图素材工厂"。
 > 纠正原因：v3.1 因 Agnes Video 不可靠(~60%)而把 Image(~95%)也一并降级是过度反应。
 > v3.2 的底线：Agnes Image 做底图 → HyperFrames 做文字动效 → 两层独立，互不阻塞。
 

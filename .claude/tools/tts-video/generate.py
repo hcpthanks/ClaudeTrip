@@ -15,12 +15,12 @@ v3.5 质量门禁升级（借鉴 OpenMontage final_review.schema.json）：
   - 视频类型承诺：确保交付物匹配承诺类型 (v3.5 new)
 
 用法:
-  python generate_simple_video.py 文案.txt
-  python generate_simple_video.py 文案.txt --audio audio.mp3
-  python generate_simple_video.py 文案.txt --audio audio.mp3 --title "标题"
-  python generate_simple_video.py 文案.txt --title "标题" --voice longxiaochun
-  python generate_simple_video.py 文案.txt --bg img.jpg
-  python generate_simple_video.py 文案.txt --end-screen
+  python generate.py 文案.txt
+  python generate.py 文案.txt --audio audio.mp3
+  python generate.py 文案.txt --audio audio.mp3 --title "标题"
+  python generate.py 文案.txt --title "标题" --voice longxiaochun
+  python generate.py 文案.txt --bg img.jpg
+  python generate.py 文案.txt --end-screen
 """
 
 import subprocess, sys, os, time, re, tempfile, shutil, json, asyncio

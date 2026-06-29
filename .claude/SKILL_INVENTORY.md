@@ -1,20 +1,19 @@
 # Skill 安装清单
 
-> **最后更新**: 2026-06-23
+> **最后更新**: 2026-06-29
 > **用途**: 追踪所有已安装 skill 的来源、版本、依赖关系。AgentShield 治理第1层。
-> **本次更新**: 诊断 14 核心组件 + 三轨路由方案
+> **本次更新**: 删除 storyboard-prompter + tts-video skill，精简工具目录
 
-## 🟢🟡🔴 组件状态一览（2026-06-23 诊断）
+## 🟢🟡🔴 组件状态一览（2026-06-29）
 
 | 组件 | 状态 | 关键发现 |
 |------|:---:|---------|
 | HyperFrames (17 skills) | 🟢 | v0.6.121, Chrome headless 已装, ffmpeg 就绪 |
-| tts-video (edge-tts) | 🟢 | SRT 合成 bug 已修复 (Windows 路径冒号转义) |
-| Agnes AI (MCP) | 🟢 | 三个模型全免费, Video 首次成功率 ~60% |
+| 百炼 TTS (generate.py) | 🟢 | 极速轨核心执行器, `E:\WorkBuddy\CLAW\.claude\tools\tts-video\generate.py`, 9项质量门禁 |
+| Agnes AI (MCP) | 🟢 | 三个模型全免费, Video 首次成功率 ~60%, Image ~95% |
 | framepack (4 skills) | 🟢 | npm 已安装, 创意工具链就绪 |
 | autoresearch | 🟢 | v2.1.3, 12个子命令, 触发场景已文档化 |
-| storyboard-prompter | 🟡 | 4/11 风格完整, 7种缺数据, 已降级为 HyperFrames 辅助 |
-| scenefab | 🟡 | 源码 v2.1.1 已安装, QWEN_API_KEY + DEEPSEEK_API_KEY 缺失 |
+| scenefab | 🟢 | API Keys 已配置（百炼 + DeepSeek） |
 | Qwen3-TTS | 🟡 | v0.1.1 已装 (E:\tmp), 未验证可用性 |
 | Shotcut | 🟡 | v26.4.30, 已移到 E:\WorkBuddy\tools\Shotcut\ |
 | SoX | 🟡 | v14.4.2, 已移到 E:\WorkBuddy\tools\sox\ |
@@ -23,16 +22,17 @@
 | ECC skills (~140) | 🟢 | 安装于 .claude/skills/ecc/, 大部分与视频无关 |
 | CosyVoice2 | 🔴 | Python 模块未安装 |
 | HyperFrames 远程更新 | 🔴 | GitHub 连不上 (代理问题) |
+| ~~storyboard-prompter~~ | ⚫ 已删除 | 数据迁移至 ai-video-factory/references/visual-styles.md (2026-06-29) |
 
-## 🗺️ 视频路由层级（v3.1）
+## 🗺️ 视频路由层级（v3.5）
 
 ```
 ai-video-factory (唯一用户入口)
-  ├── 🚀 极速轨: tts-video → edge-tts / CosyVoice2(未装) / Qwen3-TTS(未验证)
+  ├── 🚀 极速轨: 百炼 TTS → FFmpeg 渐变背景+标题+字幕 → 9项质检
   ├── 🎨 品质轨: faceless-explainer → HyperFrames → HTML动效渲染
-  │     └── 辅助: storyboard-prompter (仅风格/色彩建议)
-  └── 🎬 解说轨: scenefab → Qwen3.7 + DeepSeek + EdgeTTS
-       ⚠️ 需 QWEN_API_KEY + DEEPSEEK_API_KEY
+  │     └── 底图素材工厂 → Agnes Image → references/visual-styles.md (风格数据库)
+  └── 🎬 解说轨: scenefab → Qwen3.7 + DeepSeek + 百炼TTS
+       🟢 API Keys 已配置
 ```
 
 ## HyperFrames 技能套件 (heygen-com/hyperframes.git)
@@ -72,32 +72,30 @@ ai-video-factory (唯一用户入口)
 
 | # | Skill | 版本 | 依赖 |
 |---|-------|:---:|------|
-| 1 | `ai-video-factory` | v3.1 | tts-video, faceless-explainer, storyboard-prompter(降级辅助), scenefab |
-| 2 | `tts-video` | v2.x | edge-tts, CosyVoice2, Qwen3-TTS |
-| 3 | `storyboard-prompter` | v1.0 | Agnes AI (MCP) |
-| 4 | `scenefab` | v1.0 | Qwen3.7(Vision), DeepSeek, EdgeTTS |
-| 5 | `ai-excel` | - | 豆包/大模型 |
-| 6 | `autoresearch` | v2.1.3 | - |
-| 7 | `brainstorming` | - | - |
-| 8 | `dispatching-parallel-agents` | - | - |
-| 9 | `douyin-downloader` | - | - |
-| 10 | `executing-plans` | - | - |
-| 11 | `finishing-a-development-branch` | - | - |
-| 12 | `planning-with-files` | - | - |
-| 13 | `planning-with-files-zh` | - | - |
-| 14 | `receiving-code-review` | - | - |
-| 15 | `remotion` | - | - |
-| 16 | `requesting-code-review` | - | - |
-| 17 | `subagent-driven-development` | - | - |
-| 18 | `systematic-debugging` | - | - |
-| 19 | `test-driven-development` | - | - |
-| 20 | `using-git-worktrees` | - | - |
-| 21 | `using-superpowers` | - | - |
-| 22 | `verification-before-completion` | - | - |
-| 23 | `writing-plans` | - | - |
-| 24 | `writing-skills` | - | - |
-| 25 | `cli-hub-meta-skill` | - | - |
-| 26 | `web-access` | - | - |
+| 1 | `ai-video-factory` | v3.5 | faceless-explainer, scenefab, Agnes MCP, 百炼TTs |
+| 2 | `scenefab` | v1.0 | Qwen3.7(Vision), DeepSeek, 百炼TTS |
+| 3 | `ai-excel` | - | 豆包/大模型 |
+| 4 | `autoresearch` | v2.1.3 | - |
+| 5 | `brainstorming` | - | - |
+| 6 | `dispatching-parallel-agents` | - | - |
+| 7 | `douyin-downloader` | - | - |
+| 8 | `executing-plans` | - | - |
+| 9 | `finishing-a-development-branch` | - | - |
+| 10 | `planning-with-files` | - | - |
+| 11 | `planning-with-files-zh` | - | - |
+| 12 | `receiving-code-review` | - | - |
+| 13 | `remotion` | - | - |
+| 14 | `requesting-code-review` | - | - |
+| 15 | `subagent-driven-development` | - | - |
+| 16 | `systematic-debugging` | - | - |
+| 17 | `test-driven-development` | - | - |
+| 18 | `using-git-worktrees` | - | - |
+| 19 | `using-superpowers` | - | - |
+| 20 | `verification-before-completion` | - | - |
+| 21 | `writing-plans` | - | - |
+| 22 | `writing-skills` | - | - |
+| 23 | `cli-hub-meta-skill` | - | - |
+| 24 | `web-access` | - | - |
 
 ## 存储架构
 
@@ -109,12 +107,13 @@ E:\WorkBuddy\tools\     ← 外部工具 (Shotcut/SoX/CLI-Anything) [2026-06-23 
 E:\WorkBuddy\learning-cards\  ← 学习卡存档 [铁律]
 ```
 
-## 关键依赖图（v3.1）
+## 关键依赖图（v3.5）
 
 ```
-ai-video-factory v3.1 (唯一入口)
-  ├── 🚀 极速轨: tts-video → edge-tts / CosyVoice2(未装) / Qwen3-TTS(未验证)
-  │     └── 🔧 修复: SRT 合成 Windows 冒号转义 (2026-06-23)
+ai-video-factory v3.5 (唯一入口)
+  ├── 🚀 极速轨: 百炼 DashScope TTS → FFmpeg 渐变背景+标题+字幕 → 9项质检
+  │     依赖: Python+ffmpeg+dashscope
+  │
   ├── 🎨 品质轨: faceless-explainer
   │     ├── hyperframes-cli → npx hyperframes
   │     ├── hyperframes-core → HTML 组合契约
@@ -122,21 +121,8 @@ ai-video-factory v3.1 (唯一入口)
   │     ├── hyperframes-creative → 调色板/排版
   │     ├── hyperframes-media → TTS/BGM/转录
   │     ├── hyperframes-registry → blocks/components
-  │     └── storyboard-prompter → 降级为可选辅助 (仅色彩建议)
-  └── 🎬 解说轨: scenefab → Qwen3.7(Vision) + DeepSeek + EdgeTTS
-        ⚠️ 需 API Key (QWEN + DEEPSEEK)
-```
-
-```
-ai-video-factory v3.0
-  ├── 🚀 极速轨: tts-video → edge-tts / CosyVoice2 / Qwen3-TTS
-  └── 🎨 品质轨: faceless-explainer
-        ├── hyperframes-cli → npx hyperframes
-        ├── hyperframes-core → HTML 组合契约
-        ├── hyperframes-animation → GSAP/CSS/Lottie/Three.js
-        ├── hyperframes-creative → 调色板/排版
-        ├── hyperframes-media → TTS/BGM/转录
-        └── hyperframes-registry → blocks/components
-  ├── 🌉 映射桥: storyboard-prompter → style-bridge.md
-  └── 🎬 独立: scenefab → Qwen3.7(Vision) + DeepSeek
+  │     └── 底图素材工厂: Agnes Image (ai-video-factory/references/visual-styles.md)
+  │
+  └── 🎬 解说轨: scenefab → Qwen3.7(Vision) + DeepSeek + 百炼TTS
+        🟢 API Keys 已配置
 ```
