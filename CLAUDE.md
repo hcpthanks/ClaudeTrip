@@ -4,6 +4,17 @@
 
 工作台项目，包含多个子项目/站点，以及 AI 工具集成。
 
+## 🧠 最高指导思想：钱学森系统科学
+
+CLAW 项目的所有技能、Agent 编排、架构决策，遵循**钱学森系统科学体系**的指导。详见 `/qian-system-science`。
+
+核心原则：
+- **系统工程 = 组织管理的技术** → Agent 编排本身就是系统工程
+- **综合集成方法** → 人机结合、以人为主，从定性到定量
+- **开放的复杂巨系统** → CLAW 是复杂的 Agent-工具-知识集成系统，需要整体观
+- **总体设计部** → 顶层 orchestration 把控全局，避免局部最优
+- **五层大厦** → skills(工程技术) → rules(技术科学) → 元技能(基础科学) → 系统论(桥梁) → 哲学
+
 ## ⚠️ 铁律
 
 1. **Bash→PowerShell 转义**：写 .ps1 文件 → `-File` 执行。绝不在 `-Command` 中直写含 `$_` / `foreach` / `%` 的代码。详见 [[bash-powershell-escape-rule]]
@@ -43,6 +54,7 @@
 
 - **上下文超限**：长会话（>200条）及时 `/clear`。详见 [[context-overload-prevention]]
 - **哨兵/顾问/学习闭环**：被动规则可能同时失效，需主动检查。详见 [[rules-passive-loading-trap]]
+- **Agent 失控立即关终端**：发现 agent 反复修改/删除/重建文件 → 直接关闭 VS Code 终端，不等它"自愈"。详见 [[agent-self-repair-deletion-loop]]
 
 <!-- FRAMEPACK MANAGED BLOCK START -->
 # Framepack Claude Code Instructions
