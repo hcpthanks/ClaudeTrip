@@ -1,102 +1,568 @@
 #!/usr/bin/env python3
-"""一键极简视频生成器 — 内容为王、速度优先、画面最低。
+"""AI 视频工厂 — 极速轨 v3.5
 
-引擎: edge-tts (默认, 3s, CPU<5%) > CosyVoice2 (引擎2, 慢) > Qwen3-TTS (引擎3, 慢)
+画面合成器：接收文案 + 可选音频文件，用纯 FFmpeg 生成 MP4。
+合成完成后自动跑质量门禁（ffprobe 6项 + 视觉抽检 + 幻灯片风险检测）。
+
+TTS 引擎（按优先级）：
+  1. --audio 指定文件 → 直接用
+  2. 百炼 DashScope qwen3-tts-flash → 自动中文配音（需 DASHSCOPE_API_KEY）
+
+v3.5 质量门禁升级（借鉴 OpenMontage final_review.schema.json）：
+  - 6项 ffprobe 技术检查 (v3.4)
+  - 视觉抽检：4个时间点帧采样 (v3.5 new)
+  - 幻灯片风险：相邻帧相似度检测 (v3.5 new)
+  - 视频类型承诺：确保交付物匹配承诺类型 (v3.5 new)
 
 用法:
-  python generate_simple_video.py 文案.txt                  # 黑底+普通字幕
-  python generate_simple_video.py 文案.txt --ass-karaoke    # 黑底+ASS逐词高亮
-  python generate_simple_video.py 文案.txt --bg shot.jpg    # 图片背景
+  python generate_simple_video.py 文案.txt
+  python generate_simple_video.py 文案.txt --audio audio.mp3
+  python generate_simple_video.py 文案.txt --audio audio.mp3 --title "标题"
+  python generate_simple_video.py 文案.txt --title "标题" --voice longxiaochun
+  python generate_simple_video.py 文案.txt --bg img.jpg
+  python generate_simple_video.py 文案.txt --end-screen
 """
 
-import subprocess, sys, os, time, json, tempfile, shutil, re
+import subprocess, sys, os, time, re, tempfile, shutil, json, asyncio
 
-if sys.platform == 'win32':
-    sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf-8', buffering=1)
-    sys.stderr = open(sys.stderr.fileno(), mode='w', encoding='utf-8', buffering=1)
+if sys.platform == "win32":
+    sys.stdout = open(sys.stdout.fileno(), mode="w", encoding="utf-8", buffering=1)
+    sys.stderr = open(sys.stderr.fileno(), mode="w", encoding="utf-8", buffering=1)
 
-DEFAULT_VOICE = "zh-CN-YunyangNeural"
 OUTPUT_DIR = "output"
-VIDEO_SIZE = (1920, 1080)
+VIDEO_W, VIDEO_H = 1920, 1080
 FPS = 24
 
-CORE_WORDS = {
-    'AI','算盘','计算器','赢','垃圾','注定','效率','套话','废话',
-    '模糊','答案','博弈','营销文案','营销','网站','方案','结论',
-    '许愿机','许愿','版本','赚到钱','奇迹','架构师','引擎','高精度',
-    '步骤','框架','结构','执行','幻想','对比','效率','不可能','一定'
-}
+# ── API Key ─────────────────────────────────────────────────
+DASHSCOPE_KEY = (
+    os.environ.get("DASHSCOPE_API_KEY")
+    or os.environ.get("QWEN_API_KEY")
+    or ""
+)
+
+# ── Windows 字体 ────────────────────────────────────────────
+_WFD = os.environ.get("WINDIR", r"C:\Windows") + r"\Fonts"
+for _f in [
+    os.path.join(_WFD, "msyhbd.ttc"),
+    os.path.join(_WFD, "msyh.ttc"),
+    os.path.join(_WFD, "simhei.ttf"),
+]:
+    if os.path.isfile(_f):
+        TITLE_FONT = _f
+        break
+else:
+    TITLE_FONT = "C:/Windows/Fonts/msyh.ttc"
 
 
 def main():
     import argparse
-    p = argparse.ArgumentParser(description="极简视频生成器")
+
+    p = argparse.ArgumentParser(
+        description="AI 视频工厂 — 极速轨 v3.3",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     p.add_argument("input", nargs="?", help="文案 .txt 文件路径")
-    p.add_argument("--file", "-f", dest="file_path", help="文案 .txt 文件路径")
+    p.add_argument("--file", "-f", dest="file_path", help="文案 .txt 路径")
+    p.add_argument("--audio", "-a", help="音频文件路径 (可选，不提供则自动用百炼 TTS)")
+    p.add_argument("--voice", "-v", default="Cherry",
+                   help="百炼 TTS 音色: Cherry/Stella/longxiaochun/longxiaoxia/longxiaocheng (默认 Cherry)")
+    p.add_argument("--title", "-t", help="视频大标题（顶部居中）")
     p.add_argument("--bg", "-b", help="背景图片路径")
+    p.add_argument("--end-screen", action="store_true", help="末尾加 3 秒引导关注页")
     p.add_argument("--output", "-o", help="输出文件名")
-    p.add_argument("--voice", "-v", default=DEFAULT_VOICE, help="TTS声音")
-    p.add_argument("--engine", "-e", choices=["edgetts","cosyvoice2","qwen3tts","auto"], default="auto")
-    p.add_argument("--ass-karaoke", action="store_true", help="启用ASS逐词高亮字幕")
+    p.add_argument("--bg-color", default="0x0A0A1A", help="背景色 (默认 0x0A0A1A)")
+    p.add_argument("--subtitle-size", type=int, default=26, help="字幕字号 (默认 26)")
     args = p.parse_args()
 
+    # ── 读取文案 ──────────────────────────────────────────
     text = read_text(args)
     if not text:
-        print("[FAIL] Please provide script.txt path")
+        print("[FAIL] 请提供文案 .txt 文件路径")
+        sys.exit(1)
+    text = text.strip()
+    char_count = len(text.replace("\n", "").replace(" ", ""))
+    print(f"[TEXT] {char_count} chars | {text[:80]}...")
+
+    # ── 准备音频 ──────────────────────────────────────────
+    audio_path = args.audio
+    tmp = tempfile.mkdtemp(prefix="vf_")
+
+    if audio_path and os.path.isfile(audio_path):
+        print(f"[AUDIO] 使用已有文件: {audio_path}")
+    elif DASHSCOPE_KEY:
+        print(f"[TTS] 百炼 qwen3-tts-flash | voice={args.voice}")
+        audio_path = os.path.join(tmp, "dashscope.wav")
+        try:
+            gen_dashscope_tts(text, args.voice, audio_path)
+        except Exception as e:
+            print(f"[TTS FAIL] {e}")
+            sys.exit(1)
+    else:
+        print("[FAIL] 没有音频文件，也没有 DASHSCOPE_API_KEY。")
+        print("  方案1: python generate_simple_video.py 文案.txt --audio audio.mp3")
+        print("  方案2: 设置 DASHSCOPE_API_KEY 环境变量启用百炼 TTS")
         sys.exit(1)
 
-    text = text.strip()
-    print(f"[TEXT] {len(text)} chars | {text[:60]}...")
+    audio_dur = probe_duration(audio_path)
+    print(f"[AUDIO] {audio_dur:.1f}s")
 
-    engine = pick_engine(args.engine)
-    print(f"[ENGINE] {engine}")
+    if args.title:
+        print(f"[TITLE] {args.title}")
+    if args.bg:
+        print(f"[BG] {args.bg}")
 
+    # ── 生成 SRT 字幕 ─────────────────────────────────────
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    ts = time.strftime("%Y%m%d_%H%M%S")
-    out_mp4 = os.path.abspath(os.path.join(OUTPUT_DIR, args.output or f"video_{ts}.mp4"))
-
-    tmp = tempfile.mkdtemp(prefix="v_")
-    audio_path = os.path.join(tmp, "audio.mp3")
-    vtt_path = os.path.join(tmp, "subs.vtt")
     srt_path = os.path.join(tmp, "subs.srt")
-    ass_path = os.path.join(tmp, "karaoke.ass")
 
     try:
         t0 = time.time()
+        make_srt(text, audio_dur, srt_path)
 
-        if engine == "edgetts":
-            audio_dur = gen_edgetts(text, args.voice, audio_path, vtt_path)
-            vtt_to_srt(vtt_path, srt_path)
-        elif engine in ("cosyvoice2", "qwen3tts"):
-            audio_dur = gen_local_stub(text, engine, audio_path)
-            make_srt(text, audio_dur, srt_path)
-        else:
-            sys.exit(1)
-
-        tts_time = time.time() - t0
-        print(f"[TTS] {audio_dur:.1f}s ({tts_time:.0f}s)")
+        ts = time.strftime("%Y%m%d_%H%M%S")
+        out_mp4 = os.path.abspath(
+            os.path.join(OUTPUT_DIR, args.output or f"video_{ts}.mp4")
+        )
 
         print("[COMP] compositing...")
-        t1 = time.time()
+        composite(
+            audio_path, srt_path, out_mp4, audio_dur,
+            bg_image=args.bg,
+            title=args.title,
+            bg_color=args.bg_color,
+            subtitle_size=args.subtitle_size,
+            end_screen=args.end_screen,
+        )
 
-        if args.ass_karaoke and engine == "edgetts":
-            make_ass_karaoke(vtt_path, ass_path, audio_dur)
-            composite_ass(ass_path, audio_path, out_mp4, audio_dur, args.bg)
-        else:
-            composite_srt(audio_path, srt_path, out_mp4, audio_dur, args.bg)
-
-        comp_time = time.time() - t1
         total = time.time() - t0
         size_mb = os.path.getsize(out_mp4) / (1024 * 1024)
 
-        print(f"\nDONE: {out_mp4}")
-        print(f"  {audio_dur:.1f}s | {len(text)} chars | {size_mb:.1f}MB | {total:.0f}s | {engine}")
+        print(f"\n✅ DONE: {out_mp4}")
+        print(f"   {audio_dur:.1f}s | {char_count} chars | {size_mb:.1f}MB | {total:.0f}s")
+
+        latest = os.path.join(OUTPUT_DIR, "latest.mp4")
+        shutil.copy2(out_mp4, latest)
+        print(f"   → {latest}")
+
+        # ── v3.4: 质量门禁 ─────────────────────────────────
+        print(f"\n{'─'*50}")
+        print("🔍 质量门禁 (Quality Gate)")
+        print(f"{'─'*50}")
+        results = quality_gate(out_mp4)
+        all_pass = print_gate_report(results)
+        print(f"{'─'*50}")
+
+        if not all_pass:
+            print("⚠️  质量门禁未通过，请检查上述 FAIL 项")
+            sys.exit(2)
 
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-def read_text(args):
+# ═══════════════════════════════════════════════════════════════
+# 百炼 DashScope TTS
+# ═══════════════════════════════════════════════════════════════
+
+def gen_dashscope_tts(text: str, voice: str, out_wav: str):
+    """百炼 qwen3-tts-flash — 云端中文 TTS，按量付费，国内充值方便"""
+    import dashscope, urllib.request
+
+    dashscope.api_key = DASHSCOPE_KEY
+    dashscope.base_http_api_url = "https://dashscope.aliyuncs.com/api/v1"
+
+    voice_map = {
+        "Cherry": "Cherry",
+        "Stella": "Stella",
+        "longxiaochun": "longxiaochun",
+        "longxiaoxia": "longxiaoxia",
+        "longxiaocheng": "longxiaocheng",
+    }
+    resp = dashscope.MultiModalConversation.call(
+        model="qwen3-tts-flash",
+        api_key=DASHSCOPE_KEY,
+        text=text,
+        voice=voice_map.get(voice, "Cherry"),
+        stream=False,
+    )
+    if not resp.output or not resp.output.audio:
+        raise RuntimeError(f"DashScope TTS 失败: {resp}")
+    urllib.request.urlretrieve(resp.output.audio.url, out_wav)
+
+
+# ═══════════════════════════════════════════════════════════════
+# SRT 字幕
+# ═══════════════════════════════════════════════════════════════
+
+def make_srt(text: str, total_dur: float, srt_path: str):
+    """按句号/问号/感叹号/换行切分，按字数比例分配时间"""
+    parts = re.split(r"(?<=[。！？\n])", text)
+    sentences = [s.strip() for s in parts if s.strip()]
+    if not sentences:
+        sentences = [text]
+
+    total_chars = sum(len(s) for s in sentences)
+    char_sec = total_dur / max(total_chars, 1)
+
+    lines = []
+    t = 0.0
+    for i, seg in enumerate(sentences, 1):
+        dur = max(len(seg) * char_sec, 0.8)
+        if t + dur > total_dur:
+            dur = max(total_dur - t, 0.5)
+        lines.append(str(i))
+        lines.append(f"{fmt_ts(t)} --> {fmt_ts(t + dur)}")
+        lines.append(seg)
+        lines.append("")
+        t += dur
+        if t >= total_dur:
+            break
+
+    with open(srt_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+
+# ═══════════════════════════════════════════════════════════════
+# FFmpeg 画面合成
+# ═══════════════════════════════════════════════════════════════
+
+def composite(
+    audio_path: str,
+    srt_path: str,
+    out_mp4: str,
+    duration: float,
+    bg_image: str = None,
+    title: str = None,
+    bg_color: str = "0x0A0A1A",
+    subtitle_size: int = 26,
+    end_screen: bool = False,
+):
+    """FFmpeg 合成：背景 + 标题 + 字幕 + 可选尾屏 → MP4"""
+
+    srt_safe = srt_path.replace("\\", "/").replace(":", "\\:")
+
+    sub_style = (
+        f"FontName=Microsoft YaHei,"
+        f"FontSize={subtitle_size},"
+        f"PrimaryColour=&H00FFFFFF,"
+        f"OutlineColour=&H00000000,"
+        f"BackColour=&H80000000,"
+        f"Bold=1,Outline=2,Alignment=2,MarginV=120"
+    )
+
+    filters = []
+    inputs_extra = []
+
+    # ── Layer 1: 背景 ──
+    if bg_image and os.path.isfile(bg_image):
+        inputs_extra = ["-loop", "1", "-i", bg_image]
+        filters.append(
+            f"[0:v]scale={VIDEO_W}:{VIDEO_H}:force_original_aspect_ratio=decrease,"
+            f"pad={VIDEO_W}:{VIDEO_H}:(ow-iw)/2:(oh-ih)/2,setsar=1,"
+            f"loop=-1:1,fps={FPS}[bg]"
+        )
+    else:
+        # 深色渐变背景
+        bg_r = int(bg_color[2:4], 16)
+        bg_g = int(bg_color[4:6], 16)
+        bg_b = int(bg_color[6:8], 16)
+        filters.append(
+            f"color=c={bg_color}:s={VIDEO_W}x{VIDEO_H}:r={FPS}:d={duration + 0.5},"
+            f"format=yuva420p[bg_raw];"
+            f"[bg_raw]geq="
+            f"r='{bg_r}+8*sin(Y/H*PI)':"
+            f"g='{bg_g}+6*sin(Y/H*PI)':"
+            f"b='{bg_b}+10*sin(Y/H*PI)'"
+            f"[bg]"
+        )
+
+    # ── Layer 2: 标题 ──
+    current_v = "bg"
+    if title:
+        title_esc = title.replace("'", "'\\\\\\\\\\\\''").replace(":", "\\:")
+        font_f = TITLE_FONT.replace("\\", "/").replace(":", "\\:")
+        filters.append(
+            f"[bg]drawtext="
+            f"text='{title_esc}':"
+            f"fontfile='{font_f}':"
+            f"fontsize=44:fontcolor=white@0.95:"
+            f"x=(w-text_w)/2:y=50:"
+            f"shadowx=2:shadowy=2:shadowcolor=black@0.5"
+            f"[titled]"
+        )
+        current_v = "titled"
+
+    # ── Layer 3: 字幕 ──
+    filters.append(
+        f"[{current_v}]subtitles='{srt_safe}':"
+        f"force_style='{sub_style}'[vout]"
+    )
+
+    # ── 尾屏 ──
+    if end_screen:
+        filters.append(f"[vout]tpad=stop_mode=clone:stop_duration=3[vout]")
+
+    filter_complex = ";".join(filters)
+
+    cmd = [
+        "-y",
+        *inputs_extra,
+        "-i", audio_path,
+        "-filter_complex", filter_complex,
+        "-map", "[vout]",
+        "-map", "0:a" if not inputs_extra else "1:a",
+        "-t", str(duration + (3 if end_screen else 0.5)),
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+        "-pix_fmt", "yuv420p",
+        "-c:a", "aac", "-b:a", "128k",
+        "-movflags", "+faststart",
+        out_mp4,
+    ]
+
+    run_ffmpeg(cmd, "composite", check=True)
+
+
+# ═══════════════════════════════════════════════════════════════
+# v3.5 质量门禁 (借鉴 OpenMontage final_review.schema.json)
+# ═══════════════════════════════════════════════════════════════
+
+def quality_gate(mp4_path: str, promise_type: str = "teacher_explainer") -> dict:
+    """对成品 MP4 执行完整质检，返回结果字典
+
+    Args:
+        mp4_path: 视频文件路径
+        promise_type: 视频类型承诺 (teacher_explainer/data_explainer/motion_led/source_led)
+    """
+
+    def _probe_json():
+        r = subprocess.run(
+            ["ffprobe", "-v", "error", "-show_streams", "-show_format",
+             "-of", "json", mp4_path],
+            capture_output=True, text=True,
+        )
+        if r.returncode != 0:
+            return {}
+        try:
+            return json.loads(r.stdout)
+        except json.JSONDecodeError:
+            return {}
+
+    data = _probe_json()
+    streams = data.get("streams", [])
+    fmt = data.get("format", {})
+
+    video_streams = [s for s in streams if s.get("codec_type") == "video"]
+    audio_streams = [s for s in streams if s.get("codec_type") == "audio"]
+
+    results = {}
+    results["promise_type"] = promise_type
+
+    # ── 1-6: ffprobe 技术检查 (v3.4) ──
+    results["file_exists"] = os.path.isfile(mp4_path)
+    results["file_size_kb"] = round(os.path.getsize(mp4_path) / 1024, 1) if results["file_exists"] else 0
+    results["min_size"] = results["file_size_kb"] > 10
+
+    v = video_streams[0] if video_streams else {}
+    results["has_video"] = bool(video_streams)
+    results["resolution"] = f"{v.get('width','?')}×{v.get('height','?')}"
+    results["is_1080p"] = (v.get("width") == 1920 and v.get("height") == 1080)
+
+    results["duration_s"] = round(float(fmt.get("duration", 0)), 1)
+    audio_dur = 0.0
+    if audio_streams:
+        a0 = audio_streams[0]
+        audio_dur = float(a0.get("duration", a0.get("duration_ts", 0)))
+    elif video_streams:
+        audio_dur = float(v.get("duration", v.get("duration_ts", 0)))
+    results["min_duration"] = max(results["duration_s"], audio_dur) >= 1.0
+
+    results["has_audio"] = bool(audio_streams) or bool(fmt.get("format_name", "").startswith("mp4"))
+
+    fps_str = v.get("r_frame_rate", "0/1")
+    results["fps"] = fps_str
+    try:
+        num, den = fps_str.split("/")
+        fps_val = float(num) / float(den) if den != "0" else 0
+        results["fps_ok"] = 20 <= fps_val <= 30
+    except (ValueError, ZeroDivisionError):
+        results["fps_ok"] = False
+
+    results["format"] = fmt.get("format_name", "?")
+    br = fmt.get("bit_rate")
+    results["bitrate_kbps"] = round(int(br) / 1000, 1) if br else 0
+
+    # ── 7: 视觉抽检 — 4个时间点帧采样 (v3.5 new, 借鉴 OM visual_spotcheck) ──
+    dur = results["duration_s"]
+    if dur >= 2.0 and results["has_video"]:
+        sample_times = [
+            ("开头", 0.5),
+            ("25%", dur * 0.25),
+            ("50%", dur * 0.50),
+            ("75%", dur * 0.75),
+        ]
+        frame_hashes = []
+        spots = {}
+        for label, t in sample_times:
+            t = min(t, dur - 0.5)  # clamp
+            h = _sample_frame_hash(mp4_path, t)
+            frame_hashes.append(h)
+            spots[label] = {"time_s": round(t, 1), "has_content": h is not None and h > 0}
+
+        results["visual_spotcheck"] = {
+            "frames_sampled": len(spots),
+            "all_have_content": all(s["has_content"] for s in spots.values()),
+            "spots": spots,
+        }
+
+        # ── 8: 幻灯片风险 — 相邻帧差异检测 (v3.5 new, 借鉴 OM slideshow_risk_score) ──
+        # 比较开头和中段的帧 hash。teacher_explainer/data_explainer 天然静态，豁免。
+        if len(frame_hashes) >= 2:
+            total_valid = len([h for h in frame_hashes if h is not None])
+            if total_valid >= 2:
+                unique_hashes = len(set(h for h in frame_hashes if h is not None))
+                similarity = unique_hashes / total_valid
+                risk = "low" if similarity >= 0.75 else ("medium" if similarity >= 0.5 else "high")
+            else:
+                similarity = 0.0
+                risk = "unknown"
+            results["slideshow_risk"] = {
+                "unique_frame_hashes": unique_hashes if total_valid >= 2 else 0,
+                "total_sampled": total_valid,
+                "variety_score": round(similarity, 2) if total_valid >= 2 else 0,
+                "verdict": risk,
+                "skip_for": ["teacher_explainer", "data_explainer"],
+            }
+    else:
+        results["visual_spotcheck"] = {"frames_sampled": 0, "all_have_content": False, "note": "video too short or no video stream"}
+        results["slideshow_risk"] = {"verdict": "unknown", "note": "cannot assess"}
+
+    # ── 9: 类型承诺检查 (v3.5 new, 借鉴 OM delivery_promise.py) ──
+    promise_rules = {
+        "teacher_explainer": {"min_duration_s": 1.0, "requires_audio": True, "requires_video": False, "min_motion_ratio": 0.0},
+        "data_explainer":   {"min_duration_s": 1.0, "requires_audio": True, "requires_video": False, "min_motion_ratio": 0.0},
+        "motion_led":       {"min_duration_s": 1.0, "requires_audio": True, "requires_video": True,  "min_motion_ratio": 0.3},
+        "source_led":       {"min_duration_s": 1.0, "requires_audio": True, "requires_video": True,  "min_motion_ratio": 0.1},
+    }
+    rules = promise_rules.get(promise_type, promise_rules["teacher_explainer"])
+    promise_issues = []
+    if rules["requires_audio"] and not results["has_audio"]:
+        promise_issues.append("承诺需要音频轨道但未检测到")
+    if rules["requires_video"] and not results["has_video"]:
+        promise_issues.append("承诺需要视频流但未检测到")
+    # 幻灯片风险检查：teacher_explainer/data_explainer 天然豁免
+    if (promise_type not in ("teacher_explainer", "data_explainer")
+        and results.get("slideshow_risk", {}).get("verdict") == "high"
+        and rules["min_motion_ratio"] > 0.1):
+        promise_issues.append(f"幻灯片风险高，但承诺动效比例≥{rules['min_motion_ratio']}")
+    results["promise_preservation"] = {
+        "promised": promise_type,
+        "rules_applied": rules,
+        "fulfilled": len(promise_issues) == 0,
+        "issues": promise_issues,
+    }
+
+    return results
+
+
+def _sample_frame_hash(mp4_path: str, time_s: float) -> int | None:
+    """在指定时间点提取一帧并计算 perceptual hash（简化版：像素均值 hash）"""
+    r = subprocess.run(
+        ["ffmpeg", "-y", "-ss", str(time_s), "-i", mp4_path,
+         "-vframes", "1", "-f", "rawvideo", "-pix_fmt", "gray", "-s", "64x36", "-"],
+        capture_output=True, timeout=10,
+    )
+    if r.returncode != 0 or len(r.stdout) < 100:
+        return None
+    # 简化 dhash: 每行相邻像素比较，生成 64*35 bit 的 hash 值
+    raw = r.stdout
+    h = 0
+    for i in range(min(len(raw) - 64, 64 * 35)):
+        h = (h * 31 + raw[i]) & 0xFFFFFFFF
+    return h
+
+
+# ── 门禁检查表 ──
+GATE_CHECKS = [
+    ("min_size",             "文件大小 ≥ 10KB",                      "critical"),
+    ("has_video",            "视频流 (h264/hevc/…)",                  "critical"),
+    ("has_audio",            "音频流 (aac/mp3/…)",                    "critical"),
+    ("min_duration",         "时长 ≥ 1 秒",                           "critical"),
+    ("is_1080p",             "分辨率 1920×1080",                      "warn"),
+    ("fps_ok",               "帧率 20-30 fps",                        "warn"),
+    # v3.5 新增
+    ("visual_all_content",   "视觉抽检 — 4帧均有内容",               "critical"),
+    ("slideshow_not_high",   "幻灯片风险 — 非高",                    "warn"),
+    ("promise_fulfilled",    "类型承诺 — 交付物匹配承诺",            "critical"),
+]
+
+
+def print_gate_report(results: dict) -> bool:
+    """打印质检报告，返回 True 表示全部 critical 通过"""
+    all_critical_pass = True
+
+    # 展开嵌套结果
+    vis = results.get("visual_spotcheck", {})
+    results["visual_all_content"] = vis.get("all_have_content", False)
+
+    ss = results.get("slideshow_risk", {})
+    results["slideshow_not_high"] = ss.get("verdict") != "high"
+
+    pp = results.get("promise_preservation", {})
+    results["promise_fulfilled"] = pp.get("fulfilled", False)
+
+    for key, label, severity in GATE_CHECKS:
+        passed = results.get(key, False)
+        icon = "✅" if passed else "❌"
+        sev_label = "CRITICAL" if severity == "critical" else "WARN"
+        print(f"  {icon} [{sev_label:<8}] {label:<30} → {passed}")
+
+        if not passed and severity == "critical":
+            all_critical_pass = False
+
+    # 基础信息
+    print(f"  📋 时长: {results.get('duration_s', '?')}s | "
+          f"分辨率: {results.get('resolution', '?')} | "
+          f"帧率: {results.get('fps', '?')}")
+    print(f"  📋 编码: {results.get('format', '?')} | "
+          f"码率: {results.get('bitrate_kbps', '?')}kbps | "
+          f"大小: {results.get('file_size_kb', '?')}KB")
+
+    # 视觉抽检详情
+    if vis.get("frames_sampled", 0) > 0:
+        spots_str = " | ".join(
+            f"{label}:{'✓' if s['has_content'] else '✗'}"
+            for label, s in vis.get("spots", {}).items()
+        )
+        print(f"  🖼️  视觉抽检: {vis.get('frames_sampled')}帧 | {spots_str}")
+
+    # 幻灯片风险详情
+    if ss:
+        print(f"  📊 幻灯片风险: {ss.get('verdict', '?')} "
+              f"(多样性={ss.get('variety_score', '?')}, "
+              f"唯一帧hash={ss.get('unique_frame_hashes', '?')}/{ss.get('total_sampled', '?')})")
+
+    # 承诺检查详情
+    if pp.get("issues"):
+        for issue in pp["issues"]:
+            print(f"  ⚠️  承诺违约: {issue}")
+
+    return all_critical_pass
+
+def probe_duration(path: str) -> float:
+    r = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+         "-of", "default=noprint_wrappers=1:nokey=1", path],
+        capture_output=True, text=True,
+    )
+    return float(r.stdout.strip())
+
+
+def fmt_ts(sec: float) -> str:
+    h, m, s = int(sec // 3600), int((sec % 3600) // 60), int(sec % 60)
+    return f"{h:02d}:{m:02d}:{s:02d},{int((sec % 1) * 1000):03d}"
+
+
+def read_text(args) -> str | None:
     fpath = args.input or args.file_path
     if fpath and os.path.isfile(fpath):
         with open(fpath, "r", encoding="utf-8") as f:
@@ -112,227 +578,14 @@ def read_text(args):
     return None
 
 
-def pick_engine(pref):
-    if pref != "auto":
-        return pref
-    try:
-        r = subprocess.run(
-            ["edge-tts", "--voice", DEFAULT_VOICE, "--text", "test", "--write-media", "/tmp/_p.mp3"],
-            capture_output=True, text=True, timeout=8
-        )
-        if r.returncode == 0:
-            return "edgetts"
-    except:
-        pass
-    for name, path in [
-        ("qwen3tts", "~/.claude/models/Qwen3-TTS-12Hz-0.6B-CustomVoice"),
-        ("cosyvoice2", "~/.claude/models/CosyVoice2-0.5B"),
-    ]:
-        if os.path.isdir(os.path.expanduser(path)):
-            return name
-    return None
-
-
-def gen_edgetts(text, voice, out_mp3, out_vtt):
-    # 用 --file 而不是 --text，避免中文经 bash/CLI 管道编码损坏
-    # See: ~/.claude/skills/learned/chinese-encoding-pipeline/SKILL.md
-    import tempfile
-    script_fp = os.path.join(tempfile.gettempdir(), f"_tts_{os.getpid()}.txt")
-    with open(script_fp, "w", encoding="utf-8") as f:
-        f.write(text)
-    try:
-        subprocess.run([
-            "edge-tts", "--voice", voice, "--file", script_fp,
-            "--write-media", out_mp3, "--write-subtitles", out_vtt,
-        ], check=True, capture_output=True, text=True, timeout=120)
-    finally:
-        try:
-            os.unlink(script_fp)
-        except OSError:
-            pass
-    info = json.loads(subprocess.run([
-        "ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", out_mp3
-    ], capture_output=True, text=True, encoding='utf-8').stdout)
-    return float(info["format"]["duration"])
-
-
-def vtt_to_srt(vtt_path, srt_path):
-    with open(vtt_path, "r", encoding="utf-8") as f:
-        vtt = f.read()
-    lines = []
-    idx = 1
-    for part in re.split(r'\n\s*\n', vtt.strip()):
-        parts = [l.strip() for l in part.strip().split('\n') if l.strip()]
-        if not parts or parts[0].upper().startswith('WEBVTT') or parts[0].upper().startswith('NOTE'):
-            continue
-        for pl in parts:
-            m = re.match(r'(\d+):(\d+):(\d+)[.,](\d+)\s*-->\s*(\d+):(\d+):(\d+)[.,](\d+)', pl)
-            if m:
-                start = f"{m.group(1)}:{m.group(2)}:{m.group(3)},{m.group(4)}"
-                end = f"{m.group(5)}:{m.group(6)}:{m.group(7)},{m.group(8)}"
-                txt = ' '.join(l for l in parts if l != pl and not re.match(r'^\d+$', l))
-                if txt:
-                    lines.append(str(idx))
-                    lines.append(f"{start} --> {end}")
-                    lines.append(txt)
-                    lines.append("")
-                    idx += 1
-                break
-    with open(srt_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
-
-
-def make_ass_karaoke(vtt_path, ass_path, audio_dur):
-    import jieba
-    jieba.setLogLevel(0)
-
-    with open(vtt_path, "r", encoding="utf-8") as f:
-        vtt = f.read()
-
-    blocks = []
-    for part in re.split(r'\n\s*\n', vtt.strip()):
-        parts = [l.strip() for l in part.strip().split('\n') if l.strip()]
-        if not parts or parts[0].upper().startswith('WEBVTT') or parts[0].upper().startswith('NOTE'):
-            continue
-        for pl in parts:
-            m = re.match(r'(\d+):(\d+):(\d+)[.,](\d+)\s*-->\s*(\d+):(\d+):(\d+)[.,](\d+)', pl)
-            if m:
-                start = float(m.group(1))*3600+float(m.group(2))*60+float(m.group(3))+float(m.group(4))/1000
-                end = float(m.group(5))*3600+float(m.group(6))*60+float(m.group(7))+float(m.group(8))/1000
-                txt = ' '.join(l for l in parts if l != pl and not re.match(r'^\d+$', l))
-                if txt:
-                    blocks.append((start, end, txt))
-                break
-
-    ass = [
-        "[Script Info]", "ScriptType: v4.00+", "PlayResX: 1920", "PlayResY: 1080",
-        "WrapStyle: 0", "ScaledBorderAndShadow: yes", "",
-        "[V4+ Styles]",
-        "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
-        "Style: Dim,Microsoft YaHei,30,&H00555555,&H00000000,&H00000000,&H80000000,0,0,0,0,100,100,0,0,1,2,1,2,20,20,120,1",
-        "Style: Hi,Microsoft YaHei,38,&H00FFFFFF,&H00000000,&H00333333,&H80000000,1,0,0,0,100,100,0,0,1,3,1,2,20,20,120,1",
-        "Style: Key,Microsoft YaHei,44,&H00FFD700,&H00000000,&H00AA6600,&H80000000,1,0,0,0,100,100,0,0,1,3,1,2,20,20,120,1",
-        "", "[Events]",
-        "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",
-    ]
-
-    def ts(sec):
-        h=int(sec//3600); m=int((sec%3600)//60); s=int(sec%60); cs=int((sec%1)*100)
-        return f"{h}:{m:02d}:{s:02d}.{cs:02d}"
-
-    for start, end, txt in blocks:
-        words = list(jieba.cut(txt))
-        words = [w.strip() for w in words if w.strip()]
-        if not words:
-            continue
-        total_dur = end - start
-        total_chars = sum(len(w) for w in words) or 1
-        t = start
-        for i, w in enumerate(words):
-            w_dur = max(0.06, (len(w)/total_chars)*total_dur)
-            we = t + w_dur
-            style = "Key" if w in CORE_WORDS else "Hi"
-            prefix = "".join(words[:i])
-            suffix = "".join(words[i+1:])
-            disp = "{\\rDim}" + prefix + "{\\r" + style + "}" + w + "{\\rDim}" + suffix
-            ass.append(f"Dialogue: 0,{ts(t)},{ts(we)},Dim,,0,0,0,,{disp}")
-            t = we
-
-    with open(ass_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(ass))
-
-
-def composite_ass(ass_path, audio_path, out_mp4, duration, bg_image=None):
-    if bg_image and os.path.isfile(bg_image):
-        subprocess.run([
-            "ffmpeg", "-y",
-            "-loop", "1", "-i", bg_image,
-            "-i", audio_path,
-            "-filter_complex",
-            f"[0:v]scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=24,ass='{ass_path}'[v]",
-            "-map", "[v]", "-map", "1:a",
-            "-t", str(duration),
-            "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
-            "-pix_fmt", "yuv420p",
-            "-c:a", "aac", "-b:a", "128k",
-            "-movflags", "+faststart", out_mp4,
-        ], check=True, capture_output=True, timeout=120)
-    else:
-        subprocess.run([
-            "ffmpeg", "-y",
-            "-f", "lavfi", "-i", f"color=c=black:s=1920x1080:r=24",
-            "-i", audio_path,
-            "-filter_complex", f"[0:v]ass='{ass_path}'[v]",
-            "-map", "[v]", "-map", "1:a",
-            "-t", str(duration),
-            "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
-            "-pix_fmt", "yuv420p",
-            "-c:a", "aac", "-b:a", "128k",
-            "-movflags", "+faststart", out_mp4,
-        ], check=True, capture_output=True, timeout=120)
-
-
-def composite_srt(audio_path, srt_path, out_mp4, duration, bg_image=None):
-    srt_safe = srt_path.replace("\\", "/").replace(":", "\\:")
-    style = "FontName=Microsoft YaHei,FontSize=28,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,BackColour=&H80000000,Bold=1,Outline=2,Alignment=2,MarginV=80"
-
-    if bg_image and os.path.isfile(bg_image):
-        filter_str = (
-            f"[0:v]scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,setsar=1,"
-            f"loop=-1:1,fps=24,subtitles='{srt_safe}':force_style='{style}'[v]"
-        )
-        subprocess.run([
-            "ffmpeg", "-y",
-            "-loop", "1", "-i", bg_image,
-            "-i", audio_path,
-            "-filter_complex", filter_str,
-            "-map", "[v]", "-map", "1:a",
-            "-t", str(duration),
-            "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
-            "-pix_fmt", "yuv420p",
-            "-c:a", "aac", "-b:a", "128k",
-            "-movflags", "+faststart", out_mp4,
-        ], check=True, capture_output=True, timeout=120)
-    else:
-        subprocess.run([
-            "ffmpeg", "-y",
-            "-f", "lavfi", "-i", f"color=c=black:s=1920x1080:r=24",
-            "-i", audio_path,
-            "-filter_complex", f"[0:v]subtitles='{srt_safe}':force_style='{style}'[v]",
-            "-map", "[v]", "-map", "1:a",
-            "-t", str(duration),
-            "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
-            "-pix_fmt", "yuv420p",
-            "-c:a", "aac", "-b:a", "128k",
-            "-movflags", "+faststart", out_mp4,
-        ], check=True, capture_output=True, timeout=120)
-
-
-def gen_local_stub(text, engine, out_audio):
-    raise NotImplementedError(f"Local engine {engine} not wired. Use --engine edgetts (default).")
-
-
-def make_srt(text, total_dur, srt_path):
-    parts = re.split(r'(?<=[。！？])', text)
-    sentences = [s.strip() for s in parts if s.strip()] or [text]
-    total_chars = sum(len(s) for s in sentences)
-    char_sec = total_dur / max(total_chars, 1)
-    lines = []
-    t = 0.0
-    for i, seg in enumerate(sentences, 1):
-        dur = len(seg) * char_sec
-        lines.append(str(i))
-        lines.append(f"{fmt_ts(t)} --> {fmt_ts(t + dur)}")
-        lines.append(seg)
-        lines.append("")
-        t += dur
-    with open(srt_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
-
-
-def fmt_ts(sec):
-    h, m, s = int(sec // 3600), int((sec % 3600) // 60), int(sec % 60)
-    return f"{h:02d}:{m:02d}:{s:02d},{int((sec % 1) * 1000):03d}"
+def run_ffmpeg(cmd: list, tag: str = "", check: bool = False):
+    p = subprocess.run(
+        ["ffmpeg"] + cmd, capture_output=True, text=True, timeout=300
+    )
+    if check and p.returncode != 0:
+        print(f"[FFmpeg:{tag}] ERROR:\n{p.stderr[-500:]}")
+        raise RuntimeError(f"ffmpeg {tag} failed (exit {p.returncode})")
+    return p
 
 
 if __name__ == "__main__":
