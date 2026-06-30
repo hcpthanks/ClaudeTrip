@@ -53,6 +53,7 @@ CLAW 项目的所有技能、Agent 编排、架构决策，遵循**钱学森系�
 
 - **上下文超限**：长会话（>200条）及时 `/clear`。详见 [[context-overload-prevention]]
 - **哨兵/顾问/学习闭环**：被动规则可能同时失效，需主动检查。详见 [[rules-passive-loading-trap]]
+- **哨兵 P0 已部署**：ecc-context-monitor Hook 集成异质循环+静默检测+自限。`~/.claude/sentinel-state.json` + `sentinel-log.jsonl`。详见 `sentinel-p0-hooks` learned rule
 - **Agent 失控立即关终端**：发现 agent 反复修改/删除/重建文件 → 直接关闭 VS Code 终端，不等它"自愈"。详见 [[agent-self-repair-deletion-loop]]
 
 <!-- FRAMEPACK MANAGED BLOCK START -->

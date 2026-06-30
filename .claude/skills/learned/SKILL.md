@@ -25,6 +25,8 @@ description: 从 CLAW 项目中积累的教训和经验。每次踩坑后自动�
 | 13 | 2026-06-30 | QSS 技能创建门禁——创建/修改 skill 前强制回答"最低三问" | [qss-skill-creation-gate.md](qss-skill-creation-gate.md) |
 | 14 | 2026-06-30 | QSS 门禁反馈回路——30天回顾、成功指标、learned rule 生成 | [qss-gate-feedback-loop.md](qss-gate-feedback-loop.md) |
 | 15 | 2026-06-30 | 框架采用率审计方法——grep引用→深度分级→差距分析→改进建议→HTML报告 | [framework-adoption-audit-method.md](framework-adoption-audit-method.md) |
+| 16 | 2026-06-30 | 哨兵 P0 落地——异质循环+静默检测+自限，Hook 引擎层强制执行 | [sentinel-p0-hooks.md](sentinel-p0-hooks.md) |
+| 17 | 2026-06-30 | 引擎先落地，数据驱动模型层设计——双层组件(Hook+Agent)先跑Hook收集数据再用数据指导Agent设计 | [engine-first-data-defers-model.md](engine-first-data-defers-model.md) |
 
 ## 使用方式
 
