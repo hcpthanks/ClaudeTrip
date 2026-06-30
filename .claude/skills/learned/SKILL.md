@@ -20,6 +20,11 @@ description: 从 CLAW 项目中积累的教训和经验。每次踩坑后自动�
 | 8 | 2026-06-27 | 法条引用须验证执行路径可行性——不能硬搬法条忽略实际落地难度 | [legal-enforceability-gap-check.md](legal-enforceability-gap-check.md) |
 | 9 | 2026-06-27 | Agent 自我修复→删除→再修复死循环——VS Code 终端关闭即终止 | [agent-self-repair-deletion-loop.md](agent-self-repair-deletion-loop.md) |
 | 10 | 2026-06-28 | 对抗性文书→和解导向改写：用逻辑滑梯框架转换劳动争议/投诉/律师函的框架 | [adversarial-doc-settlement-rewrite.md](adversarial-doc-settlement-rewrite.md) |
+| 11 | 2026-06-30 | CLAUDE.md 修改层次门禁——钱学森五层大厦审核，总体设计部只指路不执行 | [claude-md-layer-gate.md](claude-md-layer-gate.md) |
+| 12 | 2026-06-30 | QSS 门禁模板——从 claude-md-layer-gate 提取的 7 元素复用框架 | [gate-template.md](gate-template.md) |
+| 13 | 2026-06-30 | QSS 技能创建门禁——创建/修改 skill 前强制回答"最低三问" | [qss-skill-creation-gate.md](qss-skill-creation-gate.md) |
+| 14 | 2026-06-30 | QSS 门禁反馈回路——30天回顾、成功指标、learned rule 生成 | [qss-gate-feedback-loop.md](qss-gate-feedback-loop.md) |
+| 15 | 2026-06-30 | 框架采用率审计方法——grep引用→深度分级→差距分析→改进建议→HTML报告 | [framework-adoption-audit-method.md](framework-adoption-audit-method.md) |
 
 ## 使用方式
 
