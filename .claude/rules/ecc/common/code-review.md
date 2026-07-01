@@ -33,6 +33,7 @@ Before marking code complete:
 - [ ] Errors are handled explicitly
 - [ ] No hardcoded secrets or credentials
 - [ ] No console.log or debug statements
+- [ ] No drive-by changes (see [karpathy-guidelines.md](karpathy-guidelines.md) — Surgical Changes)
 - [ ] Tests exist for new functionality
 - [ ] Test coverage meets 80% minimum
 
@@ -122,3 +123,4 @@ This rule works with:
 - [security.md](security.md) - Security checklist
 - [git-workflow.md](git-workflow.md) - Commit standards
 - [agents.md](agents.md) - Agent delegation
+- [karpathy-guidelines.md](karpathy-guidelines.md) - Behavioral discipline, surgical changes

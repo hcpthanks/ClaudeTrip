@@ -40,7 +40,11 @@ The Feature Implementation Workflow describes the development pipeline: research
    - Follow conventional commits format
    - See [git-workflow.md](./git-workflow.md) for commit message format and PR process
 
-5. **Pre-Review Checks**
+5. **Behavioral Discipline** (see [karpathy-guidelines.md](karpathy-guidelines.md))
+   - Apply four principles: Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution
+   - Every changed line must trace to the user's request
+
+6. **Pre-Review Checks**
    - Verify all automated checks (CI/CD) are passing
    - Resolve any merge conflicts
    - Ensure branch is up to date with target branch

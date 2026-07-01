@@ -1,5 +1,7 @@
 # 编码风格
 
+> 行为纪律补充见 [karpathy-guidelines.md](karpathy-guidelines.md) — 防止 LLM 常见编码错误的四条原则。
+
 ## 不可变性（关键）
 
 始终创建新对象，永远不要修改现有对象：

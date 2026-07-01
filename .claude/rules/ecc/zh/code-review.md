@@ -33,6 +33,7 @@
 - [ ] 错误显式处理
 - [ ] 无硬编码密钥或凭据
 - [ ] 无 console.log 或调试语句
+- [ ] 无顺路改动（见 [karpathy-guidelines.md](karpathy-guidelines.md) — 精准变更）
 - [ ] 新功能有测试
 - [ ] 测试覆盖率满足 80% 最低要求
 
@@ -122,3 +123,4 @@
 - [security.md](security.md) - 安全检查清单
 - [git-workflow.md](git-workflow.md) - 提交标准
 - [agents.md](agents.md) - 代理委托
+- [karpathy-guidelines.md](karpathy-guidelines.md) - 行为纪律、精准变更

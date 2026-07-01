@@ -1,5 +1,7 @@
 # Coding Style
 
+> 行为纪律补充见 [karpathy-guidelines.md](karpathy-guidelines.md) — 防止 LLM 常见编码错误的四条原则。
+
 ## Immutability (CRITICAL)
 
 ALWAYS create new objects, NEVER mutate existing ones:
