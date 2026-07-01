@@ -29,6 +29,7 @@ description: 从 CLAW 项目中积累的教训和经验。每次踩坑后自动�
 | 17 | 2026-06-30 | 引擎先落地，数据驱动模型层设计——双层组件(Hook+Agent)先跑Hook收集数据再用数据指导Agent设计 | [engine-first-data-defers-model.md](engine-first-data-defers-model.md) |
 | 18 | 2026-07-01 | 钱学森系统科学 ↔ ECC 对齐门禁——双向映射表+2个决策树+grep-able信号，焊接"最高指导思想"与"工程执行系统"之间的断裂 | [qss-ecc-alignment.md](qss-ecc-alignment.md) |
 | 19 | 2026-07-01 | 门禁延期决策+观察期数据采集——对抗验证发现需拆分但缺少数据时，设固定观察期+最小数据采集+决策矩阵，不提前拆分 | [gate-deferral-observation-period.md](gate-deferral-observation-period.md) |
+| 20 | 2026-07-01 | 行为准则→Hook自动化三层管线——基础科学(违规分类)→技术科学(检测算法)→工程技术(Hookify+测试)，把纸面规则升级为机械执行 | [guideline-to-hook-pipeline.md](guideline-to-hook-pipeline.md) |
 
 ## 使用方式
 
