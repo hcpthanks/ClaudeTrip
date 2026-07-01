@@ -19,7 +19,7 @@ QSS 与 ECC 的工程对齐关系参见 learned: qss-ecc-alignment。
 ## ⚠️ 铁律
 
 1. **Bash→PowerShell 转义**：写 .ps1 文件 → `-File` 执行。绝不在 `-Command` 中直写含 `$_` / `foreach` / `%` 的代码。详见 [[bash-powershell-escape-rule]]
-2. **规则被动加载陷阱**：规则在 system prompt 里 ≠ 会执行。关键操作点需主动检查。详见 [[rules-passive-loading-trap]]
+2. **规则被动加载陷阱**：规则在 system prompt 里 ≠ 会执行。94条MUST义务仅5条机械保障（5.3%）。详见 [[rules-passive-loading-trap]] + learned: ecc-rules-enforcement-audit
 3. **双目录同步**：`claude-code-learning-site/` ⇄ `docs/` 必须双向同步，commit 前校验。详见 [[dual-directory-sync-rule]]
 4. **C盘最小化**：所有AI模型/缓存/下载/临时文件必须落在 E 盘或 D 盘。`E:\WorkBuddy\cache\`（HF_HOME/TORCH_HOME/PIP_CACHE_DIR/XDG_CACHE_HOME/PYTHONPYCACHEPREFIX）+ `D:\Cache\`（TEMP/TMP/npm）。TTS模型实体在 `E:\WorkBuddy\models\`→junction到`~/.claude/models/`。新装工具时检查默认下载路径。详见 [[c-drive-minimization-policy]]
 5. **学习卡存E盘**：所有 `*-learning-card.html` / 操作手册 HTML 统一存 `E:\WorkBuddy\learning-cards\`，不在项目目录或 C 盘散落。详见 [[learning-card-storage-location]]

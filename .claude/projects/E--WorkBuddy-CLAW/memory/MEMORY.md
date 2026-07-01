@@ -24,6 +24,7 @@
 - **claude-code-learning-site** → `claude-code-learning-site/.claude/memory/`
 - **biaohe** → `biaohe/.claude/memory/`
 - [learned-skills-first-check](learned-skills-first-check.md) — 收到问题先搜已学技能和记忆，不要直接开始诊断
+- [Settings Override Hierarchy Trap](settings-override-hierarchy-trap.md) — settings 合并层级：local > project > user。改配置前必须 grep 全部文件
 - [Bash-PowerShell Escape Rule](bash-powershell-escape-rule.md) — Bash 工具中执行 PowerShell 的唯一可靠方案：写 .ps1 文件 → -File 执行，不要直写 -Command
 - [Rules Passive Loading Trap](rules-passive-loading-trap.md) — 规则在 system prompt 里 ≠ 规则会执行；LLM 进入任务模式后可能跳过协议，需主动检查点
 

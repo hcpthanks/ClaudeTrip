@@ -7,29 +7,34 @@ description: 从 CLAW 项目中积累的教训和经验。每次踩坑后自动�
 
 ## 收录的教训
 
-| # | 日期 | 主题 | 文件 |
-|---|------|------|------|
-| 1 | 2026-06-23 | Bash `ln`/`cmd //c mklink` 静默失败 | [bash-cmd-mklink-silent-failure.md](bash-cmd-mklink-silent-failure.md) |
-| 2 | 2026-06-23 | PowerShell Junction 双重计数陷阱 | [powershell-junction-double-count-trap.md](powershell-junction-double-count-trap.md) |
-| 3 | 2026-06-24 | Python ML 依赖防御模式 | [python-ml-dependency-defense.md](python-ml-dependency-defense.md) |
-| 4 | 2026-06-24 | AI底图+文字分层抑制公式 | [ai-bg-text-layering-formula.md](ai-bg-text-layering-formula.md) |
-| 5 | 2026-06-24 | FFmpeg 静默崩溃诊断 — Command failed with no output | [ffmpeg-silent-crash-diagnosis.md](ffmpeg-silent-crash-diagnosis.md) |
+| # | 日期 | 主题 | 层级 | 文件 |
+|---|------|------|:---:|------|
+| 1 | 2026-06-23 | Bash `ln`/`cmd //c mklink` 静默失败 | 工程 | [bash-cmd-mklink-silent-failure.md](bash-cmd-mklink-silent-failure.md) |
+| 2 | 2026-06-23 | PowerShell Junction 双重计数陷阱 | 工程 | [powershell-junction-double-count-trap.md](powershell-junction-double-count-trap.md) |
+| 3 | 2026-06-24 | Python ML 依赖防御模式 | 工程 | [python-ml-dependency-defense.md](python-ml-dependency-defense.md) |
+| 4 | 2026-06-24 | AI底图+文字分层抑制公式 | 工程 | [ai-bg-text-layering-formula.md](ai-bg-text-layering-formula.md) |
+| 5 | 2026-06-24 | FFmpeg 静默崩溃诊断 — Command failed with no output | 工程 | [ffmpeg-silent-crash-diagnosis.md](ffmpeg-silent-crash-diagnosis.md) |
 
-| 6 | 2026-06-26 | Windows HTML→PDF：Playwright 替代 WeasyPrint | [windows-html-to-pdf-playwright.md](windows-html-to-pdf-playwright.md) |
-| 7 | 2026-06-26 | 法律条款引用必须核实条款号与版本 | [legal-article-verification-rule.md](legal-article-verification-rule.md) |
-| 8 | 2026-06-27 | 法条引用须验证执行路径可行性——不能硬搬法条忽略实际落地难度 | [legal-enforceability-gap-check.md](legal-enforceability-gap-check.md) |
-| 9 | 2026-06-27 | Agent 自我修复→删除→再修复死循环——VS Code 终端关闭即终止 | [agent-self-repair-deletion-loop.md](agent-self-repair-deletion-loop.md) |
-| 10 | 2026-06-28 | 对抗性文书→和解导向改写：用逻辑滑梯框架转换劳动争议/投诉/律师函的框架 | [adversarial-doc-settlement-rewrite.md](adversarial-doc-settlement-rewrite.md) |
-| 11 | 2026-06-30 | CLAUDE.md 修改层次门禁——钱学森五层大厦审核，总体设计部只指路不执行 | [claude-md-layer-gate.md](claude-md-layer-gate.md) |
-| 12 | 2026-06-30 | QSS 门禁模板——从 claude-md-layer-gate 提取的 7 元素复用框架 | [gate-template.md](gate-template.md) |
-| 13 | 2026-06-30 | QSS 技能创建门禁——创建/修改 skill 前强制回答"最低三问" | [qss-skill-creation-gate.md](qss-skill-creation-gate.md) |
-| 14 | 2026-06-30 | QSS 门禁反馈回路——30天回顾、成功指标、learned rule 生成 | [qss-gate-feedback-loop.md](qss-gate-feedback-loop.md) |
-| 15 | 2026-06-30 | 框架采用率审计方法——grep引用→深度分级→差距分析→改进建议→HTML报告 | [framework-adoption-audit-method.md](framework-adoption-audit-method.md) |
-| 16 | 2026-06-30 | 哨兵 P0 落地——异质循环+静默检测+自限，Hook 引擎层强制执行 | [sentinel-p0-hooks.md](sentinel-p0-hooks.md) |
-| 17 | 2026-06-30 | 引擎先落地，数据驱动模型层设计——双层组件(Hook+Agent)先跑Hook收集数据再用数据指导Agent设计 | [engine-first-data-defers-model.md](engine-first-data-defers-model.md) |
-| 18 | 2026-07-01 | 钱学森系统科学 ↔ ECC 对齐门禁——双向映射表+2个决策树+grep-able信号，焊接"最高指导思想"与"工程执行系统"之间的断裂 | [qss-ecc-alignment.md](qss-ecc-alignment.md) |
-| 19 | 2026-07-01 | 门禁延期决策+观察期数据采集——对抗验证发现需拆分但缺少数据时，设固定观察期+最小数据采集+决策矩阵，不提前拆分 | [gate-deferral-observation-period.md](gate-deferral-observation-period.md) |
-| 20 | 2026-07-01 | 行为准则→Hook自动化三层管线——基础科学(违规分类)→技术科学(检测算法)→工程技术(Hookify+测试)，把纸面规则升级为机械执行 | [guideline-to-hook-pipeline.md](guideline-to-hook-pipeline.md) |
+| 6 | 2026-06-26 | Windows HTML→PDF：Playwright 替代 WeasyPrint | 工程 | [windows-html-to-pdf-playwright.md](windows-html-to-pdf-playwright.md) |
+| 7 | 2026-06-26 | 法律条款引用必须核实条款号与版本 | 工程 | [legal-article-verification-rule.md](legal-article-verification-rule.md) |
+| 8 | 2026-06-27 | 法条引用须验证执行路径可行性——不能硬搬法条忽略实际落地难度 | 工程 | [legal-enforceability-gap-check.md](legal-enforceability-gap-check.md) |
+| 9 | 2026-06-27 | Agent 自我修复→删除→再修复死循环——VS Code 终端关闭即终止 | 工程 | [agent-self-repair-deletion-loop.md](agent-self-repair-deletion-loop.md) |
+| 10 | 2026-06-28 | 对抗性文书→和解导向改写：用逻辑滑梯框架转换劳动争议/投诉/律师函的框架 | 工程 | [adversarial-doc-settlement-rewrite.md](adversarial-doc-settlement-rewrite.md) |
+| 11 | 2026-06-30 | ⚠️ CLAUDE.md 修改层次门禁——钱学森五层大厦审核，总体设计部只指路不执行 | 元规则 | [claude-md-layer-gate.md](claude-md-layer-gate.md) |
+| 12 | 2026-06-30 | ⚠️ QSS 门禁模板——从 claude-md-layer-gate 提取的 7 元素复用框架 | 元规则 | [gate-template.md](gate-template.md) |
+| 13 | 2026-06-30 | ⚠️ QSS 技能创建门禁——创建/修改 skill 前强制回答"最低三问" | 元规则 | [qss-skill-creation-gate.md](qss-skill-creation-gate.md) |
+| 14 | 2026-06-30 | ⚠️ QSS 门禁反馈回路——30天回顾、成功指标、learned rule 生成 | 元规则 | [qss-gate-feedback-loop.md](qss-gate-feedback-loop.md) |
+| 15 | 2026-06-30 | ⚠️ 框架采用率审计方法——grep引用→深度分级→差距分析→改进建议→HTML报告 | 元规则 | [framework-adoption-audit-method.md](framework-adoption-audit-method.md) |
+| 16 | 2026-06-30 | ⚠️ 哨兵 P0 落地——异质循环+静默检测+自限，Hook 引擎层强制执行 | 元规则 | [sentinel-p0-hooks.md](sentinel-p0-hooks.md) |
+| 17 | 2026-06-30 | ⚠️ 引擎先落地，数据驱动模型层设计——双层组件(Hook+Agent)先跑Hook收集数据再用数据指导Agent设计 | 元规则 | [engine-first-data-defers-model.md](engine-first-data-defers-model.md) |
+| 18 | 2026-07-01 | ⚠️ 钱学森系统科学 ↔ ECC 对齐门禁——双向映射表+2个决策树+grep-able信号，焊接"最高指导思想"与"工程执行系统"之间的断裂 | 元规则 | [qss-ecc-alignment.md](qss-ecc-alignment.md) |
+| 19 | 2026-07-01 | ⚠️ 门禁延期决策+观察期数据采集——设固定观察期+最小数据采集+决策矩阵，不提前拆分 | 元规则 | [gate-deferral-observation-period.md](gate-deferral-observation-period.md) |
+| 20 | 2026-07-01 | ⚠️ 行为准则→Hook自动化三层管线——基础科学(违规分类)→技术科学(检测算法)→工程技术(Hookify+测试)，把纸面规则升级为机械执行 | 元规则 | [guideline-to-hook-pipeline.md](guideline-to-hook-pipeline.md) |
+| 21 | 2026-07-01 | ⚠️ ECC 规则可执行性审计——~94条MUST义务仅5条(5.3%)有机械保障 | 元规则 | [ecc-rules-enforcement-audit.md](ecc-rules-enforcement-audit.md) |
+| 22 | 2026-07-01 | ⚠️ ECC 操作系统合规——同一会话6次绕过ECC门禁的证据链 | 元规则 | [ecc-os-compliance.md](ecc-os-compliance.md) |
+
+> ⚠️ 元规则条目 = 关于"系统应该如何设计/我为什么犯错"的 methodology，无法用一行 shell 命令执行。
+> 标注后保留至 **2026-07-30 观察期结束**，届时统一清理迁移到所属的正确位置（Hook/CLAUDE.md/qss-ecc-alignment/流程文件），不留在 learned 中。
 
 ## 使用方式
 

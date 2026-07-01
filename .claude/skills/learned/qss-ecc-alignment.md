@@ -283,3 +283,19 @@ Q1: 是事实错误还是设计缺陷？
 | 1 | 决策树1的触发条件太模糊（"需要新增一个能力"），非机械可检测 | 2026-07-01 | 拆分为两个独立门禁：install-gate（触发=npx ecc install）+ rule-change-gate（触发=Write rules/） |
 | 2 | 决策树2的Q1（"Prompt Defense Baseline是否被削弱"）需要理解 Prompt Defense 内容才能判断 | 2026-07-01 | 在门禁内嵌入 Prompt Defense Baseline 的 6 条规则摘要，避免外链 |
 | 3 | 方向B的"执行方式"列是快照——如果 ECC 新增 Hook 或移除规则，需要同步更新 | 2026-07-01 | 30天回顾时重新核对 |
+| 4 | ECC 规则可执行性审计：~94 条 MUST 义务，仅 5 条（5.3%）有机械执行保障。安全/测试/审查/流程类规则机械覆盖率为 0% | 2026-07-01 | 审计数据已存档 → learned: [[ecc-rules-enforcement-audit]]。30天观察期内跟踪哨兵日志中有多少次异常由"该有Hook但没Hook"直接导致。07-30决策日根据数据决定Hook升级优先级 |
+
+---
+
+## 附：2026-07-01 规则可执行性审计摘要
+
+触发事件：statusline 配置覆盖冲突（`settings.local.json` 内联命令覆盖 `settings.json` → `statusline.js`，导致反追踪盾牌不显示）。
+
+系统级发现：ECC 94 条 MUST/强制义务中：
+- **5 条（5.3%）** 有 Hook 机械执行（哨兵 P0: 3 条、console.log: 1 条、file-size: 1 条）
+- **~10 条** 有 Agent 代理（需 LLM 记得调用）
+- **~79 条** 完全纯文本（依赖 LLM 自觉）
+
+最危险的缺口：**安全清单（16 条 MUST，0% 机械覆盖率）、审查触发（8 条，0%）、开发流程（6 条，0%）**。
+
+详见：`learned: ecc-rules-enforcement-audit`
