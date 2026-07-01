@@ -7,6 +7,7 @@
 ## 🧠 最高指导思想：钱学森系统科学
 
 CLAW 项目的所有技能、Agent 编排、架构决策，遵循**钱学森系统科学体系**的指导。详见 `/qian-system-science`。
+QSS 与 ECC 的工程对齐关系参见 learned: qss-ecc-alignment。
 
 核心原则：
 - **系统工程 = 组织管理的技术** → Agent 编排本身就是系统工程

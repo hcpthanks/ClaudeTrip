@@ -27,6 +27,8 @@ description: 从 CLAW 项目中积累的教训和经验。每次踩坑后自动�
 | 15 | 2026-06-30 | 框架采用率审计方法——grep引用→深度分级→差距分析→改进建议→HTML报告 | [framework-adoption-audit-method.md](framework-adoption-audit-method.md) |
 | 16 | 2026-06-30 | 哨兵 P0 落地——异质循环+静默检测+自限，Hook 引擎层强制执行 | [sentinel-p0-hooks.md](sentinel-p0-hooks.md) |
 | 17 | 2026-06-30 | 引擎先落地，数据驱动模型层设计——双层组件(Hook+Agent)先跑Hook收集数据再用数据指导Agent设计 | [engine-first-data-defers-model.md](engine-first-data-defers-model.md) |
+| 18 | 2026-07-01 | 钱学森系统科学 ↔ ECC 对齐门禁——双向映射表+2个决策树+grep-able信号，焊接"最高指导思想"与"工程执行系统"之间的断裂 | [qss-ecc-alignment.md](qss-ecc-alignment.md) |
+| 19 | 2026-07-01 | 门禁延期决策+观察期数据采集——对抗验证发现需拆分但缺少数据时，设固定观察期+最小数据采集+决策矩阵，不提前拆分 | [gate-deferral-observation-period.md](gate-deferral-observation-period.md) |
 
 ## 使用方式
 
