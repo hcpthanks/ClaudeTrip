@@ -299,3 +299,28 @@ Q1: 是事实错误还是设计缺陷？
 最危险的缺口：**安全清单（16 条 MUST，0% 机械覆盖率）、审查触发（8 条，0%）、开发流程（6 条，0%）**。
 
 详见：`learned: ecc-rules-enforcement-audit`
+
+---
+
+### 第 1 周采集 — 2026-07-02（提前采集，原定 7/5）
+
+| 指标 | 值 | 健康？ |
+|------|-----|:---:|
+| 哨兵状态文件 | EXISTS（550B，最后写入 Jul 2 22:18） | 🟢 |
+| 哨兵告警总数 | 5 条（全部 Type6 silence advisory） | 🟡 |
+| 引用 qss-ecc-alignment 的文件（分级） | A=2, B=1, C=6, D=2 | 🟡 |
+| grep-able 信号 1-6 | 6/6 通过 | 🟢 |
+| ECC 本周有更新？ | 是，4 个 common rules 更新（Jul 1） | 🟢 |
+| gate-results 有新记录？ | 否，目录为空（仅 .gitkeep） | 🔴 |
+
+**备注**：
+
+1. **gate-results 为空** — 30 天观察期已过 12 天（6/20→7/2），`gate-results/` 从未产出结果文件。门禁的设计意图是每次 `/learn-eval` 或 ECC 组件变更时触发对齐审核并写入 gate-results，但实际执行中门禁从未被走过。需确认：是触发条件太模糊（LLM 记不住）还是门禁本身设计过重。
+
+2. **哨兵 Type1-5 零触发** — 5 条告警全部是 Type6（静默警告），Type1（重复重试）、Type2（质量回退）、Type3（静默换方案）、Type4（耗时异常）、Type5（隐形循环）从未触发。两种可能：(a) 实际会话确实没有这些异常（好），(b) 检测阈值太高（需调优）。Type1 最可疑——过往会话中肯定出现过同一操作连续失败 ≥2 次的情况。
+
+3. **ECC 规则 QSS 引用率 1.7%** — 120 个 ECC rules 中仅 `command-advisor.md` 和 `session-supervisor.md` 引用了 QSS（均为 common 层）。zh/、web/、typescript/ 等语言/领域层完全未对齐。考虑到 QSS 是"最高指导思想"，这个渗透率偏低。
+
+4. **learned 膨胀到 27 个** — SKILL.md 明确标注 2026-07-30 观察期结束时清理迁移，但 12 天过去了 learned 数量不减反增。learned 的设计寿命是"观察期暂存"，不是永久积累。
+
+5. **本周 CLAW 侧 ECC 动作**：`karpathy-guidelines` Hook 自动化落地（4 条 hookify 规则）、ECC 规则可执行性审计、反追踪 statusline 配置冲突修复——都属于技术科学→工程技术层的机械化推进，符合 QSS 方向。
