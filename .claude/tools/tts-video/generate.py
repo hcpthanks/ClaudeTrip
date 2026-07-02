@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""AI 视频工厂 — 极速轨 v3.5
+"""AI 视频工厂 — 极速轨 v3.6
 
 画面合成器：接收文案 + 可选音频文件，用纯 FFmpeg 生成 MP4。
 合成完成后自动跑质量门禁（ffprobe 6项 + 视觉抽检 + 幻灯片风险检测）。
 
 TTS 引擎（按优先级）：
   1. --audio 指定文件 → 直接用
-  2. 百炼 DashScope qwen3-tts-flash → 自动中文配音（需 DASHSCOPE_API_KEY）
+  2. MOSS-TTS v1.5 → 云端免费，31语言+零样本声音克隆（需 MOSS_API_KEY）
+  3. 百炼 DashScope qwen3-tts-flash → 备选中文配音（需 DASHSCOPE_API_KEY）
 
+v3.6: MOSS-TTS 优先引擎
 v3.5 质量门禁升级（借鉴 OpenMontage final_review.schema.json）：
   - 6项 ffprobe 技术检查 (v3.4)
   - 视觉抽检：4个时间点帧采样 (v3.5 new)
@@ -20,7 +22,7 @@ v3.5 质量门禁升级（借鉴 OpenMontage final_review.schema.json）：
   python generate.py 文案.txt --audio audio.mp3 --title "标题"
   python generate.py 文案.txt --title "标题" --voice longxiaochun
   python generate.py 文案.txt --bg img.jpg
-  python generate.py 文案.txt --end-screen
+  python generate.py 文案.txt --engine moss-tts --moss-voice-id 2001257729754140672
 """
 
 import subprocess, sys, os, time, re, tempfile, shutil, json, asyncio
@@ -33,7 +35,11 @@ OUTPUT_DIR = "output"
 VIDEO_W, VIDEO_H = 1920, 1080
 FPS = 24
 
-# ── API Key ─────────────────────────────────────────────────
+# ── API Keys ────────────────────────────────────────────────
+MOSS_API_KEY = (
+    os.environ.get("MOSS_API_KEY")
+    or ""
+)
 DASHSCOPE_KEY = (
     os.environ.get("DASHSCOPE_API_KEY")
     or os.environ.get("QWEN_API_KEY")
@@ -58,14 +64,18 @@ def main():
     import argparse
 
     p = argparse.ArgumentParser(
-        description="AI 视频工厂 — 极速轨 v3.3",
+        description="AI 视频工厂 — 极速轨 v3.6",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p.add_argument("input", nargs="?", help="文案 .txt 文件路径")
     p.add_argument("--file", "-f", dest="file_path", help="文案 .txt 路径")
-    p.add_argument("--audio", "-a", help="音频文件路径 (可选，不提供则自动用百炼 TTS)")
+    p.add_argument("--audio", "-a", help="音频文件路径 (可选，不提供则自动用 TTS)")
     p.add_argument("--voice", "-v", default="Cherry",
-                   help="百炼 TTS 音色: Cherry/Stella/longxiaochun/longxiaoxia/longxiaocheng (默认 Cherry)")
+                   help="TTS 音色 (百炼: Cherry/Stella/longxiaochun/longxiaoxia/longxiaocheng，MOSS-TTS: 传 voice_id)")
+    p.add_argument("--engine", "-e", default="moss-tts", choices=["moss-tts", "bailian"],
+                   help="TTS 引擎: moss-tts (默认，免费云端) / bailian (百炼备选)")
+    p.add_argument("--moss-voice-id", default="2001257729754140672",
+                   help="MOSS-TTS 音色 ID (默认 2001257729754140672)")
     p.add_argument("--title", "-t", help="视频大标题（顶部居中）")
     p.add_argument("--bg", "-b", help="背景图片路径")
     p.add_argument("--end-screen", action="store_true", help="末尾加 3 秒引导关注页")
@@ -89,19 +99,32 @@ def main():
 
     if audio_path and os.path.isfile(audio_path):
         print(f"[AUDIO] 使用已有文件: {audio_path}")
-    elif DASHSCOPE_KEY:
-        print(f"[TTS] 百炼 qwen3-tts-flash | voice={args.voice}")
-        audio_path = os.path.join(tmp, "dashscope.wav")
-        try:
-            gen_dashscope_tts(text, args.voice, audio_path)
-        except Exception as e:
-            print(f"[TTS FAIL] {e}")
-            sys.exit(1)
     else:
-        print("[FAIL] 没有音频文件，也没有 DASHSCOPE_API_KEY。")
-        print("  方案1: python generate_simple_video.py 文案.txt --audio audio.mp3")
-        print("  方案2: 设置 DASHSCOPE_API_KEY 环境变量启用百炼 TTS")
-        sys.exit(1)
+        engine = args.engine
+        if engine == "moss-tts" and MOSS_API_KEY:
+            print(f"[TTS] MOSS-TTS v1.5 | voice_id={args.moss_voice_id}")
+            audio_path = os.path.join(tmp, "moss_tts.wav")
+            try:
+                gen_moss_tts(text, args.moss_voice_id, audio_path)
+            except Exception as e:
+                print(f"[TTS] MOSS-TTS 失败: {e}")
+                # fall through to bailian
+                engine = "bailian"
+                audio_path = None
+        if engine == "bailian" and DASHSCOPE_KEY:
+            print(f"[TTS] 百炼 qwen3-tts-flash | voice={args.voice}")
+            audio_path = audio_path or os.path.join(tmp, "dashscope.wav")
+            try:
+                gen_dashscope_tts(text, args.voice, audio_path)
+            except Exception as e:
+                print(f"[TTS FAIL] {e}")
+                sys.exit(1)
+        if not audio_path or not os.path.isfile(audio_path):
+            print("[FAIL] 没有音频文件，也没有可用的 TTS 引擎。")
+            print("  MOSS-TTS (默认): 设置 MOSS_API_KEY 环境变量")
+            print("  百炼 (备选):    设置 DASHSCOPE_API_KEY 环境变量")
+            print("  已有音频:       python generate.py 文案.txt --audio audio.mp3")
+            sys.exit(1)
 
     audio_dur = probe_duration(audio_path)
     print(f"[AUDIO] {audio_dur:.1f}s")
@@ -158,6 +181,46 @@ def main():
 
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+
+
+# ═══════════════════════════════════════════════════════════════
+# MOSS-TTS v1.5 (MOSI API — 免费云端)
+# ═══════════════════════════════════════════════════════════════
+
+def gen_moss_tts(text: str, voice_id: str, out_wav: str):
+    """MOSS-TTS v1.5 — 云端免费 TTS，31语言+零样本声音克隆"""
+    import urllib.request, json, base64
+
+    payload = json.dumps({
+        "model": "moss-tts",
+        "text": text,
+        "voice_id": voice_id,
+        "expected_duration_sec": max(len(text) * 0.35, 3.0),
+        "sampling_params": {
+            "max_new_tokens": 20000,
+            "temperature": 1.0,
+            "top_p": 0.8,
+            "top_k": 25,
+        },
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://studio.mosi.cn/api/v1/audio/speech",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {MOSS_API_KEY}",
+        },
+    )
+    try:
+        resp = urllib.request.urlopen(req, timeout=120)
+        result = json.loads(resp.read())
+        audio_bytes = base64.b64decode(result["audio_data"])
+        with open(out_wav, "wb") as f:
+            f.write(audio_bytes)
+        print(f"[TTS] MOSS-TTS → {len(audio_bytes)} bytes")
+    except Exception as e:
+        raise RuntimeError(f"MOSS-TTS API 调用失败: {e}") from e
 
 
 # ═══════════════════════════════════════════════════════════════

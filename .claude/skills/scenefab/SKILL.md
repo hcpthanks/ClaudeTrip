@@ -1,10 +1,10 @@
 ---
 name: scenefab
 description: |
-  AI影视解说视频一站式生成。上传视频 → Qwen3.7分镜分析 → DeepSeek解说词 → EdgeTTS配音 → ASS字幕合成。
-  三引擎：Qwen3.7(Vision) + DeepSeek(解说) + EdgeTTS(配音)。全本地处理。
+  AI影视解说视频一站式生成。上传视频 → Qwen3.7分镜分析 → DeepSeek解说词 → MOSS-TTS配音(优先) → ASS字幕合成。
+  三引擎：Qwen3.7(Vision) + DeepSeek(解说) + MOSS-TTS(配音，31语言+零样本声音克隆)。
   适合影视解说、短剧解说、知识类视频创作。当用户需要把视频变成带解说的成品时使用此skill。
-version: 1.0.0
+version: 1.1.0
 ---
 
 # SceneFab — AI 影视解说视频生成器
@@ -15,24 +15,26 @@ version: 1.0.0
 
 ```
 视频 → Step1:FFmpeg抽帧 → Step2:Qwen3.7分镜分析 → Step3:DeepSeek解说词
-     → Step4:EdgeTTS配音(词级时间戳) → Step5:FFmpeg音画字幕合成 → 成品.mp4
+     → Step4:MOSS-TTS配音 → Step5:FFmpeg音画字幕合成 → 成品.mp4
 ```
 
 - **分镜分析**：Qwen3.7 Vision（百炼 `qwen3.7-plus`），0.6元/百万tokens
 - **解说词**：DeepSeek V4 Flash，0.1元/百万tokens
-- **配音**：Edge-TTS（晓晓/云希等8种音色），**免费**
-- **字幕**：Edge-TTS 词级时间戳 → ASS 字幕，**免费**
+- **配音**：MOSS-TTS v1.5（默认，免费云端，31语言+声音克隆）
+- **字幕**：SRT 按字数比例分段，**免费**
 - **合成**：FFmpeg libx264，**本地免费**
 
 ## 前置条件
 
 ```bash
-# API Keys（必须）
+# API Keys（必须：DeepSeek + Qwen / 可选：MOSS_TTS 默认使用）
 export DEEPSEEK_API_KEY="sk-..."
 export QWEN_API_KEY="sk-..."
+export MOSS_API_KEY="sk-..."  # 免费云端 TTS，默认引擎
 
 # 依赖（一次性安装）
-pip install opencv-python scenedetect moviepy pyside6 edge-tts httpx openai
+pip install opencv-python scenedetect moviepy pyside6 httpx openai
+# MOSS-TTS 只需标准库 (urllib + json + base64)，无需额外 pip 安装
 
 # 源码安装（一次性）
 cd E:/WorkBuddy/scenefab/scene-fab-2.1.1 && pip install -e .
@@ -123,40 +125,78 @@ FIRST_PERSON_ANALYSIS_PROMPT = """
 | 幽默 | `HUMOROUS` | 轻松活泼 |
 | 治愈 | `HEALING` | 温暖治愈 |
 
-### 配音 + 字幕（Edge-TTS）
+### 配音（MOSS-TTS 默认）+ 字幕
+
+音频用 MOSS-TTS v1.5（31语言+零样本声音克隆，免费），字幕用 SRT 按字数比例分段（与极速轨同方案）。
 
 ```python
-import edge_tts
-import asyncio
+import os, json, base64, urllib.request
 
-async def tts_with_subtitles(text, voice, output_mp3):
-    """生成配音并获取词级时间戳"""
-    comm = edge_tts.Communicate(text, voice, rate='+0%')
-    subtitles = []
+MOSS_API_KEY = os.environ.get("MOSS_API_KEY", "")
+MOSS_URL = "https://studio.mosi.cn/api/v1/audio/speech"
 
-    async for chunk in comm.stream():
-        if chunk['type'] == 'SentenceBoundary':
-            subtitles.append({
-                'text': chunk.get('text', ''),
-                'start': chunk['offset'] / 10_000_000,
-                'end': (chunk['offset'] + chunk['duration']) / 10_000_000,
-            })
+def gen_moss_tts(text: str, voice_id: str, out_wav: str) -> None:
+    """MOSS-TTS v1.5 — 云端免费 TTS"""
+    payload = json.dumps({
+        "model": "moss-tts",
+        "text": text,
+        "voice_id": voice_id,
+        "expected_duration_sec": max(len(text) * 0.35, 3.0),
+        "sampling_params": {
+            "max_new_tokens": 20000,
+            "temperature": 1.0,
+            "top_p": 0.8,
+            "top_k": 25,
+        },
+    }).encode("utf-8")
+    req = urllib.request.Request(
+        MOSS_URL, data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {MOSS_API_KEY}",
+        },
+    )
+    resp = urllib.request.urlopen(req, timeout=120)
+    result = json.loads(resp.read())
+    with open(out_wav, "wb") as f:
+        f.write(base64.b64decode(result["audio_data"]))
 
-    await comm.save(output_mp3)  # 也可以边 stream 边写文件
-    return subtitles
-
-# 音色速查
-# zh-CN-XiaoxiaoNeural  - 晓晓（女，活泼）
-# zh-CN-YunxiNeural     - 云希（男，沉稳）
-# zh-CN-YunyangNeural   - 云扬（男，大气）
-# zh-CN-XiaoyiNeural    - 小艺（女，温柔）
-# zh-CN-YunjianNeural   - 云健（男，运动）
-# zh-CN-YunxiaNeural    - 云夏（男，醇厚）
-# zh-CN-YunyeNeural     - 云野（男，成熟）
-# zh-CN-liaoning-XiaobeiNeural - 晓北（东北话，幽默）
+# 音色 ID 速查
+# 2001257729754140672  - 默认女声（甜美女声）
+# 在 studio.mosi.cn/voice-library 可试听和添加更多音色
 ```
 
-### FFmpeg 合成
+**字幕生成**（SRT 按字数比例分段，与极速轨 generate.py 同方案）：
+
+```python
+import re
+
+def make_srt(text: str, total_dur: float, srt_path: str):
+    """按句号/问号/感叹号/换行切分，按字数比例分配时间"""
+    parts = re.split(r"(?<=[。！？\n])", text)
+    sentences = [s.strip() for s in parts if s.strip()]
+    if not sentences:
+        sentences = [text]
+    total_chars = sum(len(s) for s in sentences)
+    char_sec = total_dur / max(total_chars, 1)
+    lines, t = [], 0.0
+    for i, seg in enumerate(sentences, 1):
+        dur = max(len(seg) * char_sec, 0.8)
+        if t + dur > total_dur:
+            dur = max(total_dur - t, 0.5)
+        lines.append(f"{i}\n{fmt_ts(t)} --> {fmt_ts(t + dur)}\n{seg}\n")
+        t += dur
+        if t >= total_dur:
+            break
+    with open(srt_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+def fmt_ts(sec: float) -> str:
+    h, m, s = int(sec // 3600), int((sec % 3600) // 60), int(sec % 60)
+    return f"{h:02d}:{m:02d}:{s:02d},{int((sec % 1) * 1000):03d}"
+```
+
+## 完整工作流（Python）
 
 ```bash
 ffmpeg -y \
@@ -212,45 +252,51 @@ segments = [VideoSegment(video_path=VIDEO, start_time=s['start'],
 gen = ScriptGenerator()
 narrations = gen.generate(segments, style=NarrationStyle.DOCUMENTARY)
 
-# 4. EdgeTTS 配音 + 字幕
-import edge_tts
-all_subs, audio_files, offset = [], [], 0.0
+# 4. MOSS-TTS 配音 + SRT 字幕（默认）
+all_srt, audio_files, offset = [], [], 0.0
 for i, nb in enumerate(narrations):
-    mp3 = os.path.join(OUT, f'seg_{i:02d}.mp3')
-    comm = edge_tts.Communicate(nb.text, 'zh-CN-XiaoxiaoNeural', rate='+0%')
-    seg_subs = []
-    async def collect():
-        async for chunk in comm.stream():
-            if chunk['type'] == 'SentenceBoundary':
-                seg_subs.append({'text': chunk.get('text',''),
-                    'start': offset+chunk['offset']/10000000,
-                    'end': offset+(chunk['offset']+chunk['duration'])/10000000})
-    asyncio.run(collect())
-    asyncio.run(edge_tts.Communicate(nb.text, 'zh-CN-XiaoxiaoNeural', rate='+0%').save(mp3))
-    audio_files.append(mp3); all_subs.extend(seg_subs)
-    offset += (nb.end_time - nb.start_time)
+    wav = os.path.join(OUT, f'seg_{i:02d}.wav')
+    gen_moss_tts(nb.text, "2001257729754140672", wav)
+    srt = os.path.join(OUT, f'seg_{i:02d}.srt')
+    make_srt(nb.text, nb.end_time - nb.start_time, srt)
+    audio_files.append(wav)
+    all_srt.append(srt)
 
-# 5. 合并音频 + ASS 字幕
-concat_txt = os.path.join(OUT, 'concat.txt')
-with open(concat_txt, 'w') as f:
-    for a in audio_files: f.write(f"file '{a}'\n")
-final_audio = os.path.join(OUT, 'final.mp3')
-subprocess.run(['ffmpeg','-y','-f','concat','-safe','0','-i',concat_txt,'-c','copy',final_audio], check=True)
+# 5. 合并音频 + SRT 字幕
+concat_txt = os.path.join(OUT, "concat.txt")
+with open(concat_txt, "w") as f:
+    for a in audio_files:
+        f.write(f"file '{a}'\n")
+final_audio = os.path.join(OUT, "final.wav")
+subprocess.run(
+    ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", concat_txt, "-c", "copy", final_audio],
+    check=True,
+)
+# SRT 合并
+merged_srt = os.path.join(OUT, "merged.srt")
+with open(merged_srt, "w", encoding="utf-8") as out_f:
+    idx = 1
+    for srt_file in all_srt:
+        with open(srt_file, "r", encoding="utf-8") as f:
+            content = f.read().strip()
+        if content:
+            out_f.write(content + "\n\n")
 
-def fmt(t): return f"{int(t//3600)}:{int((t%3600)//60):02d}:{t%60:05.2f}"
-ass = "[Script Info]\nPlayResX: 1280\nPlayResY: 720\nWrapStyle: 2\n\n[V4+ Styles]\nFormat: Name,Fontname,Fontsize,PrimaryColour,SecondaryColour,OutlineColour,BackColour,Bold,Italic,Underline,StrikeOut,ScaleX,ScaleY,Spacing,Angle,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,MarginV,Encoding\nStyle: Default,Microsoft YaHei,36,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,3,2,2,40,40,50,1\n\n[Events]\nFormat: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text\n"
-for s in all_subs:
-    txt = s['text'].replace('&','&amp;').strip()
-    if txt: ass += f"Dialogue: 0,{fmt(s['start'])},{fmt(s['end'])},Default,,0,0,0,,{txt}\n"
-ass_path = os.path.join(OUT, 'sub.ass')
-with open(ass_path, 'w', encoding='utf-8') as f: f.write(ass)
-
-# 6. FFmpeg 合成
-final_mp4 = os.path.join(OUT, 'final.mp4')
-subprocess.run(['ffmpeg','-y','-i',VIDEO,'-i',final_audio,
-    '-vf',f"subtitles='{ass_path}':force_style='FontName=Microsoft YaHei,FontSize=32,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,Outline=2'",
-    '-c:v','libx264','-preset','veryfast','-crf','23','-c:a','aac','-b:a','128k',
-    '-shortest','-map','0:v:0','-map','1:a:0',final_mp4], check=True)
+# 6. FFmpeg 合成 (SRT 字幕)
+final_mp4 = os.path.join(OUT, "final.mp4")
+subprocess.run(
+    [
+        "ffmpeg", "-y",
+        "-i", VIDEO,
+        "-i", final_audio,
+        "-vf", f"subtitles='{merged_srt}':force_style='FontName=Microsoft YaHei,FontSize=32,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,Outline=2,Bold=1'",
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+        "-c:a", "aac", "-b:a", "128k",
+        "-shortest", "-map", "0:v:0", "-map", "1:a:0",
+        final_mp4,
+    ],
+    check=True,
+)
 ```
 
 ## 短剧模式
@@ -274,8 +320,8 @@ results = narrator.generate_series(episodes, output_dir=Path("output/"))
 
 | 工具 | 作用 | 与 SceneFab 关系 |
 |------|------|----------------|
-| `tts-video` skill | EdgeTTS配音+字幕 | 替代 SceneFab 的 TTS 步骤 |
 | `ai-video-factory` skill | 全自动视频生产线 | SceneFab 输出配音后可接入 |
+| MOSS-TTS (MOSI API) | 免费云端 TTS，31语言+声音克隆 | **唯一配音引擎** |
 | Agnes AI (MCP) | 免费文本/图片/视频生成 | 备用 LLM、封面图生成 |
 | Wan2.7 (百炼) | 视频生成 | 封面动图/过场动画 |
 
@@ -310,13 +356,13 @@ SceneFab v2.0 内置 FFmpeg 安全封装（`core/ffmpeg_safe.py`）：
 | 问题 | 现象 | 解决 |
 |------|------|------|
 | VisionAnalyzerFactory 初始化失败 | `'PipelineConfig' object has no attribute '__dict__'` | 已修复，传 `{}` 替代 `self.config.__dict__` |
-| EdgeTTS rate 格式错误 | `Invalid rate '0%'` | 已修复，用 `:+d` 格式化 |
-| ASS 字幕渲染失败 | `Invalid argument original_size` | 用 drawtext fallback 或确保字幕文件路径正确 |
+| ASS 字幕渲染失败 | `Invalid argument original_size` | 已改用 SRT 字幕，兼容性更好 |
 | 测试视频无内容 | 彩条画面 AI 无意义 | 用真实视频素材替换 test_video.mp4 |
+| MOSS-TTS 无词级时间戳 | SRT 字幕精度不如 ASS 词级 | 按字数比例分段，效果可接受 |
 
-## 明天要做
+## 版本历史
 
-- [ ] 测试真实视频素材的分镜效果（调整 prompt）
-- [ ] 注册豆包 API Key 测试 `doubao-vision-pro` 视觉模型
-- [ ] 接入 Wan2.7 视频生成（封面动图/过场）
-- [ ] 和 `tts-video` skill 打通（CosyVoice2 本地配音替代方案）
+| 版本 | 日期 | 变更 |
+|------|------|------|
+| v1.1.0 | 2026-07-02 | MOSS-TTS v1.5 替代 EdgeTTS 为唯一配音引擎；SRT 字幕替代 ASS；移除 EdgeTTS 备选 |
+| v1.0.0 | 2026-03 | 初始版本：Qwen3.7 + DeepSeek + EdgeTTS
