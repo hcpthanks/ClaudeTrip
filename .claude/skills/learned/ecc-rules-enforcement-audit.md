@@ -4,7 +4,9 @@
 
 ## 摘要
 
-ECC 规则体系共有 **~94 条 MUST/强制 级别义务**，但仅 **~2 条**（2.1%）有机械执行保障（PreToolUse file-size guard + Stop build verify）。其余 ~92 条完全依赖 LLM 上下文记忆。这是 [[rules-passive-loading-trap]] 的量化确认。
+ECC 规则体系共有 **~94 条 MUST/强制 级别义务**，但仅 **~4 条**（4.3%）有确认真实的机械执行保障。这是 [[rules-passive-loading-trap]] 的量化确认。
+
+> **2026-07-02 修正**：审计时（07-01）sentinel-timing.js 被误标为 ✅ 已生效 — 脚本文件存在但未在任何 settings/hooks.json 中注册。已纠正为 ⚠️，并于同日注册到 `settings.local.json` PostToolUse。修正后基线：4 条有效 Hook（ecc-context-monitor + 2×console.log + gateguard-fact-force），1 条脚本存在未注册（sentinel-timing.js→已修复）。暴露了更深层问题：**连审计自身的准确率也无法保障**。
 
 ## 规则义务完整清单（MUST/强制 级别）
 
@@ -34,7 +36,7 @@ ECC 规则体系共有 **~94 条 MUST/强制 级别义务**，但仅 **~2 条**�
 | 20 | session-supervisor.md | 检测重复重试（≥2 次连续失败）→ 暂停 | ❌ (LLM 自监控) |
 | 21 | session-supervisor.md | 检测质量回退 → 暂停 | ❌ (LLM 自监控) |
 | 22 | session-supervisor.md | 检测静默换方案 → 暂停 | ❌ (LLM 自监控) |
-| 23 | session-supervisor.md | 检测耗时异常（>3x 预期）→ 暂停 | ✅ Hook: sentinel-timing.js |
+| 23 | session-supervisor.md | 检测耗时异常（>3x 预期）→ 暂停 | ⚠️ Hook脚本存在（sentinel-timing.js），2026-07-02 前未注册到Hook引擎 |
 | 24 | session-supervisor.md | 检测隐形循环（≥3 次同类/5min）→ 暂停 | ✅ Hook: ecc-context-monitor.js |
 | 25 | session-supervisor.md | 检测长时间无反馈（≥60s）→ 暂停 | ✅ Hook: ecc-context-monitor.js |
 | 26 | session-supervisor.md | 触发后使用标准询问格式 | ❌ (LLM 自监控) |
@@ -138,7 +140,9 @@ ECC 规则体系共有 **~94 条 MUST/强制 级别义务**，但仅 **~2 条**�
 | 语言（typescript/） | 8 | 1 | 12.5% |
 | **合计** | **~94** | **5** | **5.3%** |
 
-注：5 个有机械保障的义务中，3 个是哨兵 P0 Hook 实现的，1 个是 console.log Hook，1 个是 file-size Hook。严格来说 console.log 和 file-size 不是"规则规则"而是"代码卫生"——**真正的业务/安全/流程规则，机械覆盖率为 0%。**
+> **2026-07-02 修正**：上表中的 5 条包含了 sentinel-timing.js（审计时误标为 ✅，实际未注册到 Hook 引擎，于同日修复）。审计时的真实有效数为 4（4.3%）。修复后回到 5（5.3%）。
+
+注：5 个有机械保障的义务中，3 个是哨兵 P0 Hook 实现的（其中 sentinel-timing.js 审计后验证发现未注册，已修复），2 个是 console.log Hook。严格来说 console.log 不是"规则规则"而是"代码卫生"——**真正的业务/安全/流程规则，机械覆盖率为 3.2%（3/94）。**
 
 ---
 

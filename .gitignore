@@ -36,3 +36,6 @@ biaohe/
 test-results/
 node_modules/
 package-lock.json
+
+# Claude runtime state
+.claude/.ss.json
