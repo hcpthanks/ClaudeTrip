@@ -4,14 +4,15 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.tencentscf.com; frame-src https://www.bilibili.com https://player.bilibili.com; frame-ancestors 'self' https://hcpthanks.github.io; base-uri 'self';">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI 视频工厂 — 文案→配音→字幕→视频，一键生成。Agnes AI + TTS 三引擎 + Claude Code 全自动调度。">
+<meta name="description" content="AI 视频工厂 v2.0 — 文案→TTS配音→AI画面→多轨剪辑→音频混音→专业成品。Shotcut CLI + Audacity CLI + Agnes AI 全自动调度。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
-<title>AI 视频工厂 — Claude Code 学习站</title>
+<title>AI 视频工厂 v2.0 — Claude Code 学习站</title>
 <link rel="stylesheet" href="../../assets/css/common.css">
 <style>
   .page-hero { padding: 64px 24px 40px; text-align: center; }
   .page-hero h1 { font-size: 2em; margin-bottom: 8px; }
   .page-hero .desc { color: var(--text-muted); font-size: 1em; max-width: 600px; margin: 0 auto; }
+  .page-hero .hero-desc { color: var(--text-muted); font-size: 1em; max-width: 660px; margin: 0 auto; line-height: 1.7; }
 
   /* Demo */
   .demo-section { margin: var(--space-section) 0; }
@@ -31,7 +32,72 @@
     font-size: 0.72em; color: var(--text-faint);
   }
 
-  /* Why section */
+  /* v1→v2 Compare */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 28px;
+  }
+  .compare-col { padding: 24px; border-radius: var(--radius); }
+  .compare-col.v1 { background: var(--orange-dim); border: 1px solid rgba(210, 153, 29, 0.25); }
+  .compare-col.v2 { background: var(--green-dim); border: 1px solid rgba(63, 185, 80, 0.3); }
+  .compare-col h4 { margin: 0 0 8px 0; font-size: 0.95em; }
+  .compare-col.v1 h4 { color: var(--orange); }
+  .compare-col.v2 h4 { color: var(--green); }
+  .compare-col ul { margin: 0; padding: 0; list-style: none; }
+  .compare-col li { font-size: 0.86em; padding: 4px 0; }
+  .compare-col.v1 li { color: var(--text-muted); }
+  .compare-col.v2 li { color: var(--text); }
+
+  /* Pipeline */
+  .pipeline-row {
+    display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+    align-items: flex-start; margin: 28px 0 12px;
+  }
+  .pipeline-node {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 12px;
+    text-align: center;
+    min-width: 112px;
+    flex: 1 1 120px;
+    max-width: 150px;
+    transition: border-color var(--duration-fast);
+  }
+  .pipeline-node:hover { border-color: var(--accent); }
+  .pipeline-node .pn-icon { font-size: 1.4em; margin-bottom: 6px; display: block; }
+  .pipeline-node .pn-label { font-size: 0.82em; color: var(--text-high); font-weight: 600; }
+  .pipeline-node .pn-tool { font-size: 0.68em; color: var(--accent); font-family: var(--font-mono); margin-top: 3px; line-height: 1.4; }
+  .pipeline-arrow {
+    display: flex; align-items: center; color: var(--text-faint); font-size: 1.2em;
+    flex-shrink: 0; padding-top: 22px;
+  }
+
+  /* Integration Cards */
+  .integration-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 28px 0;
+  }
+  .integration-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .integration-card .ic-num {
+    display: inline-block; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent-dim); color: var(--accent);
+    text-align: center; line-height: 28px; font-weight: 800; font-size: 0.82em;
+    margin-bottom: 10px;
+  }
+  .integration-card h4 { font-size: 0.92em; margin: 0 0 6px 0; color: var(--text-high); }
+  .integration-card p { font-size: 0.82em; color: var(--text-muted); margin: 0; line-height: 1.6; }
+
+  /* Why Box */
   .why-box {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -40,35 +106,38 @@
     margin-bottom: var(--space-section);
   }
   .why-box h2 { border: none; padding: 0; margin: 0 0 20px 0; }
-  .compare-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-top: 28px;
+  .why-box .value-callout {
+    color: var(--accent); margin-top: 28px; font-weight: 700; font-size: 1.02em; line-height: 1.6;
   }
-  .compare-col { padding: 20px; border-radius: var(--radius); }
-  .compare-col.manual { background: #1a1a1a; border: 1px solid var(--border); }
-  .compare-col.auto { background: var(--accent-dim); border: 1px solid rgba(88, 166, 255, 0.3); }
-  .compare-col h4 { margin: 0 0 8px 0; font-size: 0.95em; }
-  .compare-col ul { margin: 0; padding: 0; list-style: none; }
-  .compare-col li { font-size: 0.86em; color: var(--text-muted); padding: 4px 0; }
-  .compare-col.auto li { color: var(--text); }
 
-  /* Step guide */
-  .step-list { counter-reset: step; margin-bottom: var(--space-section); }
-  .step-item { counter-increment: step; display: flex; gap: 18px; margin-bottom: 20px; align-items: flex-start; }
-  .step-num {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: var(--accent-dim); color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 0.9em; flex-shrink: 0;
+  /* Feature Card Grid */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+    margin-bottom: var(--space-section);
   }
-  .step-body h4 { margin: 0 0 4px 0; font-size: 0.95em; color: var(--text-high); }
-  .step-body p { margin: 0; font-size: 0.84em; color: var(--text-muted); line-height: 1.6; }
-  .step-body code {
-    background: var(--bg); padding: 2px 8px; border-radius: 4px;
-    font-family: var(--font-mono); font-size: 0.88em; color: var(--accent);
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    transition: border-color var(--duration-fast);
   }
+  .feature-card:hover { border-color: var(--text-faint); }
+  .feature-card .fc-icon { font-size: 1.3em; margin-bottom: 10px; }
+  .feature-card h4 { font-size: 0.92em; margin: 0 0 6px 0; color: var(--text-high); }
+  .feature-card p { font-size: 0.82em; color: var(--text-muted); margin: 0; line-height: 1.6; }
+
+  /* Case box */
+  .case-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    margin-bottom: var(--space-section);
+  }
+  .case-box h3 { margin: 0 0 12px 0; }
 
   /* Tech table */
   .tech-table { width: 100%; border-collapse: collapse; margin-bottom: var(--space-section); }
@@ -79,32 +148,6 @@
   .tech-table th { color: var(--text-muted); font-weight: 600; font-size: 0.78em; text-transform: uppercase; }
   .tech-table td { color: var(--text); }
   .tech-table td code { color: var(--accent); }
-
-  .feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
-    margin-bottom: var(--space-section);
-  }
-  .feature-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-  }
-  .feature-card .fc-icon { font-size: 1.3em; margin-bottom: 10px; }
-  .feature-card h4 { font-size: 0.95em; margin: 0 0 6px 0; color: var(--text-high); }
-  .feature-card p { font-size: 0.84em; color: var(--text-muted); margin: 0; line-height: 1.6; }
-
-  /* Case study */
-  .case-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    margin-bottom: var(--space-section);
-  }
-  .case-box h3 { margin: 0 0 12px 0; }
 
   .tech-stack {
     display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 40px;
@@ -118,10 +161,16 @@
     font-size: 0.82em;
     color: var(--text);
   }
+  .checkmark-list { list-style: none; padding: 0; margin: 16px 0; }
+  .checkmark-list li { padding: 4px 0; font-size: 0.9em; color: var(--text-muted); }
+  .checkmark-list li::before { content: '✓ '; color: var(--green); font-weight: 700; }
 
   @media (max-width: 768px) {
     .compare-grid { grid-template-columns: 1fr; }
     .feature-grid { grid-template-columns: 1fr; }
+    .integration-grid { grid-template-columns: 1fr; }
+    .pipeline-arrow { display: none; }
+    .pipeline-node { max-width: none; flex: 1 1 45%; }
   }
 </style>
 </head>
@@ -152,9 +201,12 @@
   </div>
 </nav>
 
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ① HERO — v2.0 升级标题 -->
+<!-- ═══════════════════════════════════════════════════════ -->
 <header class="page-hero">
-  <h1>🎬 AI 视频工厂</h1>
-  <p class="desc">输入一句文案，Claude Code 自动调度 Agnes AI + TTS，几分钟出一条完整视频。</p>
+  <h1>🎬 AI 视频工厂 v2.0</h1>
+  <p class="hero-desc">从文案到专业视频，一句话搞定。<br>AI 画面 + TTS 配音 + <strong style="color:var(--accent);">多轨剪辑</strong> + <strong style="color:var(--accent);">音频混音</strong>，全自动流水线。</p>
   <img src="../../assets/images/projects/ai-video-factory-cover.png"
        alt="AI 视频工厂封面" class="hero-cover"
        style="max-width:100%;height:auto;border-radius:var(--radius-xl);margin-top:32px;border:1px solid var(--border);">
@@ -162,7 +214,9 @@
 
 <main class="container" role="main">
 
-  <!-- ① 效果展示 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ② 效果展示 + v2.0 能力标签 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
   <section class="demo-section">
     <div class="section-header">
       <h2>🎥 效果展示</h2>
@@ -175,122 +229,113 @@
       </video>
       <span class="preview-hint">Agnes Video 生成演示 · 1088×832 · 5秒</span>
     </div>
+    <div class="tech-stack">
+      <span class="tech-tag">🎬 多轨视频编辑</span>
+      <span class="tech-tag">🎵 BGM + 混音</span>
+      <span class="tech-tag">✨ 转场 · 滤镜 · 画中画</span>
+    </div>
   </section>
 
-  <!-- ② 为什么做这个 — 不是卖工具，是卖调度 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ③ v1.0 → v2.0 升级之路（替换原 Why 节） -->
+  <!-- ═══════════════════════════════════════════════════════ -->
   <section>
     <div class="section-header">
-      <h2>💡 为什么做这个</h2>
+      <h2>📈 从能用到好用：v1.0 → v2.0</h2>
+      <p class="section-desc">v1.0 跑通了流程。v2.0 把每一步做到专业水准。</p>
     </div>
     <div class="why-box">
       <p style="color:var(--text); font-size:1em; line-height:1.8;">
-        Agnes AI 的三个模型<strong>全部免费</strong>。edge-tts 免费。CosyVoice2 和 Qwen3-TTS 开源免费。<br>
-        但没有人手动打开 5 个工具、一个一个操作。<strong>你要的是输入文案、拿到视频。</strong>
+        Agnes AI 的三个模型<strong>全部免费</strong>。edge-tts 免费。Shotcut 开源免费。Audacity 开源免费。<br>
+        但30+小时把它们<strong>全部串联成一条命令</strong>，没人帮你做——直到 v2.0。
       </p>
       <div class="compare-grid">
-        <div class="compare-col manual">
-          <h4>❌ 手动操作</h4>
+        <div class="compare-col v1">
+          <h4>📦 v1.0 — 基础可用</h4>
           <ul>
-            <li>打开 Agnes 生图/生视频</li>
-            <li>打开 edge-tts 配音</li>
-            <li>手动对齐字幕时间轴</li>
-            <li>打开剪辑软件合成</li>
-            <li>每个工具学一遍</li>
+            <li>TTS配音 + 静态背景</li>
+            <li>单一字幕轨道</li>
+            <li>无剪辑、无转场</li>
+            <li>配音音量不可调</li>
+            <li>只能做"配音+字幕"视频</li>
           </ul>
         </div>
-        <div class="compare-col auto">
-          <h4>✅ Claude Code 调度</h4>
+        <div class="compare-col v2">
+          <h4>🚀 v2.0 — 专业品质</h4>
           <ul>
-            <li>输入一句文案</li>
-            <li>Claude 自动调用 Agnes API</li>
-            <li>自动选 TTS 引擎配音</li>
-            <li>自动生成 SRT 字幕对齐</li>
-            <li>一条命令出 MP4</li>
+            <li>多轨视频剪辑（Shotcut CLI）</li>
+            <li>dissolve / wipe 转场特效</li>
+            <li>画中画 / 多轨叠加合成</li>
+            <li>BGM 混音 + 音量自动平衡</li>
+            <li>噪音降噪 + 淡入淡出</li>
           </ul>
         </div>
       </div>
-      <p style="color:var(--accent); margin-top:24px; font-weight:700;">
-        👉 价值不在工具本身——在于 Claude Code 帮你把免费工具串成流水线。
+      <p class="value-callout">
+        👉 30+ 小时的技术整合工作，Claude Code 帮你一键完成。这就是 v2.0 的价值。
       </p>
     </div>
   </section>
 
-  <!-- ③ 一步一步搭建 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ④ 完整流水线可视化（NEW） -->
+  <!-- ═══════════════════════════════════════════════════════ -->
   <section>
     <div class="section-header">
-      <h2>🧱 一步一步搭建</h2>
-      <p class="section-desc">用 Claude Code 从零搭起视频工厂。全程不需要你写一行代码。</p>
+      <h2>⚙️ 完整流水线：文案 → 成品视频</h2>
+      <p class="section-desc">7 个环节全自动串联。你只需要输入一段文字。</p>
     </div>
-    <div class="step-list">
-      <div class="step-item">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <h4>告诉 Claude 你要做什么</h4>
-          <p>打开 Claude Code，输入需求："我要一个视频生成工具，输入文案自动生成带配音字幕的 MP4"。Claude 会用 <code>/plan</code> 帮你制定方案。</p>
-        </div>
+    <div class="pipeline-row">
+      <div class="pipeline-node">
+        <span class="pn-icon">📝</span>
+        <span class="pn-label">文案</span>
+        <span class="pn-tool">Agnes Chat<br>分析+分段</span>
       </div>
-      <div class="step-item">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <h4>配置 MCP 接入 Agnes AI</h4>
-          <p>在 <code>.mcp.json</code> 里注册 Agnes 三个模型。Claude 帮你生成配置，你只需要填入免费 API Key。</p>
-        </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-node">
+        <span class="pn-icon">🎙️</span>
+        <span class="pn-label">TTS 配音</span>
+        <span class="pn-tool">edge-tts<br>CosyVoice2<br>Qwen3-TTS</span>
       </div>
-      <div class="step-item">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <h4>选 TTS 引擎、装模型</h4>
-          <p>edge-tts 云端免费直接能用；CosyVoice2（~5.3GB 本地）或 Qwen3-TTS（~2.4GB 本地）音质更好。Claude 帮你装好。</p>
-        </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-node">
+        <span class="pn-icon">📝</span>
+        <span class="pn-label">字幕</span>
+        <span class="pn-tool">SRT 字幕<br>逐句对齐</span>
       </div>
-      <div class="step-item">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <h4>跑通第一条视频</h4>
-          <p>终端输入：<code>python generate.py -t "你的文案" -o output.mp4</code> 。几分钟后拿到带配音+字幕的完整视频。</p>
-        </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-node">
+        <span class="pn-icon">🎨</span>
+        <span class="pn-label">AI 画面</span>
+        <span class="pn-tool">Agnes Image<br>Agnes Video</span>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-node">
+        <span class="pn-icon">🎬</span>
+        <span class="pn-label">剪辑</span>
+        <span class="pn-tool">Shotcut CLI<br>melt 7.39.0</span>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-node">
+        <span class="pn-icon">🎵</span>
+        <span class="pn-label">混音</span>
+        <span class="pn-tool">Audacity CLI<br>SoX 14.4.2</span>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-node">
+        <span class="pn-icon">📦</span>
+        <span class="pn-label">成品 MP4</span>
+        <span class="pn-tool">FFmpeg<br>H.264 1080p</span>
       </div>
     </div>
+    <p style="text-align:center; color:var(--text-faint); font-size:0.8em; margin-top:4px;">
+      每个环节都由 Claude Code 自动调度，你只需说一句话
+    </p>
   </section>
 
-  <!-- ④ 技术细节 -->
-  <section>
-    <div class="section-header">
-      <h2>🔧 技术细节</h2>
-      <p class="section-desc">真实参数，不藏着掖着</p>
-    </div>
-    <table class="tech-table">
-      <tr><th>组件</th><th>选项 / 参数</th><th>说明</th></tr>
-      <tr><td>Agnes Chat</td><td><code>agnes-2.0-flash</code></td><td>1M 上下文 · 65K 输出 · 写文案/生成 Prompt</td></tr>
-      <tr><td>Agnes Image</td><td><code>1024x1024</code> / <code>1792x1024</code></td><td>~5 秒出图 · 项目封面/视频画面</td></tr>
-      <tr><td>Agnes Video</td><td><code>num_frames = 8n+1</code></td><td>121(5秒) / 241(10秒) / 441(18秒)，帧率 24</td></tr>
-      <tr><td>edge-tts</td><td>8 种中文语音</td><td>云端免费 · xiaoxiao/yunxi/yunyang 等</td></tr>
-      <tr><td>CosyVoice2</td><td>~5.3GB 本地 · zero-shot</td><td>一条参考音频即可克隆音色</td></tr>
-      <tr><td>Qwen3-TTS</td><td>~2.4GB 本地 · 9 种音色</td><td>vivian/serena/uncle_fu 等</td></tr>
-      <tr><td>合成</td><td>FFmpeg</td><td>画面+配音+字幕→MP4，H.264 编码</td></tr>
-    </table>
-  </section>
-
-  <!-- ⑤ 实战案例 -->
-  <section>
-    <div class="section-header">
-      <h2>📱 实战案例</h2>
-    </div>
-    <div class="case-box">
-      <h3>🎬 15 秒抖音知识类短视频</h3>
-      <p style="color:var(--text-muted); line-height:1.8;">
-        <strong>输入文案：</strong>"Claude Code 有个 /plan 命令，做任何事之前先规划，确认后再执行。这样不会浪费钱，也不会做错方向。"<br><br>
-        <strong>流程：</strong><br>
-        ① Claude 解析文案 → 拆成 5 句字幕<br>
-        ② Agnes Video 生成 15 秒画面（361 帧，<code>num_frames = 8×45+1 = 361</code>）<br>
-        ③ edge-tts xiaoxiao 配音 → 生成 SRT 字幕<br>
-        ④ FFmpeg 合成 → 15 秒 MP4（1088×832，约 3MB）<br><br>
-        <strong>结果：</strong>从输入文案到可发抖音的视频，不到 3 分钟。<strong>全程不需要打开任何设计软件。</strong>
-      </p>
-    </div>
-  </section>
-
-  <!-- 核心功能卡片 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ⑤ 核心功能 8 卡片（从4→8） -->
+  <!-- ═══════════════════════════════════════════════════════ -->
   <section>
     <div class="section-header">
       <h2>✨ 核心功能</h2>
@@ -299,31 +344,183 @@
       <div class="feature-card">
         <div class="fc-icon">🎨</div>
         <h4>AI 画面生成</h4>
-        <p>Agnes AI 图片/视频模型，根据文案自动生成匹配画面</p>
+        <p>Agnes AI 图片/视频模型，根据文案自动生成匹配画面，无需设计软件</p>
       </div>
       <div class="feature-card">
         <div class="fc-icon">🎙️</div>
-        <h4>三引擎配音</h4>
+        <h4>三引擎 TTS 配音</h4>
         <p>edge-tts 云端免费 / CosyVoice2 本地 zero-shot / Qwen3-TTS 多音色</p>
       </div>
       <div class="feature-card">
         <div class="fc-icon">📝</div>
         <h4>同步字幕</h4>
-        <p>自动生成 SRT 字幕，语音与字幕逐句对齐</p>
+        <p>自动生成 SRT 字幕，语音与字幕逐句对齐，支持时间轴微调</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">🎬</div>
+        <h4>多轨视频剪辑</h4>
+        <p>Shotcut CLI (melt 7.39.0)：多段拼接、转场过渡、滤镜、调速、裁剪</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">🪟</div>
+        <h4>画中画 &amp; 叠加</h4>
+        <p>小窗叠加、分屏布局、Logo 水印、多轨道合成——全命令行操作</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">🎵</div>
+        <h4>BGM + 音频混音</h4>
+        <p>Audacity CLI (SoX 14.4.2)：多轨混音、BGM 自动平衡、淡入淡出</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">🔇</div>
+        <h4>噪音降噪</h4>
+        <p>SoX 降噪 + 人声增强：compand 动态压缩，normalize 音量归一化</p>
       </div>
       <div class="feature-card">
         <div class="fc-icon">🤖</div>
         <h4>全自动调度</h4>
-        <p>输入文案，Claude Code 自动调度 Agnes + TTS + FFmpeg，全程无需动手</p>
+        <p>Claude Code 一键串联 7 个环节。输入文案，拿到成品——全程不用动手</p>
       </div>
     </div>
   </section>
 
-  <!-- 技术栈 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ⑥ 实战案例 — v2.0 完整流程 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-header">
+      <h2>📱 实战案例</h2>
+    </div>
+    <div class="case-box">
+      <h3>🎬 3 分钟知识视频：从文章到专业成片</h3>
+      <p style="color:var(--text-muted); line-height:1.9;">
+        <strong>输入文案：</strong>一篇 2000 字的科普文章<br><br>
+        <strong>v2.0 全流程：</strong><br>
+        ① Claude 解析文章 → 拆成 8 个段落<br>
+        ② edge-tts xiaoxiao 为每段配音 → 自动生成 SRT 字幕<br>
+        ③ Agnes Video 为每段生成 AI 画面（361帧/段，<code>num_frames = 8n+1</code>）<br>
+        ④ Shotcut CLI 将 8 段拼接，段间 dissolve 1s 转场，片头 fade-in 1.5s<br>
+        ⑤ Audacity CLI 混入 BGM（音量 -16dB，不盖过人声）<br>
+        ⑥ SoX 对人声做 normalize + compand 降噪<br>
+        ⑦ FFmpeg 合成最终 MP4（1080p，H.264）<br><br>
+        <strong>结果：</strong>从输入文章到可发布的 3 分钟专业视频，<strong>不到 8 分钟</strong>。<br>
+        全程不需要打开任何剪辑软件——不需要学 Shotcut，不需要学 Audacity，<strong>不需要学任何东西。</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ⑦ 技术规格表（扩展，添加 v2.0 后端） -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-header">
+      <h2>🔧 技术细节</h2>
+      <p class="section-desc">真实参数，已验证版本</p>
+    </div>
+    <table class="tech-table">
+      <tr><th>组件</th><th>选项 / 参数</th><th>说明</th></tr>
+      <tr><td>Agnes Chat</td><td><code>agnes-2.0-flash</code></td><td>1M 上下文 · 65K 输出 · 分析文案/拆段</td></tr>
+      <tr><td>Agnes Image</td><td><code>1024x1024</code> / <code>1792x1024</code></td><td>~5 秒出图 · 项目封面/视频画面</td></tr>
+      <tr><td>Agnes Video</td><td><code>num_frames = 8n+1</code></td><td>121(5秒) / 241(10秒) / 441(18秒)，帧率 24</td></tr>
+      <tr><td>edge-tts</td><td>8 种中文语音</td><td>云端免费 · xiaoxiao/yunxi/yunyang 等</td></tr>
+      <tr><td>CosyVoice2</td><td>~5.3GB 本地 · zero-shot</td><td>一条参考音频即可克隆音色</td></tr>
+      <tr><td>Qwen3-TTS</td><td>~2.4GB 本地 · 9 种音色</td><td>vivian/serena/uncle_fu 等</td></tr>
+      <tr><td>Shotcut CLI</td><td><code>v1.0.0</code> · melt 7.39.0 x86-64</td><td>多轨剪辑 / 转场 / 滤镜 / 画中画 / 变速</td></tr>
+      <tr><td>Audacity CLI</td><td><code>v1.0.0</code> · SoX 14.4.2 console</td><td>多轨混音 / BGM / 降噪 / 淡入淡出</td></tr>
+      <tr><td>视频转场</td><td>dissolve / wipe / composite</td><td>溶解 / 擦除 / 叠加合成</td></tr>
+      <tr><td>视频滤镜</td><td>fade-in / brightness / speed</td><td>淡入淡出 / 亮度调节 / 变速</td></tr>
+      <tr><td>音频后处理</td><td>normalize / compand / fade</td><td>音量归一化 / 动态压缩 / 淡入淡出</td></tr>
+      <tr><td>合成输出</td><td>FFmpeg · H.264 1080p</td><td>画面+配音+字幕+BGM → MP4</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ⑧ 集成价值 — 核心转化节 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-header">
+      <h2>💎 你买的不是工具，是 30+ 小时的集成工作</h2>
+      <p class="section-desc">所有工具都免费。难的是把它们连起来——让 Claude Code 自动调度。</p>
+    </div>
+    <div class="why-box">
+      <p style="color:var(--text); font-size:0.96em; line-height:1.8;">
+        Shotcut 是免费开源的。Audacity 是免费的。edge-tts 免费。Agnes AI 免费。FFmpeg 免费。<br>
+        <strong>但没有集成，它们就是 5 个独立的软件。</strong>你要手动打开、逐一切换、手动对齐。
+      </p>
+      <p style="color:var(--text); font-size:0.96em; line-height:1.8;">
+        让 Claude Code <strong>自动调用 Shotcut CLI 做多轨剪辑</strong>、自动调用 Audacity CLI 做 BGM 混音、自动对齐字幕时间轴、自动处理每个工具的边界情况和错误——这花了 30+ 小时的调试和集成。
+      </p>
+      <p style="color:var(--accent); font-size:1.05em; font-weight:700; line-height:1.8;">
+        ¥399/3年 或 ¥699 永久，买的是这 30+ 小时的工作成果。复制到你的项目，立刻就能用。
+      </p>
+
+      <div class="integration-grid">
+        <div class="integration-card">
+          <div class="ic-num">1</div>
+          <h4>MLT XML 项目文件格式</h4>
+          <p>Shotcut 用 MLT 框架的 XML 格式组织项目。研究它的 XML schema、track/producer/filter 层级关系、时间线坐标编码——然后让 Claude Code 自动生成正确格式的 .mlt 文件。</p>
+        </div>
+        <div class="integration-card">
+          <div class="ic-num">2</div>
+          <h4>多轨混音参数调试</h4>
+          <p>SoX 的 compand 动态压缩参数（attack/decay/knee/gain）直接影响人声自然度。调试出 BGM -16dB 不盖人声、fade-in 0.5s 不做作的参数花了大量时间。</p>
+        </div>
+        <div class="integration-card">
+          <div class="ic-num">3</div>
+          <h4>多 CLI 错误处理</h4>
+          <p>melt 渲染路径空格需双引号包裹、SoX 32位限制 2GB 单文件、Shotcut CLI 需 <code>--project</code> 标志预打开项目——每个坑都是踩出来的。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ⑨ 一步一步搭建（精简保留） -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-header">
+      <h2>🧱 一步一步搭建</h2>
+      <p class="section-desc">用 Claude Code 从零搭起视频工厂。全程不需要你写一行代码。</p>
+    </div>
+    <div class="step-list" style="counter-reset: step; margin-bottom: var(--space-section);">
+      <div class="step-item" style="counter-increment: step; display: flex; gap: 18px; margin-bottom: 20px; align-items: flex-start;">
+        <div class="step-num" style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent-dim); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; flex-shrink: 0;">1</div>
+        <div class="step-body" style="flex:1;">
+          <h4 style="margin:0 0 4px; font-size:0.95em; color:var(--text-high);">告诉 Claude 你要做什么</h4>
+          <p style="margin:0; font-size:0.84em; color:var(--text-muted); line-height:1.6;">打开 Claude Code，输入需求："我要一个视频生成工具，输入文案自动生成带配音字幕字幕+转场+BGM的MP4"。Claude 会用 <code style="background:var(--bg); padding:2px 8px; border-radius:4px; font-family:var(--font-mono); font-size:0.88em; color:var(--accent);">/plan</code> 帮你制定方案。</p>
+        </div>
+      </div>
+      <div class="step-item" style="counter-increment: step; display: flex; gap: 18px; margin-bottom: 20px; align-items: flex-start;">
+        <div class="step-num" style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent-dim); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; flex-shrink: 0;">2</div>
+        <div class="step-body" style="flex:1;">
+          <h4 style="margin:0 0 4px; font-size:0.95em; color:var(--text-high);">配置 MCP 接入 Agnes AI</h4>
+          <p style="margin:0; font-size:0.84em; color:var(--text-muted); line-height:1.6;">在 <code style="background:var(--bg); padding:2px 8px; border-radius:4px; font-family:var(--font-mono); font-size:0.88em; color:var(--accent);">.mcp.json</code> 里注册 Agnes 三个模型。Claude 帮你生成配置，你只需要填入免费 API Key。</p>
+        </div>
+      </div>
+      <div class="step-item" style="counter-increment: step; display: flex; gap: 18px; margin-bottom: 20px; align-items: flex-start;">
+        <div class="step-num" style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent-dim); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; flex-shrink: 0;">3</div>
+        <div class="step-body" style="flex:1;">
+          <h4 style="margin:0 0 4px; font-size:0.95em; color:var(--text-high);">安装 TTS 引擎 + 视频/音频后端</h4>
+          <p style="margin:0; font-size:0.84em; color:var(--text-muted); line-height:1.6;">edge-tts 云端免费直接能用。Shotcut (含 melt 7.39.0) + Audacity (含 SoX 14.4.2) 开源免费。Claude 帮你装好配置好。</p>
+        </div>
+      </div>
+      <div class="step-item" style="counter-increment: step; display: flex; gap: 18px; margin-bottom: 20px; align-items: flex-start;">
+        <div class="step-num" style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent-dim); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; flex-shrink: 0;">4</div>
+        <div class="step-body" style="flex:1;">
+          <h4 style="margin:0 0 4px; font-size:0.95em; color:var(--text-high);">一句话出成品</h4>
+          <p style="margin:0; font-size:0.84em; color:var(--text-muted); line-height:1.6;">对 Claude 说：<code style="background:var(--bg); padding:2px 8px; border-radius:4px; font-family:var(--font-mono); font-size:0.88em; color:var(--accent);">"帮我把这个文案做成3分钟知识视频，加BGM和转场"</code>。等几分钟，拿到成品 MP4。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- 技术栈标签 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
   <section>
     <div class="section-header">
       <h2>🛠️ 技术栈</h2>
-      <p class="section-desc">全部通过 Claude Code MCP 集成</p>
+      <p class="section-desc">全部通过 Claude Code 集成，免费开源</p>
     </div>
     <div class="tech-stack">
       <span class="tech-tag">Agnes AI Chat</span>
@@ -332,21 +529,36 @@
       <span class="tech-tag">edge-tts</span>
       <span class="tech-tag">CosyVoice2</span>
       <span class="tech-tag">Qwen3-TTS</span>
-      <span class="tech-tag">Python</span>
+      <span class="tech-tag">Shotcut CLI</span>
+      <span class="tech-tag">melt 7.39.0</span>
+      <span class="tech-tag">Audacity CLI</span>
+      <span class="tech-tag">SoX 14.4.2</span>
       <span class="tech-tag">FFmpeg</span>
+      <span class="tech-tag">Python</span>
       <span class="tech-tag">Claude Code MCP</span>
     </div>
   </section>
 
-  <!-- ⑥ 付费墙 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ⑩ 付费墙 — v2.0 更新 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
   <section style="text-align:center; margin: var(--space-section) 0;">
     <div class="premium-teaser" style="margin-top:0;">
-      <div class="premium-badge">📦 拿源码</div>
-      <h2>完整脚本 + 配置模板</h2>
-      <p class="teaser-desc">拿到 <code>generate.py</code> 完整源码 + MCP 配置模板 + TTS 引擎安装指南。复制到你的项目就能用。</p>
-      <div style="font-size:2em;font-weight:800;color:var(--purple);margin-bottom:16px;">¥99</div>
+      <div class="premium-badge">📦 拿完整源码 v2.0</div>
+      <h2>AI 视频工厂 v2.0 完整源码 + 配置模板</h2>
+      <p class="teaser-desc" style="max-width:560px; margin:0 auto 20px; color:var(--text-muted); font-size:0.9em; line-height:1.7;">
+        拿到 <code>generate.py</code> 完整源码 + MCP 配置模板 + TTS 引擎安装指南 + Shotcut CLI 剪辑脚本 + Audacity CLI 混音脚本。所有工具自动串联，复制到你的项目就能用。
+      </p>
+      <ul class="checkmark-list" style="display:inline-block; text-align:left;">
+        <li>8 大功能模块完整源码</li>
+        <li>Shotcut CLI 多轨剪辑脚本</li>
+        <li>Audacity CLI 混音 + BGM 脚本</li>
+        <li>MCP 配置模板（Agnes 三模型）</li>
+        <li>TTS 三引擎安装 + 配置指南</li>
+      </ul>
+      <div style="font-size:1.4em;font-weight:800;color:var(--text);margin:20px 0 12px;">¥399 <span style="font-weight:400;font-size:0.6em;color:var(--text-muted);">/ 3年</span> &nbsp;&nbsp; ¥699 <span style="font-weight:400;font-size:0.6em;color:var(--text-muted);">/ 永久</span></div>
       <a href="../../pay/pay.html" class="btn btn-primary" style="font-size:1em; padding:14px 40px; background:var(--purple); border-color:var(--purple);">
-        解锁全部项目 →
+        解锁 v2.0 全部源码 →
       </a>
       <p style="color:var(--text-faint); font-size:0.78em; margin-top:16px;">
         也可以先从 <a href="../../pre-basics/computer-basics.html" style="color:var(--accent);">预备课</a> 或 <a href="../../beginner/claude-intro.html" style="color:var(--accent);">入门课</a> 开始学 Claude Code 基础
