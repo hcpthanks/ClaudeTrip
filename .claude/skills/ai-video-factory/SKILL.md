@@ -1,92 +1,122 @@
 ---
 name: ai-video-factory
 description: |
-  全自动视频生产线 — **唯一视频制作入口**。三轨制：极速轨（百炼TTS+渐变背景→1-3分钟出品）、品质轨（Agnes Image底图 + HyperFrames文字动效叠加→高质量成品）、解说轨（scenefab→影视解说）。
+  全自动视频生产线 — **唯一视频制作入口**。双轨制：品质轨（Agnes Image底图 + HyperFrames文字动效叠加→高质量成品）、解说轨（scenefab→影视解说）。
   当你需要"做视频"时使用。不要再直接调用 hyperframes/faceless-explainer/general-video — 那些是本 skill 的内部引擎。
 ---
 
-# AI 视频工厂 v3.5 — 三轨路由
+# AI 视频工厂 v3.7 — 双轨路由
 
-> **核心原则：ai-video-factory 是"做视频"的唯一入口。分析用户意图后分流到三个轨道之一。**
+> **核心原则：ai-video-factory 是"做视频"的唯一入口。分析用户意图后分流到两个轨道之一。**
 > 内部引擎（hyperframes/faceless-explainer/general-video）不再直接暴露给用户。
-> **v3.5 (2026-06-29)：借鉴 OpenMontage final_review.schema.json + delivery_promise.py — 质量门禁升级至9项（+视觉抽检+幻灯片风险+类型承诺）。新增视频类型承诺：防止品质轨偷偷降级。**
+> **v3.7 (2026-07-03)：移除极速轨。品质轨 = 唯一默认轨。Prompt Optimizer MCP + Agnes Image/Video 混合管线。**
 
-## 🗺️ 三轨路由（最先看！）
+## 🗺️ 双轨路由（最先看！）
 
 ```
 用户说"做视频"
   ↓
 ai-video-factory（唯一入口，分析意图）
   │
-  ├─ 意图：快速/内部/极简/试稿
-  │  └─ 🚀 极速轨：百炼 DashScope TTS → FFmpeg 画面合成
-  │     耗时：1-3分钟 | 依赖：Python + ffmpeg + dashscope
-  │     触发词："做视频""生成视频""快速出片"
-  │     画面：深蓝渐变背景 + 大标题 + 字幕 + 可选尾屏
-  │
-  ├─ 意图：精美/品牌/对外/有设计感
+  ├─ 意图：所有视频制作（默认）
   │  └─ 🎨 品质轨：Agnes Image底图 → HyperFrames文字动效叠加
-  │     耗时：10-30分钟 | 依赖：Node 22+ + Chrome headless + ffmpeg + Agnes MCP
-  │     触发词："品质视频""精美视频""品牌视频""动效视频""有设计感""好看一点"
-  │     管线：底图素材工厂 → HyperFrames(文字层叠加) → FFmpeg(合成)
-  │     中文配音：百炼 DashScope qwen3-tts-flash（DASHSCOPE_API_KEY 已配置 ✅）
+  │     耗时：10-20分钟 | 依赖：Node 22+ + Chrome headless + ffmpeg + Agnes MCP
+  │     触发词："做视频""生成视频""品质视频""精美视频""有设计感"
+  │     管线：prompt-optimizer → Agnes Image/Video → MOSS-TTS → HyperFrames → FFmpeg
+  │     中文配音：MOSS-TTS（MOSS_API_KEY 已配置 ✅）
   │
   ├─ 意图：影视解说（已有视频素材）
-  │  └─ 🎬 解说轨：scenefab → Qwen3.7分镜 + DeepSeek解说 + EdgeTTS配音
+  │  └─ 🎬 解说轨：scenefab → Qwen3.7分镜 + DeepSeek解说 + MOSS-TTS配音
   │     耗时：5-15分钟 | 依赖：QWEN_API_KEY + DEEPSEEK_API_KEY
   │     触发词："影视解说""短剧解说""给这个视频做解说""AI解说"
-  │     状态：🟢 API Keys 已配置（百炼 + DeepSeek）
+  │     状态：🟢 API Keys 已配置
   │
   └─ 辅助：AI 画面生成（底图素材工厂）
        Agnes Image 生成高质量底图 → HyperFrames 叠加文字/数据/图表动效
+       Agnes Video 生成 2s 动态片段 → 片头/过渡（可选加分项）
 
-📋 三轨降级标准速查（v3.5 新增）
-
-🚀 极速轨 — promise: teacher_explainer
-  ├─ 百炼 TTS 失败 → 换音色重试1次 → 仍失败 → 告知用户"配音生成失败"
-  ├─ FFmpeg 合成失败 → 保留文案+SRT → 告知用户 → 等决策
-  └─ 质量门禁 CRITICAL 项失败 → exit 2
+📋 降级标准速查（v3.5 新增）
 
 🎨 品质轨 — promise: motion_led
-  ├─ Layer 1 底图全部失败 → 告知 → 等确认 → 降为 teacher_explainer
+  ├─ Layer 1 底图全部失败 → 告知 → 等确认 → 纯色渐变背景（最低底线）
   ├─ Layer 2 动效失败 → 告知 → 等确认 → 降为字幕版
   ├─ Layer 3 合成失败 → 保留中间产物 → 等确认
+  ├─ Video 失败/超时/429 → 丢弃 Video，全 Image 方案（不阻塞管线）
   └─ 底线：绝不偷偷降级
 
 🎬 解说轨 — promise: source_led
   ├─ Qwen3.7 分镜失败 → 告知"视频分析失败" → 等确认
   ├─ DeepSeek 解说词失败 → 告知"文案生成失败" → 等确认
-  ├─ EdgeTTS 配音失败 → 降为百炼 TTS（统一引擎）
+  ├─ MOSS-TTS 配音失败 → 告知 → 等确认
   └─ 合成失败 → 保留中间产物 → 等确认
 ```
 
-## 三轨对比速查
+## 双轨对比速查
 
-| | 🚀 极速轨 (默认) | 🎨 品质轨 (Image+HyperFrames) | 🎬 解说轨 (SceneFab) |
-|---|---|---|---|
-| **触发词** | "做视频""生成视频" | "品质视频""精美视频"等 | "影视解说""短剧解说" |
-| **耗时** | 2-5 分钟 | 10-30 分钟 | 5-15 分钟 |
-| **画面** | 深蓝渐变背景 + 标题 + 字幕 | Agnes Image AI底图 + HyperFrames动效叠加 | 原视频 + AI 解说叠加 |
-| **引擎** | 百炼 DashScope(TTS) → generate.py(FFmpeg合成) | 底图素材工厂 → HyperFrames(文字层) → FFmpeg合成 | Qwen3.7 + DeepSeek + EdgeTTS |
-| **依赖** | Python + FFmpeg + dashscope | Node.js 22+ + FFmpeg + npx hyperframes + Agnes MCP | QWEN_API_KEY + DEEPSEEK_API_KEY |
-| **适合** | 快速试稿、内部沟通 | 对外发布、品牌视频 | 影视解说、短剧解说 |
-| **状态** | 🟢 可用 | 🟢 可用（v3.5降级规则统一） | 🟢 API Keys 已配置 |
+| | 🎨 品质轨 (默认) | 🎬 解说轨 (SceneFab) |
+|---|---|---|
+| **触发词** | "做视频""生成视频""品质视频" | "影视解说""短剧解说" |
+| **耗时** | 10-20 分钟 | 5-15 分钟 |
+| **画面** | Agnes Image AI底图 + HyperFrames动效叠加 + 可选Agnes Video片头 | 原视频 + AI 解说叠加 |
+| **引擎** | prompt-optimizer → Agnes Image/Video → MOSS-TTS → HyperFrames → FFmpeg | Qwen3.7 + DeepSeek + MOSS-TTS |
+| **依赖** | Node.js 22+ + FFmpeg + npx hyperframes + Agnes MCP + MOSS_TTS | QWEN_API_KEY + DEEPSEEK_API_KEY + MOSS_API_KEY |
+| **适合** | 所有视频（知识科普/品牌/产品/教程） | 影视解说、短剧解说 |
+| **状态** | 🟢 可用 | 🟢 API Keys 已配置 |
 
 ## 🔥 核心原则
 
 ```
    📝 文字内容是主角    — 逻辑、观点、说服力
-   🎤 声音是放大器     — 百炼 DashScope qwen3-tts-flash 中文配音 (国内充值方便)
-   🎬 画面分层协作     — Agnes Image(底图背景层) + HyperFrames(文字动效层) + FFmpeg(合成层)
-   🎨 极速轨画面升级    — 深蓝渐变背景 + 大标题 + 字幕 (v3.3)
-   🔍 质量门禁          — ffprobe 9项自动质检 + 视觉抽检 + 幻灯片风险 + 类型承诺 (v3.5)
-   🧠 研究驱动          — 写文案前先搜索 3-5 个来源 (v3.4)
-   🔒 以人为主          — 降级决策必须等用户确认，机器不做最终决定 (v3.5)
-   🖼️ 静态胜过拙劣运动  — AI底图 + 淡入淡出 > 无意义的相机晃动（v3教训，永不再犯）
-   ⚡ 一次生成一个决策  — 不自动重试；降级是人的决策，不是机器的
+   🎤 声音是放大器     — MOSS-TTS 中文配音 (免费云端)
+   🎬 画面分层协作     — Agnes Image(底图背景层) + Agnes Video(动态点缀) + HyperFrames(文字动效层) + FFmpeg(合成层)
+   🎥 Video 点缀       — Agnes Video 2s 片头/过渡 (可选加分项, ~5min/段, 串行)
+   🔍 质量门禁         — ffprobe 9项自动质检 + 视觉抽检 + 幻灯片风险 + 类型承诺 (v3.5)
+   🧠 研究驱动         — 写文案前先搜索 3-5 个来源 (v3.4)
+   🔒 以人为主         — 降级决策必须等用户确认，机器不做最终决定 (v3.5)
+   🖼️ 静态胜过拙劣运动 — AI底图 + Ken Burns > 无意义的相机晃动
+   ⚡ 一次生成一个决策 — 不自动重试；降级是人的决策，不是机器的
+   🧪 prompt-optimizer  — 文案优化+图片prompt翻译+量化评分+定向迭代 (v3.6)
 ```
 
-## 🚀 极速轨 v3.5
+### 🧪 Prompt Optimizer MCP（v3.6 新增 — 从定性到定量）
+
+> **核心价值：把 prompt engineering 从"凭直觉"升级为"可度量、可迭代"。**
+> 对应 QSS 综合集成方法第二步——定性定量相结合。
+
+**6 个 MCP 工具 + 管线调用时机：**
+
+| # | 工具 | 何时调用 | 做什么 | 适用轨道 |
+|---|------|---------|--------|:---:|
+| 1 | `optimize_user_prompt_professional` | ✍️ 写文案**之前** | 5维深度优化用户意图→结构化文案 prompt | 🚀🎨 |
+| 2 | `optimize_user_prompt_planning` | 🔀 多场景/系列视频 | 拆解复杂需求为步骤序列 | 🚀🎨 |
+| 3 | `evaluate_prompt` | ✍️ 文案初稿**之后** | 0-100 五维评分（清晰度/完整性/可执行性/创意性/针对性） | 🚀🎨 |
+| 4 | `iterate_prompt` | 📝 用户反馈"不好"时 | 在已有 prompt 上定向改进，非全盘重写 | 🚀🎨 |
+| 5 | `optimize_image_prompt` | 🖼️ Agnes Image **之前** | 中文场景描述→5框架英文生图 prompt | 🎨 |
+| 6 | `optimize_user_prompt_basic` | ⚡ 极速轨快速优化 | 消除模糊措辞、补充缺失要素 | 🚀 |
+
+**迭代闭环（QSS 螺旋上升在 prompt 层的实现）：**
+
+```
+写初稿 prompt → evaluate 评分(0-100)
+                    ↓ 分数 < 80
+               iterate 定向改进 → 再 evaluate → 确认提升
+                    ↓ 分数 ≥ 80
+                 通过，继续管线
+```
+
+**图片 prompt 优化（品质轨关键工具）：**
+
+```
+中文场景描述（例如"深空背景中微弱星云纹理"）
+        ↓  optimize_image_prompt
+5框架英文生图 prompt：
+  Subject: ..., Environment: ..., Lighting: ...,
+  Composition: negative space in center, no focal object in middle third,
+  Style: ...
+        ↓ 喂给 Agnes Image → 1792×1024 PNG
+```
+
+## 🚀 极速轨 v3.6
 
 > **核心变更：百炼 qwen3-tts-flash 中文配音 + FFmpeg 画面合成 + 9项自动质量门禁（借鉴 OpenMontage final_review.schema.json）**
 
@@ -140,7 +170,7 @@ python ~/.claude/tools/tts-video/generate.py 文案.txt \
   --title "标题" --voice Cherry --end-screen --bg-color 0x1A1A2E
 ```
 
-### Agent SOP（极速轨）
+### Agent SOP（极速轨 v3.6）
 
 ```
 📍 核心原则：AI Agent 是"总导演"，不是"流水线工人"。
@@ -150,10 +180,19 @@ python ~/.claude/tools/tts-video/generate.py 文案.txt \
    - 从搜索结果中提取关键数据、观点、案例
    - 文案必须基于真实数据，不是凭空编造
 
+0.5 🧪 prompt-optimizer（v3.6 新增 — 从定性到定量）
+   - 将用户意图 + 研究结果合成为原始 prompt
+   - 调用 mcp__prompt-optimizer__optimize_user_prompt_professional 做 5 维深度优化
+   - 输出：结构化文案生成 prompt（含清晰目标/受众/风格/约束/格式要求）
+   - 【多场景视频时补充调用 optimize_user_prompt_planning 拆解步骤】
+
 1. ✍️ 写文案
-   - 基于研究结果写 4-6 句精简文案
+   - 用优化后的 prompt 生成 4-6 句精简文案
    - 每句讲一个要点，信息密度高
    - 参考风格：抖音知识类短视频节奏
+   - 写完后调用 mcp__prompt-optimizer__evaluate_prompt 做 0-100 五维评分
+   - 分数 < 80 → 自动调 iterate_prompt 定向改进 → 再生成 → 再评分
+   - 分数 ≥ 80 → 通过
 
 2. 🎬 出片
    python ~/.claude/tools/tts-video/generate.py 文案.txt
@@ -164,6 +203,7 @@ python ~/.claude/tools/tts-video/generate.py 文案.txt \
    - 9 项全 PASS → 完成
    - 有 FAIL → 报告哪个环节失败，不自动重试
    - 用户决定：重跑 / 改文案 / 放弃
+   - 【用户反馈时调用 iterate_prompt 定向改进，不重写】
 ```
 
 ### 🎯 参考驱动（v3.4 新增 — 借鉴 OpenMontage Reference-Driven）

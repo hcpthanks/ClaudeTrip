@@ -32,6 +32,7 @@ description: 从 CLAW 项目中积累的教训和经验。每次踩坑后自动�
 | 20 | 2026-07-01 | ⚠️ 行为准则→Hook自动化三层管线——基础科学(违规分类)→技术科学(检测算法)→工程技术(Hookify+测试)，把纸面规则升级为机械执行 | 元规则 | [guideline-to-hook-pipeline.md](guideline-to-hook-pipeline.md) |
 | 21 | 2026-07-01 | ⚠️ ECC 规则可执行性审计——~94条MUST义务仅5条(5.3%)有机械保障 | 元规则 | [ecc-rules-enforcement-audit.md](ecc-rules-enforcement-audit.md) |
 | 22 | 2026-07-01 | ⚠️ ECC 操作系统合规——同一会话6次绕过ECC门禁的证据链 | 元规则 | [ecc-os-compliance.md](ecc-os-compliance.md) |
+| 23 | 2026-07-03 | Agnes Video v2.0 管线约束——API 限制(5min/段, 429串行, 503), FFmpeg 延长方案(Bookend/Palindrome/Loop/Xfade), Style Anchor规则, MOSS-TTS 2.4x performance | 工程 | [agnes-video-pipeline-constraints.md](agnes-video-pipeline-constraints.md) |
 
 > ⚠️ 元规则条目 = 关于"系统应该如何设计/我为什么犯错"的 methodology，无法用一行 shell 命令执行。
 > 标注后保留至 **2026-07-30 观察期结束**，届时统一清理迁移到所属的正确位置（Hook/CLAUDE.md/qss-ecc-alignment/流程文件），不留在 learned 中。

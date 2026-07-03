@@ -41,7 +41,7 @@ QSS 与 ECC 的工程对齐关系参见 learned: qss-ecc-alignment。
 | 工具 | 用途 | 入口 | 详情 |
 |------|------|------|------|
 | Agnes AI | 文本/图片/视频生成 | MCP: `agnes_chat/image/video` | [[agnes-ai-integration]] |
-| AI 视频工厂 v3.5 | 三轨制：极速(百炼TTS+渐变背景) + 品质(Agnes底图+HyperFrames动效) + 解说(scenefab) | `/ai-video-factory` | [[video-pipeline-evolution]] |
+| AI 视频工厂 v3.7 | 双轨制：品质(Agnes Image/Video底图 + HyperFrames动效 + MOSS-TTS) + 解说(scenefab) | `/ai-video-factory` | [[video-pipeline-evolution]] |
 | HyperFrames | HTML→MP4 确定性视频渲染 | `npx hyperframes` + 17 skills | [[hyperframes-integration]] |
 | SceneFab | AI 影视解说 | `/scenefab` | [[scenefab-skill]] |
 | Edge 修复 | 浏览器异常处理 | `~/.claude/scripts/edge-auto-repair.ps1` | [[edge-browser-permanent-fix]] |

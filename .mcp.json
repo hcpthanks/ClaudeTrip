@@ -19,6 +19,20 @@
         "framepack",
         "mcp"
       ]
+    },
+    "prompt-optimizer": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "prompt-optimizer-mcp"
+      ],
+      "env": {
+        "OPTIMIZER_API_BASE": "https://api.deepseek.com/v1",
+        "OPTIMIZER_API_KEY": "sk-6a05ce7cf86f4bc7a4e0d6b3e2f45393",
+        "OPTIMIZER_MODEL": "deepseek-chat"
+      }
     }
   }
 }
