@@ -324,3 +324,73 @@ Q1: 是事实错误还是设计缺陷？
 4. **learned 膨胀到 27 个** — SKILL.md 明确标注 2026-07-30 观察期结束时清理迁移，但 12 天过去了 learned 数量不减反增。learned 的设计寿命是"观察期暂存"，不是永久积累。
 
 5. **本周 CLAW 侧 ECC 动作**：`karpathy-guidelines` Hook 自动化落地（4 条 hookify 规则）、ECC 规则可执行性审计、反追踪 statusline 配置冲突修复——都属于技术科学→工程技术层的机械化推进，符合 QSS 方向。
+
+---
+
+## 实施案例：skill-creator QSS Gate Hook 桥接（2026-07-06）
+
+### 背景
+
+Anthropic 官方 `skill-creator` 是一套完整的工程流水线（写草稿→测试→benchmark→迭代→打包），但缺少开工前的设计把关——这个技能该不该建、建在五层大厦哪一层、和已有技能什么关系、反馈回路怎么设计。
+
+QSS 已有 `qss-skill-creation-gate` 定义了这三层门禁，但它是文本规则——依赖 LLM 自觉在创建 skill 前先跑一遍 Gate。这就是 `qss-ecc-alignment` 方向B记录的"被动加载陷阱"：94 条 MUST 义务中仅 5.3% 有机械保障。
+
+### 桥接方案：Hook 注入 additionalContext
+
+两个方案被 QSS 自身否决后采纳的方案：
+
+| 方案 | 做法 | QSS 否决原因 |
+|------|------|-------------|
+| 一（松耦合）| LLM 手动先跑 Gate，再调 skill-creator | Q3 失败：纯靠 LLM 自觉，无机械连接 |
+| 二（紧耦合）| QSS Gate 写入 skill-creator SKILL.md | Q1 失败：技术科学寄生在工程技术中 |
+
+**方案三（Hook 桥接）**：PreToolUse Hook 拦截 `Skill` 工具的 `skill-creator` 调用，在工具执行前通过 `additionalContext` 注入 QSS 三层门禁内容。LLM 读完 Gate 后才能进入 skill-creator 的工程流水线。
+
+```
+QSS 层（技术科学）           Hook 层（机械执行）              ECC 层（工程技术）
+qss-skill-creation-         pre:skill:qss-gate              skill-creator
+gate.md                     (hooks.json → stdin/out)        SKILL.md
+（原则定义）                  matcher: "Skill"               （工程流水线，不改动）
+      │                           │                              │
+      │  定义三层问答                │  检测到 Skill tool           │
+      ├──────────────────────────→│  + 匹配 skill-creator         │
+                                   │  注入 additionalContext        │
+                                   ├─────────────────────────────→│
+                                   │  记录 gate-results/           │
+                                   │  FAIL → exit 0 放行（不拦截）  │
+```
+
+### 组件清单
+
+| 组件 | 路径 | 类型 |
+|------|------|------|
+| Gate Hook 脚本 | `~/.claude/scripts/qss-skill-gate.js` | 工程技术层（机械执行） |
+| Hook 注册 | `~/.claude/hooks/hooks.json` → `id: pre:skill:qss-gate` | 工程技术层 |
+| CLI 审计模式 | `node ~/.claude/scripts/qss-skill-gate.js --audit <skill>` | 工程技术层 |
+| 对话命令 | `/qss-audit <skill-name>` | 工程技术层 |
+| Gate 结果存档 | `~/.claude/skills/qian-system-science/feedback/gate-results/` | 反馈回路 |
+
+### 双模式设计（关键技术决策）
+
+同一个 Node.js 脚本提供两种运行模式，共用审计引擎：
+
+- **Hook 模式**（stdin/stdout）：读取 PreToolUse JSON → 匹配 `tool_name=Skill` + `skill=skill-creator` → 注入 `additionalContext` → stdout 输出修改后的 JSON → `exit 0` 放行
+- **CLI 模式**（命令行参数）：`--audit <skill-name|skill-path>` 读取 SKILL.md → `parseFrontmatter()` → `detectQSSLayer()` 自动推断层次 → 逐项判定 Q1/Q2/Q3 → stdout 格式化报告 → `exit 1` if FAIL
+
+两种模式共享同一套审计引擎（`auditSkill()`, `checkQ2()`, `checkQ3()`），保证 CLI 审计结果和 Hook 注入的标准一致。
+
+### 方向B对齐影响
+
+本落地将"人机结合、以人为主"原则的执行方式从 🟡 规则级升级为 🟢 Hook 级：
+
+| 之前 | 之后 |
+|------|------|
+| LLM 读到 learned 文本，自觉决定是否跑 Gate | Hook 引擎在 Skill 工具调用前机械注入 Gate |
+| 无日志，无法审计 Gate 是否被触发 | 每次触发写入 `gate-results/` JSON 日志 |
+| Gate 是独立流程，和 skill-creator 无连接 | Gate → additionalContext → skill-creator 形成机械流水线 |
+
+### 效果数据（待采集，2026-08-06 回顾）
+
+- Gate 触发次数
+- 新建/修改 skill 的 QSS frontmatter 覆盖率（`qss_layer`, `qss_overlap_group`, `review_date`）
+- `/qss-audit --audit-all` 全局技能 PASS 率变化
