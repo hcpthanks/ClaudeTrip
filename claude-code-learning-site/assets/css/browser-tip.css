@@ -1,0 +1,45 @@
+/* ---------- 浏览器提示：朗读只在 Edge 中完整可用 ---------- */
+.jp-btip{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:flex-start;gap:12px;
+  padding:10px clamp(14px,3vw,28px);background:#241f18;color:#f6f1e6;
+  font-family:system-ui,-apple-system,"Microsoft YaHei","PingFang SC",sans-serif;
+  font-size:13px;line-height:1.55;box-shadow:0 2px 14px rgba(0,0,0,.22);
+  border-bottom:1px solid rgba(255,255,255,.08)}
+.jp-btip-badge{flex:none;width:22px;height:22px;border-radius:50%;margin-top:1px;
+  background:#c9645a;color:#fff;font-weight:700;font-size:14px;
+  display:flex;align-items:center;justify-content:center}
+.jp-btip-text{flex:1 1 auto;min-width:0}
+.jp-btip-text b{display:block;font-size:13.5px;letter-spacing:.01em}
+.jp-btip-text span{display:block;color:#c9c2b6;font-size:12px;margin-top:2px}
+.jp-btip-acts{flex:none;display:flex;gap:8px;align-items:center;margin-top:1px}
+.jp-btip button{font:inherit;font-size:12.5px;cursor:pointer;border-radius:999px;padding:5px 12px;
+  border:1px solid rgba(255,255,255,.28);background:transparent;color:#f6f1e6}
+.jp-btip button:hover{border-color:#fff}
+.jp-btip .jp-btip-primary{background:#c9645a;border-color:#c9645a;color:#fff;font-weight:600}
+.jp-btip .jp-btip-primary:hover{filter:brightness(1.08)}
+.jp-btip.jp-btip-alarm{background:#4a1f1a;border-bottom-color:rgba(255,150,130,.25)}
+.jp-btip.jp-btip-alarm .jp-btip-badge{background:#ff7a63;color:#3a120e}
+html.jp-btip-on body{padding-top:var(--jp-btip-h,56px)}
+html.jp-btip-on{scroll-padding-top:calc(var(--jp-btip-h,56px) + 10px)}
+html.jp-btip-on .book-back{top:calc(var(--jp-btip-h,56px) + 14px)}
+html.jp-btip-on .nav{top:var(--jp-btip-h,56px)}
+@media(max-width:640px){
+  .jp-btip{flex-wrap:wrap;gap:8px 10px}
+  .jp-btip-acts{width:100%;justify-content:flex-end}
+}
+.jp-btip-mask{position:fixed;inset:0;z-index:70;background:rgba(20,16,12,.45);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  font-family:system-ui,-apple-system,"Microsoft YaHei","PingFang SC",sans-serif}
+.jp-btip-card{width:min(430px,100%);background:#fbf8f1;color:#241f18;border-radius:14px;
+  padding:22px 22px 18px;box-shadow:0 24px 60px rgba(0,0,0,.3);line-height:1.7}
+.jp-btip-card h3{margin:0 0 8px;font-size:17px;font-family:"Yu Mincho","Noto Serif JP",serif}
+.jp-btip-card p{margin:0 0 6px;font-size:13.5px;color:#4a4238}
+.jp-btip-card .jp-btip-url{margin:10px 0 14px;padding:8px 10px;border:1px solid #e2d9c7;border-radius:8px;
+  background:#fff;font-size:12px;color:#807667;word-break:break-all;user-select:all}
+.jp-btip-card .jp-btip-diag{font-size:12px;color:#8a837a;margin:10px 0 0;padding-top:8px;
+  border-top:1px dashed #e2d9c7}
+.jp-btip-card .jp-btip-row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.jp-btip-card button{font:inherit;font-size:13px;cursor:pointer;border-radius:999px;padding:7px 16px;
+  border:1px solid #d8cbb6;background:#fff;color:#4a4238}
+.jp-btip-card button:hover{border-color:#a8443a;color:#a8443a}
+.jp-btip-card .jp-btip-primary{background:#a8443a;border-color:#a8443a;color:#fff}
+.jp-btip-card .jp-btip-primary:hover{filter:brightness(1.08);color:#fff}

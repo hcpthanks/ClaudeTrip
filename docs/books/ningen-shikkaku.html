@@ -7,6 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
 <title>人間失格</title>
 <link rel="stylesheet" href="../assets/css/reader.css">
+<link rel="stylesheet" href="../assets/css/browser-tip.css">
 <script>try{var f=parseFloat(localStorage.getItem('jp-fs'));if(f){var P=[19,22,25];f=P.reduce(function(a,b){return Math.abs(b-f)<Math.abs(a-f)?b:a});localStorage.setItem('jp-fs',String(f));document.documentElement.style.setProperty('--fs',f+'px')}}catch(e){}</script>
 </head>
 <body data-book="人間失格">
@@ -827,33 +828,49 @@
 <p class="provenance">底本：「人間失格」新潮文庫、新潮社<br>1952（昭和27）年10月30日発行<br>1985（昭和60）年１月30日100刷改版<br>初出：「展望」筑摩書房<br>1948年（昭和23年）6～8月号<br>入力：細渕真弓<br>青空文库 · <a href="https://www.aozora.gr.jp/cards/000035/card301.html" target="_blank" rel="noopener">作品カード</a></p>
 </main>
 <div class="toolbar">
+  <div class="tool-sheet-head"><b>阅读设置</b><button type="button" class="tool-sheet-x" aria-label="收起设置">×</button></div>
   <div class="tts-panel" id="ttsPanel">
-    <label for="ttsVoice">语音</label>
-    <select id="ttsVoice"></select>
-    <label for="ttsRate">语速 <span id="ttsRateVal">1</span> 倍</label>
-    <input id="ttsRate" type="range" min="0.5" max="2" step="0.05" value="1">
-    <label for="ttsRepeat">重复次数</label>
-    <select id="ttsRepeat">
-      <option value="1">1 次</option>
-      <option value="3">3 次</option>
-      <option value="5">5 次</option>
-      <option value="10">10 次</option>
-      <option value="20">20 次</option>
-    </select>
-    <label for="ttsMode">重复方式</label>
-    <select id="ttsMode">
-      <option value="sentence">每句重复（精听）</option>
-      <option value="passage">整段循环（背诵）</option>
-    </select>
-    <label>朗读范围</label>
-    <div class="tts-range">
-      <div>起点：<span id="ttsStartInfo">未设置</span></div>
-      <div>终点：<span id="ttsEndInfo">书末</span></div>
-      <button class="tts-mini" type="button" onclick="TTS.clearRange()">清除范围</button>
+    <div class="tts-field">
+      <label for="ttsVoice">语音</label>
+      <select id="ttsVoice"></select>
     </div>
-    <p class="tts-tip">拖选一段文字 = 设朗读范围；点击句子 = 设起点；Shift+点击 = 设终点。「整段循环」先拖选范围，再按次数重复整段。</p>
+    <div class="tts-field">
+      <label for="ttsRate">语速 <span id="ttsRateVal">1</span> 倍</label>
+      <input id="ttsRate" type="range" min="0.5" max="2" step="0.05" value="1">
+    </div>
+    <div class="tts-field">
+      <label for="ttsRepeat">重复次数</label>
+      <select id="ttsRepeat">
+        <option value="1">1 次</option>
+        <option value="3">3 次</option>
+        <option value="5">5 次</option>
+        <option value="10">10 次</option>
+        <option value="20">20 次</option>
+      </select>
+    </div>
+    <div class="tts-field">
+      <label for="ttsMode">重复方式</label>
+      <select id="ttsMode">
+        <option value="sentence">每句重复（精听）</option>
+        <option value="passage">整段循环（背诵）</option>
+      </select>
+    </div>
+    <div class="tts-field tts-wide">
+      <label>朗读范围</label>
+      <div class="tts-range">
+        <div class="tts-range-info">
+          <span>起点：<span id="ttsStartInfo">未设置</span></span>
+          <span>终点：<span id="ttsEndInfo">书末</span></span>
+        </div>
+        <div class="tts-pick">
+          <button class="tts-mini" type="button" onclick="TTS.setPick('start')">点句子设起点</button>
+          <button class="tts-mini" type="button" onclick="TTS.setPick('end')">点句子设终点</button>
+        </div>
+        <button class="tts-mini" type="button" onclick="TTS.clearRange()">清除范围</button>
+      </div>
+    </div>
+    <p class="tts-tip tts-wide">拖选文字 = 设范围；或点「设起点 / 设终点」再点正文句子。电脑上 Shift+点击 = 设终点。</p>
   </div>
-  <button onclick="TTS.togglePanel()" title="朗读设置">音</button>
   <button id="aiBtn" onclick="EXPLAIN.toggle()" title="解析句子（选中文字或点击句子后点此）">解</button>
   <button onclick="scrollTo({top:0,behavior:'smooth'})" title="回到顶部">↑</button>
   <div class="fs-group">
@@ -872,6 +889,8 @@
   </div>
   <div class="fs-toast" id="fsToast"></div>
 </div>
+<button type="button" class="tool-fab" id="toolFab" aria-label="打开阅读设置" title="阅读设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></button>
+<script src="../assets/js/browser-tip.js"></script>
 <script src="../assets/js/reader.js"></script>
 </body>
 </html>

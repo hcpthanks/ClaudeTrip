@@ -32,6 +32,7 @@ function setFont(px) {
   markFontBtns();
   clearTimeout(fontTimer);
   fontTimer = setTimeout(applyFont, 150);
+  if (window.closeToolSheet) window.closeToolSheet();
 }
 function toggleRuby() {
   const on = document.body.classList.toggle('no-ruby') === false;
@@ -102,6 +103,35 @@ function toggleTheme() { document.body.classList.toggle('dark'); }
     localStorage.setItem(THEME_KEY, document.body.classList.contains('dark') ? '1' : '0');
   };
 })();
+(function () {
+  const fab = document.getElementById('toolFab');
+  const sheet = document.querySelector('.toolbar');
+  const panel = document.getElementById('ttsPanel');
+  if (!fab || !sheet) return;
+  function closeSheet() {
+    document.body.classList.remove('tools-open');
+    if (panel) panel.classList.remove('open');
+  }
+  window.closeToolSheet = closeSheet;
+  fab.addEventListener('click', ev => {
+    ev.stopPropagation();
+    document.body.classList.add('tools-open');
+    if (panel) panel.classList.add('open');
+  });
+  const x = sheet.querySelector('.tool-sheet-x');
+  if (x) x.addEventListener('click', closeSheet);
+  document.addEventListener('click', ev => {
+    if (!document.body.classList.contains('tools-open')) return;
+    if (ev.target.closest && (ev.target.closest('.toolbar') || ev.target.closest('.tool-fab'))) return;
+    // 延后关闭：让「点句子设起点 / 终点」先执行
+    setTimeout(closeSheet, 0);
+  });
+  sheet.querySelectorAll('button').forEach(btn => {
+    if (btn.classList.contains('tool-sheet-x')) return;
+    if (btn.closest('.tts-panel')) return;
+    btn.addEventListener('click', closeSheet);
+  });
+})();
 markFontBtns();
 
 /* ---------- 朗读（Web Speech API，建议用 Edge 打开以获得日语自然音色） ---------- */
@@ -109,7 +139,7 @@ const TTS = (() => {
   if (!('speechSynthesis' in window)) {
     return {
       playPause() { }, stop() { }, prev() { }, next() { },
-      replay() { }, clearRange() { }, togglePanel() { }
+      replay() { }, clearRange() { }, setPick() { }, togglePanel() { }
     };
   }
   const synth = speechSynthesis;
@@ -122,6 +152,17 @@ const TTS = (() => {
   const startInfo = document.getElementById('ttsStartInfo');
   const endInfo = document.getElementById('ttsEndInfo');
   const panel = document.getElementById('ttsPanel');
+  let panelTimer = null;
+  function autoClosePanel() {
+    clearTimeout(panelTimer);
+    panelTimer = setTimeout(() => {
+      if (window.closeToolSheet && document.body.classList.contains('tools-open')) {
+        window.closeToolSheet();
+      } else {
+        panel.classList.remove('open');
+      }
+    }, 1200);
+  }
   const Q_OPEN = '「『（(“';
   const Q_CLOSE = '」』）)”';
   const STOP = '。！？!?';
@@ -138,6 +179,8 @@ const TTS = (() => {
   let loopDone = 0;    // 整段循环已完成的遍数
   let curChunks = [];  // 当前句切出的语音片段
   let curChunk = 0;    // 当前片段下标
+  let pickMode = null; // 'start' | 'end'：等待用户点句子设置范围
+  let liveUtt = null;  // 持有当前 utterance 引用，Android Chrome 里被回收会静音
   let startIdx = null; // 朗读起点（含）
   let endIdx = null;   // 朗读终点（含），null 表示读到书末
   let wraps = [];
@@ -323,6 +366,7 @@ const TTS = (() => {
     const v = currentVoice();
     if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'ja-JP'; }
     u.rate = parseFloat(rateEl.value) || 1;
+    liveUtt = u;
     const g = ++gen;
     u.onend = () => {
       if (state !== 'playing' || g !== gen) return;
@@ -342,6 +386,12 @@ const TTS = (() => {
     u.onerror = ev => {
       if (g !== gen || state !== 'playing') return;
       if (ev.error === 'interrupted' || ev.error === 'canceled') return;
+      if (ev.error === 'synthesis-failed' || ev.error === 'language-unavailable'
+        || ev.error === 'voice-unavailable' || ev.error === 'not-allowed') {
+        stop();
+        if (typeof BROWSER_TIP !== 'undefined') BROWSER_TIP.warnNoVoice(null, true);
+        return;
+      }
       repDone = 0;
       speak(idx + 1);
     };
@@ -359,8 +409,10 @@ const TTS = (() => {
     if (endIdx != null && idx > endIdx) idx = startIdx == null ? 0 : startIdx;
     repDone = 0;
     loopDone = 0;
+    const wasIdle = state === 'idle';
     state = 'playing';
-    synth.cancel();
+    // 空闲时没有待读内容，cancel 紧跟 speak 在 Android Chrome 里会吞掉第一句
+    if (!wasIdle || synth.speaking || synth.pending) synth.cancel();
     gen++;
     const g = gen;
     setTimeout(() => { if (state === 'playing' && g === gen) speak(idx); }, 60);
@@ -375,7 +427,11 @@ const TTS = (() => {
       state = 'playing';
       synth.resume();
     } else {
-      startFrom(idx);
+      if (typeof BROWSER_TIP !== 'undefined' && !BROWSER_TIP.hasJaVoice()) {
+        BROWSER_TIP.warnNoVoice(() => startFrom(idx));
+      } else {
+        startFrom(idx);
+      }
       return;
     }
     updateBtn();
@@ -428,6 +484,20 @@ const TTS = (() => {
     startIdx = null;
     endIdx = null;
     updateRangeInfo();
+    autoClosePanel();
+  }
+
+  function setPick(mode) {
+    pickMode = mode === 'end' ? 'end' : 'start';
+    if (window.closeToolSheet) window.closeToolSheet();
+    else panel.classList.remove('open');
+    const toast = document.getElementById('fsToast');
+    if (toast) {
+      toast.textContent = pickMode === 'end' ? '点正文中的句子 = 终点' : '点正文中的句子 = 起点';
+      toast.classList.add('on');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('on'), 1800);
+    }
   }
 
   function pointRange(x, y) {
@@ -553,7 +623,7 @@ const TTS = (() => {
   function onDocMouseUp(ev) {
     if (ev.shiftKey) return;
     if (ev.target.closest && ev.target.closest('.toolbar')) return;
-    applySelectionRange();
+    if (applySelectionRange() && window.closeToolSheet) window.closeToolSheet();
   }
 
   let downX = 0;
@@ -561,13 +631,28 @@ const TTS = (() => {
   document.addEventListener('mousedown', ev => { downX = ev.clientX; downY = ev.clientY; });
 
   function onDocClick(ev) {
-    if (!panel.classList.contains('open')) return;
+    if (!panel.classList.contains('open') && !pickMode) return;
     if (ev.target.closest && ev.target.closest('.toolbar')) return;
     if (Math.abs(ev.clientX - downX) > 5 || Math.abs(ev.clientY - downY) > 5) return; // 拖动选字，不改范围
     if (!queue.length) buildQueue();
     if (!queue.length) return;
     let i = queueIndexAtRange(pointRange(ev.clientX, ev.clientY));
     if (i < 0) return;
+    if (pickMode) {
+      if (pickMode === 'end') {
+        if (startIdx != null && i < startIdx) i = startIdx;
+        endIdx = i;
+      } else {
+        startIdx = i;
+        idx = i;
+        if (endIdx != null && endIdx < startIdx) endIdx = null;
+        if (state === 'idle') { highlight(queue[i]); hlIdx = i; }
+        else startFrom(i);
+      }
+      pickMode = null;
+      updateRangeInfo();
+      return;
+    }
     if (ev.shiftKey) {
       if (startIdx != null && i < startIdx) i = startIdx;
       endIdx = i;
@@ -611,15 +696,23 @@ const TTS = (() => {
     syncRate();
     localStorage.setItem('jp-tts-rate', rateEl.value);
   });
+  rateEl.addEventListener('change', autoClosePanel);
   repeatSel.value = localStorage.getItem('jp-tts-repeat') || '1';
   if (!repeatSel.value) repeatSel.value = '1';
-  repeatSel.addEventListener('change', () => localStorage.setItem('jp-tts-repeat', repeatSel.value));
+  repeatSel.addEventListener('change', () => {
+    localStorage.setItem('jp-tts-repeat', repeatSel.value);
+    autoClosePanel();
+  });
   modeSel.value = localStorage.getItem('jp-tts-mode') || 'sentence';
   modeSel.addEventListener('change', () => {
     localStorage.setItem('jp-tts-mode', modeSel.value);
     loopDone = 0;
+    autoClosePanel();
   });
-  voiceSel.addEventListener('change', () => localStorage.setItem('jp-tts-voice', voiceSel.value));
+  voiceSel.addEventListener('change', () => {
+    localStorage.setItem('jp-tts-voice', voiceSel.value);
+    autoClosePanel();
+  });
   document.addEventListener('click', onDocClick);
   document.addEventListener('mouseup', onDocMouseUp);
   synth.onvoiceschanged = loadVoices;
@@ -635,8 +728,9 @@ const TTS = (() => {
     next() { jump(1); },
     replay,
     clearRange,
+    setPick,
     getTarget: explainTarget,
-    togglePanel() { panel.classList.toggle('open'); }
+    togglePanel() { clearTimeout(panelTimer); panel.classList.toggle('open'); }
   };
 })();
 
