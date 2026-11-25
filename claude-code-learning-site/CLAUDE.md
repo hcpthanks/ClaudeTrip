@@ -36,7 +36,7 @@ claude-code-learning-site/
 - 发布目录：仓库根 `docs/`，GitHub Pages 从这里发布
 - 同步对象：`index.html`、`books/`、`assets/`、`CNAME`（`docs/.nojekyll` 保留）
 - 后端代码（`api/`、`lib/`、`serverless/`、`supabase-schema.sql`）**绝不进入 docs**
-- Push：`git -c credential.helper= push origin main`
+- Push：`git push origin main`（认证走 gh 凭证助手，远程地址不含 token；推送前开代理）
 
 ## 阅读页功能
 

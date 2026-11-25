@@ -334,7 +334,10 @@ QSS 与 ECC 的工程对齐关系参见 learned: qss-ecc-alignment。
 ## Git
 
 - 分支: `main`
-- Push: `git -c credential.helper= push origin main`
+- 远程: `https://github.com/hcpthanks/ClaudeTrip.git`（不含 token）
+- 认证: GitHub CLI 凭证助手（已 `gh auth setup-git`，token 在系统钥匙串自动续期）
+- Push: `git push origin main`（推送前开 v2rayN；没开代理时用 `git -c http.proxy= -c https.proxy= push origin main`）
+- 不要再用 `-c credential.helper=`，会禁用 gh 助手导致认证失败
 
 ## 核心工具速查
 
