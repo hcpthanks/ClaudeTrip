@@ -49,6 +49,7 @@ const TTS = (() => {
   const rateEl = document.getElementById('ttsRate');
   const rateVal = document.getElementById('ttsRateVal');
   const repeatSel = document.getElementById('ttsRepeat');
+  const modeSel = document.getElementById('ttsMode');
   const startInfo = document.getElementById('ttsStartInfo');
   const endInfo = document.getElementById('ttsEndInfo');
   const panel = document.getElementById('ttsPanel');
@@ -65,6 +66,7 @@ const TTS = (() => {
   let state = 'idle';  // idle | playing | paused
   let gen = 0;         // 每次重新发声自增，用于丢弃 cancel 后迟到的回调
   let repDone = 0;     // 当前句已读完的遍数
+  let loopDone = 0;    // 整段循环已完成的遍数
   let curChunks = [];  // 当前句切出的语音片段
   let curChunk = 0;    // 当前片段下标
   let startIdx = null; // 朗读起点（含）
@@ -195,11 +197,16 @@ const TTS = (() => {
     return n > 0 ? n : 1;
   }
 
+  function repeatMode() {
+    return modeSel.value === 'passage' ? 'passage' : 'sentence';
+  }
+
   function finish() {
     state = 'idle';
     gen++;
     idx = startIdx == null ? 0 : startIdx;
     repDone = 0;
+    loopDone = 0;
     hlIdx = -1;
     clearHL();
     updateBtn();
@@ -251,6 +258,14 @@ const TTS = (() => {
     u.onend = () => {
       if (state !== 'playing' || g !== gen) return;
       if (curChunk + 1 < curChunks.length) { curChunk++; speakChunk(); return; }
+      if (repeatMode() === 'passage' && endIdx != null) {
+        if (idx < endIdx) { speak(idx + 1); return; }
+        loopDone++;
+        if (loopDone < repeatCount()) { speak(startIdx == null ? 0 : startIdx); return; }
+        loopDone = 0;
+        finish();
+        return;
+      }
       repDone++;
       if (repDone < repeatCount()) { curChunk = 0; speakChunk(); }
       else { repDone = 0; speak(idx + 1); }
@@ -273,7 +288,9 @@ const TTS = (() => {
     if (!queue.length) return;
     idx = Math.max(0, Math.min(i, queue.length - 1));
     if (endIdx != null && idx > endIdx) idx = startIdx == null ? 0 : startIdx;
+    if (repeatMode() === 'passage' && startIdx != null && endIdx != null) idx = startIdx;
     repDone = 0;
+    loopDone = 0;
     state = 'playing';
     synth.cancel();
     gen++;
@@ -300,6 +317,7 @@ const TTS = (() => {
     state = 'idle';
     gen++;
     repDone = 0;
+    loopDone = 0;
     synth.cancel();
     clearHL();
     hlIdx = -1;
@@ -529,6 +547,11 @@ const TTS = (() => {
   repeatSel.value = localStorage.getItem('jp-tts-repeat') || '1';
   if (!repeatSel.value) repeatSel.value = '1';
   repeatSel.addEventListener('change', () => localStorage.setItem('jp-tts-repeat', repeatSel.value));
+  modeSel.value = localStorage.getItem('jp-tts-mode') || 'sentence';
+  modeSel.addEventListener('change', () => {
+    localStorage.setItem('jp-tts-mode', modeSel.value);
+    loopDone = 0;
+  });
   voiceSel.addEventListener('change', () => localStorage.setItem('jp-tts-voice', voiceSel.value));
   document.addEventListener('click', onDocClick);
   document.addEventListener('mouseup', onDocMouseUp);

@@ -831,12 +831,18 @@
     <select id="ttsVoice"></select>
     <label for="ttsRate">语速 <span id="ttsRateVal">1</span> 倍</label>
     <input id="ttsRate" type="range" min="0.5" max="2" step="0.05" value="1">
-    <label for="ttsRepeat">每句重复次数</label>
+    <label for="ttsRepeat">重复次数</label>
     <select id="ttsRepeat">
       <option value="1">1 次</option>
+      <option value="3">3 次</option>
       <option value="5">5 次</option>
       <option value="10">10 次</option>
       <option value="20">20 次</option>
+    </select>
+    <label for="ttsMode">重复方式</label>
+    <select id="ttsMode">
+      <option value="sentence">每句重复（精听）</option>
+      <option value="passage">整段循环（背诵）</option>
     </select>
     <label>朗读范围</label>
     <div class="tts-range">
@@ -844,7 +850,7 @@
       <div>终点：<span id="ttsEndInfo">书末</span></div>
       <button class="tts-mini" type="button" onclick="TTS.clearRange()">清除范围</button>
     </div>
-    <p class="tts-tip">用鼠标拖选一段文字 = 直接设朗读范围；点击句子 = 设起点（面板打开时）；Shift+点击 = 设终点。</p>
+    <p class="tts-tip">拖选一段文字 = 设朗读范围；点击句子 = 设起点；Shift+点击 = 设终点。「整段循环」先拖选范围，再按次数重复整段。</p>
   </div>
   <div class="tts-transport">
     <button onclick="TTS.prev()" title="上一句">◀</button>
