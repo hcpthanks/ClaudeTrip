@@ -326,7 +326,7 @@ QSS 与 ECC 的工程对齐关系参见 learned: qss-ecc-alignment。
 
 ## 子项目与关键路径
 
-- `claude-code-learning-site/` — Claude Code 学习站（主项目）
+- `claude-code-learning-site/` — 日文小说阅读站（主项目，hcpthanks.com）
 - `docs/` — GitHub Pages 发布目录（需与 learning-site 双向同步）
 - `everything-claude-code/` — ECC 工具集
 - `biaohe/` — 标合项目

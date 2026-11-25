@@ -1,368 +1,91 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.tencentscf.com https://hcpthanks.github.io; frame-src https://www.bilibili.com https://player.bilibili.com https://www.xigua.com https://v.qq.com; frame-ancestors 'self' https://hcpthanks.github.io; base-uri 'self';">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Claude Code 学习站 — 不用写代码，不用学英语，AI 帮你干活。AI视频工厂 · 智能交易看板 · 内容引擎，每个项目都用 Claude Code 集成实现。">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
-<title>AI 帮你干活 — 不用写代码，不用学英语</title>
-<link rel="stylesheet" href="assets/css/common.css">
-<link rel="stylesheet" href="assets/css/quiz.css">
-<style>
-  /* ── Hero ── */
-  .hero { padding: 80px 24px 72px; text-align: center; }
-  .hero h1 { max-width: 800px; margin: 0 auto 20px; line-height: 1.3; }
-  .hero h1 .pre { font-size: 0.45em; font-weight: 400; color: var(--text-muted); display: block; margin-bottom: 10px; }
-  .hero h1 .brand { color: var(--accent); font-size: 1.0em; }
-  .hero .tagline { font-size: 1.1em; font-weight: 700; color: var(--text-high); margin: 24px 0 0; }
-
-  .hero .hero-projects {
-    display: flex; justify-content: center; gap: 32px; margin-top: 32px; flex-wrap: wrap;
-  }
-  .hero .hero-stat { text-align: center; }
-  .hero .hero-stat .stat-icon { font-size: 2em; display: block; }
-  .hero .hero-stat .stat-label { font-size: 0.82em; color: var(--text-muted); margin-top: 6px; display: block; }
-
-  /* ── Section Divide ── */
-  .section-divider {
-    border: none; border-top: 1px solid var(--border); margin: 0 0 var(--space-section) 0;
-  }
-
-  /* ── Learning Path Cards ── */
-  .learn-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 14px;
-    margin-bottom: var(--space-section);
-  }
-  .learn-card {
-    display: flex; align-items: center; gap: 12px;
-    padding: 16px 20px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    text-decoration: none;
-    color: var(--text);
-    transition: border-color 0.2s ease, background 0.2s ease;
-  }
-  .learn-card:hover {
-    border-color: var(--accent);
-    background: var(--surface-hover);
-    color: var(--text);
-  }
-  .learn-card .lc-icon {
-    width: 36px; height: 36px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1em; flex-shrink: 0;
-  }
-  .lc-icon.lv-prebasics { background: var(--lv-prebasics-bg); color: var(--lv-prebasics); }
-  .lc-icon.lv-applied { background: var(--lv-applied-bg); color: var(--lv-applied); }
-  .lc-icon.lv-beginner { background: var(--lv-beginner-bg); color: var(--lv-beginner); }
-  .lc-icon.lv-intermediate { background: var(--lv-intermediate-bg); color: var(--lv-intermediate); }
-  .lc-icon.lv-expert { background: var(--lv-expert-bg); color: var(--lv-expert); }
-  .learn-card .lc-info h4 { font-size: 0.9em; margin: 0; color: var(--text-high); }
-  .learn-card .lc-info span { font-size: 0.75em; color: var(--text-muted); }
-  .learn-card .lc-arrow { margin-left: auto; color: var(--text-faint); }
-
-  /* ── Tool Grid ── */
-  .tool-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 16px;
-    margin-bottom: var(--space-section);
-  }
-  .tool-card {
-    display: flex; align-items: center; gap: 14px;
-    padding: 20px 24px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    text-decoration: none;
-    color: var(--text);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  .tool-card:hover {
-    border-color: var(--accent);
-    box-shadow: 0 4px 20px rgba(88, 166, 255, 0.08);
-    color: var(--text);
-  }
-  .tool-card .tool-icon { font-size: 1.6em; }
-  .tool-card .tool-info h4 { font-size: 0.92em; margin: 0; color: var(--text-high); }
-  .tool-card .tool-info span { font-size: 0.76em; color: var(--text-muted); }
-  .tool-card.coming-soon { opacity: 0.5; pointer-events: none; }
-
-  /* ── Responsive ── */
-  @media (max-width: 768px) {
-    .hero { padding: 60px 20px 48px; }
-    .hero h1 { font-size: 1.8em; }
-    .project-grid { grid-template-columns: 1fr; }
-    .tool-grid { grid-template-columns: 1fr 1fr; }
-    .learn-grid { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 480px) {
-    .tool-grid { grid-template-columns: 1fr; }
-  }
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="日文原版小说在线精读：汉字自动附假名、逐句朗读、句子语法解析。全部为青空文库公有领域作品。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+<title>读书 — 日文小说精读</title>
+<link rel="stylesheet" href="assets/css/site.css">
 </head>
 <body>
-
-<!-- ══════════ NAV ══════════ -->
-<nav class="site-nav" aria-label="主导航">
-  <div class="nav-inner">
-    <a href="index.html" class="logo">Claude Code<span>学习站</span></a>
-    <div class="nav-links" role="navigation" aria-label="页面导航">
-      <a href="index.html" class="active">🏠 首页</a>
-      <a href="projects/">🚀 项目</a>
-      <a href="#learn">📚 学习</a>
-      <a href="tools/">🛠️ 工具</a>
-    </div>
-    <a href="pay/recover.html" class="nav-recover">🔑 激活码</a>
-    <a href="pay/pay.html" class="nav-cta">💰 支付</a>
-    <button class="nav-toggle" id="nav-toggle" aria-label="菜单">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-  <div class="mobile-menu" id="mobile-menu">
-    <a href="index.html">🏠 首页</a>
-    <a href="projects/">🚀 项目</a>
-    <a href="#learn">📚 学习</a>
-    <a href="tools/">🛠️ 工具</a>
-    <a href="pay/recover.html">🔑 激活码</a>
-    <a href="pay/pay.html" class="mobile-cta">💰 支付</a>
-  </div>
-</nav>
-
-<!-- ══════════ HERO ══════════ -->
-<header class="hero">
-  <h1><span class="pre">不用写代码，不用学英语</span><span class="brand">AI 帮你干活</span></h1>
-  <p class="tagline">让每个人都能用 AI — 从看项目开始，想做就跟着学</p>
-  <div class="hero-projects">
-    <div class="hero-stat"><span class="stat-icon">🎬</span><span class="stat-label">AI 视频工厂</span></div>
-    <div class="hero-stat"><span class="stat-icon">📊</span><span class="stat-label">智能交易看板</span></div>
-    <div class="hero-stat"><span class="stat-icon">✍️</span><span class="stat-label">内容创作引擎</span></div>
-  </div>
+<header class="nav">
+  <a class="brand" href="./">読<em>書</em></a>
+  <nav>
+    <a href="#books">书库</a>
+    <a href="#how">阅读页功能</a>
+    <a href="#about">来源与版权</a>
+  </nav>
 </header>
-
-<main class="container" role="main">
-
-<!-- ══════════ 关于作者 ══════════ -->
-<section class="container" style="margin:0 auto 32px;">
-  <a href="/about" style="display:flex;align-items:center;gap:20px;max-width:620px;margin:0 auto;padding:28px 32px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);text-decoration:none;color:var(--text);transition:border-color var(--duration) var(--ease-out-expo);">
-    <img src="assets/images/avatar.jpg" alt="AI创业研究员" width="64" height="64" style="width:64px;height:64px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--border);">
-    <div style="flex:1;min-width:0;">
-      <strong style="color:var(--text-high);font-size:1.05rem;">AI创业研究员</strong>
-      <p style="margin:3px 0 6px;color:var(--text-muted);font-size:0.88rem;">让每个人都能用 AI 干活 — 从零基础到 AI 实战，我自己走过的路，帮你少走弯路</p>
-      <span style="color:var(--accent);font-size:0.85rem;font-weight:600;">了解更多 →</span>
+<main role="main">
+  <section class="hero">
+    <p class="eyebrow">日本語 × 精読</p>
+    <h1>读日文原版小说，<br>不懂的句子有人讲。</h1>
+    <p class="lede">汉字自动附假名，点一下就能朗读；读到不懂的句子，选中后点「解」，结合上下文讲清楚意思、语法和语气。</p>
+    <a class="cta" href="#books">开始阅读</a>
+  </section>
+  <section class="books" id="books">
+    <h2>书库</h2>
+    <p class="sub">全部为公有领域作品，来自青空文库，可自由阅读。</p>
+    <div class="grid">
+      <a class="book-card" href="books/ningen-shikkaku.html" data-book="人間失格">
+        <span class="book-author">太宰治</span>
+        <h3 class="book-title">人間失格</h3>
+        <p class="book-blurb">「恥の多い生涯を送って来ました」</p>
+        <span class="book-meta">约 72 千字</span>
+        <span class="bar"><i></i></span>
+        <span class="book-note">未开始</span>
+      </a>
+      <a class="book-card" href="books/hashire-merosu.html" data-book="走れメロス">
+        <span class="book-author">太宰治</span>
+        <h3 class="book-title">走れメロス</h3>
+        <p class="book-blurb">友情と約束の物語</p>
+        <span class="book-meta">约 9 千字</span>
+        <span class="bar"><i></i></span>
+        <span class="book-note">未开始</span>
+      </a>
+      <a class="book-card" href="books/kokoro.html" data-book="こころ">
+        <span class="book-author">夏目漱石</span>
+        <h3 class="book-title">こころ</h3>
+        <p class="book-blurb">人の心の闇を描く</p>
+        <span class="book-meta">约 160 千字</span>
+        <span class="bar"><i></i></span>
+        <span class="book-note">未开始</span>
+      </a>
     </div>
-  </a>
-</section>
-
-<!-- ══════════ 作者分享 ══════════ -->
-<section class="container" style="margin:0 auto 48px;">
-  <div style="text-align:center;margin-bottom:24px;">
-    <h2 style="border:none;font-size:1.6em;">🎙️ 我对 AI 应用的一些看法</h2>
-    <p style="color:var(--text-muted);">聊聊 AI 怎么真正帮到普通人</p>
-  </div>
-  <div class="video-wrap" style="max-width:720px;margin:0 auto;">
-    <div class="video-16x9">
-      <iframe src="//www.bilibili.com/blackboard/html5mobileplayer.html?bvid=BV1M8JM6WEYq&page=1"
-              scrolling="no" frameborder="no" allowfullscreen>
-      </iframe>
+  </section>
+  <section class="how" id="how">
+    <h2>阅读页有什么</h2>
+    <p class="sub">不用注册，打开就能读。</p>
+    <div class="feats">
+      <div class="feat"><b>假名标注</b><span>每个汉字上方自动标读音，一键隐藏，用来自测。</span></div>
+      <div class="feat"><b>逐句朗读</b><span>点 ▶ 从当前句开始读，可换语速、重复次数与音色。</span></div>
+      <div class="feat"><b>句子解析</b><span>选中句子点「解」，结合上下文讲意思和语法。可接本地 Ollama（免费）或自己的 API Key。</span></div>
+      <div class="feat"><b>记忆位置</b><span>自动记住每本书读到哪，下次打开接着读。</span></div>
     </div>
-  </div>
-</section>
-
-<!-- ══════════ 🔥 精选项目 ══════════ -->
-<section id="projects-showcase">
-  <div class="section-header">
-    <h2>🔥 精选项目</h2>
-    <p class="section-desc">每个项目都用 Claude Code + AI 从头搭建，看效果、拿源码、跟着学</p>
-  </div>
-  <div class="project-grid">
-
-    <!-- AI 视频工厂 -->
-    <a href="projects/ai-video-factory/" class="project-card">
-      <div class="project-visual">
-        <span class="visual-icon">🎬</span>
-</div>
-      <div class="project-info">
-        <h3>🎬 AI 视频工厂</h3>
-        <p>文案 → 配音 → 字幕 → 视频，一键生成。Agnes AI 生成画面 + TTS 配音字幕 + 剪映合成</p>
-        <span class="project-tech">Agnes AI · TTS 三引擎 · Claude Code</span>
-</div>
-    </a>
-
-    <!-- 智能交易看板（即将上线） -->
-    <div class="project-card coming-soon">
-      <div class="project-visual">
-        <span class="visual-icon">📊</span>
-        <span class="visual-tag coming">即将上线</span>
-      </div>
-      <div class="project-info">
-        <h3>📊 智能交易看板</h3>
-        <p>TradingView MCP 实时数据 · 多时间框架分析 · 策略回测 · 预警自动化</p>
-        <span class="project-tech">TradingView MCP · Claude Code · Pine Script</span>
-        <span class="project-badge coming">即将上线</span>
-      </div>
-    </div>
-
-    <!-- 内容创作引擎（即将上线） -->
-    <div class="project-card coming-soon">
-      <div class="project-visual">
-        <span class="visual-icon">✍️</span>
-        <span class="visual-tag coming">即将上线</span>
-      </div>
-      <div class="project-info">
-        <h3>✍️ 内容创作引擎</h3>
-        <p>AI 写文案 · 自动排版 · 多平台分发 · 数据追踪，一人搞定全部内容</p>
-        <span class="project-tech">Agnes Chat · Claude Code · 自动化工作流</span>
-        <span class="project-badge coming">即将上线</span>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<hr class="section-divider">
-
-<!-- ══════════ 📚 学习路线 ══════════ -->
-<section id="learn">
-  <div class="section-header">
-    <h2>📚 想学会自己用？</h2>
-    <p class="section-desc">从开机开始教，一步一步跟着点。所有项目都是这么搭出来的</p>
-  </div>
-  <div class="learn-grid">
-
-    <a href="pre-basics/computer-basics.html" class="learn-card">
-      <div class="lc-icon lv-prebasics">🖥️</div>
-      <div class="lc-info">
-        <h4>预备课</h4>
-        <span>从零开始 · 全部免费</span>
-      </div>
-      <span class="lc-arrow">→</span>
-    </a>
-
-    <a href="applied/ai-for-business.html" class="learn-card">
-      <div class="lc-icon lv-applied">💼</div>
-      <div class="lc-info">
-        <h4>应用课</h4>
-        <span>AI 帮你做生意</span>
-      </div>
-      <span class="lc-arrow">→</span>
-    </a>
-
-    <a href="beginner/claude-intro.html" class="learn-card">
-      <div class="lc-icon lv-beginner">🌱</div>
-      <div class="lc-info">
-        <h4>入门</h4>
-        <span>15分钟上手 Claude Code</span>
-      </div>
-      <span class="lc-arrow">→</span>
-    </a>
-
-    <a href="intermediate/core-commands.html" class="learn-card">
-      <div class="lc-icon lv-intermediate">⚡</div>
-      <div class="lc-info">
-        <h4>进阶</h4>
-        <span>效率翻倍 · 省钱关键</span>
-      </div>
-      <span class="lc-arrow">→</span>
-    </a>
-
-    <a href="#expert" class="learn-card" style="opacity:0.55;">
-      <div class="lc-icon lv-expert">🚀</div>
-      <div class="lc-info">
-        <h4>专家</h4>
-        <span>自定义一切 · 即将上线</span>
-      </div>
-      <span class="lc-arrow">→</span>
-    </a>
-
-  </div>
-</section>
-
-<!-- ══════════ 🛠️ 免费工具 ══════════ -->
-<section id="tools">
-  <div class="section-header">
-    <h2>🛠️ 免费在线工具</h2>
-    <p class="section-desc">AI 对话 · 图片生成 · 视频生成，不用安装即可体验</p>
-  </div>
-  <div class="tool-grid">
-
-    <a href="tools/ai-chat/" class="tool-card">
-      <span class="tool-icon">💬</span>
-      <div class="tool-info">
-        <h4>AI 对话</h4>
-        <span>Agnes 2.0 Flash · 1M 上下文</span>
-      </div>
-    </a>
-
-    <a href="tools/ai-image/" class="tool-card">
-      <span class="tool-icon">🎨</span>
-      <div class="tool-info">
-        <h4>AI 生图</h4>
-        <span>Agnes Image · ~5 秒出图</span>
-      </div>
-    </a>
-
-    <a href="tools/ai-video/" class="tool-card">
-      <span class="tool-icon">🎥</span>
-      <div class="tool-info">
-        <h4>AI 视频</h4>
-        <span>Agnes Video · 音画同出</span>
-      </div>
-    </a>
-
-  </div>
-</section>
-
+  </section>
+  <section class="about" id="about">
+    <p><b>来源与版权：</b>本站收录的作品均为已进入公有领域的日本文学作品，文本来自 <a href="https://www.aozora.gr.jp/" target="_blank" rel="noopener">青空文库</a>，版权状态遵循日本著作权法（作者逝世满 70 年）。每本书页底部标注了底本与录入者信息，转载时请保留。</p>
+    <p><b>关于自己上传的书：</b>正在开发。上线后支持上传你自己的扫描版书籍（需付费，按页计费），仅你本人可见，不公开、不索引。</p>
+  </section>
 </main>
-
-<!-- ══════════ PREMIUM TEASER ══════════ -->
-<section class="container" id="premium">
-  <div class="premium-teaser">
-    <div class="premium-badge">💰 付费方案</div>
-    <h2>解锁全部课程 + 项目源码</h2>
-    <p class="teaser-desc">¥399 / 3年 &nbsp;·&nbsp; ¥699 永久 &nbsp;·&nbsp; 项目源码 + 完整教程 + 持续更新</p>
-    <div class="feature-list" style="margin-bottom:20px;">
-      <div class="feature-item"><span class="check">✓</span> 进阶课 + 专家课含未来更新</div>
-      <div class="feature-item"><span class="check">✓</span> 项目源码 · 邮件答疑支持</div>
-    </div>
-    <div style="font-size:1.4em;font-weight:800;color:var(--text);margin-bottom:4px;">¥399 <span style="font-weight:400;font-size:0.6em;color:var(--text-muted);">/ 3年</span> &nbsp;&nbsp; ¥699 <span style="font-weight:400;font-size:0.6em;color:var(--text-muted);">/ 永久</span></div>
-    <a href="pay/pay.html" class="btn btn-primary" style="font-size:1em; padding:14px 40px; background:var(--purple); border-color:var(--purple);">
-      立即解锁 →
-    </a>
-  </div>
-</section>
-
-<!-- ══════════ FOOTER ══════════ -->
-<footer class="site-footer">
-  <p>AI 帮你干活 · 让每个人都能用 AI</p>
+<footer>
+  <p>个人阅读项目 · 内容来自青空文库 · 请勿将本站内容用于商业转载</p>
 </footer>
-
-<script src="assets/js/nav.js"></script>
-<script src="assets/js/quiz.js"></script>
-<script src="assets/js/common.js"></script>
-<script src="assets/js/site-config.js"></script>
-<script src="assets/js/anti-theft.js"></script>
 <script>
-/* Mobile menu toggle */
 (function () {
-  var toggle = document.getElementById("nav-toggle");
-  var menu = document.getElementById("mobile-menu");
-  if (!toggle || !menu) return;
-  toggle.addEventListener("click", function () {
-    var open = menu.classList.toggle("open");
-    toggle.classList.toggle("open");
-    document.body.style.overflow = open ? "hidden" : "";
-  });
-  menu.querySelectorAll("a").forEach(function (a) {
-    a.addEventListener("click", function () {
-      menu.classList.remove("open");
-      toggle.classList.remove("open");
-      document.body.style.overflow = "";
-    });
+  document.querySelectorAll('.book-card').forEach(card => {
+    const id = card.dataset.book;
+    const p = parseFloat(localStorage.getItem('jp-progress:' + id) || '0');
+    const last = parseInt(localStorage.getItem('jp-last:' + id) || '0', 10);
+    const bar = card.querySelector('.bar > i');
+    const note = card.querySelector('.book-note');
+    if (bar && p > 0) bar.style.width = Math.min(100, Math.round(p * 100)) + '%';
+    if (note && last) {
+      const d = new Date(last);
+      note.textContent = '上次阅读 ' + (d.getMonth() + 1) + '月' + d.getDate() + '日' +
+        (p > 0.02 ? ' · ' + Math.round(p * 100) + '%' : '');
+    }
   });
 })();
 </script>
