@@ -288,7 +288,6 @@ const TTS = (() => {
     if (!queue.length) return;
     idx = Math.max(0, Math.min(i, queue.length - 1));
     if (endIdx != null && idx > endIdx) idx = startIdx == null ? 0 : startIdx;
-    if (repeatMode() === 'passage' && startIdx != null && endIdx != null) idx = startIdx;
     repDone = 0;
     loopDone = 0;
     state = 'playing';
@@ -328,7 +327,6 @@ const TTS = (() => {
     if (!queue.length) buildQueue();
     if (!queue.length) return;
     let i = Math.max(0, Math.min(queue.length - 1, idx + delta));
-    if (startIdx != null && i < startIdx) i = startIdx;
     if (endIdx != null && i > endIdx) i = endIdx;
     repDone = 0;
     if (state === 'idle') { idx = i; highlight(queue[i]); hlIdx = i; }
