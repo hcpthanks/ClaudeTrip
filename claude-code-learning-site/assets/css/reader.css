@@ -114,6 +114,15 @@ p.tts-end-mark, h2.tts-end-mark { box-shadow: inset -3px 0 0 #b8433a; }
   opacity: 0; transition: opacity .15s; z-index: 20;
 }
 .fs-toast.on { opacity: 1; }
+.tts-repeat-badge {
+  position: fixed; left: 16px; bottom: 18px; z-index: 25; display: none;
+  padding: 6px 14px; border-radius: 999px; background: rgba(28,26,23,.82);
+  color: #fff; font-size: 13px; letter-spacing: .02em;
+  font-family: system-ui, sans-serif; pointer-events: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,.18);
+}
+.tts-repeat-badge.on { display: block; }
+body.dark .tts-repeat-badge { background: rgba(240,235,225,.92); color: #222; }
 @media (pointer: coarse), (max-width: 820px) {
   .toolbar {
     left: 8px; right: 8px; transform: none; width: auto; bottom: 8px;

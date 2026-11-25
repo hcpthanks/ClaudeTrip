@@ -6,6 +6,12 @@ let fs = nearestPreset(parseFloat(localStorage.getItem('jp-fs')) || 19);
 const BOOK_ID = document.body.dataset.book || 'default';
 const SCROLL_KEY = 'jp-scroll:' + BOOK_ID;
 const THEME_KEY = 'jp-theme-dark';
+// 只取正文块：设置面板、提示条、解析面板里的说明文字不能进朗读队列 / 位置锚点
+function bookBlocks() {
+  return Array.from(document.querySelectorAll('h2, p')).filter(el =>
+    !el.closest('.toolbar') && !el.closest('.jp-btip') && !el.closest('.jp-btip-mask')
+    && !el.closest('.ai-panel') && !el.closest('.provenance'));
+}
 // 整本书改字号要重排全部段落（~1.5s），所以点击立即回显，连点合并成一次重排
 let fontTimer = null;
 let toastTimer = null;
@@ -41,7 +47,7 @@ function toggleRuby() {
 function toggleTheme() { document.body.classList.toggle('dark'); }
 (function () {
   const ANCHOR_KEY = 'jp-anchor:' + BOOK_ID;
-  const blocks = () => document.querySelectorAll('h2, p');
+  const blocks = () => bookBlocks();
   function topBlock() {           // 二分找到视口顶部所在段落（rect 自上而下有序）
     const ps = blocks();
     let lo = 0, hi = ps.length - 1, found = -1;
@@ -152,6 +158,7 @@ const TTS = (() => {
   const startInfo = document.getElementById('ttsStartInfo');
   const endInfo = document.getElementById('ttsEndInfo');
   const panel = document.getElementById('ttsPanel');
+  const repeatBadge = document.getElementById('ttsRepeatBadge');
   let panelTimer = null;
   function autoClosePanel() {
     clearTimeout(panelTimer);
@@ -235,7 +242,7 @@ const TTS = (() => {
   function buildQueue() {
     queue = [];
     let g = 0;
-    document.querySelectorAll('h2, p').forEach(el => {
+    bookBlocks().forEach(el => {
       const text = textNodesOf(el).map(n => n.nodeValue).join('');
       for (const [s, e] of sentenceRanges(text)) {
         const raw = text.slice(s, e);
@@ -322,6 +329,7 @@ const TTS = (() => {
     hlIdx = -1;
     clearHL();
     updateBtn();
+    updateRepeatBadge();
   }
 
   function chunkLen() {
@@ -358,6 +366,7 @@ const TTS = (() => {
     if (hlIdx !== i) { highlight(queue[i]); hlIdx = i; }
     curChunks = chunkText(queue[i].text, chunkLen());
     curChunk = 0;
+    updateRepeatBadge();
     speakChunk();
   }
 
@@ -371,8 +380,9 @@ const TTS = (() => {
     u.onend = () => {
       if (state !== 'playing' || g !== gen) return;
       if (curChunk + 1 < curChunks.length) { curChunk++; speakChunk(); return; }
-      if (repeatMode() === 'passage' && endIdx != null) {
-        if (idx < endIdx) { speak(idx + 1); return; }
+      if (repeatMode() === 'passage') {
+        const last = endIdx == null ? queue.length - 1 : endIdx;
+        if (idx < last) { speak(idx + 1); return; }
         loopDone++;
         if (loopDone < repeatCount()) { speak(startIdx == null ? 0 : startIdx); return; }
         loopDone = 0;
@@ -380,8 +390,11 @@ const TTS = (() => {
         return;
       }
       repDone++;
-      if (repDone < repeatCount()) { curChunk = 0; speakChunk(); }
-      else { repDone = 0; speak(idx + 1); }
+      if (repDone < repeatCount()) {
+        curChunk = 0;
+        updateRepeatBadge();
+        speakChunk();
+      } else { repDone = 0; speak(idx + 1); }
     };
     u.onerror = ev => {
       if (g !== gen || state !== 'playing') return;
@@ -400,6 +413,19 @@ const TTS = (() => {
 
   function updateBtn() {
     playBtn.textContent = state === 'playing' ? '❚❚' : '▶';
+  }
+
+  function updateRepeatBadge() {
+    if (!repeatBadge) return;
+    const n = repeatCount();
+    if (state !== 'playing' || n <= 1) {
+      repeatBadge.classList.remove('on');
+      return;
+    }
+    const passage = repeatMode() === 'passage';
+    repeatBadge.textContent = (passage ? '全段 ' : '本句 ')
+      + '第 ' + ((passage ? loopDone : repDone) + 1) + '/' + n + ' 遍';
+    repeatBadge.classList.add('on');
   }
 
   function startFrom(i) {
@@ -435,6 +461,7 @@ const TTS = (() => {
       return;
     }
     updateBtn();
+    updateRepeatBadge();
   }
 
   function stop() {
@@ -446,6 +473,7 @@ const TTS = (() => {
     clearHL();
     hlIdx = -1;
     updateBtn();
+    updateRepeatBadge();
   }
 
   function jump(delta) {
@@ -559,7 +587,7 @@ const TTS = (() => {
     if (x != null && y != null) item = sentenceAtPoint(x, y);
     if (!item && hlIdx >= 0) item = queue[hlIdx];
     if (!item) return null;
-    const blocks = Array.from(document.querySelectorAll('h2, p'));
+    const blocks = Array.from(bookBlocks());
     const bi = blocks.indexOf(item.el);
     return {
       sentence: item.text,
@@ -570,7 +598,7 @@ const TTS = (() => {
 
   function globalTextOffset(node, off) {
     let total = 0;
-    const blocks = document.querySelectorAll('h2, p');
+    const blocks = bookBlocks();
     for (const block of blocks) {
       for (const t of textNodesOf(block)) {
         if (t === node) return total + off;
@@ -844,7 +872,7 @@ const EXPLAIN = (() => {
     if (sentence.length < 2) return null;
     const block = blockOf(r.startContainer) || blockOf(r.endContainer);
     if (!block) return null;
-    const blocks = Array.from(document.querySelectorAll('h2, p'));
+    const blocks = Array.from(bookBlocks());
     const i = blocks.indexOf(block);
     return {
       sentence: sentence,
