@@ -7,6 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
 <title>人間失格</title>
 <link rel="stylesheet" href="../assets/css/reader.css">
+<script>try{var f=parseFloat(localStorage.getItem('jp-fs'));if(f){var P=[19,22,25];f=P.reduce(function(a,b){return Math.abs(b-f)<Math.abs(a-f)?b:a});localStorage.setItem('jp-fs',String(f));document.documentElement.style.setProperty('--fs',f+'px')}}catch(e){}</script>
 </head>
 <body data-book="人間失格">
 <a class="book-back" href="../index.html">← 书库</a>
@@ -855,8 +856,11 @@
   <button onclick="TTS.togglePanel()" title="朗读设置">音</button>
   <button id="aiBtn" onclick="EXPLAIN.toggle()" title="解析句子（选中文字或点击句子后点此）">解</button>
   <button onclick="scrollTo({top:0,behavior:'smooth'})" title="回到顶部">↑</button>
-  <button onclick="stepFont(1)" title="放大字号">A+</button>
-  <button onclick="stepFont(-1)" title="缩小字号">A−</button>
+  <div class="fs-group">
+    <button id="fsBtn0" onclick="setFont(19)" title="标准字号 19px">A</button>
+    <button id="fsBtn1" onclick="setFont(22)" title="大字号 22px">A+</button>
+    <button id="fsBtn2" onclick="setFont(25)" title="超大字号 25px">A++</button>
+  </div>
   <button id="rubyBtn" class="on" onclick="toggleRuby()" title="显示/隐藏假名">ふ</button>
   <button onclick="toggleTheme()" title="深色/浅色">◐</button>
   <div class="tts-transport">
@@ -866,6 +870,7 @@
     <button onclick="TTS.replay()" title="重读本句">↻</button>
     <button onclick="TTS.stop()" title="停止朗读">■</button>
   </div>
+  <div class="fs-toast" id="fsToast"></div>
 </div>
 <script src="../assets/js/reader.js"></script>
 </body>

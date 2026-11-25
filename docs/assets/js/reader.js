@@ -1,10 +1,37 @@
-let fs = 19;
+const FONT_PRESETS = [[19, '标准'], [22, '大'], [25, '超大']];
+function nearestPreset(v) {
+  return FONT_PRESETS.reduce((a, p) => Math.abs(p[0] - v) < Math.abs(a - v) ? p[0] : a, FONT_PRESETS[0][0]);
+}
+let fs = nearestPreset(parseFloat(localStorage.getItem('jp-fs')) || 19);
 const BOOK_ID = document.body.dataset.book || 'default';
 const SCROLL_KEY = 'jp-scroll:' + BOOK_ID;
 const THEME_KEY = 'jp-theme-dark';
-function stepFont(d) {
-  fs = Math.min(30, Math.max(13, fs + d * 1.5));
+// 整本书改字号要重排全部段落（~1.5s），所以点击立即回显，连点合并成一次重排
+let fontTimer = null;
+let toastTimer = null;
+function applyFont() {
   document.documentElement.style.setProperty('--fs', fs + 'px');
+}
+function markFontBtns() {
+  FONT_PRESETS.forEach(([px], i) => {
+    const b = document.getElementById('fsBtn' + i);
+    if (b) b.classList.toggle('fs-on', px === fs);
+  });
+}
+function setFont(px) {
+  fs = px;
+  localStorage.setItem('jp-fs', String(fs));
+  const label = (FONT_PRESETS.find(p => p[0] === px) || [, '自定义'])[1];
+  const toast = document.getElementById('fsToast');
+  if (toast) {
+    toast.textContent = label + '字号 · ' + px + 'px';
+    toast.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('on'), 1100);
+  }
+  markFontBtns();
+  clearTimeout(fontTimer);
+  fontTimer = setTimeout(applyFont, 150);
 }
 function toggleRuby() {
   const on = document.body.classList.toggle('no-ruby') === false;
@@ -12,18 +39,59 @@ function toggleRuby() {
 }
 function toggleTheme() { document.body.classList.toggle('dark'); }
 (function () {
-  let t = null;
-  addEventListener('scroll', () => {
-    clearTimeout(t);
-    t = setTimeout(() => {
+  const ANCHOR_KEY = 'jp-anchor:' + BOOK_ID;
+  const blocks = () => document.querySelectorAll('h2, p');
+  function topBlock() {           // 二分找到视口顶部所在段落（rect 自上而下有序）
+    const ps = blocks();
+    let lo = 0, hi = ps.length - 1, found = -1;
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      if (ps[mid].getBoundingClientRect().bottom > 0) { found = mid; hi = mid - 1; }
+      else lo = mid + 1;
+    }
+    return found;
+  }
+  function savePos() {
+    try {
       localStorage.setItem(SCROLL_KEY, scrollY);
       const max = document.documentElement.scrollHeight - innerHeight;
       localStorage.setItem('jp-progress:' + BOOK_ID, String(max > 0 ? Math.min(1, scrollY / max) : 0));
       localStorage.setItem('jp-last:' + BOOK_ID, String(Date.now()));
-    }, 300);
+      const i = topBlock();
+      if (i >= 0) {
+        const el = blocks()[i];
+        localStorage.setItem(ANCHOR_KEY, i + ':' + Math.round(el.getBoundingClientRect().top));
+      }
+    } catch (e) { /* 隐私模式等写入失败时忽略 */ }
+  }
+  let t = null;
+  let restored = false;
+  addEventListener('scroll', () => {
+    if (!restored) return;               // 恢复完成前不记录，避免把错误位置写成锚点
+    clearTimeout(t);
+    t = setTimeout(savePos, 300);
   });
-  const y = localStorage.getItem(SCROLL_KEY) || localStorage.getItem('jp-book-scroll');
-  if (y) setTimeout(() => scrollTo(0, +y), 60);
+  addEventListener('pagehide', savePos);
+  // 位置记忆优先按段落锚点恢复：文档很大时懒排版会让像素偏移越来越不准
+  function restorePos() {
+    const parts = (localStorage.getItem(ANCHOR_KEY) || '').split(':');
+    const i = parseInt(parts[0], 10);
+    const off = parseInt(parts[1], 10);
+    const ps = blocks();
+    const el = i >= 0 && i < ps.length ? ps[i] : null;
+    const y = localStorage.getItem(SCROLL_KEY) || localStorage.getItem('jp-book-scroll');
+    if (el) {
+      el.scrollIntoView({ block: 'start', behavior: 'instant' });
+      if (off) scrollBy(0, -off);
+    } else if (y) {
+      scrollTo(0, +y);
+    }
+    restored = true;
+  }
+  setTimeout(restorePos, 80);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => setTimeout(restorePos, 80));
+  }
   const darkSaved = localStorage.getItem(THEME_KEY) !== null
     ? localStorage.getItem(THEME_KEY)
     : localStorage.getItem('jp-book-scroll-dark');
@@ -34,6 +102,7 @@ function toggleTheme() { document.body.classList.toggle('dark'); }
     localStorage.setItem(THEME_KEY, document.body.classList.contains('dark') ? '1' : '0');
   };
 })();
+markFontBtns();
 
 /* ---------- 朗读（Web Speech API，建议用 Edge 打开以获得日语自然音色） ---------- */
 const TTS = (() => {

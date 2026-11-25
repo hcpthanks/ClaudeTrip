@@ -43,11 +43,14 @@ body.dark .provenance { border-top-color: #33363c; }
 }
 body.dark .toolbar button { background: rgba(40,43,48,.95); color: #ddd; border-color: #444; }
 .toolbar button.on { background: #b8433a; color: #fff; border-color: #b8433a; }
+.toolbar .fs-group { display: flex; gap: 4px; }
+.toolbar .fs-group button { width: 32px; font-size: 13px; }
+.toolbar .fs-group button.fs-on { background: #b8433a; color: #fff; border-color: #b8433a; }
 .tts-panel {
   display: none; width: 230px; padding: 10px 12px; border-radius: 12px;
   border: 1px solid #cfc8bb; background: rgba(255,255,255,.96);
   box-shadow: 0 2px 8px rgba(0,0,0,.12); font-size: 12px; color: #333;
-  position: fixed; right: 70px; bottom: 64px;
+  position: fixed; right: 128px; bottom: 64px;
   max-height: calc(100vh - 78px); overflow-y: auto; overscroll-behavior: contain;
 }
 .tts-panel.open { display: block; }
@@ -71,4 +74,11 @@ body.dark .tts-panel .tts-tip { color: #8a857c; }
 body.dark .toolbar .tts-mini { background: #2a2d32; color: #ddd; border-color: #444; }
 p.tts-start-mark, h2.tts-start-mark { box-shadow: inset 3px 0 0 #3a8f5c; }
 p.tts-end-mark, h2.tts-end-mark { box-shadow: inset -3px 0 0 #b8433a; }
+.fs-toast {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%);
+  padding: 6px 14px; border-radius: 999px; background: rgba(28,26,23,.78);
+  color: #fff; font-size: 13px; line-height: 1.4; pointer-events: none;
+  opacity: 0; transition: opacity .15s; z-index: 20;
+}
+.fs-toast.on { opacity: 1; }
 @media print { .toolbar { display: none; } .book-back { display: none; } body { max-width: none; } }
