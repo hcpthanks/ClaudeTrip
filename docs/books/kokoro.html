@@ -8,7 +8,16 @@
 <title>こころ</title>
 <link rel="stylesheet" href="../assets/css/reader.css">
 <link rel="stylesheet" href="../assets/css/browser-tip.css">
-<script>try{var f=parseFloat(localStorage.getItem('jp-fs'));if(f){var P=[19,22,25];f=P.reduce(function(a,b){return Math.abs(b-f)<Math.abs(a-f)?b:a});localStorage.setItem('jp-fs',String(f));document.documentElement.style.setProperty('--fs',f+'px')}}catch(e){}</script>
+<script>try{var f=parseFloat(localStorage.getItem('jp-fs'));if(f){var P=[19,22,25];f=P.reduce(function(a,b){return Math.abs(b-f)<Math.abs(a-f)?b:a});localStorage.setItem('jp-fs',String(f));document.documentElement.style.setProperty('--fs',f+'px')}}catch(e){}</script><script>try{if(localStorage.getItem('jp-ruby')==='off')document.documentElement.classList.add('no-ruby')}catch(e){}</script><script>try{
+var h=location.hostname;
+var local=location.protocol==='file:'||h==='127.0.0.1'||h==='localhost'||h==='::1'||h==='[::1]';
+var fast=local&&/(?:^|[?&])trial=fast(?:&|$)/.test(location.search);
+var u=+(localStorage.getItem('jp-access-until')||0)||0;
+var m=document.cookie.match(/(?:^|; )jp_access_until=([^;]*)/);
+if(m){var c=+decodeURIComponent(m[1]);if(c>u)u=c;}
+var paid=(u>Date.now())||(local&&!fast);
+document.documentElement.classList.add(paid?'jp-paid':'jp-trial');
+}catch(e){}</script>
 </head>
 <body data-book="こころ">
 <a class="skip-link" href="#bookStart">跳到正文</a>
@@ -1350,12 +1359,12 @@
 <p class="provenance">底本：「こころ」集英社文庫、集英社<br>1991（平成3）年2月25日第1刷<br>1995（平成7）年6月14日第10刷<br>初出：「朝日新聞」<br>1914（大正3）年4月20日～8月11日<br>※誤植の修正は「漱石全集」岩波書店を参照しました。<br>青空文库 · <a href="https://www.aozora.gr.jp/cards/000148/card773.html" target="_blank" rel="noopener">作品カード</a></p>
 </main>
 <div class="read-progress" aria-hidden="true"><i id="readProgress"></i></div>
-<div class="trial-chip" id="jpTrialChip" hidden>试读剩余 <b id="jpTrialLeft">05:00</b></div>
+<div class="trial-chip" id="jpTrialChip" hidden><span id="jpTrialLabel">功能试读剩余</span> <b id="jpTrialLeft">05:00</b></div>
 <div class="gate" id="jpGate" hidden>
   <div class="gate-card" role="dialog" aria-modal="true" aria-labelledby="jpGateTitle">
-    <p class="gate-kicker">免费试读已结束</p>
+    <p class="gate-kicker">试用已结束</p>
     <h2 id="jpGateTitle">解锁继续读，¥100 / 2 年</h2>
-    <p class="gate-lead">5 分钟免费试读已经用完。解锁后 2 年内可以阅读站内全部日语小说，假名标注、逐句朗读和句子解析都包含在内。</p>
+    <p class="gate-lead">5 分钟朗读与全部功能试用、15 分钟原文阅读已经结束。解锁后 2 年内全站可读，并开启假名标注、精听重复、段落循环和句子解析。</p>
     <div class="gate-price"><b>¥100</b><span>2 年 · 全站所有书</span></div>
     <ul class="gate-list">
       <li>汉字自动标注假名，可一键隐藏自测</li>
@@ -1395,6 +1404,13 @@
         <option value="passage">整段循环（背诵）</option>
       </select>
     </div>
+    <div class="tts-field tts-wide tts-inline">
+      <label for="rubyMode">假名标注</label>
+      <select id="rubyMode">
+        <option value="on">显示</option>
+        <option value="off">隐藏（自测）</option>
+      </select>
+    </div>
     <div class="tts-field tts-wide">
       <label>朗读范围</label>
       <div class="tts-range">
@@ -1421,15 +1437,16 @@
   <button id="rubyBtn" class="on" onclick="toggleRuby()" title="显示/隐藏假名" aria-label="显示假名" aria-pressed="true">ふ</button>
   <button id="themeBtn" onclick="toggleTheme()" title="深色/浅色" aria-label="深色模式" aria-pressed="false">◐</button>
   <div class="tts-transport" role="group" aria-label="朗读控制">
-    <button onclick="TTS.prev()" title="上一句" aria-label="上一句">◀</button>
-    <button id="ttsPlayBtn" onclick="TTS.playPause()" title="朗读 / 暂停" aria-label="朗读">▶</button>
-    <button onclick="TTS.next()" title="下一句" aria-label="下一句">▶|</button>
-    <button onclick="TTS.replay()" title="重读本句" aria-label="重读本句">↻</button>
-    <button onclick="TTS.stop()" title="停止朗读" aria-label="停止朗读">■</button>
+    <button onclick="TTS.prev()" title="上一句" aria-label="上一句"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 6h2v12H6zM18 6.8v10.4L9 12z"/></svg></button>
+    <button id="ttsPlayBtn" onclick="TTS.playPause()" title="朗读 / 暂停" aria-label="朗读" aria-pressed="false"><svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13a1 1 0 0 0 1.53.85l10.2-6.5a1 1 0 0 0 0-1.7L9.53 4.65A1 1 0 0 0 8 5.5z"/></svg><svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
+    <button onclick="TTS.next()" title="下一句" aria-label="下一句"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 6h2v12h-2zM6 6.8v10.4L15 12z"/></svg></button>
+    <button onclick="TTS.replay()" title="重读本句" aria-label="重读本句"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.34-5.66"/><path d="M4 4v5h5"/></svg></button>
+    <button onclick="TTS.stop()" title="停止朗读" aria-label="停止朗读"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/></svg></button>
   </div>
   <div class="fs-toast" id="fsToast"></div>
 </div>
-<button type="button" class="tool-fab" id="toolFab" aria-label="打开阅读设置" title="阅读设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></button>
+<button type="button" class="tool-fab" id="toolFab" onclick="TTS.playPause()" aria-label="开始朗读" aria-pressed="false" title="开始朗读"><svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.4v13.2c0 .8.9 1.3 1.6.9l10.1-6.6c.6-.4.6-1.3 0-1.7L9.6 4.5c-.7-.4-1.6.1-1.6.9z"/></svg><svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
+<button type="button" class="tool-gear" id="toolGear" aria-label="打开阅读设置" title="阅读设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></button>
 <div class="tts-repeat-badge" id="ttsRepeatBadge" aria-live="off"></div>
 <script src="../assets/js/browser-tip.js"></script>
 <script src="../assets/js/reader.js"></script>

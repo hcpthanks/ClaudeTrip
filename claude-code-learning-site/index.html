@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="日文原版小说在线精读：汉字自动附假名、逐句朗读、句子语法解析。全部为青空文库公有领域作品。">
+<meta name="description" content="日文原版小说在线精读：汉字自动附假名、逐句朗读、句子语法解析。文本来自青空文库。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
 <title>读书 — 日文小说精读</title>
 <link rel="stylesheet" href="assets/css/site.css">
@@ -15,20 +15,20 @@
   <nav>
     <a href="#books">书库</a>
     <a href="#how">阅读页功能</a>
-    <a href="#about">来源与版权</a>
+    <a href="#about">来源说明</a>
   </nav>
 </header>
 <main role="main">
   <section class="hero">
     <p class="eyebrow">日本語 × 精読</p>
     <h1>读日文原版小说，<br>不懂的句子有人讲。</h1>
-    <p class="lede">汉字自动附假名，点一下就能朗读；读到不懂的句子，选中后点「解」，结合上下文讲清楚意思、语法和语气。</p>
+    <p class="lede">5 分钟免费试读，单次通读、不显示假名；解锁后汉字自动附假名、逐句朗读，读到不懂的句子还能让 AI 结合上下文讲清楚。</p>
     <a class="cta" href="#books">开始阅读</a>
-    <p class="trial-note" id="trialNote">第一次打开书起免费试读 <b>5 分钟</b>，之后 <b>¥100 / 2 年</b> 解锁全站。</p>
+    <p class="trial-note" id="trialNote">首次打开书：5 分钟朗读与全部功能，之后 15 分钟原文阅读；之后需解锁 <b>¥100 / 2 年</b>。</p>
   </section>
   <section class="books" id="books">
     <h2>书库</h2>
-    <p class="sub">全部为公有领域作品，来自青空文库，可自由阅读。</p>
+    <p class="sub">日文原版小说，文本来自青空文库。</p>
     <div class="grid">
       <a class="book-card" href="books/ningen-shikkaku.html" data-book="人間失格" data-chapters="7">
         <span class="book-author">太宰治</span>
@@ -58,16 +58,16 @@
   </section>
   <section class="how" id="how">
     <h2>阅读页有什么</h2>
-    <p class="sub">不用注册，打开就能读。</p>
+    <p class="sub">免费试读 5 分钟；以下功能解锁后全部可用。</p>
     <div class="feats">
-      <div class="feat"><b>假名标注</b><span>每个汉字上方自动标读音，一键隐藏，用来自测。</span></div>
-      <div class="feat"><b>逐句朗读</b><span>点 ▶ 从当前句开始读，可换语速、重复次数与音色。</span></div>
+      <div class="feat"><b>假名标注</b><span>解锁后每个汉字上方自动标读音，可一键隐藏，用来自测。</span></div>
+      <div class="feat"><b>逐句朗读</b><span>点右下大圆钮从当前句开始读，可换语速与音色；精听重复需解锁。</span></div>
       <div class="feat"><b>句子解析</b><span>选中句子点「解」，结合上下文讲意思和语法。可接本地 Ollama（免费）或自己的 API Key。</span></div>
       <div class="feat"><b>记忆位置</b><span>自动记住每本书读到哪，下次打开接着读。</span></div>
     </div>
   </section>
   <section class="about" id="about">
-    <p><b>来源与版权：</b>本站收录的作品均为已进入公有领域的日本文学作品，文本来自 <a href="https://www.aozora.gr.jp/" target="_blank" rel="noopener">青空文库</a>，版权状态遵循日本著作权法（作者逝世满 70 年）。每本书页底部标注了底本与录入者信息，转载时请保留。</p>
+    <p><b>来源说明：</b>文本来自 <a href="https://www.aozora.gr.jp/" target="_blank" rel="noopener">青空文库</a>，每本书页底部标注了底本与录入者信息，转载时请保留。</p>
     <p><b>关于自己上传的书：</b>正在开发。上线后支持上传你自己的扫描版书籍（需付费，按页计费），仅你本人可见，不公开、不索引。</p>
   </section>
 </main>
@@ -104,19 +104,33 @@
     return m ? decodeURIComponent(m[1]) : '';
   }
   var until = Math.max(num(ls('jp-access-until')), num(rd('jp_access_until')));
-  if (until > Date.now()) {
+  var local = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
+  var fast = local && /[?&]trial=fast(?:&|$)/.test(location.search);
+  if (local && !fast) {
+    note.innerHTML = '本地预览：完整功能（线上访客为 5 分钟功能试用 + 15 分钟原文阅读）。';
+    return;
+  }
+  if (!fast && until > Date.now()) {
     var d = new Date(until);
     note.innerHTML = '已解锁，有效期至 ' + d.getFullYear() + ' 年 ' + (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日。';
     return;
   }
   var start = num(ls('jp-trial-start')) || num(rd('jp_trial_start'));
   if (!start) return;
-  var left = start + 5 * 60 * 1000 - Date.now();
-  if (left <= 0) {
-    note.innerHTML = '免费试读已结束。解锁 <b>¥100 / 2 年</b>，可阅读站内全部书籍。';
+  var FULL = fast ? 10000 : 5 * 60 * 1000;
+  var READ = fast ? 20000 : 15 * 60 * 1000;
+  var elapsed = Date.now() - start;
+  function leftText(ms) {
+    var s = Math.max(0, Math.ceil(ms / 1000));
+    return s < 60 ? s + ' 秒' : Math.ceil(s / 60) + ' 分钟';
+  }
+  if (elapsed >= FULL + READ) {
+    note.innerHTML = '试用已结束。解锁 <b>¥100 / 2 年</b>，恢复假名、朗读与段落循环。';
     note.classList.add('over');
+  } else if (elapsed >= FULL) {
+    note.innerHTML = '功能已锁定 · 原文阅读剩余 ' + leftText(FULL + READ - elapsed) + ' · 解锁 <b>¥100 / 2 年</b>';
   } else {
-    note.innerHTML = '免费试读剩余 ' + Math.ceil(left / 60000) + ' 分钟 · 解锁 <b>¥100 / 2 年</b>';
+    note.innerHTML = '功能试读剩余 ' + leftText(FULL - elapsed) + ' · 之后 ' + leftText(READ) + '仅原文 · 解锁 <b>¥100 / 2 年</b>';
   }
 })();
 </script>

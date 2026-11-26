@@ -7,6 +7,16 @@ const BOOK_ID = document.body.dataset.book || 'default';
 const JP_RM = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 const JP_BEHAVIOR = JP_RM ? 'auto' : 'smooth';
 function jpTop() { scrollTo({ top: 0, behavior: JP_BEHAVIOR }); }
+(function () {
+  const de = document.documentElement;
+  if (!de.classList.contains('jp-trial') && !de.classList.contains('jp-paid')) {
+    const h = location.hostname;
+    const local = location.protocol === 'file:' || h === '127.0.0.1' || h === 'localhost' || h === '::1' || h === '[::1]';
+    const fast = local && /(?:^|[?&])trial=fast(?:&|$)/.test(location.search);
+    de.classList.add(local && !fast ? 'jp-paid' : 'jp-trial');
+  }
+  window.JP_PAID = de.classList.contains('jp-paid');
+})();
 const SCROLL_KEY = 'jp-scroll:' + BOOK_ID;
 const THEME_KEY = 'jp-theme-dark';
 // 只取正文块：设置面板、提示条、解析面板里的说明文字不能进朗读队列 / 位置锚点
@@ -47,13 +57,28 @@ function setFont(px) {
   fontTimer = setTimeout(applyFont, 150);
   if (window.closeToolSheet) window.closeToolSheet();
 }
-function toggleRuby() {
-  const on = document.body.classList.toggle('no-ruby') === false;
+function syncRubyUI() {
+  const off = document.documentElement.classList.contains('no-ruby') || document.body.classList.contains('no-ruby');
   const btn = document.getElementById('rubyBtn');
   if (btn) {
-    btn.classList.toggle('on', on);
-    btn.setAttribute('aria-pressed', String(on));
+    btn.classList.toggle('on', !off);
+    btn.setAttribute('aria-pressed', String(!off));
+    btn.setAttribute('aria-label', off ? '显示假名' : '隐藏假名');
   }
+  const sel = document.getElementById('rubyMode');
+  if (sel) sel.value = off ? 'off' : 'on';
+}
+function setRuby(mode) {
+  if (document.documentElement.classList.contains('jp-readonly') || document.documentElement.classList.contains('jp-paywall')) return;
+  const off = mode === 'off';
+  document.documentElement.classList.toggle('no-ruby', off);
+  document.body.classList.toggle('no-ruby', off);
+  try { localStorage.setItem('jp-ruby', off ? 'off' : 'on'); } catch (e) {}
+  syncRubyUI();
+}
+function toggleRuby() {
+  const off = document.documentElement.classList.contains('no-ruby') || document.body.classList.contains('no-ruby');
+  setRuby(off ? 'on' : 'off');
 }
 function toggleTheme() {
   const dark = document.body.classList.toggle('dark');
@@ -152,16 +177,16 @@ function toggleTheme() {
   };
 })();
 (function () {
-  const fab = document.getElementById('toolFab');
+  const gear = document.getElementById('toolGear');
   const sheet = document.querySelector('.toolbar');
   const panel = document.getElementById('ttsPanel');
-  if (!fab || !sheet) return;
+  if (!gear || !sheet) return;
   function closeSheet() {
     document.body.classList.remove('tools-open');
     if (panel) panel.classList.remove('open');
   }
   window.closeToolSheet = closeSheet;
-  fab.addEventListener('click', ev => {
+  gear.addEventListener('click', ev => {
     ev.stopPropagation();
     document.body.classList.add('tools-open');
     if (panel) panel.classList.add('open');
@@ -170,7 +195,7 @@ function toggleTheme() {
   if (x) x.addEventListener('click', closeSheet);
   document.addEventListener('click', ev => {
     if (!document.body.classList.contains('tools-open')) return;
-    if (ev.target.closest && (ev.target.closest('.toolbar') || ev.target.closest('.tool-fab'))) return;
+    if (ev.target.closest && (ev.target.closest('.toolbar') || ev.target.closest('.tool-gear') || ev.target.closest('.tool-fab'))) return;
     // 延后关闭：让「点句子设起点 / 终点」先执行
     setTimeout(closeSheet, 0);
   });
@@ -200,17 +225,33 @@ function toggleTheme() {
   const btn = document.getElementById('themeBtn');
   if (btn) btn.setAttribute('aria-pressed', String(document.body.classList.contains('dark')));
 })();
-/* ---------- 5 分钟免费试读 ---------- */
 (function () {
-  // 本地双击打开的单文件是站长自用版，不套用线上试读限制
-  if (location.protocol === 'file:') return;
-  const TRIAL_MS = 5 * 60 * 1000;
-  const K_START = 'jp-trial-start';
-  const K_UNTIL = 'jp-access-until';
-  const COOKIE_DAYS = 730;
+  if (!window.JP_PAID) {
+    try { if (localStorage.getItem('jp-ruby') === null) document.documentElement.classList.add('no-ruby'); } catch (e) {}
+  }
+  const sel = document.getElementById('rubyMode');
+  if (sel) sel.addEventListener('change', () => setRuby(sel.value));
+  syncRubyUI();
+})();
+/* ---------- 5 分钟功能试读 + 15 分钟原文阅读 ---------- */
+(function () {
+  const de = document.documentElement;
   const chip = document.getElementById('jpTrialChip');
+  const label = document.getElementById('jpTrialLabel');
   const left = document.getElementById('jpTrialLeft');
   const gate = document.getElementById('jpGate');
+  if (window.JP_PAID) return;
+
+  const host = location.hostname;
+  const local = location.protocol === 'file:' || host === '127.0.0.1' || host === 'localhost' || host === '::1' || host === '[::1]';
+  const fast = local && /(?:^|[?&])trial=fast(?:&|$)/.test(location.search);
+  if (local && !fast) return;
+
+  const FULL_MS = fast ? 10 * 1000 : 5 * 60 * 1000;
+  const READ_MS = fast ? 20 * 1000 : 15 * 60 * 1000;
+  const TOTAL_MS = FULL_MS + READ_MS;
+  const K_START = 'jp-trial-start';
+  const COOKIE_DAYS = 730;
   const ls = {
     get(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -225,13 +266,6 @@ function toggleTheme() {
       + '; Max-Age=' + (COOKIE_DAYS * 86400) + '; Path=/; SameSite=Lax';
   }
 
-  const until = Math.max(num(ls.get(K_UNTIL)), num(readCookie('jp_access_until')));
-  if (until > Date.now()) {
-    if (chip) chip.hidden = true;
-    if (gate) gate.hidden = true;
-    return;
-  }
-
   let start = num(ls.get(K_START)) || num(readCookie('jp_trial_start'));
   if (!start) {
     start = Date.now();
@@ -242,53 +276,75 @@ function toggleTheme() {
     if (!num(readCookie('jp_trial_start'))) writeCookie('jp_trial_start', start);
   }
 
-  const endAt = start + TRIAL_MS;
-  let locked = false;
+  let phase = '';
   let timer = 0;
 
   function fmt(ms) {
     const s = Math.max(0, Math.ceil(ms / 1000));
     return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
   }
+  function setChip(text, time) {
+    if (!chip) return;
+    chip.hidden = false;
+    if (label) label.textContent = text;
+    if (left) left.textContent = time;
+    chip.setAttribute('aria-label', text + ' ' + time);
+  }
 
-  function lock() {
-    if (locked || !gate) return;
-    locked = true;
-    clearInterval(timer);
-    if (chip) chip.hidden = true;
-    gate.hidden = false;
-    document.documentElement.classList.add('jp-gate-on');
-    document.body.style.overflow = 'hidden';
+  function enterRead() {
+    if (phase === 'read' || phase === 'pay') return;
+    phase = 'read';
+    de.classList.add('jp-readonly');
+    de.classList.add('no-ruby');
+    if (chip) chip.classList.remove('warn');
     try { if (typeof TTS !== 'undefined' && TTS.stop) TTS.stop(); } catch (e) {}
     try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (e) {}
     try { if (typeof EXPLAIN !== 'undefined' && EXPLAIN.close) EXPLAIN.close(); } catch (e) {}
     try { if (window.closeToolSheet) closeToolSheet(); } catch (e) {}
+  }
+
+  function showGate() {
+    if (!gate) return;
+    gate.hidden = false;
+    de.classList.add('jp-gate-on');
+    document.body.style.overflow = 'hidden';
     const card = gate.querySelector('.gate-card');
     if (card) {
       card.setAttribute('tabindex', '-1');
       card.focus();
-      // 遮罩期间把 Tab 留在卡片内，避免焦点跑到后面的正文
       gate.addEventListener('keydown', (e) => {
         if (e.key === 'Tab') { e.preventDefault(); card.focus(); }
       });
     }
   }
 
+  function enterPay() {
+    if (phase === 'pay') return;
+    phase = 'pay';
+    clearInterval(timer);
+    de.classList.add('jp-paywall');
+    if (chip) chip.hidden = true;
+    if (location.protocol === 'file:') { showGate(); return; }
+    location.href = /\/books\//.test(location.pathname) ? '../pay.html' : 'pay.html';
+  }
+
   function tick() {
-    const remain = endAt - Date.now();
-    if (remain <= 0) { lock(); return; }
-    if (chip) {
-      chip.hidden = false;
-      if (left) left.textContent = fmt(remain);
-      chip.classList.toggle('warn', remain <= 60 * 1000);
-      chip.setAttribute('aria-label', '免费试读剩余 ' + fmt(remain));
+    const elapsed = Date.now() - start;
+    if (elapsed >= TOTAL_MS) { enterPay(); return; }
+    if (elapsed >= FULL_MS) {
+      enterRead();
+      setChip('原文阅读剩余', fmt(TOTAL_MS - elapsed));
+      return;
     }
+    const remain = FULL_MS - elapsed;
+    setChip('功能试读剩余', fmt(remain));
+    if (chip) chip.classList.toggle('warn', remain <= 60 * 1000);
   }
 
   tick();
-  if (!locked) timer = setInterval(tick, 1000);
+  if (phase !== 'pay') timer = setInterval(tick, 1000);
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && !locked) tick();
+    if (!document.hidden && phase !== 'pay') tick();
   });
 })();
 markFontBtns();
@@ -303,6 +359,7 @@ const TTS = (() => {
   }
   const synth = speechSynthesis;
   const playBtn = document.getElementById('ttsPlayBtn');
+  const fab = document.getElementById('toolFab');
   const voiceSel = document.getElementById('ttsVoice');
   const rateEl = document.getElementById('ttsRate');
   const rateVal = document.getElementById('ttsRateVal');
@@ -410,6 +467,20 @@ const TTS = (() => {
       }
       g += text.length;
     });
+  }
+
+  // 第一次按播放时，从当前屏幕位置开始读，而不是回到书首
+  function indexAtViewport() {
+    if (!queue.length) buildQueue();
+    if (!queue.length) return 0;
+    const ps = bookBlocks();
+    let block = null;
+    for (const el of ps) {
+      if (el.getBoundingClientRect().bottom > 0) { block = el; break; }
+    }
+    if (!block) return 0;
+    for (let i = 0; i < queue.length; i++) if (queue[i].el === block) return i;
+    return 0;
   }
 
   function clearHL() {
@@ -566,9 +637,16 @@ const TTS = (() => {
 
   function updateBtn() {
     const playing = state === 'playing';
-    playBtn.textContent = playing ? '❚❚' : '▶';
+    playBtn.classList.toggle('is-playing', playing);
     playBtn.setAttribute('aria-label', playing ? '暂停朗读' : '朗读');
     playBtn.setAttribute('aria-pressed', String(playing));
+    if (fab) {
+      const label = playing ? '暂停朗读' : (state === 'paused' ? '继续朗读' : '开始朗读');
+      fab.classList.toggle('is-playing', playing);
+      fab.setAttribute('aria-label', label);
+      fab.setAttribute('title', label);
+      fab.setAttribute('aria-pressed', String(playing));
+    }
   }
 
   function updateRepeatBadge() {
@@ -614,6 +692,7 @@ const TTS = (() => {
       state = 'playing';
       synth.resume();
     } else {
+      if (hlIdx < 0 && startIdx == null) idx = indexAtViewport();
       if (typeof BROWSER_TIP !== 'undefined' && !BROWSER_TIP.hasJaVoice()) {
         BROWSER_TIP.warnNoVoice(() => startFrom(idx));
       } else {

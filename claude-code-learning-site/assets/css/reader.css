@@ -41,6 +41,18 @@ body.dark {
   box-shadow: 0 2px 10px rgba(0,0,0,.08); font-variant-numeric: tabular-nums; pointer-events: none;
 }
 .trial-chip b { color: var(--fg); font-weight: 600; }
+.trial-chip[hidden] { display: none; }
+html.jp-readonly #toolFab,
+html.jp-readonly #toolGear,
+html.jp-readonly #rubyBtn,
+html.jp-readonly .toolbar,
+html.jp-readonly .ai-panel { display: none !important; }
+html.jp-readonly rt { display: none !important; }
+html.jp-readonly .trial-chip { color: var(--muted); border-color: var(--line); }
+html.jp-paywall #toolFab,
+html.jp-paywall #toolGear,
+html.jp-paywall .toolbar,
+html.jp-paywall .ai-panel { display: none !important; }
 .trial-chip.warn { border-color: var(--accent); color: var(--accent); }
 .trial-chip.warn b { color: var(--accent); }
 html.jp-btip-on .trial-chip { top: calc(var(--jp-btip-h, 56px) + 10px); }
@@ -81,8 +93,8 @@ h2 { font-size: 1.15em; text-align: center; margin: 2.6em 0 1.6em; letter-spacin
 p { margin: 0 0 1.05em; text-indent: 1em; }
 ruby { ruby-position: over; }
 rt { font-size: .5em; line-height: 1; color: var(--ruby); letter-spacing: .02em; }
-body.no-ruby rt { display: none; }
-body.no-ruby ruby { ruby-position: inherit; }
+html.no-ruby rt, body.no-ruby rt { display: none; }
+html.no-ruby ruby, body.no-ruby ruby { ruby-position: inherit; }
 .book-back {
   position: fixed; top: 14px; left: 14px; z-index: 9; text-decoration: none;
   font-family: system-ui, sans-serif; font-size: 12px; color: var(--muted);
@@ -115,8 +127,20 @@ body.tools-open .toolbar { display: flex; }
   box-shadow: 0 6px 18px rgba(168,68,58,.38);
 }
 .tool-fab:hover { filter: brightness(1.08); }
-.tool-fab svg { width: 24px; height: 24px; display: block; }
-body.tools-open .tool-fab { display: none; }
+.tool-fab svg { width: 26px; height: 26px; display: block; }
+.tool-fab .icon-pause { display: none; }
+.tool-fab.is-playing .icon-play { display: none; }
+.tool-fab.is-playing .icon-pause { display: block; }
+.tool-gear {
+  position: fixed; right: 24px; bottom: 80px; width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; border: 1px solid var(--line-strong); background: var(--surface);
+  color: var(--ink-soft); z-index: 31; cursor: pointer; padding: 0;
+  box-shadow: 0 3px 10px rgba(0,0,0,.12); transition: color .15s, border-color .15s, right .22s ease;
+}
+.tool-gear:hover { color: var(--accent); border-color: var(--accent); }
+.tool-gear svg { width: 20px; height: 20px; display: block; }
+body.tools-open .tool-fab, body.tools-open .tool-gear { display: none; }
 .tool-sheet-head {
   display: flex; order: -2; width: 100%; align-items: center;
   justify-content: space-between; margin-bottom: 2px;
@@ -150,6 +174,13 @@ body.tools-open .tool-fab { display: none; }
 }
 .tts-hl { background: var(--hl); border-radius: 3px; }
 .tts-transport { display: flex; gap: 5px; }
+.tts-transport button svg { width: 18px; height: 18px; display: block; }
+.tts-transport .icon-pause { display: none; }
+.tts-transport button.is-playing .icon-play { display: none; }
+.tts-transport button.is-playing .icon-pause { display: block; }
+.tts-panel .tts-inline { display: flex; align-items: center; gap: 10px; }
+.tts-panel .tts-inline label { margin: 0; white-space: nowrap; }
+.tts-panel .tts-inline select { width: auto; min-width: 140px; }
 .tts-panel .tts-range { line-height: 1.7; }
 .tts-range-info { display: flex; flex-wrap: wrap; gap: 2px 18px; }
 .tts-panel .tts-pick { display: flex; gap: 8px; }
@@ -185,11 +216,13 @@ p.tts-end-mark, h2.tts-end-mark { box-shadow: inset -3px 0 0 var(--accent); }
   }
   html.jp-btip-on .toolbar { max-height: calc(76vh - var(--jp-btip-h, 0px)); }
   body.ai-open .toolbar { right: 8px; }
-  body.ai-open .tool-fab { display: none; }
+  body.ai-open .tool-fab, body.ai-open .tool-gear { display: none; }
   .ai-panel { width: min(420px, 100vw); }
   .tts-panel { grid-template-columns: 1fr; }
   .tool-fab { width: 58px; height: 58px; right: 16px; bottom: 22px; }
   .tool-fab svg { width: 28px; height: 28px; }
+  .tool-gear { width: 46px; height: 46px; right: 22px; bottom: 92px; }
+  .tool-gear svg { width: 22px; height: 22px; }
 }
 
 /* ---------- 句子解析面板 ---------- */
@@ -204,6 +237,7 @@ p.tts-end-mark, h2.tts-end-mark { box-shadow: inset -3px 0 0 var(--accent); }
 .toolbar, .tool-fab { transition: right .22s ease; }
 body.ai-open .toolbar { right: calc(clamp(320px, 42vw, 420px) + 16px); }
 body.ai-open .tool-fab { right: calc(clamp(320px, 42vw, 420px) + 18px); }
+body.ai-open .tool-gear { right: calc(clamp(320px, 42vw, 420px) + 24px); }
 .ai-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
 .ai-head b { font-size: 14px; font-weight: 600; }
 .ai-status { flex: 1; min-width: 0; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
