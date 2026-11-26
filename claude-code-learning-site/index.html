@@ -14,7 +14,7 @@
   <a class="brand" href="./">読<em>書</em></a>
   <nav>
     <a href="#books">书库</a>
-    <a href="#how">阅读页功能</a>
+    <a href="#how">读懂之后</a>
     <a href="#about">来源说明</a>
   </nav>
 </header>
@@ -22,9 +22,9 @@
   <section class="hero">
     <p class="eyebrow">日本語 × 精読</p>
     <h1>精读日语小说，<br>沉浸式打磨日语听读能力</h1>
-    <p class="lede">先完整体验 5 分钟：汉字自动附假名、逐句朗读，不懂的句子让 AI 结合上下文讲清楚。之后还能继续免费读 15 分钟原文。</p>
-    <a class="cta" href="#books">开始阅读</a>
-    <p class="trial-note" id="trialNote">首次打开书：5 分钟朗读与全部功能，之后 15 分钟原文阅读；之后需解锁 <b>¥100 / 2 年</b>。</p>
+    <p class="lede">读原版小说，不再等翻译。汉字自动附假名、逐句朗读，卡住的句子让 AI 结合上下文讲清楚；日语听读能力，在故事里一点点长出来。</p>
+    <a class="cta" href="#books">免费开始阅读</a>
+    <p class="trial-note" id="trialNote">免费体验 5 分钟完整功能 + 15 分钟原文，之后 <b>¥100</b> 解锁 2 年。</p>
   </section>
   <section class="books" id="books">
     <h2>书库</h2>
@@ -57,13 +57,21 @@
     </div>
   </section>
   <section class="how" id="how">
-    <h2>阅读页有什么</h2>
-    <p class="sub">5 分钟完整功能试用；之后 15 分钟原文阅读，解锁后不再限时。</p>
+    <h2>当你读懂日语，生活会多出什么</h2>
+    <p class="sub">不是多背几千个单词，而是少了一层翻译。</p>
+    <div class="vision">
+      <p>新书上市那天，你读的是原版，不是等了大半年的译本。</p>
+      <p>看番、看剧时，台词直接落进耳朵，语气和停顿都还在。</p>
+      <p>去日本旅行，菜单、告示、邻桌的闲聊，都从背景音变成看得懂、听得清的日常。</p>
+    </div>
+    <p class="vision-close">语言不是终点，它只是让你更早读到故事，更近听见人。</p>
+    <h3 class="how-title">把每一次阅读，变成一次练习</h3>
+    <p class="sub">看清每个字，听见每句话，问懂每个难点，再回到上次停下的地方。</p>
     <div class="feats">
       <div class="feat"><b>假名标注</b><span>每个汉字上方自动标读音，可一键隐藏，用来自测。</span></div>
       <div class="feat"><b>逐句朗读</b><span>点右下大圆钮从当前句开始读，可换语速、重复次数和音色。</span></div>
       <div class="feat"><b>句子解析</b><span>选中句子点「解」，结合上下文讲意思和语法。可接本地 Ollama（免费）或自己的 API Key。</span></div>
-      <div class="feat"><b>记忆位置</b><span>自动记住每本书读到哪，下次打开接着读。</span></div>
+      <div class="feat feat-bookmark"><span class="feat-mark" aria-hidden="true">栞</span><b>合上，就是书签</b><span>按段落记住位置，换字号、改窗口也回到原句；首页标着读到第几章，下次打开从断点继续。</span></div>
     </div>
   </section>
   <section class="about" id="about">
@@ -107,7 +115,7 @@
   var local = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
   var fast = local && /[?&]trial=fast(?:&|$)/.test(location.search);
   if (local && !fast) {
-    note.innerHTML = '本地预览：完整功能（线上访客为 5 分钟功能试用 + 15 分钟原文阅读）。';
+    note.innerHTML = '本地预览：完整功能，不计时。';
     return;
   }
   if (!fast && until > Date.now()) {
@@ -125,12 +133,12 @@
     return s < 60 ? s + ' 秒' : Math.ceil(s / 60) + ' 分钟';
   }
   if (elapsed >= FULL + READ) {
-    note.innerHTML = '试用已结束。解锁 <b>¥100 / 2 年</b>，恢复假名、朗读与段落循环。';
+    note.innerHTML = '试用已结束 · 解锁 <b>¥100 / 2 年</b>';
     note.classList.add('over');
   } else if (elapsed >= FULL) {
-    note.innerHTML = '功能已锁定 · 原文阅读剩余 ' + leftText(FULL + READ - elapsed) + ' · 解锁 <b>¥100 / 2 年</b>';
+    note.innerHTML = '功能已锁定 · 原文阅读剩余 ' + leftText(FULL + READ - elapsed);
   } else {
-    note.innerHTML = '功能试读剩余 ' + leftText(FULL - elapsed) + ' · 之后 ' + leftText(READ) + '仅原文 · 解锁 <b>¥100 / 2 年</b>';
+    note.innerHTML = '功能试读剩余 ' + leftText(FULL - elapsed) + ' · 解锁 <b>¥100 / 2 年</b>';
   }
 })();
 </script>

@@ -72,11 +72,18 @@ h2{font-family:var(--serif);font-size:clamp(22px,3vw,30px);margin:0 0 8px;font-w
   transition:width .35s ease}
 .book-note{font-size:12px;color:var(--muted)}
 .how{padding-top:clamp(48px,7vw,80px)}
+.vision{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:0 0 18px}
+.vision p{margin:0;padding-top:14px;border-top:1px solid var(--line);font-size:14px;line-height:1.9;color:var(--ink-soft)}
+.vision-close{margin:0 0 56px;font-family:var(--serif);font-size:clamp(18px,2.4vw,23px);
+  line-height:1.7;color:var(--ink);max-width:38em}
+.how-title{font-family:var(--serif);font-size:clamp(19px,2.4vw,24px);margin:0 0 6px;font-weight:600}
 .feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-.feat{padding:18px 20px;border-left:2px solid var(--accent);
+.feat{position:relative;padding:18px 20px;border-left:2px solid var(--accent);
   background:linear-gradient(90deg,var(--accent-soft),transparent 72%);border-radius:0 10px 10px 0}
 .feat b{display:block;font-family:var(--serif);font-size:16px;margin-bottom:4px}
 .feat span{font-size:13px;color:var(--ink-soft)}
+.feat .feat-mark{position:absolute;top:12px;right:14px;font-family:var(--serif);font-size:12px;
+  color:#c9b99f;letter-spacing:.08em}
 .about{margin-top:72px;padding-top:24px;border-top:1px solid var(--line);
   font-size:13px;color:var(--muted);line-height:1.95;max-width:60em}
 .about a{color:var(--accent);text-decoration:none}
@@ -86,4 +93,7 @@ footer{max-width:1080px;margin:0 auto;padding:0 clamp(16px,4vw,48px) 48px;
 @media (max-width:560px){
   .nav nav{gap:14px;font-size:13px}
   .hero h1{font-size:30px}
+  .vision{grid-template-columns:1fr;gap:0}
+  .vision p{padding:12px 0}
+  .vision-close{margin-bottom:40px}
 }
