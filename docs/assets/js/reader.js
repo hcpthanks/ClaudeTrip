@@ -4,6 +4,9 @@ function nearestPreset(v) {
 }
 let fs = nearestPreset(parseFloat(localStorage.getItem('jp-fs')) || 19);
 const BOOK_ID = document.body.dataset.book || 'default';
+const JP_RM = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const JP_BEHAVIOR = JP_RM ? 'auto' : 'smooth';
+function jpTop() { scrollTo({ top: 0, behavior: JP_BEHAVIOR }); }
 const SCROLL_KEY = 'jp-scroll:' + BOOK_ID;
 const THEME_KEY = 'jp-theme-dark';
 // 只取正文块：设置面板、提示条、解析面板里的说明文字不能进朗读队列 / 位置锚点
@@ -21,7 +24,11 @@ function applyFont() {
 function markFontBtns() {
   FONT_PRESETS.forEach(([px], i) => {
     const b = document.getElementById('fsBtn' + i);
-    if (b) b.classList.toggle('fs-on', px === fs);
+    if (b) {
+      const on = px === fs;
+      b.classList.toggle('fs-on', on);
+      b.setAttribute('aria-pressed', String(on));
+    }
   });
 }
 function setFont(px) {
@@ -42,11 +49,24 @@ function setFont(px) {
 }
 function toggleRuby() {
   const on = document.body.classList.toggle('no-ruby') === false;
-  document.getElementById('rubyBtn').classList.toggle('on', on);
+  const btn = document.getElementById('rubyBtn');
+  if (btn) {
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', String(on));
+  }
 }
-function toggleTheme() { document.body.classList.toggle('dark'); }
+function toggleTheme() {
+  const dark = document.body.classList.toggle('dark');
+  const btn = document.getElementById('themeBtn');
+  if (btn) btn.setAttribute('aria-pressed', String(dark));
+  return dark;
+}
 (function () {
   const ANCHOR_KEY = 'jp-anchor:' + BOOK_ID;
+  const CHAPTER_KEY = 'jp-chapter:' + BOOK_ID;
+  let HASH_TARGET = '';
+  try { HASH_TARGET = location.hash ? decodeURIComponent(location.hash.slice(1)) : ''; } catch (e) { HASH_TARGET = ''; }
+  let hashShown = false;
   const blocks = () => bookBlocks();
   function topBlock() {           // 二分找到视口顶部所在段落（rect 自上而下有序）
     const ps = blocks();
@@ -58,6 +78,13 @@ function toggleTheme() { document.body.classList.toggle('dark'); }
     }
     return found;
   }
+  function chapterAt(index) {     // 第几章（按 h2 计数，正文前为 0）
+    if (index < 0) return 0;
+    const ps = blocks();
+    let n = 0;
+    for (let k = 0; k <= index && k < ps.length; k++) if (ps[k].tagName === 'H2') n++;
+    return n;
+  }
   function savePos() {
     try {
       localStorage.setItem(SCROLL_KEY, scrollY);
@@ -68,6 +95,7 @@ function toggleTheme() { document.body.classList.toggle('dark'); }
       if (i >= 0) {
         const el = blocks()[i];
         localStorage.setItem(ANCHOR_KEY, i + ':' + Math.round(el.getBoundingClientRect().top));
+        localStorage.setItem(CHAPTER_KEY, String(chapterAt(i)));
       }
     } catch (e) { /* 隐私模式等写入失败时忽略 */ }
   }
@@ -81,6 +109,20 @@ function toggleTheme() { document.body.classList.toggle('dark'); }
   addEventListener('pagehide', savePos);
   // 位置记忆优先按段落锚点恢复：文档很大时懒排版会让像素偏移越来越不准
   function restorePos() {
+    // 带句子深链（#b12）时以链接为准，不再恢复上次位置
+    if (HASH_TARGET) {
+      const target = document.getElementById(HASH_TARGET);
+      if (target) {
+        if (!hashShown) {
+          target.scrollIntoView({ block: 'center', behavior: 'instant' });
+          target.classList.add('hash-hl');
+          setTimeout(() => target.classList.remove('hash-hl'), 2600);
+          hashShown = true;
+        }
+        restored = true;
+        return;
+      }
+    }
     const parts = (localStorage.getItem(ANCHOR_KEY) || '').split(':');
     const i = parseInt(parts[0], 10);
     const off = parseInt(parts[1], 10);
@@ -136,6 +178,117 @@ function toggleTheme() { document.body.classList.toggle('dark'); }
     if (btn.classList.contains('tool-sheet-x')) return;
     if (btn.closest('.tts-panel')) return;
     btn.addEventListener('click', closeSheet);
+  });
+})();
+/* ---------- 阅读进度线 ---------- */
+(function () {
+  const bar = document.getElementById('readProgress');
+  if (!bar) return;
+  let queued = false;
+  function update() {
+    queued = false;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+    bar.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+  }
+  function queue() { if (!queued) { queued = true; requestAnimationFrame(update); } }
+  addEventListener('scroll', queue, { passive: true });
+  addEventListener('resize', queue);
+  update();
+})();
+(function () {
+  const btn = document.getElementById('themeBtn');
+  if (btn) btn.setAttribute('aria-pressed', String(document.body.classList.contains('dark')));
+})();
+/* ---------- 5 分钟免费试读 ---------- */
+(function () {
+  // 本地双击打开的单文件是站长自用版，不套用线上试读限制
+  if (location.protocol === 'file:') return;
+  const TRIAL_MS = 5 * 60 * 1000;
+  const K_START = 'jp-trial-start';
+  const K_UNTIL = 'jp-access-until';
+  const COOKIE_DAYS = 730;
+  const chip = document.getElementById('jpTrialChip');
+  const left = document.getElementById('jpTrialLeft');
+  const gate = document.getElementById('jpGate');
+  const ls = {
+    get(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+  const num = (v) => { const n = parseInt(v, 10); return isFinite(n) ? n : 0; };
+  function readCookie(name) {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+  function writeCookie(name, value) {
+    document.cookie = name + '=' + encodeURIComponent(value)
+      + '; Max-Age=' + (COOKIE_DAYS * 86400) + '; Path=/; SameSite=Lax';
+  }
+
+  const until = Math.max(num(ls.get(K_UNTIL)), num(readCookie('jp_access_until')));
+  if (until > Date.now()) {
+    if (chip) chip.hidden = true;
+    if (gate) gate.hidden = true;
+    return;
+  }
+
+  let start = num(ls.get(K_START)) || num(readCookie('jp_trial_start'));
+  if (!start) {
+    start = Date.now();
+    ls.set(K_START, String(start));
+    writeCookie('jp_trial_start', start);
+  } else {
+    if (!num(ls.get(K_START))) ls.set(K_START, String(start));
+    if (!num(readCookie('jp_trial_start'))) writeCookie('jp_trial_start', start);
+  }
+
+  const endAt = start + TRIAL_MS;
+  let locked = false;
+  let timer = 0;
+
+  function fmt(ms) {
+    const s = Math.max(0, Math.ceil(ms / 1000));
+    return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  }
+
+  function lock() {
+    if (locked || !gate) return;
+    locked = true;
+    clearInterval(timer);
+    if (chip) chip.hidden = true;
+    gate.hidden = false;
+    document.documentElement.classList.add('jp-gate-on');
+    document.body.style.overflow = 'hidden';
+    try { if (typeof TTS !== 'undefined' && TTS.stop) TTS.stop(); } catch (e) {}
+    try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (e) {}
+    try { if (typeof EXPLAIN !== 'undefined' && EXPLAIN.close) EXPLAIN.close(); } catch (e) {}
+    try { if (window.closeToolSheet) closeToolSheet(); } catch (e) {}
+    const card = gate.querySelector('.gate-card');
+    if (card) {
+      card.setAttribute('tabindex', '-1');
+      card.focus();
+      // 遮罩期间把 Tab 留在卡片内，避免焦点跑到后面的正文
+      gate.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') { e.preventDefault(); card.focus(); }
+      });
+    }
+  }
+
+  function tick() {
+    const remain = endAt - Date.now();
+    if (remain <= 0) { lock(); return; }
+    if (chip) {
+      chip.hidden = false;
+      if (left) left.textContent = fmt(remain);
+      chip.classList.toggle('warn', remain <= 60 * 1000);
+      chip.setAttribute('aria-label', '免费试读剩余 ' + fmt(remain));
+    }
+  }
+
+  tick();
+  if (!locked) timer = setInterval(tick, 1000);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !locked) tick();
   });
 })();
 markFontBtns();
@@ -301,7 +454,7 @@ const TTS = (() => {
     if (first) {
       const r = first.getBoundingClientRect();
       if (r.top < 80 || r.bottom > innerHeight - 100) {
-        first.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        first.scrollIntoView({ block: 'center', behavior: (typeof JP_BEHAVIOR === 'undefined' ? 'smooth' : JP_BEHAVIOR) });
       }
     }
   }
@@ -412,19 +565,27 @@ const TTS = (() => {
   }
 
   function updateBtn() {
-    playBtn.textContent = state === 'playing' ? '❚❚' : '▶';
+    const playing = state === 'playing';
+    playBtn.textContent = playing ? '❚❚' : '▶';
+    playBtn.setAttribute('aria-label', playing ? '暂停朗读' : '朗读');
+    playBtn.setAttribute('aria-pressed', String(playing));
   }
 
   function updateRepeatBadge() {
     if (!repeatBadge) return;
-    const n = repeatCount();
-    if (state !== 'playing' || n <= 1) {
+    if (state === 'idle' || !queue.length) {
       repeatBadge.classList.remove('on');
       return;
     }
+    const n = repeatCount();
     const passage = repeatMode() === 'passage';
-    repeatBadge.textContent = (passage ? '全段 ' : '本句 ')
-      + '第 ' + ((passage ? loopDone : repDone) + 1) + '/' + n + ' 遍';
+    const parts = ['第 ' + (idx + 1) + '/' + queue.length + ' 句'];
+    if (n > 1) {
+      parts.push((passage ? '全段 ' : '本句 ') + ((passage ? loopDone : repDone) + 1) + '/' + n + ' 遍');
+    }
+    const rate = parseFloat(rateEl.value) || 1;
+    parts.push(rate.toFixed(1) + '×');
+    repeatBadge.textContent = parts.join(' · ');
     repeatBadge.classList.add('on');
   }
 
@@ -592,7 +753,8 @@ const TTS = (() => {
     return {
       sentence: item.text,
       before: bi > 0 ? blockText(blocks[bi - 1]) : '',
-      after: bi >= 0 && bi + 1 < blocks.length ? blockText(blocks[bi + 1]) : ''
+      after: bi >= 0 && bi + 1 < blocks.length ? blockText(blocks[bi + 1]) : '',
+      block: item.el && item.el.id ? item.el.id : ''
     };
   }
 
@@ -723,18 +885,21 @@ const TTS = (() => {
   rateEl.addEventListener('input', () => {
     syncRate();
     localStorage.setItem('jp-tts-rate', rateEl.value);
+    updateRepeatBadge();
   });
   rateEl.addEventListener('change', autoClosePanel);
   repeatSel.value = localStorage.getItem('jp-tts-repeat') || '1';
   if (!repeatSel.value) repeatSel.value = '1';
   repeatSel.addEventListener('change', () => {
     localStorage.setItem('jp-tts-repeat', repeatSel.value);
+    updateRepeatBadge();
     autoClosePanel();
   });
   modeSel.value = localStorage.getItem('jp-tts-mode') || 'sentence';
   modeSel.addEventListener('change', () => {
     localStorage.setItem('jp-tts-mode', modeSel.value);
     loopDone = 0;
+    updateRepeatBadge();
     autoClosePanel();
   });
   voiceSel.addEventListener('change', () => {
@@ -877,7 +1042,8 @@ const EXPLAIN = (() => {
     return {
       sentence: sentence,
       before: i > 0 ? blockText(blocks[i - 1]) : '',
-      after: i >= 0 && i + 1 < blocks.length ? blockText(blocks[i + 1]) : ''
+      after: i >= 0 && i + 1 < blocks.length ? blockText(blocks[i + 1]) : '',
+      block: block.id || ''
     };
   }
   function resolveTarget() {
@@ -904,48 +1070,12 @@ const EXPLAIN = (() => {
   }
 
   function makeUI() {
-    const css = document.createElement('style');
-    css.textContent = `
-.ai-panel{position:fixed;top:0;right:0;bottom:0;width:clamp(320px,42vw,420px);z-index:30;display:flex;
-  flex-direction:column;background:var(--bg);color:var(--fg);border-left:1px solid #d8d1c3;
-  box-shadow:-8px 0 30px rgba(0,0,0,.14);transform:translateX(104%);transition:transform .22s ease;
-  font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif}
-.ai-panel.open{transform:none}
-.toolbar{transition:right .22s ease}
-body.ai-open .toolbar{right:calc(clamp(320px,42vw,420px) + 16px)}
-body.dark .ai-panel{background:#1b1d21;border-left-color:#34373d}
-.ai-head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #e6e0d4}
-body.dark .ai-head{border-bottom-color:#33363c}
-.ai-head b{font-size:14px;font-weight:600}
-.ai-status{flex:1;min-width:0;font-size:11px;color:#8a837a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ai-x{border:none;background:none;font-size:16px;line-height:1;cursor:pointer;color:#8a837a;padding:2px 6px}
-.ai-x:hover{color:#b8433a}
-.ai-target{padding:9px 14px;font-size:12.5px;line-height:1.7;color:#8a837a;
-  border-bottom:1px solid #eee9dd;max-height:6.4em;overflow:auto}
-body.dark .ai-target{border-bottom-color:#2c2f34;color:#a9a49b}
-.ai-body{flex:1;overflow:auto;padding:14px 16px;font-size:14px;line-height:1.9;
-  white-space:pre-wrap;word-break:break-word}
-.ai-body.streaming::after{content:'▊';color:#b8433a;animation:aiBlink 1s steps(2) infinite}
-@keyframes aiBlink{50%{opacity:0}}
-.ai-foot{display:flex;gap:6px;padding:9px 12px;border-top:1px solid #e6e0d4;flex-wrap:wrap}
-body.dark .ai-foot{border-top-color:#33363c}
-.ai-foot button{border:1px solid #cfc8bb;background:#fff;color:#333;border-radius:7px;
-  padding:4px 10px;font-size:12px;cursor:pointer}
-body.dark .ai-foot button{background:#2a2d32;color:#ddd;border-color:#444}
-.ai-foot button:hover{border-color:#b8433a;color:#b8433a}
-.ai-set{display:none;padding:2px 14px 14px;border-top:1px solid #e6e0d4;font-size:12px}
-.ai-set.open{display:block}
-.ai-set label{display:block;color:#7c7367;margin:8px 0 2px}
-.ai-set input,.ai-set select{width:100%;padding:4px 7px;border:1px solid #cfc8bb;border-radius:6px;
-  font-size:12px;background:#fff;color:#333}
-body.dark .ai-set input,body.dark .ai-set select{background:#2a2d32;color:#ddd;border-color:#444}
-.ai-hint{color:#8a837a;font-size:11px;line-height:1.6;margin:8px 0 0}
-.ai-hint b{color:#b8433a;font-weight:600}`;
-    document.head.appendChild(css);
-
     const panel = document.createElement('aside');
     panel.className = 'ai-panel';
     panel.id = 'aiPanel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-label', '句子解析');
+    panel.setAttribute('aria-hidden', 'true');
     panel.innerHTML = `
       <div class="ai-head">
         <b>句子解析</b><span class="ai-status" id="aiStatus"></span>
@@ -957,6 +1087,7 @@ body.dark .ai-set input,body.dark .ai-set select{background:#2a2d32;color:#ddd;b
         <button type="button" id="aiRetry">重新解析</button>
         <button type="button" id="aiCopy">复制结果</button>
         <button type="button" id="aiCopyQ" title="复制整段提问，粘贴到任意 AI 网页">复制提问</button>
+        <button type="button" id="aiLink" title="复制这一句的网址，打开后直接跳到本句">复制本句链接</button>
         <button type="button" id="aiStop" style="display:none">停止</button>
         <button type="button" id="aiGear" title="设置">⚙</button>
       </div>
@@ -1003,6 +1134,7 @@ body.dark .ai-set input,body.dark .ai-set select{background:#2a2d32;color:#ddd;b
     panel.querySelector('#aiRetry').addEventListener('click', rerun);
     panel.querySelector('#aiCopy').addEventListener('click', copyText);
     panel.querySelector('#aiCopyQ').addEventListener('click', copyQuestion);
+    panel.querySelector('#aiLink').addEventListener('click', copyLink);
     ui.stopBtn.addEventListener('click', stop);
     panel.querySelector('#aiGear').addEventListener('click', () => ui.setBox.classList.toggle('open'));
     ui.presetSel.addEventListener('change', () => {
@@ -1171,6 +1303,11 @@ body.dark .ai-set input,body.dark .ai-set select{background:#2a2d32;color:#ddd;b
     if (!current) { setStatus('先选一句再复制提问'); return; }
     copyTextContent(SYS + '\n\n' + buildPrompt(current), '已复制提问，粘贴到任意 AI 网页即可');
   }
+  function copyLink() {
+    if (!current || !current.block) { setStatus('先选中一句再复制链接'); return; }
+    const url = location.href.split('#')[0] + '#' + current.block;
+    copyTextContent(url, '已复制本句链接');
+  }
   function copyTextContent(txt, okMsg) {
     const done = () => setStatus(okMsg);
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1192,6 +1329,7 @@ body.dark .ai-set input,body.dark .ai-set select{background:#2a2d32;color:#ddd;b
   function openPanel() {
     if (!ui) makeUI();
     ui.panel.classList.add('open');
+    ui.panel.setAttribute('aria-hidden', 'false');
     document.body.classList.add('ai-open');
     const t = resolveTarget();
     if (!t) {
@@ -1208,12 +1346,22 @@ body.dark .ai-set input,body.dark .ai-set select{background:#2a2d32;color:#ddd;b
   function closePanel() {
     stop();
     document.body.classList.remove('ai-open');
-    if (ui) ui.panel.classList.remove('open');
+    if (ui) {
+      if (ui.panel.contains(document.activeElement)) {
+        const btn = document.getElementById('aiBtn');
+        if (btn) btn.focus();
+      }
+      ui.panel.classList.remove('open');
+      ui.panel.setAttribute('aria-hidden', 'true');
+    }
   }
 
   document.addEventListener('mouseup', ev => {
     const t = ev.target;
-    if (t && t.closest && t.closest('.toolbar, .ai-panel')) return;
+    if (!t || !t.closest) return;
+    // 只有点在正文块上才记录；点工具按钮 / 面板不能覆盖上一次的句子位置
+    if (t.closest('.toolbar, .ai-panel, .tool-fab, .book-back, .skip-link, .read-progress')) return;
+    if (!t.closest('p, h2')) return;
     lastClick = { x: ev.clientX, y: ev.clientY };
     const sel = window.getSelection();
     if (!sel || sel.isCollapsed) lastSel = null;

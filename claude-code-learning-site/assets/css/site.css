@@ -31,6 +31,9 @@ main{max-width:1080px;margin:0 auto;padding:0 clamp(16px,4vw,48px) 80px}
   text-decoration:none;padding:12px 28px;border-radius:999px;font-size:15px;
   box-shadow:0 6px 18px rgba(168,68,58,.22)}
 .cta:hover{filter:brightness(1.06)}
+.trial-note{margin:18px 0 0;font-size:13px;color:var(--muted);line-height:1.8}
+.trial-note b{color:var(--accent);font-weight:600}
+.trial-note.over{color:var(--accent)}
 h2{font-family:var(--serif);font-size:clamp(22px,3vw,30px);margin:0 0 8px;font-weight:600}
 .sub{color:var(--muted);font-size:14px;margin:0 0 28px}
 .books{padding-top:clamp(20px,4vw,36px)}
@@ -44,7 +47,8 @@ h2{font-family:var(--serif);font-size:clamp(22px,3vw,30px);margin:0 0 8px;font-w
 .book-title{font-family:var(--serif);font-size:22px;font-weight:600;margin:0;line-height:1.4;
   letter-spacing:.02em}
 .book-blurb{font-size:13px;color:var(--ink-soft);margin:0}
-.book-meta{font-size:12px;color:var(--muted)}
+.book-facts{display:flex;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.book-facts span+span{border-left:1px solid var(--line);margin-left:10px;padding-left:10px}
 .bar{height:3px;background:#e9dfcc;border-radius:2px;overflow:hidden;margin-top:6px}
 .bar>i{display:block;height:100%;width:0;background:var(--accent);border-radius:2px;
   transition:width .35s ease}
