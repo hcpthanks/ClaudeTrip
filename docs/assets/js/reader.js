@@ -1072,7 +1072,8 @@ const DICT = (() => {
     panel.innerHTML =
       '<div class="ai-head"><b>查词</b><span class="ai-status" id="dictStatus"></span>' +
       '<button class="ai-x" type="button" id="dictClose" title="关闭（Esc）">✕</button></div>' +
-      '<div class="dict-body" id="dictBody"></div>';
+      '<div class="dict-body" id="dictBody"></div>' +
+      '<p class="dict-credit">释义来自 <a href="https://jitendex.org" target="_blank" rel="noopener">Jitendex</a>（CC BY-SA 4.0）</p>';
     document.body.appendChild(panel);
     bodyEl = panel.querySelector('#dictBody');
     panel.querySelector('#dictClose').addEventListener('click', close);

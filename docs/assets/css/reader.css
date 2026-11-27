@@ -342,6 +342,13 @@ body.ai-open .tool-gear { right: calc(clamp(320px, 42vw, 420px) + 24px); }
   flex: 1; overflow: auto; padding: 14px 16px 20px;
   font-family: system-ui, -apple-system, "Microsoft YaHei", sans-serif;
 }
+.dict-credit {
+  margin: 0; padding: 9px 16px 11px; border-top: 1px solid var(--line);
+  font-size: 11.5px; line-height: 1.5; color: var(--muted);
+  font-family: system-ui, -apple-system, "Microsoft YaHei", sans-serif;
+}
+.dict-credit a { color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
+.dict-credit a:hover { color: var(--accent); }
 .dict-word { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin: 0 0 10px; }
 .dict-word b {
   font-family: "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", "MS Mincho", serif;
