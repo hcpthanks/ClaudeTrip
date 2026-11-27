@@ -45,13 +45,30 @@ npx wrangler secret put AUTH_SECRET     # 至少 32 位随机串
 npx wrangler deploy
 ```
 
-部署后把 `wrangler.toml` 里的 `MAIL_MODE` 改成 `resend`，再配：
+部署后配发信。三家都支持，由 `MAIL_MODE` 切换：
+
+| MAIL_MODE | 说明 |
+|---|---|
+| `dev` | 验证码直接写在接口响应里，**只能本地/临时用** |
+| `ses` | 腾讯云 SES（当前生产用） |
+| `resend` | Resend |
+
+### 腾讯云 SES（当前方案）
 
 ```bash
-npx wrangler secret put RESEND_KEY
+npx wrangler secret put TENCENT_SECRET_ID
+npx wrangler secret put TENCENT_SECRET_KEY
 ```
 
-`[vars]` 里加 `MAIL_FROM = "no-reply@hcpthanks.com"`。域名在 Cloudflare 托管，按 Resend 给的记录加几条 DNS 即可验证发信域。
+`[vars]` 里需要 `SES_REGION`、`MAIL_FROM`，模板审核通过后再填 `SES_TEMPLATE_ID`。
+
+三个坑：
+
+1. **默认没有自定义发送权限**，不填 `SES_TEMPLATE_ID` 会报 `FailedOperation.WithOutPermission`。必须在控制台建模板并审核通过。
+2. `Simple.Text` / `Simple.Html` 必须是 **Base64**（UTF-8），传明文报 `InvalidParameterValue.EmailContentIsWrong`。
+3. 从控制台复制密钥常带上 `SecretId ` / `SecretKey ` 前缀，代码里 `cleanSecret()` 会自动剥掉。
+
+香港地域不需要域名备案；中国大陆地域要求发信域名有 ICP 备案。
 
 ## 前端接入要点
 

@@ -9,7 +9,13 @@ database_name = "jp-auth"
 database_id = "fd0b19b9-32e5-4355-99b5-2fd0242b6b76"
 
 [vars]
-MAIL_MODE = "dev"
+# 验证通过后改成 "ses"
+MAIL_MODE = "ses"
+SES_REGION = "ap-hongkong"
+# 必须与腾讯云 SES 里验证过的发信域名一致
+MAIL_FROM = "no-reply@mail.hcpthanks.ccwu.cc"
+# 模板审核通过后填模板 ID；填了就走模板发送，不填走 Simple（需自定义发送权限）
+# SES_TEMPLATE_ID = ""
 
 # 国内直连 workers.dev 不通（DNS 投毒），走已经托管在 Cloudflare 的域名
 [[routes]]

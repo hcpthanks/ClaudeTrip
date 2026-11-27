@@ -184,12 +184,21 @@ async function requestCode(env, body, request) {
   }
 
   const sent = await sendMail(env, email, code);
-  if (!sent.ok) return json({ ok: false, error: '验证码没发出去，稍后再试' }, 502);
+  if (!sent.ok) {
+    console.error('mail failed', sent.reason || 'unknown');
+    return json({ ok: false, error: '验证码没发出去，稍后再试' }, 502);
+  }
   return json({ ok: true });
 }
 
 async function sendMail(env, email, code) {
-  if (!env.RESEND_KEY) return { ok: false };
+  if (env.MAIL_MODE === 'resend') return sendResend(env, email, code);
+  if (env.MAIL_MODE === 'ses') return sendTencentSes(env, email, code);
+  return { ok: false, reason: '未知的 MAIL_MODE' };
+}
+
+async function sendResend(env, email, code) {
+  if (!env.RESEND_KEY) return { ok: false, reason: '缺 RESEND_KEY' };
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -197,13 +206,155 @@ async function sendMail(env, email, code) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      from: env.MAIL_FROM || 'no-reply@hcpthanks.com',
+      from: env.MAIL_FROM,
       to: [email],
       subject: '登录验证码 · ' + code,
-      text: '验证码 ' + code + '，十分钟内有效。\n\n如果不是你本人操作，忽略这封邮件即可。'
+      text: mailText(code)
     })
   });
   return { ok: res.ok };
+}
+
+function mailText(code) {
+  return '验证码 ' + code + '，十分钟内有效。\n\n如果不是你本人操作，忽略这封邮件即可。';
+}
+
+function mailHtml(code) {
+  return '<div style="font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.8;color:#1c1a17">'
+    + '<p>登录验证码</p>'
+    + '<p style="font-size:28px;letter-spacing:6px;font-weight:600;margin:12px 0">' + code + '</p>'
+    + '<p style="color:#6b645b;font-size:13px">十分钟内有效。如果不是你本人操作，忽略这封邮件即可。</p>'
+    + '</div>';
+}
+
+/* 腾讯云 SES 的 Simple.Text / Simple.Html 要求 Base64（UTF-8） */
+function toBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+
+/* ---------- 腾讯云 SES（TC3-HMAC-SHA256 签名） ---------- */
+
+function toHex(buf) {
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function hmacKey(keyBytes, msg) {
+  const key = await crypto.subtle.importKey(
+    'raw', keyBytes, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  return crypto.subtle.sign('HMAC', key, new TextEncoder().encode(msg));
+}
+
+async function tc3Authorization(secretId, secretKey, host, action, region, payload) {
+  const timestamp = Math.floor(Date.now() / 1000);
+  const date = new Date(timestamp * 1000).toISOString().slice(0, 10);
+  const service = 'ses';
+  const contentType = 'application/json; charset=utf-8';
+
+  const canonicalHeaders =
+    'content-type:' + contentType + '\n' +
+    'host:' + host + '\n' +
+    'x-tc-action:' + action.toLowerCase() + '\n';
+  const signedHeaders = 'content-type;host;x-tc-action';
+  const canonicalRequest = [
+    'POST', '/', '', canonicalHeaders, signedHeaders, await sha256Hex(payload)
+  ].join('\n');
+
+  const scope = date + '/' + service + '/tc3_request';
+  const stringToSign = [
+    'TC3-HMAC-SHA256', String(timestamp), scope, await sha256Hex(canonicalRequest)
+  ].join('\n');
+
+  const enc = new TextEncoder();
+  const kDate = await hmacKey(enc.encode('TC3' + secretKey), date);
+  const kService = await hmacKey(kDate, service);
+  const kSigning = await hmacKey(kService, 'tc3_request');
+  const signature = toHex(await crypto.subtle.sign(
+    'HMAC',
+    await crypto.subtle.importKey('raw', kSigning, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']),
+    enc.encode(stringToSign)
+  ));
+
+  return {
+    timestamp,
+    authorization: 'TC3-HMAC-SHA256 Credential=' + secretId + '/' + scope +
+      ', SignedHeaders=' + signedHeaders + ', Signature=' + signature
+  };
+}
+
+/* 控制台复制出来的值常带 "SecretId " / "SecretKey " 前缀或引号，统一清掉 */
+function cleanSecret(v, label) {
+  return String(v || '')
+    .trim()
+    .replace(/^["']|["']$/g, '')
+    .replace(new RegExp('^' + label + '\\s*', 'i'), '')
+    .trim();
+}
+
+async function sendTencentSes(env, email, code) {
+  if (!env.TENCENT_SECRET_ID || !env.TENCENT_SECRET_KEY) {
+    return { ok: false, reason: '缺腾讯云密钥' };
+  }
+  if (!env.MAIL_FROM) return { ok: false, reason: '缺 MAIL_FROM' };
+
+  const secretId = cleanSecret(env.TENCENT_SECRET_ID, 'SecretId');
+  const secretKey = cleanSecret(env.TENCENT_SECRET_KEY, 'SecretKey');
+
+  const host = 'ses.tencentcloudapi.com';
+  const region = env.SES_REGION || 'ap-guangzhou';
+  const action = 'SendEmail';
+  const subject = '登录验证码';
+  const body = {
+    FromEmailAddress: env.MAIL_FROM,
+    Destination: [email],
+    Subject: subject
+  };
+  if (env.SES_TEMPLATE_ID) {
+    body.Template = {
+      TemplateID: Number(env.SES_TEMPLATE_ID),
+      TemplateData: JSON.stringify({ code: code })
+    };
+  } else {
+    body.Subject = subject + ' · ' + code;
+    body.Simple = { Text: toBase64(mailText(code)), Html: toBase64(mailHtml(code)) };
+  }
+  const payload = JSON.stringify(body);
+
+  const { timestamp, authorization } = await tc3Authorization(
+    secretId, secretKey, host, action, region, payload
+  );
+
+  const res = await fetch('https://' + host + '/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      Authorization: authorization,
+      'X-TC-Action': action,
+      'X-TC-Version': '2020-10-02',
+      'X-TC-Region': region,
+      'X-TC-Timestamp': String(timestamp)
+    },
+    body: payload
+  });
+
+  const raw = await res.text();
+  let data = {};
+  try { data = JSON.parse(raw); } catch (e) { }
+  const err = data && data.Response && data.Response.Error;
+  if (err) {
+    console.error('SES error', err.Code, err.Message);
+    return { ok: false, reason: err.Code + ': ' + err.Message };
+  }
+  if (!res.ok) {
+    const hdrs = ['server', 'x-tc-requestid', 'x-tc-trace', 'content-type', 'cf-ray']
+      .map(k => k + '=' + (res.headers.get(k) || '-')).join(',');
+    console.error('SES http', res.status, hdrs, raw.slice(0, 200));
+    return { ok: false, reason: 'HTTP ' + res.status + ' | ' + hdrs + ' | ' + raw.slice(0, 120) };
+  }
+  return { ok: true };
 }
 
 async function verifyCode(env, body) {
@@ -274,6 +425,7 @@ export default {
     if (request.method === 'GET' && path === '/health') {
       return json({ ok: true, mode: env.MAIL_MODE }, 200, cors);
     }
+
 
     let body = {};
     if (request.method === 'POST') {
