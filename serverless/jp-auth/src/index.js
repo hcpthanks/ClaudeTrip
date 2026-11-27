@@ -6,14 +6,14 @@
  *
  *   guest    未登录，首次打开 15 分钟（本地记，接口不参与）
  *   member   注册后 72 小时内，全功能
- *   staying  72 小时已过，今日累计阅读不足 10 分钟
+ *   daily    当天首次请求即赠送 15 分钟全功能
+ *   limited  今天这 15 分钟已用完
  *   daily    今日满 10 分钟，领到当天 15 分钟
  *   limited  今日 15 分钟已用完
  *   paid     access_until 未过期
  */
 
 const TRIAL_MS = 72 * 3600 * 1000;
-const DAILY_NEED_SEC = 600;
 const DAILY_GRANT_MS = 15 * 60 * 1000;
 const CODE_TTL_MS = 10 * 60 * 1000;
 const CODE_MAX_PER_HOUR = 5;
@@ -107,32 +107,36 @@ async function loadDaily(env, userId, day) {
 
 function decide(user, today, now) {
   if (user.access_until && user.access_until > now) {
-    return { state: 'paid', full: true, remaining: user.access_until - now, needSeconds: 0 };
+    return { state: 'paid', full: true, remaining: user.access_until - now };
   }
   if (user.trial_ends_at > now) {
-    return { state: 'member', full: true, remaining: user.trial_ends_at - now, needSeconds: 0 };
+    return { state: 'member', full: true, remaining: user.trial_ends_at - now };
   }
   if (today && today.granted_at) {
     if (now < today.granted_at + DAILY_GRANT_MS) {
       return {
         state: 'daily', full: true,
-        remaining: today.granted_at + DAILY_GRANT_MS - now,
-        needSeconds: 0
+        remaining: today.granted_at + DAILY_GRANT_MS - now
       };
     }
-    return { state: 'limited', full: false, remaining: 0, needSeconds: 0 };
+    return { state: 'limited', full: false, remaining: 0 };
   }
-  return {
-    state: 'staying', full: false, remaining: 0,
-    needSeconds: Math.max(0, DAILY_NEED_SEC - (today ? today.seconds : 0))
-  };
+  // 当天还没发过额度：ensureGrant 会在判定前补发
+  return { state: 'limited', full: false, remaining: 0 };
 }
 
-/* 今天读满 10 分钟就发额度，只发一次 */
+/* 72 小时结束后，每个自然日第一次请求即赠送 15 分钟，不发第二次 */
 async function ensureGrant(env, userId, day, today, user, now) {
-  if (!today || today.granted_at) return today;
   if (user.trial_ends_at > now) return today;
-  if (today.seconds < DAILY_NEED_SEC) return today;
+  if (user.access_until && user.access_until > now) return today;
+  if (today && today.granted_at) return today;
+
+  if (!today) {
+    await env.DB.prepare(
+      'INSERT INTO daily (user_id, day, seconds, granted_at, last_ping) VALUES (?, ?, 0, ?, ?)'
+    ).bind(userId, day, now, now).run();
+    return { user_id: userId, day, seconds: 0, granted_at: now, last_ping: now };
+  }
   await env.DB.prepare('UPDATE daily SET granted_at = ? WHERE user_id = ? AND day = ?')
     .bind(now, userId, day).run();
   return Object.assign({}, today, { granted_at: now });
@@ -454,6 +458,7 @@ export default {
       }
       return json({ ok: false, error: '没有这个接口' }, 404, cors);
     } catch (err) {
+      console.error('unhandled', err && (err.stack || err.message) || err);
       return json({ ok: false, error: '服务出了点问题' }, 500, cors);
     }
   }

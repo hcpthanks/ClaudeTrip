@@ -1762,13 +1762,32 @@ const EXPLAIN = (() => {
   var REMIND_SEC = 30 * 60;
 
   var snap = null;
-  var guestStart = Date.now();
   var guestExpired = false;
   var sessionSec = 0;
   var reminded = false;
 
-  try { guestStart = +(localStorage.getItem('jp-guest-start') || 0) || Date.now(); } catch (e) { }
   try { snap = JSON.parse(localStorage.getItem('jp-ent') || 'null'); } catch (e) { snap = null; }
+
+  /* 未注册用户：每个自然日一次 15 分钟，按北京时间切日 */
+  function guestDay() { return new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10); }
+  function guestUsed() {
+    try {
+      if (localStorage.getItem('jp-guest-day') !== guestDay()) {
+        localStorage.setItem('jp-guest-day', guestDay());
+        localStorage.setItem('jp-guest-used', '0');
+        return 0;
+      }
+      return +(localStorage.getItem('jp-guest-used') || 0) || 0;
+    } catch (e) { return 0; }
+  }
+  function addGuestUsed(ms) {
+    try {
+      var v = guestUsed() + ms;
+      localStorage.setItem('jp-guest-day', guestDay());
+      localStorage.setItem('jp-guest-used', String(v));
+      return v;
+    } catch (e) { return GUEST_MS; }
+  }
 
   function tok() { try { return localStorage.getItem('jp-token') || ''; } catch (e) { return ''; } }
   function storeEnt(s) {
@@ -1816,12 +1835,11 @@ const EXPLAIN = (() => {
       if (snap.state === 'paid') { label('通票', fmt(r), 'ok'); return; }
       if (snap.state === 'member') { label('完整体验', fmt(r), r < 3600000 ? 'warn' : 'ok'); return; }
       if (snap.state === 'daily') { label('今日', fmt(r), r < 60000 ? 'warn' : 'ok'); return; }
-      if (snap.state === 'staying') { label('已读 ' + fmt((snap.todaySeconds || 0) * 1000) + ' / 10:00', '', 'warn'); return; }
       if (snap.state === 'limited') { label('今天到此为止', '', 'off'); return; }
       return;
     }
-    var left = GUEST_MS - (Date.now() - guestStart);
-    if (left > 0) label('首次体验', fmt(left), left < 60000 ? 'warn' : 'ok');
+    var left = GUEST_MS - guestUsed();
+    if (left > 0) label('今日体验', fmt(left), left < 60000 ? 'warn' : 'ok');
     else label('登记后可继续', '', 'off');
   }
   function applySnap(s) {
@@ -1953,9 +1971,9 @@ const EXPLAIN = (() => {
     if (document.hidden) return;
     sessionSec++;
     if (!reminded && sessionSec >= REMIND_SEC) { reminded = true; open(remind); }
-    if (!snap) {
-      var left = GUEST_MS - (Date.now() - guestStart);
-      if (left <= 0 && !guestExpired) {
+    if (!snap && !tok()) {
+      var used = addGuestUsed(1000);
+      if (used >= GUEST_MS && !guestExpired) {
         guestExpired = true;
         setFull(false);
         open(auth);

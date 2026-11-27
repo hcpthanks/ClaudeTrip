@@ -14,9 +14,11 @@ try{ent=JSON.parse(localStorage.getItem('jp-ent')||'null')}catch(e){}
 var full=false;
 if(ent&&ent.exp>now){full=!!ent.full}
 else if(!localStorage.getItem('jp-token')){
-  var gs=+(localStorage.getItem('jp-guest-start')||0);
-  if(!gs){gs=now;localStorage.setItem('jp-guest-start',String(gs));}
-  full=(now-gs)<15*60*1000;
+  var d=new Date(now+28800000).toISOString().slice(0,10);
+  var used=0;
+  if(localStorage.getItem('jp-guest-day')===d){used=+(localStorage.getItem('jp-guest-used')||0)||0}
+  else{localStorage.setItem('jp-guest-day',d);localStorage.setItem('jp-guest-used','0')}
+  full=used<900000;
 }
 document.documentElement.classList.add(full?'jp-full':'jp-limited');
 }catch(e){document.documentElement.classList.add('jp-limited');}</script>

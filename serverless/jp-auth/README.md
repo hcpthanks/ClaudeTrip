@@ -7,12 +7,13 @@ Cloudflare Worker + D1。权限结论只由服务端给出，前端拿到的 `st
 | state | 条件 | 全功能 |
 |---|---|---|
 | `member` | 注册后 72 小时内 | 是 |
-| `daily` | 今日累计阅读满 10 分钟，且领到的 15 分钟还没用完 | 是 |
-| `staying` | 72 小时已过，今日还差 `needSeconds` 秒 | 否 |
-| `limited` | 今日 15 分钟已用完 | 否 |
+| `daily` | 当天第一次请求就发 15 分钟，还没用完 | 是 |
+| `limited` | 当天这 15 分钟已用完 | 否 |
 | `paid` | `access_until` 未过期 | 是 |
 
-未登录的「首次打开 15 分钟」不经过这里，由前端本地记。
+72 小时结束后，**每个自然日首次请求即赠送 15 分钟**（不需要先读满多少分钟），一天只发一次，按 `Asia/Shanghai` 切日。
+
+未登录用户的「每天 15 分钟」不经过这里，由前端本地记（`jp-guest-day` + `jp-guest-used`），清缓存可重置——这是无账号方案的固有代价。
 
 ## 接口
 
@@ -20,7 +21,7 @@ Cloudflare Worker + D1。权限结论只由服务端给出，前端拿到的 `st
 |---|---|---|
 | POST | `/auth/request-code` | `{email}` → 发 6 位验证码。dev 模式下直接返回 `devCode` |
 | POST | `/auth/verify` | `{email, code}` → `{token, state, full, remaining, ...}`，首次登录自动建号 |
-| POST | `/heartbeat` | 需 `Authorization: Bearer`。按两次心跳真实间隔累加阅读秒数，读满 10 分钟自动发额度 |
+| POST | `/heartbeat` | 需 `Authorization: Bearer`。累加当天阅读秒数（仅统计用），并触发当天额度的发放 |
 | GET | `/entitlement` | 需 `Authorization: Bearer`。只读当前结论 |
 | GET | `/health` | 存活检查 |
 
