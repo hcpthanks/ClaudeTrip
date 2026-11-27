@@ -3,36 +3,36 @@ const BROWSER_TIP = (() => {
   const DISMISS_KEY = 'jp-btip-dismissed';
   const SILENT_KEY = 'jp-btip-allow-silent';
   const GENERAL = {
-    title: '建议用 Edge 浏览器打开：Chrome / Firefox 的朗读可能没有声音',
-    body: 'Chrome 通常没有日语语音包，Firefox 可选音色很少。Edge 自带「七海」「圭太」等自然日语发音。'
+    title: '换成 Edge 打开，声音会好一些',
+    body: 'Chrome 多半没有日语语音。Firefox 能选的声音很少。Edge 自带七海、圭太。'
   };
   const ALARM = {
-    title: '当前浏览器没有可用的日语语音，朗读不会有声音',
-    body: '复制本页网址，粘贴到 Edge 地址栏打开即可正常朗读。'
+    title: '这台机器没有日语语音，读不出声',
+    body: '复制网址，粘贴到 Edge 里打开。'
   };
   const ALARM_EDGE = {
-    title: 'Edge 没有加载到日语语音，朗读暂时没有声音',
-    body: 'Edge 的日语语音需要联网加载，请检查网络后刷新本页。'
+    title: 'Edge 的日语语音还没加载出来',
+    body: '它要联网。检查网络，刷新这一页。'
   };
   const ALARM_ANDROID = {
-    title: '这台手机没有可用的日语语音，朗读不会有声音',
-    body: '到系统设置安装日语语音：设置 → 语言和输入法 → 文字转语音，选择 Google 文字转语音并下载日语数据，然后刷新本页；已经装过就重启手机再试。'
+    title: '这台手机没有日语语音，读不出声',
+    body: '设置 → 语言和输入法 → 文字转语音，选 Google 文字转语音，下载日语。装过就重启手机。'
   };
   const SAFARI_IOS = {
-    title: '请用 Safari 打开本页',
-    body: 'iPhone / iPad 上的 Chrome、Firefox 朗读支持不完整；Safari 可以正常朗读。复制本页网址，粘贴到 Safari 打开。'
+    title: '用 Safari 打开这一页',
+    body: 'iPhone 上的 Chrome、Firefox 读得不完整。Safari 可以。复制网址，到 Safari 里打开。'
   };
   const ALARM_IOS = {
-    title: 'Safari 没有加载到日语语音，朗读不会有声音',
-    body: '到「设置 → 辅助功能 → 朗读内容 → 声音 → 日语」下载日语语音，然后刷新本页。'
+    title: 'Safari 还没加载日语语音',
+    body: '设置 → 辅助功能 → 朗读内容 → 声音 → 日语，下载后刷新这一页。'
   };
   const NO_SUPPORT = {
-    title: '当前浏览器不支持朗读',
-    body: '请复制网址，用电脑 Edge 或 iPhone / iPad 的 Safari 打开。'
+    title: '这个浏览器不支持朗读',
+    body: '复制网址，用电脑 Edge 或 iPhone 的 Safari 打开。'
   };
   const NO_SUPPORT_ANDROID = {
-    title: '这个浏览器不支持朗读',
-    body: '请用 Chrome 或手机自带的浏览器打开本页；也可以复制网址，到 iPhone / iPad 的 Safari 或电脑 Edge 打开。'
+    title: '这个浏览器读不出声',
+    body: '用 Chrome 或手机自带的浏览器打开。也可以复制网址，到 Safari 或电脑 Edge 打开。'
   };
   let bar = null;
 
@@ -143,25 +143,25 @@ const BROWSER_TIP = (() => {
   function warnNoVoice(onProceed, engineFailed) {
     if (stored(SILENT_KEY)) { if (onProceed) onProceed(); return; }
     const plat = platform();
-    let head = '这台浏览器没有日语语音，朗读不会有声音';
-    let ps = '<p>Edge 浏览器自带「七海」「圭太」等日语发音，不需要另外安装语音包。</p>'
-      + '<p>复制下面的网址，粘贴到 Edge 地址栏打开：</p>';
+    let head = '这台浏览器没有日语语音，读不出声';
+    let ps = '<p>Edge 自带七海、圭太，不用另装语音包。</p>'
+      + '<p>复制网址，粘贴到 Edge 里打开：</p>';
     if (engineFailed) {
       if (plat === 'android') {
-        head = '手机的日语语音没能启动，朗读没有声音';
-        ps = '<p>语音列表里能看到日语（见下方），但系统语音引擎没有发声。可以重启手机后再试，或换用 iPhone / iPad 的 Safari、电脑 Edge 打开：</p>';
+        head = '手机有日语语音，但没有出声';
+        ps = '<p>语音列表里有日语，引擎却没出声。重启手机再试，或换 Safari、Edge：</p>';
       } else {
-        head = '浏览器的朗读引擎没能出声';
-        ps = '<p>请刷新页面再试，或复制下面的网址到 Edge 打开：</p>';
+        head = '朗读引擎没有出声';
+        ps = '<p>刷新这一页。还是不行，就复制网址到 Edge 打开：</p>';
       }
     } else if (plat === 'android') {
-      head = '这台手机没有日语语音，朗读不会有声音';
-      ps = '<p>到系统设置安装日语语音：<b>设置 → 语言和输入法 → 文字转语音</b>，选择 Google 文字转语音，下载日语语音数据，然后刷新本页；已经装过就重启手机再试。</p>'
-        + '<p>也可以用 iPhone / iPad 的 Safari 打开：</p>';
+      head = '这台手机没有日语语音，读不出声';
+      ps = '<p>设置 → 语言和输入法 → 文字转语音，选 Google 文字转语音，下载日语。装过就重启手机。</p>'
+        + '<p>也可以复制网址，用 Safari 打开：</p>';
     } else if (plat === 'ios') {
-      head = '请用 Safari 打开本页';
-      ps = '<p>iPhone / iPad 上的 Chrome、Firefox 朗读支持不完整；Safari 可以正常朗读。</p>'
-        + '<p>把下面的网址复制到 Safari：</p>';
+      head = '用 Safari 打开这一页';
+      ps = '<p>iPhone 上的 Chrome、Firefox 读得不完整。Safari 可以。</p>'
+        + '<p>把网址复制到 Safari：</p>';
     }
     const mask = document.createElement('div');
     mask.className = 'jp-btip-mask';
@@ -176,8 +176,8 @@ const BROWSER_TIP = (() => {
       + '</div></div>';
     mask.querySelector('h3').textContent = head;
     mask.querySelector('.jp-btip-diag').textContent = canSpeak()
-      ? '本机语音引擎：共 ' + speechSynthesis.getVoices().length + ' 个语音，其中日语 ' + jaVoices().length + ' 个'
-      : '本机浏览器不支持语音合成';
+      ? '本机语音：共 ' + speechSynthesis.getVoices().length + ' 个，日语 ' + jaVoices().length + ' 个'
+      : '这个浏览器不支持语音合成';
     mask.querySelector('.jp-btip-url').textContent = location.href;
     const close = () => mask.remove();
     mask.querySelector('.jp-btip-done').addEventListener('click', close);

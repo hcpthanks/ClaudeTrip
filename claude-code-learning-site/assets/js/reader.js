@@ -868,7 +868,7 @@ const TTS = (() => {
     if (!ja.length) {
       const o = document.createElement('option');
       o.value = '';
-      o.textContent = '未找到日语语音（建议用 Edge 打开）';
+      o.textContent = '没有日语语音。用 Edge 打开试试。';
       voiceSel.appendChild(o);
       return;
     }
@@ -1142,7 +1142,7 @@ const DICT = (() => {
     bodyEl.appendChild(head);
 
     bodyEl.appendChild(el('p', rec.g ? 'dict-gloss' : 'dict-gloss dict-none',
-      rec.g || '未收录释义'));
+      rec.g || '词典里没有。'));
 
     const meta = el('div', 'dict-meta');
     meta.appendChild(el('span', 'dict-pill', '本书内'));
@@ -1185,7 +1185,7 @@ const DICT = (() => {
     }
 
     const acts = el('div', 'dict-actions');
-    const ask = el('button', 'primary', '问 AI 讲这句');
+    const ask = el('button', 'primary', '让 AI 讲讲这句');
     ask.type = 'button';
     ask.addEventListener('click', askAI);
     acts.appendChild(ask);
@@ -1435,8 +1435,8 @@ const EXPLAIN = (() => {
       <div class="ai-foot">
         <button type="button" id="aiRetry">重新解析</button>
         <button type="button" id="aiCopy">复制结果</button>
-        <button type="button" id="aiCopyQ" title="复制整段提问，粘贴到任意 AI 网页">复制提问</button>
-        <button type="button" id="aiLink" title="复制这一句的网址，打开后直接跳到本句">复制本句链接</button>
+        <button type="button" id="aiCopyQ" title="复制这段话，贴到任意 AI 网页">复制提问</button>
+        <button type="button" id="aiLink" title="复制这一句的网址。打开就停在这里。">复制本句链接</button>
         <button type="button" id="aiStop" style="display:none">停止</button>
         <button type="button" id="aiGear" title="设置">⚙</button>
       </div>
@@ -1516,7 +1516,7 @@ const EXPLAIN = (() => {
       parts.push('本地服务，不需要 Key。');
     } else {
       if (preset().key) parts.push('这个服务商需要 API Key。');
-      parts.push('浏览器直连可能被服务商拦截（CORS），被拦时需要服务端或 Cloudflare Worker 反代，或改用「复制提问」。');
+      parts.push('浏览器直连可能被拦（CORS）。被拦时要用 Worker 反代，或者改用「复制提问」。');
     }
     ui.hint.textContent = parts.join(' ');
   }
@@ -1547,7 +1547,7 @@ const EXPLAIN = (() => {
   async function run(force) {
     if (!current) return;
     if (needsKey()) {
-      ui.body.textContent = '这个服务商需要 API Key：点面板底部的 ⚙，填入你自己的 Key，再点「重新解析」。\n\n不想配 Key 的话，可以点「复制提问」，把整段提问粘贴到任意 AI 网页里问。';
+      ui.body.textContent = '这个服务商要 API Key：点面板底部的 ⚙，填自己的 Key，再点「重新解析」。\n\n不想配 Key，就点「复制提问」，贴到任意 AI 网页。';
       setStatus('缺少 API Key');
       return;
     }
@@ -1649,13 +1649,13 @@ const EXPLAIN = (() => {
     copyTextContent(txt, '已复制');
   }
   function copyQuestion() {
-    if (!current) { setStatus('先选一句再复制提问'); return; }
-    copyTextContent(SYS + '\n\n' + buildPrompt(current), '已复制提问，粘贴到任意 AI 网页即可');
+    if (!current) { setStatus('先选一句，再复制。'); return; }
+    copyTextContent(SYS + '\n\n' + buildPrompt(current), '已复制。贴到任意 AI 网页。');
   }
   function copyLink() {
-    if (!current || !current.block) { setStatus('先选中一句再复制链接'); return; }
+    if (!current || !current.block) { setStatus('先选一句，再复制链接。'); return; }
     const url = location.href.split('#')[0] + '#' + current.block;
-    copyTextContent(url, '已复制本句链接');
+    copyTextContent(url, '链接已复制。');
   }
   function copyTextContent(txt, okMsg) {
     const done = () => setStatus(okMsg);
@@ -1684,7 +1684,7 @@ const EXPLAIN = (() => {
     if (!t) {
       current = null;
       ui.target.textContent = '';
-      ui.body.textContent = '选中要问的句子后点「解」，或者先点一下正文里的句子再点「解」。';
+      ui.body.textContent = '点一下句子，再点「解」。或者先选中文字。';
       setStatus('');
       return;
     }
@@ -1729,7 +1729,7 @@ const EXPLAIN = (() => {
       if (!ui.panel.classList.contains('open')) { openPanel(); return; }
       const t = resolveTarget();
       if (!t) {
-        setStatus('先选中文字，或点一下正文里的句子');
+        setStatus('先选一句。');
         return;
       }
       current = t;
@@ -1834,14 +1834,14 @@ const EXPLAIN = (() => {
     if (snap) {
       var r = remainOf(snap);
       if (snap.state === 'paid') { label('通票', fmt(r), 'ok'); return; }
-      if (snap.state === 'member') { label('完整体验', fmt(r), r < 3600000 ? 'warn' : 'ok'); return; }
+      if (snap.state === 'member') { label('完整功能', fmt(r), r < 3600000 ? 'warn' : 'ok'); return; }
       if (snap.state === 'daily') { label('今日', fmt(r), r < 60000 ? 'warn' : 'ok'); return; }
-      if (snap.state === 'limited') { label('今天到此为止', '', 'off'); return; }
+      if (snap.state === 'limited') { label('今天先到这儿', '', 'off'); return; }
       return;
     }
     var left = GUEST_MS - guestUsed();
     if (left > 0) label('今日体验', fmt(left), left < 60000 ? 'warn' : 'ok');
-    else label('登记后可继续', '', 'off');
+    else label('登记后接着读', '', 'off');
   }
   function applySnap(s) {
     snap = s;
