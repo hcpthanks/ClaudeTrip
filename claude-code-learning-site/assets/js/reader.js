@@ -8,14 +8,7 @@ const JP_RM = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-m
 const JP_BEHAVIOR = JP_RM ? 'auto' : 'smooth';
 function jpTop() { scrollTo({ top: 0, behavior: JP_BEHAVIOR }); }
 (function () {
-  const de = document.documentElement;
-  if (!de.classList.contains('jp-trial') && !de.classList.contains('jp-paid')) {
-    const h = location.hostname;
-    const local = location.protocol === 'file:' || h === '127.0.0.1' || h === 'localhost' || h === '::1' || h === '[::1]';
-    const fast = local && /(?:^|[?&])trial=fast(?:&|$)/.test(location.search);
-    de.classList.add(local && !fast ? 'jp-paid' : 'jp-trial');
-  }
-  window.JP_PAID = de.classList.contains('jp-paid');
+  window.JP_FULL = document.documentElement.classList.contains('jp-full');
 })();
 const SCROLL_KEY = 'jp-scroll:' + BOOK_ID;
 const THEME_KEY = 'jp-theme-dark';
@@ -55,7 +48,6 @@ function setFont(px) {
   markFontBtns();
   clearTimeout(fontTimer);
   fontTimer = setTimeout(applyFont, 150);
-  if (window.closeToolSheet) window.closeToolSheet();
 }
 function syncRubyUI() {
   const off = document.documentElement.classList.contains('no-ruby') || document.body.classList.contains('no-ruby');
@@ -69,7 +61,7 @@ function syncRubyUI() {
   if (sel) sel.value = off ? 'off' : 'on';
 }
 function setRuby(mode) {
-  if (document.documentElement.classList.contains('jp-readonly') || document.documentElement.classList.contains('jp-paywall')) return;
+  if (document.documentElement.classList.contains('jp-limited')) return;
   const off = mode === 'off';
   document.documentElement.classList.toggle('no-ruby', off);
   document.body.classList.toggle('no-ruby', off);
@@ -186,8 +178,68 @@ function toggleTheme() {
     if (panel) panel.classList.remove('open');
   }
   window.closeToolSheet = closeSheet;
+
+  /* 桌面端可拖动：拖标题栏移动，双击标题栏复位；位置记在 jp-sheet-pos */
+  const POS_KEY = 'jp-sheet-pos';
+  const isNarrow = () => window.matchMedia('(max-width: 719px)').matches;
+  function place(x, y) {
+    const r = sheet.getBoundingClientRect();
+    const w = r.width || Math.min(620, innerWidth - 32);
+    const h = r.height || 200;
+    const maxX = Math.max(8, innerWidth - w - 8);
+    const maxY = Math.max(8, innerHeight - Math.min(h, 120) - 8);
+    const px = Math.max(8, Math.min(x, maxX));
+    const py = Math.max(8, Math.min(y, maxY));
+    sheet.style.left = px + 'px';
+    sheet.style.top = py + 'px';
+    sheet.style.right = 'auto';
+    sheet.style.bottom = 'auto';
+    sheet.classList.add('dragged');
+    return { x: px, y: py };
+  }
+  function restorePos() {
+    if (isNarrow()) return;
+    try {
+      const p = JSON.parse(localStorage.getItem(POS_KEY) || 'null');
+      if (p && typeof p.x === 'number') place(p.x, p.y);
+    } catch (e) { }
+  }
+  function resetPos() {
+    try { localStorage.removeItem(POS_KEY); } catch (e) { }
+    sheet.style.left = sheet.style.top = sheet.style.right = sheet.style.bottom = '';
+    sheet.classList.remove('dragged');
+  }
+  const head = sheet.querySelector('.tool-sheet-head');
+  if (head) {
+    head.addEventListener('dblclick', resetPos);
+    head.addEventListener('pointerdown', ev => {
+      if (isNarrow() || ev.button !== 0) return;
+      if (ev.target.closest('.tool-sheet-x')) return;
+      const r = sheet.getBoundingClientRect();
+      const dx = ev.clientX - r.left, dy = ev.clientY - r.top;
+      const move = e => place(e.clientX - dx, e.clientY - dy);
+      const up = () => {
+        document.removeEventListener('pointermove', move);
+        document.removeEventListener('pointerup', up);
+        document.removeEventListener('pointercancel', up);
+        const r2 = sheet.getBoundingClientRect();
+        try { localStorage.setItem(POS_KEY, JSON.stringify({ x: r2.left, y: r2.top })); } catch (e) { }
+      };
+      document.addEventListener('pointermove', move);
+      document.addEventListener('pointerup', up);
+      document.addEventListener('pointercancel', up);
+      ev.preventDefault();
+    });
+  }
+  addEventListener('resize', () => {
+    if (!sheet.classList.contains('dragged') || !document.body.classList.contains('tools-open')) return;
+    const r = sheet.getBoundingClientRect();
+    place(r.left, r.top);
+  });
+
   gear.addEventListener('click', ev => {
     ev.stopPropagation();
+    restorePos();
     document.body.classList.add('tools-open');
     if (panel) panel.classList.add('open');
   });
@@ -199,11 +251,9 @@ function toggleTheme() {
     // 延后关闭：让「点句子设起点 / 终点」先执行
     setTimeout(closeSheet, 0);
   });
-  sheet.querySelectorAll('button').forEach(btn => {
-    if (btn.classList.contains('tool-sheet-x')) return;
-    if (btn.closest('.tts-panel')) return;
-    btn.addEventListener('click', closeSheet);
-  });
+  // 只有「解」会切到解析面板；其余设置改完面板保持打开，免得反复重开
+  const aiOpenBtn = sheet.querySelector('#aiBtn');
+  if (aiOpenBtn) aiOpenBtn.addEventListener('click', closeSheet);
 })();
 /* ---------- 阅读进度线 ---------- */
 (function () {
@@ -226,126 +276,12 @@ function toggleTheme() {
   if (btn) btn.setAttribute('aria-pressed', String(document.body.classList.contains('dark')));
 })();
 (function () {
-  if (!window.JP_PAID) {
+  if (!window.JP_FULL) {
     try { if (localStorage.getItem('jp-ruby') === null) document.documentElement.classList.add('no-ruby'); } catch (e) {}
   }
   const sel = document.getElementById('rubyMode');
   if (sel) sel.addEventListener('change', () => setRuby(sel.value));
   syncRubyUI();
-})();
-/* ---------- 5 分钟功能试读 + 15 分钟原文阅读 ---------- */
-(function () {
-  const de = document.documentElement;
-  const chip = document.getElementById('jpTrialChip');
-  const label = document.getElementById('jpTrialLabel');
-  const left = document.getElementById('jpTrialLeft');
-  const gate = document.getElementById('jpGate');
-  if (window.JP_PAID) return;
-
-  const host = location.hostname;
-  const local = location.protocol === 'file:' || host === '127.0.0.1' || host === 'localhost' || host === '::1' || host === '[::1]';
-  const fast = local && /(?:^|[?&])trial=fast(?:&|$)/.test(location.search);
-  if (local && !fast) return;
-
-  const FULL_MS = fast ? 10 * 1000 : 5 * 60 * 1000;
-  const READ_MS = fast ? 20 * 1000 : 15 * 60 * 1000;
-  const TOTAL_MS = FULL_MS + READ_MS;
-  const K_START = 'jp-trial-start';
-  const COOKIE_DAYS = 730;
-  const ls = {
-    get(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } },
-    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-  };
-  const num = (v) => { const n = parseInt(v, 10); return isFinite(n) ? n : 0; };
-  function readCookie(name) {
-    const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
-    return m ? decodeURIComponent(m[1]) : '';
-  }
-  function writeCookie(name, value) {
-    document.cookie = name + '=' + encodeURIComponent(value)
-      + '; Max-Age=' + (COOKIE_DAYS * 86400) + '; Path=/; SameSite=Lax';
-  }
-
-  let start = num(ls.get(K_START)) || num(readCookie('jp_trial_start'));
-  if (!start) {
-    start = Date.now();
-    ls.set(K_START, String(start));
-    writeCookie('jp_trial_start', start);
-  } else {
-    if (!num(ls.get(K_START))) ls.set(K_START, String(start));
-    if (!num(readCookie('jp_trial_start'))) writeCookie('jp_trial_start', start);
-  }
-
-  let phase = '';
-  let timer = 0;
-
-  function fmt(ms) {
-    const s = Math.max(0, Math.ceil(ms / 1000));
-    return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
-  }
-  function setChip(text, time) {
-    if (!chip) return;
-    chip.hidden = false;
-    if (label) label.textContent = text;
-    if (left) left.textContent = time;
-    chip.setAttribute('aria-label', text + ' ' + time);
-  }
-
-  function enterRead() {
-    if (phase === 'read' || phase === 'pay') return;
-    phase = 'read';
-    de.classList.add('jp-readonly');
-    de.classList.add('no-ruby');
-    if (chip) chip.classList.remove('warn');
-    try { if (typeof TTS !== 'undefined' && TTS.stop) TTS.stop(); } catch (e) {}
-    try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (e) {}
-    try { if (typeof EXPLAIN !== 'undefined' && EXPLAIN.close) EXPLAIN.close(); } catch (e) {}
-    try { if (window.closeToolSheet) closeToolSheet(); } catch (e) {}
-  }
-
-  function showGate() {
-    if (!gate) return;
-    gate.hidden = false;
-    de.classList.add('jp-gate-on');
-    document.body.style.overflow = 'hidden';
-    const card = gate.querySelector('.gate-card');
-    if (card) {
-      card.setAttribute('tabindex', '-1');
-      card.focus();
-      gate.addEventListener('keydown', (e) => {
-        if (e.key === 'Tab') { e.preventDefault(); card.focus(); }
-      });
-    }
-  }
-
-  function enterPay() {
-    if (phase === 'pay') return;
-    phase = 'pay';
-    clearInterval(timer);
-    de.classList.add('jp-paywall');
-    if (chip) chip.hidden = true;
-    if (location.protocol === 'file:') { showGate(); return; }
-    location.href = /\/books\//.test(location.pathname) ? '../pay.html' : 'pay.html';
-  }
-
-  function tick() {
-    const elapsed = Date.now() - start;
-    if (elapsed >= TOTAL_MS) { enterPay(); return; }
-    if (elapsed >= FULL_MS) {
-      enterRead();
-      setChip('原文阅读剩余', fmt(TOTAL_MS - elapsed));
-      return;
-    }
-    const remain = FULL_MS - elapsed;
-    setChip('功能试读剩余', fmt(remain));
-    if (chip) chip.classList.toggle('warn', remain <= 60 * 1000);
-  }
-
-  tick();
-  if (phase !== 'pay') timer = setInterval(tick, 1000);
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && phase !== 'pay') tick();
-  });
 })();
 markFontBtns();
 
@@ -360,6 +296,7 @@ const TTS = (() => {
   const synth = speechSynthesis;
   const playBtn = document.getElementById('ttsPlayBtn');
   const fab = document.getElementById('toolFab');
+  const rcPlay = document.getElementById('rcPlay');
   const voiceSel = document.getElementById('ttsVoice');
   const rateEl = document.getElementById('ttsRate');
   const rateVal = document.getElementById('ttsRateVal');
@@ -369,17 +306,6 @@ const TTS = (() => {
   const endInfo = document.getElementById('ttsEndInfo');
   const panel = document.getElementById('ttsPanel');
   const repeatBadge = document.getElementById('ttsRepeatBadge');
-  let panelTimer = null;
-  function autoClosePanel() {
-    clearTimeout(panelTimer);
-    panelTimer = setTimeout(() => {
-      if (window.closeToolSheet && document.body.classList.contains('tools-open')) {
-        window.closeToolSheet();
-      } else {
-        panel.classList.remove('open');
-      }
-    }, 1200);
-  }
   const Q_OPEN = '「『（(“';
   const Q_CLOSE = '」』）)”';
   const STOP = '。！？!?';
@@ -646,6 +572,10 @@ const TTS = (() => {
       fab.setAttribute('aria-label', label);
       fab.setAttribute('title', label);
       fab.setAttribute('aria-pressed', String(playing));
+      if (rcPlay) {
+        rcPlay.setAttribute('aria-label', label);
+        rcPlay.setAttribute('aria-pressed', String(playing));
+      }
     }
   }
 
@@ -752,7 +682,7 @@ const TTS = (() => {
     startIdx = null;
     endIdx = null;
     updateRangeInfo();
-    autoClosePanel();
+    // 清完范围通常是要重新选，面板保持打开
   }
 
   function setPick(mode) {
@@ -913,10 +843,9 @@ const TTS = (() => {
         endIdx = i;
       } else {
         startIdx = i;
-        idx = i;
         if (endIdx != null && endIdx < startIdx) endIdx = null;
-        if (state === 'idle') { highlight(queue[i]); hlIdx = i; }
-        else startFrom(i);
+        // 设范围只设范围，不顺手开始播放
+        if (state === 'idle') { idx = i; highlight(queue[i]); hlIdx = i; }
       }
       pickMode = null;
       updateRangeInfo();
@@ -927,10 +856,8 @@ const TTS = (() => {
       endIdx = i;
     } else {
       startIdx = i;
-      idx = i;
       if (endIdx != null && endIdx < startIdx) endIdx = null;
-      if (state === 'idle') { highlight(queue[i]); hlIdx = i; }
-      else startFrom(i);
+      if (state === 'idle') { idx = i; highlight(queue[i]); hlIdx = i; }
     }
     updateRangeInfo();
   }
@@ -966,24 +893,20 @@ const TTS = (() => {
     localStorage.setItem('jp-tts-rate', rateEl.value);
     updateRepeatBadge();
   });
-  rateEl.addEventListener('change', autoClosePanel);
   repeatSel.value = localStorage.getItem('jp-tts-repeat') || '1';
   if (!repeatSel.value) repeatSel.value = '1';
   repeatSel.addEventListener('change', () => {
     localStorage.setItem('jp-tts-repeat', repeatSel.value);
     updateRepeatBadge();
-    autoClosePanel();
   });
   modeSel.value = localStorage.getItem('jp-tts-mode') || 'sentence';
   modeSel.addEventListener('change', () => {
     localStorage.setItem('jp-tts-mode', modeSel.value);
     loopDone = 0;
     updateRepeatBadge();
-    autoClosePanel();
   });
   voiceSel.addEventListener('change', () => {
     localStorage.setItem('jp-tts-voice', voiceSel.value);
-    autoClosePanel();
   });
   document.addEventListener('click', onDocClick);
   document.addEventListener('mouseup', onDocMouseUp);
@@ -1001,9 +924,355 @@ const TTS = (() => {
     replay,
     clearRange,
     setPick,
+    isPicking() { return !!pickMode; },
+    /* 单击正文：朗读中从该句接着读；停止时不做事 */
+    jumpToPoint(x, y) {
+      if (state !== 'playing' && state !== 'paused') return false;
+      if (!queue.length) buildQueue();
+      if (!queue.length) return false;
+      const i = queueIndexAtRange(pointRange(x, y));
+      if (i < 0) return false;
+      startIdx = i;
+      idx = i;
+      if (endIdx != null && endIdx < startIdx) endIdx = null;
+      startFrom(i);
+      updateRangeInfo();
+      return true;
+    },
     getTarget: explainTarget,
-    togglePanel() { clearTimeout(panelTimer); panel.classList.toggle('open'); }
+    togglePanel() { panel.classList.toggle('open'); }
   };
+})();
+
+/* ---------- 查词：点正文里的词，右侧出词条 ---------- */
+const DICT = (() => {
+  const STORE_KEY = 'jp-dict';
+  const SKIP_POS = /^(助詞|助動詞|記号|空白|フィラー)/;
+
+  let data = null, maxLen = 1;
+  let panel = null, bodyEl = null;
+  let cur = null;
+  let downX = 0, downY = 0;
+
+  const enabled = () => localStorage.getItem(STORE_KEY) !== '0';
+  const readonly = () => document.documentElement.classList.contains('jp-limited');
+
+  function load() {
+    if (data) return data;
+    data = { s: {}, w: {} };
+    const el = document.getElementById('dictData');
+    if (el) {
+      try { data = JSON.parse(el.textContent); } catch (e) { data = { s: {}, w: {} }; }
+    }
+    for (const k in data.w) { if (k.length > maxLen) maxLen = k.length; }
+    return data;
+  }
+
+  /* ---- 文本偏移工具：跳过 rt，口径与朗读/位置记忆一致 ---- */
+  function textNodes(root) {
+    const out = [];
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = w.nextNode())) {
+      if (n.parentElement && n.parentElement.tagName === 'RT') continue;
+      out.push(n);
+    }
+    return out;
+  }
+  const plain = root => textNodes(root).map(n => n.nodeValue).join('');
+  function offsetOf(root, node, local) {
+    let acc = 0;
+    for (const n of textNodes(root)) {
+      if (n === node) return acc + local;
+      acc += n.nodeValue.length;
+    }
+    return null;
+  }
+  function nodeAt(root, off) {
+    let acc = 0, edge = null;
+    for (const n of textNodes(root)) {
+      const L = n.nodeValue.length;
+      if (off < acc + L) return { node: n, local: off - acc };
+      if (off === acc + L) edge = { node: n, local: L };
+      acc += L;
+    }
+    return edge;
+  }
+  function pointOffset(root, x, y) {
+    const r = document.caretRangeFromPoint(x, y);
+    if (!r) return null;
+    let node = r.startContainer;
+    if (node.nodeType === 3 && node.parentElement && node.parentElement.tagName === 'RT') {
+      node = textNodes(node.parentElement.parentElement)[0];
+      if (!node) return null;
+      return offsetOf(root, node, 0);
+    }
+    if (node.nodeType !== 3) return null;
+    return offsetOf(root, node, r.startOffset);
+  }
+
+  /* ---- 取词：包含点击位置的最长词（不是从点击处往后匹配）---- */
+  function resolve(text, off) {
+    const d = load();
+    let best = null;
+    for (let s = Math.max(0, off - 8); s <= off; s++) {
+      for (let L = Math.min(maxLen, text.length - s); L >= 1; L--) {
+        if (s + L <= off) break;
+        const cand = text.slice(s, s + L);
+        const base = d.s[cand] || cand;
+        if (d.w[base] && (!best || L > best.L)) best = { s, L, word: cand, base };
+      }
+    }
+    return best;
+  }
+
+  /* 取包含该位置的整句：以 。！？ 断句，带上成对的引号 */
+  function sentenceBounds(t, s, e) {
+    const END = '。！？!?．';
+    const CLOSE = '」』）)】〕';
+    let a = s;
+    while (a > 0 && END.indexOf(t[a - 1]) < 0 && CLOSE.indexOf(t[a - 1]) < 0) a--;
+    while (a < t.length && CLOSE.indexOf(t[a]) >= 0) a++;
+    let b = e;
+    while (b < t.length && END.indexOf(t[b]) < 0) b++;
+    if (b < t.length) b++;
+    while (b < t.length && CLOSE.indexOf(t[b]) >= 0) b++;
+    if (t[b - 1] === '」' || t[b - 1] === '』') {
+      const open = t[b - 1] === '」' ? '「' : '『';
+      const hit = t.lastIndexOf(open, a);
+      if (hit >= 0) a = hit;
+    }
+    return [a, b];
+  }
+
+  function el(tag, cls, text) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  /* 从原文里切一段，保留 ruby，例句也能看到假名 */
+  function sliceFragment(root, start, end) {
+    const a = nodeAt(root, start), b = nodeAt(root, end);
+    if (!a || !b) return null;
+    const r = document.createRange();
+    r.setStart(a.node, a.local);
+    r.setEnd(b.node, b.local);
+    return r.cloneContents();
+  }
+
+  function ensurePanel() {
+    if (panel) return;
+    panel = document.createElement('aside');
+    panel.className = 'ai-panel dict-panel';
+    panel.id = 'dictPanel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-label', '查词');
+    panel.setAttribute('aria-hidden', 'true');
+    panel.innerHTML =
+      '<div class="ai-head"><b>查词</b><span class="ai-status" id="dictStatus"></span>' +
+      '<button class="ai-x" type="button" id="dictClose" title="关闭（Esc）">✕</button></div>' +
+      '<div class="dict-body" id="dictBody"></div>';
+    document.body.appendChild(panel);
+    bodyEl = panel.querySelector('#dictBody');
+    panel.querySelector('#dictClose').addEventListener('click', close);
+  }
+
+  function open() {
+    if (!panel) return;
+    panel.classList.add('open');
+    panel.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('ai-open');
+  }
+  function close() {
+    if (!panel) return;
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden', 'true');
+    if (!document.querySelector('.ai-panel.open')) document.body.classList.remove('ai-open');
+  }
+
+  function jump(pid, off) {
+    const host = document.getElementById('b' + pid);
+    if (!host) return;
+    const at = typeof off === 'number' ? nodeAt(host, off) : null;
+    const r = at ? (() => {
+      const rg = document.createRange();
+      rg.setStart(at.node, at.local);
+      rg.setEnd(at.node, Math.min(at.local + 1, at.node.nodeValue.length));
+      return rg.getBoundingClientRect();
+    })() : null;
+    if (r && (r.top || r.height)) {
+      const top = window.scrollY + r.top - window.innerHeight * 0.35;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    } else {
+      host.scrollIntoView({ block: 'center' });
+    }
+    host.classList.remove('dict-jump');
+    void host.offsetWidth;
+    host.classList.add('dict-jump');
+    setTimeout(() => host.classList.remove('dict-jump'), 1700);
+  }
+
+  function askAI() {
+    if (!cur) return;
+    const { paraEl, start, len } = cur;
+    const a = nodeAt(paraEl, start), b = nodeAt(paraEl, start + len);
+    let x = 0, y = 0;
+    if (a && b) {
+      const r = document.createRange();
+      r.setStart(a.node, a.local);
+      r.setEnd(b.node, b.local);
+      const rc = r.getBoundingClientRect();
+      x = rc.left + rc.width / 2;
+      y = rc.top + rc.height / 2;
+    }
+    paraEl.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, clientX: x, clientY: y }));
+    close();
+    if (typeof EXPLAIN !== 'undefined' && typeof EXPLAIN.open === 'function') EXPLAIN.open();
+  }
+
+  function render(rec, word) {
+    bodyEl.textContent = '';
+
+    const head = el('div', 'dict-word');
+    head.appendChild(el('b', null, word));
+    if (rec.r) head.appendChild(el('span', 'dict-read', rec.r));
+    if (rec.p) head.appendChild(el('span', 'dict-pos', rec.p));
+    bodyEl.appendChild(head);
+
+    bodyEl.appendChild(el('p', rec.g ? 'dict-gloss' : 'dict-gloss dict-none',
+      rec.g || '未收录释义'));
+
+    const meta = el('div', 'dict-meta');
+    meta.appendChild(el('span', 'dict-pill', '本书内'));
+    meta.appendChild(document.createTextNode('出现 ' + rec.n + ' 次'));
+    bodyEl.appendChild(meta);
+
+    const list = [];
+    for (const item of rec.e || []) {
+      const pid = item[0], s = item[1], e = item[2];
+      const host = document.getElementById('b' + pid);
+      if (!host) continue;
+      const t = plain(host);
+      const bounds = sentenceBounds(t, s, e);
+      const sa = bounds[0], sb = bounds[1];
+      const a = Math.max(sa, s - 24);
+      const b = Math.min(sb, e + 24);
+      const mid = sliceFragment(host, s, Math.min(e, b));
+      if (!mid) continue;
+      const p = el('p', 'dict-ex');
+      p.setAttribute('data-para', String(pid));
+      p.setAttribute('data-start', String(sa));
+      if (a > sa) p.appendChild(document.createTextNode('…'));
+      const before = sliceFragment(host, a, s);
+      if (before) p.appendChild(before);
+      const mark = document.createElement('mark');
+      mark.appendChild(mid);
+      p.appendChild(mark);
+      const after = sliceFragment(host, Math.min(e, b), b);
+      if (after) p.appendChild(after);
+      if (b < sb) p.appendChild(document.createTextNode('…'));
+      list.push(p);
+    }
+    if (list.length) {
+      bodyEl.appendChild(el('div', 'dict-sec', '本书例句'));
+      for (const p of list) {
+        p.addEventListener('click', () => jump(
+          Number(p.getAttribute('data-para')), Number(p.getAttribute('data-start'))));
+        bodyEl.appendChild(p);
+      }
+    }
+
+    const acts = el('div', 'dict-actions');
+    const ask = el('button', 'primary', '问 AI 讲这句');
+    ask.type = 'button';
+    ask.addEventListener('click', askAI);
+    acts.appendChild(ask);
+    if (list.length && cur) {
+      const go = el('button', null, '跳到该句');
+      go.type = 'button';
+      go.addEventListener('click', () => {
+        const text = plain(cur.paraEl);
+        jump(cur.paraEl.id.slice(1), sentenceBounds(text, cur.start, cur.start + cur.len)[0]);
+      });
+      acts.appendChild(go);
+    }
+    bodyEl.appendChild(acts);
+    bodyEl.scrollTop = 0;
+  }
+
+  let tapTimer = null;
+
+  function textBlock(ev) {
+    const t = ev.target;
+    if (!t || !t.closest) return null;
+    if (t.closest('.toolbar, .ai-panel, .dict-panel, .tool-fab, .tool-gear, .book-back, .skip-link, .read-progress, .trial-chip')) return null;
+    if (document.body.classList.contains('tools-open')) return null;
+    if (typeof TTS !== 'undefined' && typeof TTS.isPicking === 'function' && TTS.isPicking()) return null;
+    if (Math.abs(ev.clientX - downX) > 5 || Math.abs(ev.clientY - downY) > 5) return null;  // 拖动选字
+    return t.closest('p, h2');
+  }
+
+  function lookupAt(ev) {
+    if (!enabled() || readonly()) return;
+    const p = textBlock(ev);
+    if (!p) return;
+    const off = pointOffset(p, ev.clientX, ev.clientY);
+    if (off === null) return;
+    const text = plain(p);
+    const hit = resolve(text, off);
+    if (!hit) return;
+    const rec = load().w[hit.base];
+    if (!rec || SKIP_POS.test(rec.p || '')) return;
+    // 单假名（の・に・で・と…）多半是助词用法，不弹
+    if (hit.word.length === 1 && /[぀-ヿ]/.test(hit.word)) return;
+    cur = { paraEl: p, start: hit.s, len: hit.L, word: hit.word };
+    ensurePanel();
+    if (typeof EXPLAIN !== 'undefined' && document.body.classList.contains('ai-open')) EXPLAIN.close();
+    render(rec, hit.word);
+    open();
+  }
+
+  /* 规则：双击 = 查词；朗读中单击 = 从该句接着读；其它情况单击不做事 */
+  document.addEventListener('mousedown', ev => {
+    downX = ev.clientX;
+    downY = ev.clientY;
+  }, true);
+
+  // 单击：延后 320ms 执行，等双击判定；双击时被取消
+  document.addEventListener('click', ev => {
+    if (!textBlock(ev)) return;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => {
+      if (typeof TTS !== 'undefined' && typeof TTS.jumpToPoint === 'function') {
+        TTS.jumpToPoint(ev.clientX, ev.clientY);
+      }
+    }, 320);
+  }, true);
+
+  // 双击：查词（浏览器自己判定，比手写计时间隔可靠）
+  document.addEventListener('dblclick', ev => {
+    if (!textBlock(ev)) return;
+    clearTimeout(tapTimer);
+    lookupAt(ev);
+  }, true);
+  document.addEventListener('keydown', ev => {
+    if (ev.key === 'Escape' && panel && panel.classList.contains('open')) close();
+  });
+
+  function bindSetting() {
+    const mode = document.getElementById('dictMode');
+    if (!mode) return;
+    mode.value = enabled() ? 'on' : 'off';
+    mode.addEventListener('change', () => {
+      localStorage.setItem(STORE_KEY, mode.value === 'on' ? '1' : '0');
+      if (mode.value === 'off') close();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindSetting);
+  else bindSetting();
+
+  return { open, close, jump, askAI, enabled, load };
 })();
 
 /* ---------- 句子解析：选中或点击句子，调用本机 Ollama 讲解意思和语法 ---------- */
@@ -1469,4 +1738,236 @@ const EXPLAIN = (() => {
     open: openPanel,
     close: closePanel
   };
+})();
+
+/* ---------- 登记 / 权限 / 每日额度 ---------- */
+(function () {
+  var PROD_API = 'https://api.hcpthanks.ccwu.cc';
+  var localish = location.protocol === 'file:' || location.hostname === '127.0.0.1' || location.hostname === 'localhost';
+  var API = localish ? 'http://127.0.0.1:8787' : PROD_API;
+
+  var de = document.documentElement;
+  var chip = document.getElementById('jpChip');
+  if (!chip) return;
+  var chipLabel = document.getElementById('jpChipLabel');
+  var chipTime = document.getElementById('jpChipTime');
+  var gate = document.getElementById('jpGate');
+  var auth = document.getElementById('jpAuth');
+  var remind = document.getElementById('jpRemind');
+  var authMsg = document.getElementById('authMsg');
+
+  var GUEST_MS = 15 * 60 * 1000;
+  var REFRESH_MS = 2 * 60 * 1000;
+  var PING_MS = 15000;
+  var REMIND_SEC = 30 * 60;
+
+  var snap = null;
+  var guestStart = Date.now();
+  var guestExpired = false;
+  var sessionSec = 0;
+  var reminded = false;
+
+  try { guestStart = +(localStorage.getItem('jp-guest-start') || 0) || Date.now(); } catch (e) { }
+  try { snap = JSON.parse(localStorage.getItem('jp-ent') || 'null'); } catch (e) { snap = null; }
+
+  function tok() { try { return localStorage.getItem('jp-token') || ''; } catch (e) { return ''; } }
+  function storeEnt(s) {
+    try { s._at = Date.now(); s.exp = Date.now() + REFRESH_MS; localStorage.setItem('jp-ent', JSON.stringify(s)); } catch (e) { }
+  }
+  function wipe() {
+    try { localStorage.removeItem('jp-token'); localStorage.removeItem('jp-ent'); } catch (e) { }
+    snap = null;
+  }
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function fmt(ms) {
+    var s = Math.max(0, Math.ceil(ms / 1000));
+    if (s >= 3600) return Math.floor(s / 3600) + ':' + pad(Math.floor(s % 3600 / 60)) + ':' + pad(s % 60);
+    return pad(Math.floor(s / 60)) + ':' + pad(s % 60);
+  }
+  function setFull(full) {
+    var wasFull = de.classList.contains('jp-full');
+    de.classList.toggle('jp-full', !!full);
+    de.classList.toggle('jp-limited', !full);
+    window.JP_FULL = !!full;
+    // 权限恢复时，若用户没显式关过假名，就把它放回来
+    if (full && !wasFull) {
+      var pref = null;
+      try { pref = localStorage.getItem('jp-ruby'); } catch (e) { }
+      if (pref === null) {
+        de.classList.remove('no-ruby');
+        document.body.classList.remove('no-ruby');
+      }
+    }
+  }
+  function label(a, b, t) {
+    chip.hidden = false;
+    chipLabel.textContent = a;
+    chipTime.textContent = b || '';
+    chipTime.hidden = !b;
+    chip.setAttribute('data-tone', t || 'ok');
+  }
+  function remainOf(s) {
+    var age = s._at ? Date.now() - s._at : 0;
+    return Math.max(0, (s.remaining || 0) - age);
+  }
+  function renderChip() {
+    if (snap) {
+      var r = remainOf(snap);
+      if (snap.state === 'paid') { label('通票', fmt(r), 'ok'); return; }
+      if (snap.state === 'member') { label('完整体验', fmt(r), r < 3600000 ? 'warn' : 'ok'); return; }
+      if (snap.state === 'daily') { label('今日', fmt(r), r < 60000 ? 'warn' : 'ok'); return; }
+      if (snap.state === 'staying') { label('已读 ' + fmt((snap.todaySeconds || 0) * 1000) + ' / 10:00', '', 'warn'); return; }
+      if (snap.state === 'limited') { label('今天到此为止', '', 'off'); return; }
+      return;
+    }
+    var left = GUEST_MS - (Date.now() - guestStart);
+    if (left > 0) label('首次体验', fmt(left), left < 60000 ? 'warn' : 'ok');
+    else label('登记后可继续', '', 'off');
+  }
+  function applySnap(s) {
+    snap = s;
+    storeEnt(s);
+    setFull(!!s.full);
+    renderChip();
+  }
+
+  function api(path, body) {
+    var h = { 'Content-Type': 'application/json' };
+    var t = tok();
+    if (t) h.Authorization = 'Bearer ' + t;
+    return fetch(API + path, { method: 'POST', headers: h, body: JSON.stringify(body || {}) })
+      .then(function (r) {
+        return r.json().then(
+          function (d) { return { status: r.status, data: d }; },
+          function () { return { status: r.status, data: {} }; }
+        );
+      })
+      .catch(function () { return { status: 0, data: {} }; });
+  }
+
+  function ping() {
+    if (!tok()) return;
+    api('/heartbeat', {}).then(function (res) {
+      if (res.status === 401) { wipe(); setFull(false); renderChip(); return; }
+      if (res.data && res.data.ok) applySnap(res.data);
+    });
+  }
+
+  function open(el) {
+    if (!el) return;
+    el.hidden = false;
+    document.body.style.overflow = 'hidden';
+    var card = el.querySelector('.gate-card');
+    if (card) { card.setAttribute('tabindex', '-1'); card.focus(); }
+  }
+  function close(el) {
+    if (!el) return;
+    el.hidden = true;
+    if (gate.hidden && auth.hidden && remind.hidden) document.body.style.overflow = '';
+  }
+
+  function bind(ids, fn) {
+    ids.split(',').forEach(function (id) {
+      var b = document.getElementById(id);
+      if (b) b.addEventListener('click', fn);
+    });
+  }
+
+  chip.addEventListener('click', function () { open(auth); });
+  bind('jpGateX,jpGateLater', function () { close(gate); });
+  bind('jpRemindX,jpRemindLater', function () { close(remind); });
+  bind('jpAuthX,authSkip', function () { close(auth); });
+
+  var gateLogin = document.getElementById('jpGateLogin');
+  if (gateLogin) gateLogin.addEventListener('click', function () { close(gate); open(auth); });
+  var remindPay = document.getElementById('jpRemindPay');
+  if (remindPay) remindPay.addEventListener('click', function () { close(remind); open(gate); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (!remind.hidden) { close(remind); return; }
+    if (!gate.hidden) { close(gate); return; }
+    if (!auth.hidden) close(auth);
+  });
+
+  /* ---------- 登记 ---------- */
+  var emailEl = document.getElementById('authEmail');
+  var codeEl = document.getElementById('authCode');
+  var codeWrap = document.getElementById('authCodeWrap');
+  var sendBtn = document.getElementById('authSend');
+  var loginBtn = document.getElementById('authLogin');
+
+  function msg(t, t2) {
+    authMsg.textContent = t || '';
+    authMsg.setAttribute('data-tone', t2 || '');
+  }
+
+  if (sendBtn) sendBtn.addEventListener('click', function () {
+    var email = (emailEl.value || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { msg('邮箱格式不对', 'err'); emailEl.focus(); return; }
+    sendBtn.disabled = true;
+    msg('正在发送…');
+    api('/auth/request-code', { email: email }).then(function (res) {
+      sendBtn.disabled = false;
+      if (res.status === 429) { msg((res.data && res.data.error) || '请求太频繁，过一会儿再来', 'err'); return; }
+      if (!res.data || !res.data.ok) { msg('验证码没发出去，稍后再试', 'err'); return; }
+      codeWrap.hidden = false;
+      loginBtn.hidden = false;
+      sendBtn.hidden = true;
+      if (res.data.devCode) {
+        codeEl.value = res.data.devCode;
+        msg('开发模式：验证码 ' + res.data.devCode, 'ok');
+      } else {
+        msg('验证码已发出，十分钟内有效', 'ok');
+      }
+      codeEl.focus();
+    });
+  });
+
+  if (loginBtn) loginBtn.addEventListener('click', function () {
+    var email = (emailEl.value || '').trim();
+    var code = (codeEl.value || '').trim();
+    if (!/^\d{6}$/.test(code)) { msg('请填六位验证码', 'err'); codeEl.focus(); return; }
+    loginBtn.disabled = true;
+    msg('正在登录…');
+    api('/auth/verify', { email: email, code: code }).then(function (res) {
+      loginBtn.disabled = false;
+      if (res.data && res.data.ok && res.data.token) {
+        try { localStorage.setItem('jp-token', res.data.token); } catch (e) { }
+        applySnap(res.data);
+        close(auth);
+        codeWrap.hidden = true;
+        loginBtn.hidden = true;
+        sendBtn.hidden = false;
+        codeEl.value = '';
+        msg('');
+        ping();
+        return;
+      }
+      msg((res.data && res.data.error) || '验证码不对或已过期', 'err');
+    });
+  });
+
+  /* ---------- 计时 ---------- */
+  function tick() {
+    if (document.hidden) return;
+    sessionSec++;
+    if (!reminded && sessionSec >= REMIND_SEC) { reminded = true; open(remind); }
+    if (!snap) {
+      var left = GUEST_MS - (Date.now() - guestStart);
+      if (left <= 0 && !guestExpired) {
+        guestExpired = true;
+        setFull(false);
+        open(auth);
+      }
+    }
+    renderChip();
+  }
+
+  renderChip();
+  setFull(!de.classList.contains('jp-limited'));
+  if (tok()) ping();
+  setInterval(tick, 1000);
+  setInterval(function () { if (!document.hidden) ping(); }, PING_MS);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) ping(); });
 })();

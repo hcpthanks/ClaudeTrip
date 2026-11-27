@@ -1,0 +1,17 @@
+name = "jp-auth"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+
+# 本地 wrangler dev 会自己建 sqlite；部署前用 wrangler d1 create 换成真实 id
+[[d1_databases]]
+binding = "DB"
+database_name = "jp-auth"
+database_id = "fd0b19b9-32e5-4355-99b5-2fd0242b6b76"
+
+[vars]
+MAIL_MODE = "dev"
+
+# 国内直连 workers.dev 不通（DNS 投毒），走已经托管在 Cloudflare 的域名
+[[routes]]
+pattern = "api.hcpthanks.ccwu.cc"
+custom_domain = true

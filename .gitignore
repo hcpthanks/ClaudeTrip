@@ -39,3 +39,7 @@ package-lock.json
 
 # Claude runtime state
 .claude/.ss.json
+
+# Cloudflare Worker 本地状态与密钥
+.dev.vars
+.wrangler/

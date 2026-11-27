@@ -1,0 +1,62 @@
+# 日语小说站 · 账号与权限服务
+
+Cloudflare Worker + D1。权限结论只由服务端给出，前端拿到的 `state` 只是缓存，用来避免首屏闪一下。
+
+## 状态机
+
+| state | 条件 | 全功能 |
+|---|---|---|
+| `member` | 注册后 72 小时内 | 是 |
+| `daily` | 今日累计阅读满 10 分钟，且领到的 15 分钟还没用完 | 是 |
+| `staying` | 72 小时已过，今日还差 `needSeconds` 秒 | 否 |
+| `limited` | 今日 15 分钟已用完 | 否 |
+| `paid` | `access_until` 未过期 | 是 |
+
+未登录的「首次打开 15 分钟」不经过这里，由前端本地记。
+
+## 接口
+
+| 方法 | 路径 | 说明 |
+|---|---|---|
+| POST | `/auth/request-code` | `{email}` → 发 6 位验证码。dev 模式下直接返回 `devCode` |
+| POST | `/auth/verify` | `{email, code}` → `{token, state, full, remaining, ...}`，首次登录自动建号 |
+| POST | `/heartbeat` | 需 `Authorization: Bearer`。按两次心跳真实间隔累加阅读秒数，读满 10 分钟自动发额度 |
+| GET | `/entitlement` | 需 `Authorization: Bearer`。只读当前结论 |
+| GET | `/health` | 存活检查 |
+
+心跳每 15 秒一次，服务端只认「距上次心跳实际过去多少秒」并截断到 30 秒，客户端谎报无效。
+
+## 本地跑
+
+```bash
+cd serverless/jp-auth
+npx wrangler d1 execute jp-auth --local --file=schema.sql
+npx wrangler dev --port 8787
+```
+
+`.dev.vars` 里放 `AUTH_SECRET`（本地随便写，别提交）。dev 模式下 `request-code` 会把验证码直接返回，方便自测。
+
+## 部署
+
+```bash
+npx wrangler d1 create jp-auth          # 把返回的 database_id 填进 wrangler.toml
+npx wrangler d1 execute jp-auth --remote --file=schema.sql
+npx wrangler secret put AUTH_SECRET     # 至少 32 位随机串
+npx wrangler deploy
+```
+
+部署后把 `wrangler.toml` 里的 `MAIL_MODE` 改成 `resend`，再配：
+
+```bash
+npx wrangler secret put RESEND_KEY
+```
+
+`[vars]` 里加 `MAIL_FROM = "no-reply@hcpthanks.com"`。域名在 Cloudflare 托管，按 Resend 给的记录加几条 DNS 即可验证发信域。
+
+## 前端接入要点
+
+1. `index.js` 的 `ALLOWED_ORIGINS` 要包含实际站点域名（现在已含 `hcpthanks.com`、`www`、`github.io` 和本地预览端口）。
+2. 阅读页每 15 秒 `POST /heartbeat`，页面隐藏时停，回到前台立刻补一次。
+3. 登录态存 `localStorage`，首屏用缓存的 `state` 先渲染，拿到接口结论再更正。
+4. 心跳失败（断网）时按本地缓存继续，恢复后自动重试；断网期间规则会偏松，这是已知取舍。
+5. 30 分钟付费提醒由前端按本次会话累计时长触发，服务端不参与。

@@ -105,41 +105,46 @@
 (function () {
   var note = document.getElementById('trialNote');
   if (!note) return;
-  function num(v) { var n = parseInt(v, 10); return isFinite(n) ? n : 0; }
   function ls(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
-  function rd(n) {
-    var m = document.cookie.match(new RegExp('(?:^|; )' + n + '=([^;]*)'));
-    return m ? decodeURIComponent(m[1]) : '';
-  }
-  var until = Math.max(num(ls('jp-access-until')), num(rd('jp_access_until')));
-  var local = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
-  var fast = local && /[?&]trial=fast(?:&|$)/.test(location.search);
-  if (local && !fast) {
+  if (/^(127\.0\.0\.1|localhost)$/.test(location.hostname)) {
     note.innerHTML = '本地预览：完整功能，不计时。';
     return;
   }
-  if (!fast && until > Date.now()) {
-    var d = new Date(until);
-    note.innerHTML = '已解锁，有效期至 ' + d.getFullYear() + ' 年 ' + (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日。';
+  var API = 'https://api.hcpthanks.ccwu.cc';
+  var tok = ls('jp-token');
+  var ent = null;
+  try { ent = JSON.parse(ls('jp-ent') || 'null'); } catch (e) { }
+  function span(ms) {
+    var m = Math.ceil(Math.max(0, ms) / 60000);
+    return m >= 60 ? Math.floor(m / 60) + ' 小时 ' + (m % 60) + ' 分' : m + ' 分钟';
+  }
+  function paint(s) {
+    if (!s) return;
+    if (s.state === 'paid') { note.innerHTML = '通票 · 还有 ' + span(s.remaining) + '，全站随便读。'; return; }
+    if (s.state === 'member') { note.innerHTML = '完整体验还剩 ' + span(s.remaining) + '。'; return; }
+    if (s.state === 'daily') { note.innerHTML = '今天的十五分钟还剩 ' + span(s.remaining) + '。'; return; }
+    if (s.state === 'staying') {
+      note.innerHTML = '今日已读 ' + Math.round((s.todaySeconds || 0) / 60) + ' / 10 分钟，读满就换十五分钟。';
+      return;
+    }
+    if (s.state === 'limited') {
+      note.innerHTML = '今天的功能时间用完了 · 书还可以继续读';
+      note.classList.add('over');
+    }
+  }
+  if (!tok) {
+    var gs = +(ls('jp-guest-start') || 0);
+    var left = gs ? 15 * 60 * 1000 - (Date.now() - gs) : 0;
+    note.innerHTML = left > 0
+      ? '未登记 · 首次体验还剩 ' + span(left)
+      : '登记后七十二小时完整功能 · 每天读十分钟换十五分钟';
     return;
   }
-  var start = num(ls('jp-trial-start')) || num(rd('jp_trial_start'));
-  if (!start) return;
-  var FULL = fast ? 10000 : 5 * 60 * 1000;
-  var READ = fast ? 20000 : 15 * 60 * 1000;
-  var elapsed = Date.now() - start;
-  function leftText(ms) {
-    var s = Math.max(0, Math.ceil(ms / 1000));
-    return s < 60 ? s + ' 秒' : Math.ceil(s / 60) + ' 分钟';
-  }
-  if (elapsed >= FULL + READ) {
-    note.innerHTML = '试用已结束 · 解锁 <b>¥100 / 2 年</b>';
-    note.classList.add('over');
-  } else if (elapsed >= FULL) {
-    note.innerHTML = '功能已锁定 · 原文阅读剩余 ' + leftText(FULL + READ - elapsed);
-  } else {
-    note.innerHTML = '功能试读剩余 ' + leftText(FULL - elapsed) + ' · 解锁 <b>¥100 / 2 年</b>';
-  }
+  paint(ent);
+  fetch(API + '/entitlement', { headers: { Authorization: 'Bearer ' + tok } })
+    .then(function (r) { return r.json(); })
+    .then(function (d) { if (d && d.ok) paint(d); })
+    .catch(function () { });
 })();
 </script>
 <script src="assets/js/browser-tip.js"></script>
