@@ -34,7 +34,7 @@ body.dark {
 .hash-hl { background: var(--hl); box-shadow: 0 0 0 4px var(--hl); border-radius: 2px; }
 /* ---------- 权限：完整体验 / 受限 / 通票 ---------- */
 .trial-chip {
-  position: fixed; right: 14px; top: 12px; z-index: 45;
+  position: fixed; left: 14px; top: 60px; z-index: 45;
   display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px;
   background: var(--surface); border: 1px solid var(--line); color: var(--muted);
   font: 12px/1.4 system-ui, -apple-system, "Microsoft YaHei", sans-serif;
@@ -48,7 +48,7 @@ body.dark {
 .trial-chip[data-tone="warn"] b { color: var(--accent); }
 .trial-chip[data-tone="off"] { color: var(--muted); }
 .trial-chip[data-tone="off"] b { color: var(--muted); }
-html.jp-btip-on .trial-chip { top: calc(var(--jp-btip-h, 56px) + 10px); }
+html.jp-btip-on .trial-chip { top: calc(var(--jp-btip-h, 56px) + 60px); }
 
 /* 受限态：只留朗读，齿轮 / 设置 / 假名 / 查词 / 解析全部收起 */
 html.jp-limited #toolGear,
@@ -56,13 +56,11 @@ html.jp-limited #rubyBtn,
 html.jp-limited .toolbar,
 html.jp-limited .ai-panel { display: none !important; }
 html.jp-limited rt { display: none !important; }
-html.jp-limited #toolFab { display: none !important; }
 
 .read-cluster {
   position: fixed; right: 14px; bottom: 18px; z-index: 44;
-  display: none; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 8px;
 }
-html.jp-limited .read-cluster { display: flex; }
 .read-cluster button {
   width: 52px; height: 52px; border-radius: 999px; border: 1px solid var(--line);
   background: var(--surface); color: var(--fg); display: grid; place-items: center; cursor: pointer;
@@ -145,7 +143,7 @@ html.jp-limited .read-cluster { display: flex; }
 .auth-quiet:hover { background: var(--surface-2); color: var(--fg); }
 
 @media (max-width: 480px) {
-  .trial-chip { right: 10px; top: 10px; }
+  .trial-chip { left: 10px; top: 58px; }
   .gate-card { padding: 22px; }
 }
 h1 { font-size: 1.5em; line-height: 1.5; text-align: center; margin: 1.2em 0 .4em; }
@@ -180,18 +178,6 @@ html.no-ruby ruby, body.no-ruby ruby { ruby-position: inherit; }
   font-size: 14px;
 }
 body.tools-open .toolbar { display: flex; }
-.tool-fab {
-  display: flex; align-items: center; justify-content: center;
-  position: fixed; right: 18px; bottom: 18px; width: 52px; height: 52px;
-  border-radius: 50%; border: 1px solid var(--accent-strong); background: var(--accent-strong); color: #fff;
-  z-index: 31; cursor: pointer; padding: 0;
-  box-shadow: 0 6px 18px rgba(168,68,58,.38);
-}
-.tool-fab:hover { filter: brightness(1.08); }
-.tool-fab svg { width: 26px; height: 26px; display: block; }
-.tool-fab .icon-pause { display: none; }
-.tool-fab.is-playing .icon-play { display: none; }
-.tool-fab.is-playing .icon-pause { display: block; }
 .tool-gear {
   position: fixed; right: 24px; bottom: 80px; width: 40px; height: 40px;
   display: flex; align-items: center; justify-content: center;
@@ -201,7 +187,7 @@ body.tools-open .toolbar { display: flex; }
 }
 .tool-gear:hover { color: var(--accent); border-color: var(--accent); }
 .tool-gear svg { width: 20px; height: 20px; display: block; }
-body.tools-open .tool-fab, body.tools-open .tool-gear { display: none; }
+body.tools-open .read-cluster, body.tools-open .tool-gear { display: none; }
 .tool-sheet-head {
   display: flex; order: -2; width: 100%; align-items: center;
   justify-content: space-between; margin-bottom: 2px;
@@ -281,11 +267,10 @@ p.tts-end-mark, h2.tts-end-mark { box-shadow: inset -3px 0 0 var(--accent); }
   }
   html.jp-btip-on .toolbar { max-height: calc(76vh - var(--jp-btip-h, 0px)); }
   body.ai-open .toolbar { right: 8px; }
-  body.ai-open .tool-fab, body.ai-open .tool-gear { display: none; }
+  body.ai-open .read-cluster, body.ai-open .tool-gear { display: none; }
+  body.ai-open .trial-chip { display: none; }
   .ai-panel { width: min(420px, 100vw); }
   .tts-panel { grid-template-columns: 1fr; }
-  .tool-fab { width: 58px; height: 58px; right: 16px; bottom: 22px; }
-  .tool-fab svg { width: 28px; height: 28px; }
   .tool-gear { width: 46px; height: 46px; right: 22px; bottom: 92px; }
   .tool-gear svg { width: 22px; height: 22px; }
 }
@@ -299,9 +284,9 @@ p.tts-end-mark, h2.tts-end-mark { box-shadow: inset -3px 0 0 var(--accent); }
   font-family: system-ui, -apple-system, "Microsoft YaHei", sans-serif;
 }
 .ai-panel.open { transform: none; }
-.toolbar, .tool-fab { transition: right .22s ease; }
+.toolbar, .read-cluster { transition: right .22s ease; }
 body.ai-open .toolbar { right: calc(clamp(320px, 42vw, 420px) + 16px); }
-body.ai-open .tool-fab { right: calc(clamp(320px, 42vw, 420px) + 18px); }
+body.ai-open .read-cluster { right: calc(clamp(320px, 42vw, 420px) + 18px); }
 body.ai-open .tool-gear { right: calc(clamp(320px, 42vw, 420px) + 24px); }
 .ai-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
 .ai-head b { font-size: 14px; font-weight: 600; }
@@ -392,6 +377,6 @@ body.dark .dict-pill { background: #26332b; color: #8fc7a5; }
 }
 
 @media print {
-  .toolbar, .book-back, .tool-fab, .read-progress, .skip-link, .ai-panel, .fs-toast, .tts-repeat-badge { display: none; }
+  .toolbar, .book-back, .read-cluster, .read-progress, .skip-link, .ai-panel, .fs-toast, .tts-repeat-badge { display: none; }
   body { max-width: none; }
 }

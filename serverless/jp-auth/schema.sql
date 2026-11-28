@@ -25,5 +25,14 @@ CREATE TABLE IF NOT EXISTS login_codes (
   created_at INTEGER NOT NULL
 );
 
+-- 每次请求验证码都记一条，用于按 IP 限频和全局日熔断
+CREATE TABLE IF NOT EXISTS send_log (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  ip         TEXT NOT NULL,               -- CF-Connecting-IP，取不到时记 'unknown'
+  created_at INTEGER NOT NULL             -- 请求时刻 ms
+);
+
 CREATE INDEX IF NOT EXISTS idx_codes_email ON login_codes (email, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_daily_day ON daily (day);
+CREATE INDEX IF NOT EXISTS idx_send_log_ip ON send_log (ip, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_send_log_time ON send_log (created_at);

@@ -17,6 +17,8 @@ const TRIAL_MS = 72 * 3600 * 1000;
 const DAILY_GRANT_MS = 15 * 60 * 1000;
 const CODE_TTL_MS = 10 * 60 * 1000;
 const CODE_MAX_PER_HOUR = 5;
+const IP_MAX_PER_DAY = 5;
+const SEND_MAX_PER_DAY = 500;
 const PING_STEP_SEC = 15;
 const TOKEN_TTL_MS = 30 * 24 * 3600 * 1000;
 const SHANGHAI_OFFSET_MS = 8 * 3600 * 1000;
@@ -28,7 +30,9 @@ const ALLOWED_ORIGINS = new Set([
   'http://localhost:4311',
   'http://127.0.0.1:4311',
   'http://localhost:4321',
-  'http://127.0.0.1:4321'
+  'http://127.0.0.1:4321',
+  'http://localhost:8902',
+  'http://127.0.0.1:8902'
 ]);
 
 function corsHeaders(env, request) {
@@ -53,6 +57,16 @@ function json(body, status, extra) {
 
 function dayInShanghai(ms) {
   return new Date(ms + SHANGHAI_OFFSET_MS).toISOString().slice(0, 10);
+}
+
+function startOfShanghaiDay(ms) {
+  return ms - ((ms + SHANGHAI_OFFSET_MS) % 86400000);
+}
+
+/* Cloudflare 边缘注入，取不到就归到 'unknown' 桶 */
+function clientIp(request) {
+  const ip = (request.headers.get('CF-Connecting-IP') || '').trim();
+  return ip || 'unknown';
 }
 
 async function sha256Hex(text) {
@@ -166,7 +180,10 @@ async function requestCode(env, body, request) {
   const email = normalizeEmail(body.email);
   if (!isEmail(email)) return json({ ok: false, error: '邮箱格式不对' }, 400);
 
-  const hourAgo = Date.now() - 3600 * 1000;
+  const now = Date.now();
+  const hourAgo = now - 3600 * 1000;
+  const dayStart = startOfShanghaiDay(now);
+
   const recent = await env.DB.prepare(
     'SELECT COUNT(*) AS n FROM login_codes WHERE email = ? AND created_at > ?'
   ).bind(email, hourAgo).first();
@@ -174,14 +191,31 @@ async function requestCode(env, body, request) {
     return json({ ok: false, error: '这个邮箱请求太频繁，过一会儿再来' }, 429);
   }
 
+  const ip = clientIp(request);
+  const ipToday = await env.DB.prepare(
+    'SELECT COUNT(*) AS n FROM send_log WHERE ip = ? AND created_at >= ?'
+  ).bind(ip, dayStart).first();
+  if (ipToday && ipToday.n >= IP_MAX_PER_DAY) {
+    return json({ ok: false, error: '这个网络今天请求得太多了，明天再来吧' }, 429);
+  }
+
+  const dayCount = await env.DB.prepare(
+    'SELECT COUNT(*) AS n FROM send_log WHERE created_at >= ?'
+  ).bind(dayStart).first();
+  if (dayCount && dayCount.n >= SEND_MAX_PER_DAY) {
+    console.error('daily send cap reached', dayCount.n);
+    return json({ ok: false, error: '今天寄出的信够多了，明天再来吧' }, 429);
+  }
+
   const rand = new Uint32Array(1);
   crypto.getRandomValues(rand);
   const code = String(100000 + (rand[0] % 900000));
-  const now = Date.now();
   await env.DB.prepare(
     'INSERT INTO login_codes (email, code_hash, expires_at, created_at) VALUES (?, ?, ?, ?)'
   ).bind(email, await sha256Hex(email + ':' + code + ':' + env.AUTH_SECRET), now + CODE_TTL_MS, now).run();
   await env.DB.prepare('DELETE FROM login_codes WHERE expires_at < ?').bind(now).run();
+  await env.DB.prepare('INSERT INTO send_log (ip, created_at) VALUES (?, ?)').bind(ip, now).run();
+  await env.DB.prepare('DELETE FROM send_log WHERE created_at < ?').bind(now - 2 * 86400 * 1000).run();
 
   if (env.MAIL_MODE === 'dev') {
     return json({ ok: true, devMode: true, devCode: code });

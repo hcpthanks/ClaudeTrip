@@ -247,7 +247,7 @@ function toggleTheme() {
   if (x) x.addEventListener('click', closeSheet);
   document.addEventListener('click', ev => {
     if (!document.body.classList.contains('tools-open')) return;
-    if (ev.target.closest && (ev.target.closest('.toolbar') || ev.target.closest('.tool-gear') || ev.target.closest('.tool-fab'))) return;
+    if (ev.target.closest && (ev.target.closest('.toolbar') || ev.target.closest('.tool-gear'))) return;
     // 延后关闭：让「点句子设起点 / 终点」先执行
     setTimeout(closeSheet, 0);
   });
@@ -295,7 +295,6 @@ const TTS = (() => {
   }
   const synth = speechSynthesis;
   const playBtn = document.getElementById('ttsPlayBtn');
-  const fab = document.getElementById('toolFab');
   const rcPlay = document.getElementById('rcPlay');
   const voiceSel = document.getElementById('ttsVoice');
   const rateEl = document.getElementById('ttsRate');
@@ -566,16 +565,11 @@ const TTS = (() => {
     playBtn.classList.toggle('is-playing', playing);
     playBtn.setAttribute('aria-label', playing ? '暂停朗读' : '朗读');
     playBtn.setAttribute('aria-pressed', String(playing));
-    if (fab) {
+    if (rcPlay) {
       const label = playing ? '暂停朗读' : (state === 'paused' ? '继续朗读' : '开始朗读');
-      fab.classList.toggle('is-playing', playing);
-      fab.setAttribute('aria-label', label);
-      fab.setAttribute('title', label);
-      fab.setAttribute('aria-pressed', String(playing));
-      if (rcPlay) {
-        rcPlay.setAttribute('aria-label', label);
-        rcPlay.setAttribute('aria-pressed', String(playing));
-      }
+      rcPlay.setAttribute('aria-label', label);
+      rcPlay.setAttribute('title', label);
+      rcPlay.setAttribute('aria-pressed', String(playing));
     }
   }
 
@@ -1207,7 +1201,7 @@ const DICT = (() => {
   function textBlock(ev) {
     const t = ev.target;
     if (!t || !t.closest) return null;
-    if (t.closest('.toolbar, .ai-panel, .dict-panel, .tool-fab, .tool-gear, .book-back, .skip-link, .read-progress, .trial-chip')) return null;
+    if (t.closest('.toolbar, .ai-panel, .dict-panel, .read-cluster, .tool-gear, .book-back, .skip-link, .read-progress, .trial-chip')) return null;
     if (document.body.classList.contains('tools-open')) return null;
     if (typeof TTS !== 'undefined' && typeof TTS.isPicking === 'function' && TTS.isPicking()) return null;
     if (Math.abs(ev.clientX - downX) > 5 || Math.abs(ev.clientY - downY) > 5) return null;  // 拖动选字
@@ -1709,7 +1703,7 @@ const EXPLAIN = (() => {
     const t = ev.target;
     if (!t || !t.closest) return;
     // 只有点在正文块上才记录；点工具按钮 / 面板不能覆盖上一次的句子位置
-    if (t.closest('.toolbar, .ai-panel, .tool-fab, .book-back, .skip-link, .read-progress')) return;
+    if (t.closest('.toolbar, .ai-panel, .read-cluster, .book-back, .skip-link, .read-progress')) return;
     if (!t.closest('p, h2')) return;
     lastClick = { x: ev.clientX, y: ev.clientY };
     const sel = window.getSelection();

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>登录 — 读书</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+<link rel="stylesheet" href="assets/css/site.css">
+<style>
+.auth-main { max-width: 460px; margin: 0 auto; padding: clamp(40px, 8vw, 88px) clamp(16px, 4vw, 32px) 80px; }
+.auth-card { padding: clamp(24px, 4vw, 36px); background: var(--paper-2); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 18px 50px rgba(36,31,24,.08); }
+.auth-card h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(24px, 3.6vw, 30px); line-height: 1.45; margin: 0 0 12px; }
+.auth-lead { color: var(--ink-soft); font-size: 14.5px; line-height: 1.85; margin: 0 0 22px; }
+.auth-label { display: block; font-size: 12.5px; color: var(--muted); margin: 0 0 6px; }
+.auth-input { width: 100%; height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 9px;
+  background: #fff; color: var(--ink); font-family: inherit; font-size: 15px; }
+.auth-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+#code { letter-spacing: .4em; font-variant-numeric: tabular-nums; }
+.auth-btn { display: block; width: 100%; height: 44px; margin-top: 14px; border: 1px solid var(--accent); border-radius: 10px;
+  background: var(--accent); color: #fff; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+  text-align: center; line-height: 42px; text-decoration: none; }
+.auth-btn:hover { filter: brightness(1.06); }
+.auth-btn:disabled { opacity: .55; cursor: not-allowed; }
+.auth-quiet { display: block; width: 100%; height: 38px; margin-top: 10px; border: 0; border-radius: 10px;
+  background: transparent; color: var(--muted); font-family: inherit; font-size: 13px; cursor: pointer; }
+.auth-quiet:hover { background: var(--paper); color: var(--ink); }
+.auth-msg { min-height: 1.6em; margin: 12px 0 0; font-size: 12.5px; color: var(--muted); }
+.auth-msg[data-tone="err"] { color: var(--accent); }
+.auth-msg[data-tone="ok"] { color: #3a8f5c; }
+.auth-tip { margin: 10px 0 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.auth-back { display: inline-block; margin-top: 18px; color: var(--muted); font-size: 13px; text-decoration: none; }
+.auth-back:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="./index.html">読<em>書</em></a>
+  <nav>
+    <a href="./index.html#books">书库</a>
+    <a href="./index.html#how">读懂之后</a>
+  </nav>
+</header>
+<main class="auth-main" role="main">
+  <div class="auth-card">
+    <p class="eyebrow">登记</p>
+    <h1>留个邮箱，三天全开。</h1>
+    <p class="auth-lead">验证码十分钟内有效，不用设密码。三天之后，每天第一次打开，还是送十五分钟。</p>
+
+    <div id="authForm">
+      <label class="auth-label" for="email">邮箱</label>
+      <input class="auth-input" id="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com">
+      <button class="auth-btn" id="send" type="button">发送验证码</button>
+      <div id="codeWrap" hidden>
+        <label class="auth-label" for="code" style="margin-top:16px">验证码</label>
+        <input class="auth-input" id="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="六位数字">
+        <button class="auth-btn" id="login" type="button">登录</button>
+      </div>
+      <p class="auth-msg" id="authMsg" role="status"></p>
+      <p class="auth-tip">收不到的话，先看垃圾邮件；还不行，过几分钟再发一次。</p>
+      <a class="auth-back" href="./index.html">← 回书库</a>
+    </div>
+
+    <div id="authDone" hidden>
+      <p class="auth-lead">已经登记：<b id="who"></b></p>
+      <a class="auth-btn" href="./index.html#books">去读书</a>
+      <button class="auth-quiet" id="logout" type="button">换个邮箱</button>
+    </div>
+  </div>
+</main>
+<script>
+(function () {
+  var API = (location.protocol === 'file:' || location.hostname === '127.0.0.1' || location.hostname === 'localhost')
+    ? 'http://127.0.0.1:8787' : 'https://api.hcpthanks.ccwu.cc';
+  var emailEl = document.getElementById('email');
+  var codeEl = document.getElementById('code');
+  var sendBtn = document.getElementById('send');
+  var loginBtn = document.getElementById('login');
+  var codeWrap = document.getElementById('codeWrap');
+  var msgEl = document.getElementById('authMsg');
+  var formBox = document.getElementById('authForm');
+  var doneBox = document.getElementById('authDone');
+  var whoEl = document.getElementById('who');
+
+  function msg(t, tone) { msgEl.textContent = t || ''; msgEl.setAttribute('data-tone', tone || ''); }
+  function tok() { try { return localStorage.getItem('jp-token') || ''; } catch (e) { return ''; } }
+  function storeSnap(s) {
+    try { s._at = Date.now(); s.exp = Date.now() + 2 * 60 * 1000; localStorage.setItem('jp-ent', JSON.stringify(s)); } catch (e) { }
+  }
+  function showDone(email) { formBox.hidden = true; doneBox.hidden = false; whoEl.textContent = email || ''; }
+  function showForm() { doneBox.hidden = true; formBox.hidden = false; }
+  function next() {
+    var n = new URLSearchParams(location.search).get('next') || '';
+    return /^\.?\/[^\/]/.test(n) && n.indexOf('//') === -1 ? n : '';
+  }
+
+  var t = tok();
+  if (t) {
+    fetch(API + '/entitlement', { headers: { Authorization: 'Bearer ' + t } })
+      .then(function (r) { return r.json().then(function (d) { return { s: r.status, d: d }; }, function () { return { s: r.status, d: {} }; }); })
+      .then(function (res) {
+        if (res.s === 200 && res.d && res.d.ok) { storeSnap(res.d); showDone(res.d.email); }
+        else { try { localStorage.removeItem('jp-token'); localStorage.removeItem('jp-ent'); } catch (e) { } }
+      })
+      .catch(function () { });
+  }
+
+  sendBtn.addEventListener('click', function () {
+    var email = (emailEl.value || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { msg('邮箱格式不对', 'err'); emailEl.focus(); return; }
+    sendBtn.disabled = true;
+    msg('正在发送…');
+    fetch(API + '/auth/request-code', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    }).then(function (r) { return r.json().then(function (d) { return { s: r.status, d: d }; }, function () { return { s: r.status, d: {} }; }); })
+      .then(function (res) {
+        sendBtn.disabled = false;
+        if (res.s === 429) { msg((res.d && res.d.error) || '请求太频繁，过一会儿再来', 'err'); return; }
+        if (!res.d || !res.d.ok) { msg((res.d && res.d.error) || '验证码没发出去，稍后再试', 'err'); return; }
+        codeWrap.hidden = false;
+        sendBtn.textContent = '重新发送';
+        if (res.d.devCode) { codeEl.value = res.d.devCode; msg('本地模式：验证码 ' + res.d.devCode, 'ok'); }
+        else msg('验证码已发出，十分钟内有效', 'ok');
+        codeEl.focus();
+      })
+      .catch(function () { sendBtn.disabled = false; msg('网络不通，稍后再试', 'err'); });
+  });
+
+  loginBtn.addEventListener('click', function () {
+    var email = (emailEl.value || '').trim();
+    var code = (codeEl.value || '').trim();
+    if (!/^\d{6}$/.test(code)) { msg('请填六位验证码', 'err'); codeEl.focus(); return; }
+    loginBtn.disabled = true;
+    msg('正在登录…');
+    fetch(API + '/auth/verify', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, code: code })
+    }).then(function (r) { return r.json().then(function (d) { return { s: r.status, d: d }; }, function () { return { s: r.status, d: {} }; }); })
+      .then(function (res) {
+        loginBtn.disabled = false;
+        if (!(res.d && res.d.ok && res.d.token)) { msg((res.d && res.d.error) || '验证码不对或已过期', 'err'); return; }
+        try { localStorage.setItem('jp-token', res.d.token); } catch (e) { }
+        storeSnap(res.d);
+        var go = next();
+        if (go) { location.href = go; return; }
+        showDone(res.d.email);
+        msg('');
+      })
+      .catch(function () { loginBtn.disabled = false; msg('网络不通，稍后再试', 'err'); });
+  });
+
+  document.getElementById('logout').addEventListener('click', function () {
+    try { localStorage.removeItem('jp-token'); localStorage.removeItem('jp-ent'); } catch (e) { }
+    showForm(); msg('已退出，可以换一个邮箱', 'ok');
+  });
+})();
+</script>
+<script src="assets/js/browser-tip.js"></script>
+</body>
+</html>
