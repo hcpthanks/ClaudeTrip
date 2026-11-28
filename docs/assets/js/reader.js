@@ -1963,17 +1963,26 @@ const EXPLAIN = (() => {
   });
 
   /* ---------- 计时 ---------- */
+  var lastTick = Date.now();
   function tick() {
-    if (document.hidden) return;
-    sessionSec++;
+    var now = Date.now();
+    // 后台标签页的定时器会被浏览器降频，按真实经过时间补，单次最多补 90 秒
+    var delta = Math.min(90000, Math.max(0, now - lastTick));
+    lastTick = now;
+    sessionSec += delta / 1000;
     if (!reminded && sessionSec >= REMIND_SEC) { reminded = true; open(remind); }
     if (!snap && !tok()) {
-      var used = addGuestUsed(1000);
+      var used = addGuestUsed(delta);
       if (used >= GUEST_MS && !guestExpired) {
         guestExpired = true;
         setFull(false);
         open(auth);
       }
+    } else if (snap && snap.full && remainOf(snap) <= 0) {
+      snap.full = false;
+      snap.state = 'limited';
+      snap.remaining = 0;
+      setFull(false);
     }
     renderChip();
   }
@@ -1982,6 +1991,6 @@ const EXPLAIN = (() => {
   setFull(!de.classList.contains('jp-limited'));
   if (tok()) ping();
   setInterval(tick, 1000);
-  setInterval(function () { if (!document.hidden) ping(); }, PING_MS);
+  setInterval(ping, PING_MS);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) ping(); });
 })();
