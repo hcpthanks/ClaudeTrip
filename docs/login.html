@@ -95,11 +95,14 @@
 
   var t = tok();
   if (t) {
+    var cached = null;
+    try { cached = JSON.parse(localStorage.getItem('jp-ent') || 'null'); } catch (e) { }
+    if (cached && cached.email) showDone(cached.email);
     fetch(API + '/entitlement', { headers: { Authorization: 'Bearer ' + t } })
       .then(function (r) { return r.json().then(function (d) { return { s: r.status, d: d }; }, function () { return { s: r.status, d: {} }; }); })
       .then(function (res) {
         if (res.s === 200 && res.d && res.d.ok) { storeSnap(res.d); showDone(res.d.email); }
-        else { try { localStorage.removeItem('jp-token'); localStorage.removeItem('jp-ent'); } catch (e) { } }
+        else { try { localStorage.removeItem('jp-token'); localStorage.removeItem('jp-ent'); } catch (e) { } showForm(); }
       })
       .catch(function () { });
   }

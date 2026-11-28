@@ -16,7 +16,7 @@
     <a href="#books">书库</a>
     <a href="#how">读懂之后</a>
     <a href="#about">来源说明</a>
-    <a href="./login.html">登录</a>
+    <a href="./login.html" id="navLogin">登录</a>
   </nav>
 </header>
 <main role="main">
@@ -172,12 +172,14 @@
   var note = document.getElementById('trialNote');
   if (!note) return;
   function ls(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+  var tok = ls('jp-token');
+  var loginLink = document.getElementById('navLogin');
+  if (loginLink && tok) loginLink.textContent = '已登录';
   if (/^(127\.0\.0\.1|localhost)$/.test(location.hostname)) {
     note.innerHTML = '本地预览 · 不计时。';
     return;
   }
   var API = 'https://api.hcpthanks.ccwu.cc';
-  var tok = ls('jp-token');
   var ent = null;
   try { ent = JSON.parse(ls('jp-ent') || 'null'); } catch (e) { }
   function span(ms) {
@@ -209,7 +211,13 @@
   paint(ent);
   fetch(API + '/entitlement', { headers: { Authorization: 'Bearer ' + tok } })
     .then(function (r) { return r.json(); })
-    .then(function (d) { if (d && d.ok) paint(d); })
+    .then(function (d) {
+      if (d && d.ok) paint(d);
+      else {
+        try { localStorage.removeItem('jp-token'); localStorage.removeItem('jp-ent'); } catch (e) { }
+        if (loginLink) loginLink.textContent = '登录';
+      }
+    })
     .catch(function () { });
 })();
 </script>

@@ -1825,6 +1825,7 @@ const EXPLAIN = (() => {
     return Math.max(0, (s.remaining || 0) - age);
   }
   function renderChip() {
+    chip.title = snap ? '已登记' : '点此登记';
     if (snap) {
       var r = remainOf(snap);
       if (snap.state === 'paid') { label('通票', fmt(r), 'ok'); return; }
@@ -1886,7 +1887,7 @@ const EXPLAIN = (() => {
     });
   }
 
-  chip.addEventListener('click', function () { open(auth); });
+  chip.addEventListener('click', function () { if (tok()) return; open(auth); });
   bind('jpGateX,jpGateLater', function () { close(gate); });
   bind('jpRemindX,jpRemindLater', function () { close(remind); });
   bind('jpAuthX,authSkip', function () { close(auth); });
