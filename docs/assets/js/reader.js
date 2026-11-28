@@ -294,6 +294,8 @@ const TTS = (() => {
     };
   }
   const synth = speechSynthesis;
+  const TTS_LANG = /^zh/i.test(document.documentElement.lang) ? 'zh' : 'ja';
+  const VOICE_KEY = 'jp-tts-voice' + (TTS_LANG === 'zh' ? '-zh' : '');
   const playBtn = document.getElementById('ttsPlayBtn');
   const rcPlay = document.getElementById('rcPlay');
   const voiceSel = document.getElementById('ttsVoice');
@@ -522,7 +524,7 @@ const TTS = (() => {
   function speakChunk() {
     const u = new SpeechSynthesisUtterance(curChunks[curChunk]);
     const v = currentVoice();
-    if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'ja-JP'; }
+    if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = TTS_LANG === 'zh' ? 'zh-CN' : 'ja-JP'; }
     u.rate = parseFloat(rateEl.value) || 1;
     liveUtt = u;
     const g = ++gen;
@@ -857,25 +859,26 @@ const TTS = (() => {
   }
 
   function loadVoices() {
-    const ja = synth.getVoices().filter(v => /^ja/i.test(v.lang));
+    const list = synth.getVoices().filter(v => new RegExp('^' + TTS_LANG, 'i').test(v.lang));
     voiceSel.innerHTML = '';
-    if (!ja.length) {
+    if (!list.length) {
       const o = document.createElement('option');
       o.value = '';
-      o.textContent = '没有日语语音。用 Edge 打开试试。';
+      o.textContent = TTS_LANG === 'zh' ? '没有中文语音。用 Edge 打开试试。' : '没有日语语音。用 Edge 打开试试。';
       voiceSel.appendChild(o);
       return;
     }
-    for (const v of ja) {
+    for (const v of list) {
       const o = document.createElement('option');
       o.value = v.voiceURI;
       o.textContent = v.name + (v.localService ? '' : ' · 在线');
       voiceSel.appendChild(o);
     }
-    const saved = localStorage.getItem('jp-tts-voice');
-    const chosen = ja.find(v => v.voiceURI === saved)
-      || ja.find(v => /nanami|natural|online/i.test(v.name))
-      || ja[0];
+    const saved = localStorage.getItem(VOICE_KEY);
+    const pref = TTS_LANG === 'zh' ? /xiaoxiao|yunxi|natural|online/i : /nanami|natural|online/i;
+    const chosen = list.find(v => v.voiceURI === saved)
+      || list.find(v => pref.test(v.name))
+      || list[0];
     voiceSel.value = chosen.voiceURI;
   }
 
@@ -900,7 +903,7 @@ const TTS = (() => {
     updateRepeatBadge();
   });
   voiceSel.addEventListener('change', () => {
-    localStorage.setItem('jp-tts-voice', voiceSel.value);
+    localStorage.setItem(VOICE_KEY, voiceSel.value);
   });
   document.addEventListener('click', onDocClick);
   document.addEventListener('mouseup', onDocMouseUp);

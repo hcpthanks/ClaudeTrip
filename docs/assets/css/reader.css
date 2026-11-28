@@ -376,6 +376,9 @@ body.dark .dict-pill { background: #26332b; color: #8fc7a5; }
   .dict-jump { animation: none; }
 }
 
+html.cn-mode #rubyField, html.cn-mode #dictField,
+html.cn-mode #aiBtn, html.cn-mode #rubyBtn { display: none; }
+
 @media print {
   .toolbar, .book-back, .read-cluster, .read-progress, .skip-link, .ai-panel, .fs-toast, .tts-repeat-badge { display: none; }
   body { max-width: none; }

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="cn-mode">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>我的书 — 读书</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+<link rel="stylesheet" href="assets/css/reader.css">
+<script>try{var f=parseFloat(localStorage.getItem('jp-fs'));if(f){var P=[19,22,25];f=P.reduce(function(a,b){return Math.abs(b-f)<Math.abs(a-f)?b:a});localStorage.setItem('jp-fs',String(f));document.documentElement.style.setProperty('--fs',f+'px')}}catch(e){}</script>
+<script>try{
+var now=Date.now(),ent=null;
+try{ent=JSON.parse(localStorage.getItem('jp-ent')||'null')}catch(e){}
+var full=false;
+if(ent&&ent.exp>now){full=!!ent.full}
+else if(!localStorage.getItem('jp-token')){
+  var d=new Date(now+28800000).toISOString().slice(0,10);
+  var used=0;
+  if(localStorage.getItem('jp-guest-day')===d){used=+(localStorage.getItem('jp-guest-used')||0)||0}
+  else{localStorage.setItem('jp-guest-day',d);localStorage.setItem('jp-guest-used','0')}
+  full=used<900000;
+}
+document.documentElement.classList.add(full?'jp-full':'jp-limited');
+}catch(e){document.documentElement.classList.add('jp-limited');}</script>
+</head>
+<body>
+<a class="skip-link" href="#bookStart">跳到正文</a>
+<a class="book-back" href="./upload.html">← 我的书</a>
+<main role="main">
+<h1 id="bookStart" tabindex="-1">我的书</h1>
+<div class="meta" id="cnMeta">只在这台电脑上</div>
+<div id="cnBody"></div>
+<div id="cnMissing" hidden>
+  <p>这本书不在这台电脑上。可能换了浏览器，或者清理过数据。</p>
+  <p><a href="./upload.html">重新放一本进来 →</a></p>
+</div>
+</main>
+<div class="read-progress" aria-hidden="true"><i id="readProgress"></i></div>
+<div class="trial-chip" id="jpChip" hidden><span id="jpChipLabel">首次体验</span> <b id="jpChipTime">15:00</b></div>
+
+<div class="read-cluster" id="readCluster" role="group" aria-label="朗读控制">
+  <button type="button" onclick="TTS.prev()" aria-label="上一句" title="上一句"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 6h2v12H6zM18 6.8v10.4L9 12z"/></svg></button>
+  <button type="button" class="rc-play" id="rcPlay" onclick="TTS.playPause()" aria-label="朗读" aria-pressed="false" title="朗读 / 暂停"><svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.4v13.2c0 .8.9 1.3 1.6.9l10.1-6.6c.6-.4.6-1.3 0-1.7L9.6 4.5c-.7-.4-1.6.1-1.6.9z"/></svg><svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
+  <button type="button" onclick="TTS.next()" aria-label="下一句" title="下一句"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 6h2v12h-2zM6 6.8v10.4L15 12z"/></svg></button>
+</div>
+
+<div class="gate" id="jpGate" hidden>
+  <div class="gate-card" role="dialog" aria-modal="true" aria-labelledby="jpGateTitle">
+    <button class="gate-x" type="button" id="jpGateX" aria-label="关闭">×</button>
+    <p class="gate-kicker">通票 · 两年</p>
+    <h2 id="jpGateTitle">换一张通票，这趟车随便坐。</h2>
+    <p class="gate-lead">慢车会一直开。但假名、重复、段落循环、查词和 AI 讲解，只在通票上。</p>
+    <div class="gate-price"><b>¥100</b><span>两年 · 全站所有书</span></div>
+    <ul class="gate-list">
+      <li>汉字带假名，随时可以关掉自测</li>
+      <li>逐句重复与整段循环，想听几遍听几遍</li>
+      <li>双击查词，读音、释义和本书例句</li>
+      <li>选中句子，让 AI 讲语法和语气</li>
+    </ul>
+    <button class="gate-cta" type="button" disabled>在线支付即将开放</button>
+    <button class="gate-alt" type="button" id="jpGateLogin">还没登记？先登记，拿三天</button>
+    <button class="gate-alt" type="button" id="jpGateLater">今天先算了</button>
+    <p class="gate-note">目前暂未开放在线支付。需要现在开通，请联系站长获取兑换码。</p>
+  </div>
+</div>
+
+<div class="gate" id="jpRemind" hidden>
+  <div class="gate-card" role="dialog" aria-modal="true" aria-labelledby="jpRemindTitle">
+    <button class="gate-x" type="button" id="jpRemindX" aria-label="关闭">×</button>
+    <p class="gate-kicker">第三十分钟</p>
+    <h2 id="jpRemindTitle">已经坐了半小时了。</h2>
+    <p class="gate-lead">书还很长，慢车也还开着。只是想问一句：要不要换通票。</p>
+    <button class="gate-cta cta-on" type="button" id="jpRemindPay">看看通票</button>
+    <button class="gate-alt" type="button" id="jpRemindLater">再读一会儿</button>
+  </div>
+</div>
+
+<div class="gate" id="jpAuth" hidden>
+  <div class="gate-card" role="dialog" aria-modal="true" aria-labelledby="jpAuthTitle">
+    <button class="gate-x" type="button" id="jpAuthX" aria-label="关闭">×</button>
+    <p class="gate-kicker">登记</p>
+    <h2 id="jpAuthTitle">登记之后，七十二小时随便坐。</h2>
+    <p class="gate-lead">不收费。登记完先给三天完整体验；再往后，每天第一次打开，送十五分钟。</p>
+    <div class="auth-field">
+      <label for="authEmail">邮箱</label>
+      <input id="authEmail" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com">
+    </div>
+    <div class="auth-field" id="authCodeWrap" hidden>
+      <label for="authCode">验证码</label>
+      <input id="authCode" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="六位数字">
+    </div>
+    <p class="auth-msg" id="authMsg" role="status"></p>
+    <button class="auth-btn" type="button" id="authSend">发送验证码</button>
+    <button class="auth-btn" type="button" id="authLogin" hidden>登录</button>
+    <p class="gate-note">收不到的话，先看垃圾邮件。手机运营商邮箱常会拦海外邮件，建议用 Gmail 或电脑邮箱。</p>
+    <button class="auth-quiet" type="button" id="authSkip">先不登记，继续读</button>
+  </div>
+</div>
+
+<div class="toolbar" role="group" aria-label="阅读设置">
+  <div class="tool-sheet-head"><b>阅读设置</b><button type="button" class="tool-sheet-x" aria-label="收起设置">×</button></div>
+  <div class="tts-panel" id="ttsPanel">
+    <div class="tts-field">
+      <label for="ttsVoice">语音</label>
+      <select id="ttsVoice"></select>
+    </div>
+    <div class="tts-field">
+      <label for="ttsRate">语速 <span id="ttsRateVal">1</span> 倍</label>
+      <input id="ttsRate" type="range" min="0.5" max="2" step="0.05" value="1">
+    </div>
+    <div class="tts-field">
+      <label for="ttsRepeat">重复次数</label>
+      <select id="ttsRepeat">
+        <option value="1">1 次</option>
+        <option value="3">3 次</option>
+        <option value="5">5 次</option>
+        <option value="10">10 次</option>
+        <option value="20">20 次</option>
+      </select>
+    </div>
+    <div class="tts-field">
+      <label for="ttsMode">重复方式</label>
+      <select id="ttsMode">
+        <option value="sentence">每句重复（精听）</option>
+        <option value="passage">整段循环（背诵）</option>
+      </select>
+    </div>
+    <div class="tts-field tts-wide tts-inline" id="rubyField">
+      <label for="rubyMode">假名标注</label>
+      <select id="rubyMode">
+        <option value="on">显示</option>
+        <option value="off">隐藏（自测）</option>
+      </select>
+    </div>
+    <div class="tts-field tts-wide tts-inline" id="dictField">
+      <label for="dictMode">双击查词</label>
+      <select id="dictMode">
+        <option value="on">开启</option>
+        <option value="off">关闭</option>
+      </select>
+    </div>
+    <div class="tts-field tts-wide">
+      <label>朗读范围</label>
+      <div class="tts-range">
+        <div class="tts-range-info">
+          <span>起点：<span id="ttsStartInfo">未设置</span></span>
+          <span>终点：<span id="ttsEndInfo">书末</span></span>
+        </div>
+        <div class="tts-pick">
+          <button class="tts-mini" type="button" onclick="TTS.setPick('start')">点句子设起点</button>
+          <button class="tts-mini" type="button" onclick="TTS.setPick('end')">点句子设终点</button>
+        </div>
+        <button class="tts-mini" type="button" onclick="TTS.clearRange()">清除范围</button>
+      </div>
+    </div>
+    <p class="tts-tip tts-wide">拖选文字 = 设范围；或点「设起点 / 设终点」再点正文句子。电脑上 Shift+点击 = 设终点。「整段循环」不设终点 = 读到书末。</p>
+  </div>
+  <button id="aiBtn" onclick="EXPLAIN.toggle()" title="解析句子（选中文字或点击句子后点此）" aria-label="解析句子">解</button>
+  <button onclick="jpTop()" title="回到顶部" aria-label="回到顶部">↑</button>
+  <div class="fs-group" role="group" aria-label="字号">
+    <button id="fsBtn0" onclick="setFont(19)" title="标准字号 19px" aria-label="标准字号 19 像素">A</button>
+    <button id="fsBtn1" onclick="setFont(22)" title="大字号 22px" aria-label="大字号 22 像素">A+</button>
+    <button id="fsBtn2" onclick="setFont(25)" title="超大字号 25px" aria-label="超大字号 25 像素">A++</button>
+  </div>
+  <button id="rubyBtn" class="on" onclick="toggleRuby()" title="显示/隐藏假名" aria-label="显示假名" aria-pressed="true">ふ</button>
+  <button id="themeBtn" onclick="toggleTheme()" title="深色/浅色" aria-label="深色模式" aria-pressed="false">◐</button>
+  <div class="tts-transport" role="group" aria-label="朗读控制">
+    <button onclick="TTS.prev()" title="上一句" aria-label="上一句"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 6h2v12H6zM18 6.8v10.4L9 12z"/></svg></button>
+    <button id="ttsPlayBtn" onclick="TTS.playPause()" title="朗读 / 暂停" aria-label="朗读" aria-pressed="false"><svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13a1 1 0 0 0 1.53.85l10.2-6.5a1 1 0 0 0 0-1.7L9.53 4.65A1 1 0 0 0 8 5.5z"/></svg><svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
+    <button onclick="TTS.next()" title="下一句" aria-label="下一句"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 6h2v12h-2zM6 6.8v10.4L15 12z"/></svg></button>
+    <button onclick="TTS.replay()" title="重读本句" aria-label="重读本句"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.34-5.66"/><path d="M4 4v5h5"/></svg></button>
+    <button onclick="TTS.stop()" title="停止朗读" aria-label="停止朗读"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/></svg></button>
+  </div>
+  <div class="fs-toast" id="fsToast"></div>
+</div>
+<button type="button" class="tool-gear" id="toolGear" aria-label="打开阅读设置" title="阅读设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></button>
+<div class="tts-repeat-badge" id="ttsRepeatBadge" aria-live="off"></div>
+<script src="assets/js/cn-store.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var id = params.get('id') || '';
+  var mainEl = document.getElementById('cnBody');
+  if (!window.CNStore || !id) { document.getElementById('cnMissing').hidden = false; return; }
+  CNStore.get(id).then(function (book) {
+    if (!book) { document.getElementById('cnMissing').hidden = false; return; }
+    try { document.title = book.title + ' — 读书'; } catch (e) { }
+    document.body.dataset.book = 'cnp:' + book.id;
+    document.getElementById('bookStart').textContent = book.title;
+    document.getElementById('cnMeta').textContent = '中文 · 约 ' + Math.max(1, Math.round(book.chars / 1000)) + ' 千字';
+    var frag = document.createDocumentFragment();
+    var n = 0;
+    book.chapters.forEach(function (ch) {
+      var h = document.createElement('h2');
+      h.id = 'b' + (n++);
+      h.textContent = ch.title;
+      frag.appendChild(h);
+      ch.paras.forEach(function (t) {
+        var p = document.createElement('p');
+        p.id = 'b' + (n++);
+        p.textContent = t;
+        frag.appendChild(p);
+      });
+    });
+    mainEl.appendChild(frag);
+    var s = document.createElement('script');
+    s.src = 'assets/js/reader-cn.js';
+    s.onerror = function () { document.getElementById('cnMissing').hidden = false; };
+    document.body.appendChild(s);
+  }).catch(function () { document.getElementById('cnMissing').hidden = false; });
+})();
+</script>
+</body>
+</html>

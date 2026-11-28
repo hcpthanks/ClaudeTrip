@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="中文小说在线阅读，可以一句一句听。鲁迅《呐喊》《彷徨》《朝花夕拾》《故事新编》。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+<title>中文书库 — 读书</title>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="./">読<em>書</em></a>
+  <nav>
+    <a href="./index.html">日文书库</a>
+    <a href="#cnbooks">中文书库</a>
+    <a href="#mine">我的书</a>
+    <a href="./login.html" id="navLogin">登录</a>
+  </nav>
+</header>
+<main role="main">
+  <section class="hero">
+    <p class="eyebrow">中国語 × 精読</p>
+    <h1>书换了语言，<br>灯还亮着。</h1>
+    <p class="lede">小时候背过的课文，多年以后在异国的书架上又遇见。字都认得，声音却要重新学一遍。</p>
+    <p class="lede lede-ja" lang="ja">中国語の本を、一語ずつ声に出して読む。知っている字なのに、耳では初めての言葉。</p>
+    <a class="cta" href="#cnbooks">看那几本旧书</a>
+    <p class="trial-note">每天十五分钟，功能全开；之后照常读书，只是功能收起。</p>
+  </section>
+  <section class="books" id="cnbooks">
+    <h2>中文书库</h2>
+    <p class="sub">都是很久以前的书。作者不在了，句子还在。</p>
+    <div class="grid">
+      <a class="book-card" href="cn/nahan.html" data-book="呐喊">
+        <span class="book-author">鲁迅</span>
+        <h3 class="book-title">呐喊</h3>
+        <p class="book-blurb">醒过来的人，还坐在那间没有窗的屋子里。</p>
+        <span class="book-facts"><span>约 80 千字</span><span>15 篇</span><span>约 200 分钟</span></span>
+        <span class="bar"><i></i></span>
+        <span class="book-note">未开始</span>
+      </a>
+      <a class="book-card" href="cn/panghuang.html" data-book="彷徨">
+        <span class="book-author">鲁迅</span>
+        <h3 class="book-title">彷徨</h3>
+        <p class="book-blurb">路走到一半，前面没有人，后面也没有。</p>
+        <span class="book-facts"><span>约 78 千字</span><span>11 篇</span><span>约 195 分钟</span></span>
+        <span class="bar"><i></i></span>
+        <span class="book-note">未开始</span>
+      </a>
+      <a class="book-card" href="cn/zhaohua-xishi.html" data-book="朝花夕拾">
+        <span class="book-author">鲁迅</span>
+        <h3 class="book-title">朝花夕拾</h3>
+        <p class="book-blurb">回头看，童年的院子还站在那儿。</p>
+        <span class="book-facts"><span>约 40 千字</span><span>12 篇</span><span>约 102 分钟</span></span>
+        <span class="bar"><i></i></span>
+        <span class="book-note">未开始</span>
+      </a>
+      <a class="book-card" href="cn/gushi-xinbian.html" data-book="故事新编">
+        <span class="book-author">鲁迅</span>
+        <h3 class="book-title">故事新编</h3>
+        <p class="book-blurb">古书上的人，忽然说起了今天的话。</p>
+        <span class="book-facts"><span>约 78 千字</span><span>9 篇</span><span>约 196 分钟</span></span>
+        <span class="bar"><i></i></span>
+        <span class="book-note">未开始</span>
+      </a>
+    </div>
+  </section>
+  <section class="books" id="mine">
+    <h2>我的书</h2>
+    <p class="sub">你自己上传的 txt，只放在这台电脑的浏览器里。不公开，不上传，换设备要重传。</p>
+    <p><a class="cta" href="./upload.html">放一本进来</a></p>
+    <div class="grid" id="myGrid"></div>
+    <p class="book-note" id="myEmpty">书架还是空的。</p>
+  </section>
+  <section class="about" id="about">
+    <p><b>关于中文书：</b>四本鲁迅的集子，作者一九三六年去世，作品早已进入公有领域。文本来自网络整理本，仅供参考。</p>
+    <p><b>关于自己上传的书：</b>文件不会离开你的浏览器。站点不保存、不索引、不分享你上传的内容。</p>
+  </section>
+</main>
+<footer>
+  <p>个人阅读项目 · 中文文本来自公开整理本 · 请勿将本站内容用于商业转载</p>
+</footer>
+<script src="assets/js/cn-store.js"></script>
+<script>
+(function () {
+  var tok = '';
+  try { tok = localStorage.getItem('jp-token') || ''; } catch (e) { }
+  var loginLink = document.getElementById('navLogin');
+  if (loginLink && tok) loginLink.textContent = '已登录';
+
+  var grid = document.getElementById('myGrid');
+  var empty = document.getElementById('myEmpty');
+  function fmt(ts) {
+    var d = new Date(ts), now = new Date();
+    return (d.getMonth() + 1) + '月' + d.getDate() + '日' + (d.getFullYear() !== now.getFullYear() ? ' ' + d.getFullYear() : '');
+  }
+  if (!window.CNStore || !grid) return;
+  CNStore.list(CNStore.owner()).then(function (list) {
+    if (!list.length) return;
+    empty.hidden = true;
+    list.sort(function (a, b) { return b.createdAt - a.createdAt; }).forEach(function (b) {
+      var a = document.createElement('a');
+      a.className = 'book-card';
+      a.href = './reader-cn.html?id=' + encodeURIComponent(b.id);
+      var who = document.createElement('span'); who.className = 'book-author'; who.textContent = '我的书';
+      var t = document.createElement('h3'); t.className = 'book-title'; t.textContent = b.title;
+      var f = document.createElement('span'); f.className = 'book-facts';
+      var s1 = document.createElement('span'); s1.textContent = '约 ' + Math.max(1, Math.round(b.chars / 1000)) + ' 千字';
+      var s2 = document.createElement('span'); s2.textContent = fmt(b.createdAt) + ' 放进来';
+      f.appendChild(s1); f.appendChild(s2);
+      var n = document.createElement('span'); n.className = 'book-note'; n.textContent = '只在这台电脑上';
+      a.appendChild(who); a.appendChild(t); a.appendChild(f); a.appendChild(n);
+      grid.appendChild(a);
+    });
+  }).catch(function () { });
+})();
+</script>
+</body>
+</html>
