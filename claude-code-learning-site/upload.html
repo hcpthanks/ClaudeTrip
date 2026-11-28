@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>上传我的书 — 读书</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+<link rel="stylesheet" href="assets/css/site.css">
+<style>
+.up-main { max-width: 720px; margin: 0 auto; padding: clamp(36px, 7vw, 80px) clamp(16px, 4vw, 32px) 80px; }
+.up-card { padding: clamp(22px, 4vw, 34px); background: var(--paper-2); border: 1px solid var(--line);
+  border-radius: 16px; box-shadow: 0 18px 50px rgba(36,31,24,.08); }
+.up-card h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(23px, 3.4vw, 30px);
+  line-height: 1.45; margin: 0 0 12px; }
+.up-lead { color: var(--ink-soft); font-size: 14.5px; line-height: 1.9; margin: 0 0 22px; }
+.up-label { display: block; font-size: 12.5px; color: var(--muted); margin: 18px 0 6px; }
+.up-input { width: 100%; height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 9px;
+  background: #fff; color: var(--ink); font-family: inherit; font-size: 15px; }
+.up-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.up-file { display: block; width: 100%; padding: 22px 12px; border: 1px dashed var(--line-strong, #d3c3a8);
+  border-radius: 12px; background: var(--paper); color: var(--muted); font-size: 13.5px; text-align: center; cursor: pointer; }
+.up-file.drag { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.up-file input { display: none; }
+.up-btn { display: block; width: 100%; height: 44px; margin-top: 18px; border: 1px solid var(--accent);
+  border-radius: 10px; background: var(--accent); color: #fff; font-family: inherit; font-size: 15px;
+  font-weight: 600; cursor: pointer; }
+.up-btn:disabled { opacity: .5; cursor: not-allowed; }
+.up-msg { min-height: 1.6em; margin: 12px 0 0; font-size: 12.5px; color: var(--muted); }
+.up-msg[data-tone="err"] { color: var(--accent); }
+.up-msg[data-tone="ok"] { color: #3a8f5c; }
+.up-tip { margin: 14px 0 0; font-size: 12px; color: var(--muted); line-height: 1.8; }
+.up-tip a { color: var(--accent); }
+.up-list { list-style: none; padding: 0; margin: 18px 0 0; }
+.up-list li { display: flex; align-items: center; gap: 12px; padding: 12px 2px; border-top: 1px solid var(--line); }
+.up-list .t { flex: 1; min-width: 0; }
+.up-list .t b { display: block; font-family: var(--serif); font-size: 16px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.up-list .t span { font-size: 12px; color: var(--muted); }
+.up-list a.go { font-size: 13px; color: var(--accent); text-decoration: none; }
+.up-list button { border: 0; background: none; color: var(--muted); font-size: 12.5px; cursor: pointer; }
+.up-list button:hover { color: var(--accent); }
+.up-back { display: inline-block; margin-top: 20px; color: var(--muted); font-size: 13px; text-decoration: none; }
+.up-back:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="./index.html">読<em>書</em></a>
+  <nav>
+    <a href="./cn.html">中文书库</a>
+    <a href="./index.html">日文书库</a>
+  </nav>
+</header>
+<main class="up-main" role="main">
+  <div class="up-card">
+    <p class="eyebrow">我的书</p>
+    <h1>把书放进来，只放在这台电脑上。</h1>
+    <p class="up-lead">txt 不会离开你的浏览器。换一台电脑，书不会跟过去；清理浏览器数据，它也就没了。</p>
+
+    <div id="upGate" hidden>
+      <p class="up-lead">上传要先登记。留个邮箱，验证码十分钟内有效。</p>
+      <a class="up-btn" style="text-align:center;line-height:42px;text-decoration:none" href="./login.html?next=./upload.html">去登记</a>
+    </div>
+
+    <div id="upForm" hidden>
+      <label class="up-label" for="upTitle">书名</label>
+      <input class="up-input" id="upTitle" type="text" placeholder="不填就用文件名">
+      <label class="up-label" for="upFile">txt 文件</label>
+      <label class="up-file" id="upDrop" for="upFile">
+        <input type="file" id="upFile" accept=".txt,text/plain">
+        <span id="upDropText">点这里选一个 txt，或者把文件拖进来</span>
+      </label>
+      <button class="up-btn" id="upSave" type="button" disabled>存进书架</button>
+      <p class="up-msg" id="upMsg" role="status"></p>
+      <p class="up-tip">扫描版 PDF 先转成 txt：<a href="https://tools.pdf24.org/zh/pdf-to-txt" target="_blank" rel="noopener">tools.pdf24.org</a>。<br>
+        编码用 UTF-8，单本不超过 5 MB。章节按「第一章 / 序言 / 楔子」这类行自动分开。</p>
+    </div>
+
+    <h2 style="font-size:17px;margin:28px 0 0">书架</h2>
+    <ul class="up-list" id="upList"></ul>
+    <p class="up-msg" id="upEmpty">还没有书。</p>
+    <a class="up-back" href="./cn.html">← 回中文书库</a>
+  </div>
+</main>
+<script src="assets/js/cn-store.js"></script>
+<script>
+(function () {
+  var tok = '';
+  try { tok = localStorage.getItem('jp-token') || ''; } catch (e) { }
+  var owner = window.CNStore ? CNStore.owner() : '';
+  var gate = document.getElementById('upGate');
+  var form = document.getElementById('upForm');
+  var titleEl = document.getElementById('upTitle');
+  var fileEl = document.getElementById('upFile');
+  var dropEl = document.getElementById('upDrop');
+  var dropText = document.getElementById('upDropText');
+  var saveBtn = document.getElementById('upSave');
+  var msgEl = document.getElementById('upMsg');
+  var listEl = document.getElementById('upList');
+  var emptyEl = document.getElementById('upEmpty');
+  var picked = null;
+
+  function msg(t, tone) { msgEl.textContent = t || ''; msgEl.setAttribute('data-tone', tone || ''); }
+
+  if (!tok || !owner || !window.CNStore) {
+    gate.hidden = false;
+    msgEl.textContent = '';
+    return;
+  }
+  form.hidden = false;
+
+  function pick(file) {
+    if (!file) return;
+    if (!/\.txt$/i.test(file.name) && file.type !== 'text/plain') { msg('只收 txt 文件', 'err'); return; }
+    if (file.size > 5 * 1024 * 1024) { msg('文件超过 5 MB 了', 'err'); return; }
+    picked = file;
+    dropText.textContent = file.name + ' · ' + Math.max(1, Math.round(file.size / 1024)) + ' KB';
+    saveBtn.disabled = false;
+    msg('读一下看看', '');
+  }
+
+  fileEl.addEventListener('change', function () { pick(fileEl.files && fileEl.files[0]); });
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    dropEl.addEventListener(ev, function (e) { e.preventDefault(); dropEl.classList.add('drag'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    dropEl.addEventListener(ev, function (e) { e.preventDefault(); dropEl.classList.remove('drag'); });
+  });
+  dropEl.addEventListener('drop', function (e) {
+    pick(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]);
+  });
+
+  saveBtn.addEventListener('click', function () {
+    if (!picked) return;
+    saveBtn.disabled = true;
+    msg('正在存…');
+    CNStore.save(picked, (titleEl.value || '').trim()).then(function (book) {
+      msg('存好了。', 'ok');
+      picked = null;
+      fileEl.value = '';
+      dropText.textContent = '点这里选一个 txt，或者把文件拖进来';
+      titleEl.value = '';
+      render();
+      location.href = './reader-cn.html?id=' + encodeURIComponent(book.id);
+    }).catch(function (e) {
+      saveBtn.disabled = false;
+      msg((e && e.message) || '没存进去，再试一次', 'err');
+    });
+  });
+
+  function render() {
+    CNStore.list(owner).then(function (list) {
+      listEl.innerHTML = '';
+      emptyEl.hidden = list.length > 0;
+      list.sort(function (a, b) { return b.createdAt - a.createdAt; }).forEach(function (b) {
+        var li = document.createElement('li');
+        var t = document.createElement('div'); t.className = 't';
+        var name = document.createElement('b'); name.textContent = b.title;
+        var meta = document.createElement('span');
+        meta.textContent = '约 ' + Math.max(1, Math.round(b.chars / 1000)) + ' 千字';
+        t.appendChild(name); t.appendChild(meta);
+        var go = document.createElement('a'); go.className = 'go'; go.textContent = '读';
+        go.href = './reader-cn.html?id=' + encodeURIComponent(b.id);
+        var del = document.createElement('button'); del.type = 'button'; del.textContent = '删除';
+        del.addEventListener('click', function () {
+          if (!confirm('删掉《' + b.title + '》？书和阅读进度都会没。')) return;
+          CNStore.del(b.id).then(function () {
+            try { localStorage.removeItem('jp-progress:' + b.title); } catch (e) { }
+            render();
+          });
+        });
+        li.appendChild(t); li.appendChild(go); li.appendChild(del);
+        listEl.appendChild(li);
+      });
+    }).catch(function () { });
+  }
+  render();
+})();
+</script>
+</body>
+</html>
