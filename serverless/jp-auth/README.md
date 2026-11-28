@@ -68,6 +68,16 @@ npx wrangler deploy
 | `ses` | 腾讯云 SES（当前生产用） |
 | `resend` | Resend |
 
+`MAIL_MODE=ses` 时，收件人是 `gmail.com` / `googlemail.com` 会改走 Resend（腾讯云发 Gmail 会被 `550 5.7.1` 按域名信誉拒收），其余邮箱仍走腾讯云。没配 `RESEND_KEY` 时全部走腾讯云。
+
+### Resend（Gmail 通道）
+
+```bash
+npx wrangler secret put RESEND_KEY
+```
+
+`[vars]` 里的 `RESEND_FROM` 必须是 Resend 后台验证过的域名下的地址（例如 `no-reply@hcpthanks.com`）。域名验证在 Resend 控制台完成，按它给的记录加到 Cloudflare DNS。
+
 ### 腾讯云 SES（当前方案）
 
 ```bash

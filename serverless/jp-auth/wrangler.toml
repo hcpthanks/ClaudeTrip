@@ -16,6 +16,8 @@ SES_REGION = "ap-hongkong"
 MAIL_FROM = "no-reply@mail.hcpthanks.ccwu.cc"
 # 模板审核通过后填模板 ID；填了就走模板发送，不填走 Simple（需自定义发送权限）
 SES_TEMPLATE_ID = "238263"
+# Resend 发信地址，必须是 Resend 里验证过的域名；Gmail 收件人走这条通道
+RESEND_FROM = "no-reply@hcpthanks.com"
 
 # 国内直连 workers.dev 不通（DNS 投毒），走已经托管在 Cloudflare 的域名
 [[routes]]

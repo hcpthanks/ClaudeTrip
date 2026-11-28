@@ -229,14 +229,30 @@ async function requestCode(env, body, request) {
   return json({ ok: true });
 }
 
+/* Gmail 拒收 mail.hcpthanks.ccwu.cc（域名信誉低），改走 Resend；
+ * 国内邮箱（163/QQ 等）继续走腾讯云 SES。 */
+function prefersResend(email) {
+  return /@(gmail\.com|googlemail\.com)$/i.test(email);
+}
+
 async function sendMail(env, email, code) {
+  if (env.MAIL_MODE === 'dev') return { ok: false, reason: 'dev 模式不发信' };
   if (env.MAIL_MODE === 'resend') return sendResend(env, email, code);
-  if (env.MAIL_MODE === 'ses') return sendTencentSes(env, email, code);
+  if (env.MAIL_MODE === 'ses') {
+    if (prefersResend(email) && env.RESEND_KEY) {
+      const r = await sendResend(env, email, code);
+      if (!r.ok) console.error('resend failed', r.reason || 'unknown');
+      return r;
+    }
+    return sendTencentSes(env, email, code);
+  }
   return { ok: false, reason: '未知的 MAIL_MODE' };
 }
 
 async function sendResend(env, email, code) {
   if (!env.RESEND_KEY) return { ok: false, reason: '缺 RESEND_KEY' };
+  const from = env.RESEND_FROM || env.MAIL_FROM;
+  if (!from) return { ok: false, reason: '缺 RESEND_FROM' };
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -244,13 +260,17 @@ async function sendResend(env, email, code) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      from: env.MAIL_FROM,
+      from: from,
       to: [email],
       subject: '登录验证码 · ' + code,
-      text: mailText(code)
+      text: mailText(code),
+      html: mailHtml(code)
     })
   });
-  return { ok: res.ok };
+  if (res.ok) return { ok: true };
+  const raw = await res.text();
+  console.error('resend http', res.status, raw.slice(0, 200));
+  return { ok: false, reason: 'HTTP ' + res.status };
 }
 
 function mailText(code) {
