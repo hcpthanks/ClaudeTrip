@@ -68,7 +68,7 @@ npx wrangler deploy
 | `ses` | 腾讯云 SES（当前生产用） |
 | `resend` | Resend |
 
-`MAIL_MODE=ses` 时，收件人是 `gmail.com` / `googlemail.com` 会改走 Resend（腾讯云发 Gmail 会被 `550 5.7.1` 按域名信誉拒收），其余邮箱仍走腾讯云。没配 `RESEND_KEY` 时全部走腾讯云。
+`MAIL_MODE=ses` 时按收件域名分流：国内邮箱（qq.com、foxmail.com、163.com、126.com、yeah.net、sina.com/cn、sohu.com、aliyun.com、139.com、189.cn、21cn.com）走腾讯云；其余（Gmail、iCloud、Outlook、日本运营商等）走 Resend——腾讯云发 Gmail 会被 `550 5.7.1` 按域名信誉拒收。没配 `RESEND_KEY` 时全部走腾讯云。
 
 ### Resend（Gmail 通道）
 

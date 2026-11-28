@@ -151,7 +151,7 @@ document.documentElement.classList.add(full?'jp-full':'jp-limited');
     <button class="gate-x" type="button" id="jpAuthX" aria-label="关闭">×</button>
     <p class="gate-kicker">登记</p>
     <h2 id="jpAuthTitle">登记之后，七十二小时随便坐。</h2>
-    <p class="gate-lead">不收费。登记完先给三天完整体验；再往后，每天读十分钟，换十五分钟。</p>
+    <p class="gate-lead">不收费。登记完先给三天完整体验；再往后，每天第一次打开，送十五分钟。</p>
     <div class="auth-field">
       <label for="authEmail">邮箱</label>
       <input id="authEmail" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com">
@@ -163,6 +163,7 @@ document.documentElement.classList.add(full?'jp-full':'jp-limited');
     <p class="auth-msg" id="authMsg" role="status"></p>
     <button class="auth-btn" type="button" id="authSend">发送验证码</button>
     <button class="auth-btn" type="button" id="authLogin" hidden>登录</button>
+    <p class="gate-note">收不到的话，先看垃圾邮件。手机运营商邮箱常会拦海外邮件，建议用 Gmail 或电脑邮箱。</p>
     <button class="auth-quiet" type="button" id="authSkip">先不登记，继续读</button>
   </div>
 </div>

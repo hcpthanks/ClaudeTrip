@@ -229,17 +229,19 @@ async function requestCode(env, body, request) {
   return json({ ok: true });
 }
 
-/* Gmail 拒收 mail.hcpthanks.ccwu.cc（域名信誉低），改走 Resend；
- * 国内邮箱（163/QQ 等）继续走腾讯云 SES。 */
-function prefersResend(email) {
-  return /@(gmail\.com|googlemail\.com)$/i.test(email);
+/* 国内邮箱走腾讯云；其余（Gmail、iCloud、Outlook、日本运营商等）走 Resend，
+ * 因为腾讯云发 Gmail 会被 550 5.7.1 按域名信誉拒收。 */
+const SES_DOMAINS = /@(qq\.com|foxmail\.com|163\.com|126\.com|yeah\.net|sina\.com|sina\.cn|sohu\.com|aliyun\.com|139\.com|189\.cn|21cn\.com)$/i;
+
+function prefersSes(email) {
+  return SES_DOMAINS.test(email);
 }
 
 async function sendMail(env, email, code) {
   if (env.MAIL_MODE === 'dev') return { ok: false, reason: 'dev 模式不发信' };
   if (env.MAIL_MODE === 'resend') return sendResend(env, email, code);
   if (env.MAIL_MODE === 'ses') {
-    if (prefersResend(email) && env.RESEND_KEY) {
+    if (!prefersSes(email) && env.RESEND_KEY) {
       const r = await sendResend(env, email, code);
       if (!r.ok) console.error('resend failed', r.reason || 'unknown');
       return r;
